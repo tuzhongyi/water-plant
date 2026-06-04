@@ -1,0 +1,21 @@
+<div class="system-main-panel">
+  <div class="system-main-panel-head">
+    <span class="system-main-panel-head-icon">
+      <i class="mdi mdi-chevron-double-right"></i>
+    </span>
+    {{ title }}
+  </div>
+  <div class="system-main-panel-line"></div>
+  <div class="system-main-panel-body">
+    @for (item of items; track $index) {
+      <div class="system-main-panel-item">
+        <div class="system-main-panel-item-name">
+          {{ item.Name }}
+        </div>
+        <div class="system-main-panel-item-value">
+          {{ item.Value }}
+        </div>
+      </div>
+    }
+  </div>
+</div>

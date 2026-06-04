@@ -1,0 +1,156 @@
+// .card {
+//   width: 100%;
+//   height: 100%;
+
+//   @top-height: 48px;
+//   @bottom-height: 48px;
+//   @left-width: 198px;
+//   @right-width: 198px;
+
+//   @margin: 22px;
+
+//   position: relative;
+
+//   .content {
+//     position: absolute;
+//     top: @margin;
+//     top: @margin;
+//     left: @margin;
+//     right: @margin;
+//     height: calc(100% - @margin * 2);
+
+//     width: calc(100% - @margin * 2);
+
+//     &>* {
+//       width: 100%;
+//       height: 100%;
+//     }
+//   }
+
+//   .center {
+//     background-repeat: repeat-x;
+//     width: calc(100% - @left-width - @right-width);
+//   }
+
+//   .left {
+//     background-repeat: no-repeat;
+//     width: @left-width;
+//   }
+
+//   .right {
+//     background-repeat: no-repeat;
+//     width: @right-width;
+//   }
+
+//   .top {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     height: @top-height;
+
+//     &>* {
+//       height: 100%;
+//     }
+
+//     .left {
+//       background-image: url(../../../../assets/images/card/t-l.png);
+
+//     }
+
+//     .center {
+//       background-image: url(../../../../assets/images/card/t-c.png);
+//     }
+
+//     .right {
+//       background-image: url(../../../../assets/images/card/t-r.png);
+
+//     }
+//   }
+
+//   .middle {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     height: calc(100% - @top-height - @bottom-height);
+
+//     &>* {
+//       height: 100%;
+//     }
+
+
+//     .left {
+//       background-image: url(../../../../assets/images/card/m-l.png);
+//       background-repeat: repeat-y;
+//     }
+
+//     .center {
+//       background-image: url(../../../../assets/images/card/center.png);
+//       background-repeat: repeat;
+//       // margin-left: calc(-@left-width + @margin);
+//       // margin-top: calc(-@top-height + @margin);
+//       // margin-right: calc(-@right-width + @margin);
+//       // margin-bottom: calc(-@bottom-height + @margin);
+//       // width: calc(100% - @margin * 2);
+//       // height: calc(100% + @top-height + @bottom-height - @margin * 2);
+
+//     }
+
+//     .right {
+//       background-image: url(../../../../assets/images/card/m-r.png);
+//       background-repeat: repeat-y;
+//     }
+//   }
+
+
+//   .bottom {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     height: @bottom-height;
+
+//     &>* {
+//       height: 100%;
+//     }
+
+//     .left {
+//       background-image: url(../../../../assets/images/card/b-l.png);
+//     }
+
+//     .center {
+//       background-image: url(../../../../assets/images/card/b-c.png);
+
+//     }
+
+//     .right {
+//       background-image: url(../../../../assets/images/card/b-r.png);
+//     }
+//   }
+// }
+.card {
+  width: 100%;
+  height: 100%;
+
+  box-sizing: border-box;
+  position: relative;
+
+  border-style: solid;
+
+  // 必须和 slice 对应
+  border-width: 48px 198px 48px 198px;
+
+  border-image-source: url('../../../../assets/images/card/card.png');
+
+  // 上 右 下 左
+  border-image-slice: 48 198 48 198 fill;
+
+  // 核心
+  border-image-repeat: stretch;
+
+
+  .content {
+    margin: -48px -198px -48px -198px;
+    width: calc(100% + 198px + 198px);
+    height: calc(100% + 48px + 48px);
+    padding: 22px;
+  }
+}

@@ -1,0 +1,29 @@
+<div class="label-select" tabindex="-1">
+  <div class="label-select-header" (click)="toggleHandler($event)">
+    <div class="placeholder" *ngIf="!selected.length">请选择</div>
+    <div
+      class="wrapper"
+      WheelHorizontalScroll
+      [ngClass]="{
+        single: single
+      }"
+    >
+      <div class="label-select-item" *ngFor="let item of selected">
+        <div class="title">{{ item.Name }}</div>
+        <div class="clear" *ngIf="canremove" (click)="onremove($event, item)">
+          <i class="howell-icon-Close"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="label-select-body"
+    *ngIf="show"
+    [ngStyle]="{
+      height: height,      
+    }"
+    (click)="$event.stopPropagation()"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

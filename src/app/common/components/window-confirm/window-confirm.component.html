@@ -1,0 +1,22 @@
+<app-window [model]="model" [style]="style">
+  <div class="confirm">
+    <div class="confirm-head">
+      <div class="hw-simple-title"><i class="mdi mdi-alert"></i> {{ title }}</div>
+    </div>
+    <div class="confirm-body">
+      <div class="hw-simple-title">
+        {{ content }}
+
+        <ng-content></ng-content>
+      </div>
+    </div>
+    <div class="confirm-foot">
+      <button class="button-clip-gradient" (click)="onok()">
+        <i class="howell-icon-Check"></i> 确定
+      </button>
+      <button class="button-clip-blue" (click)="oncancel()">
+        <i class="howell-icon-Close"></i> 取消
+      </button>
+    </div>
+  </div>
+</app-window>

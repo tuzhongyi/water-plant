@@ -1,0 +1,30 @@
+.switch {
+  height: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  // background: linear-gradient(to top, rgba(30, 144, 255, 0.4), rgba(30, 144, 255, 0.4));
+  margin: 3px 0;
+  box-sizing: border-box;
+  border: 2px solid rgba(30, 144, 255, 0.4);
+  border-radius: 5px;
+  overflow: hidden;
+
+  &-item {
+    height: 100%;
+    opacity: 0.6;
+    color: #fff;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+
+    &.selected {
+      border-color: transparent;
+      opacity: 1;
+      background-color: rgba(30, 144, 255, 0.4);
+    }
+  }
+}

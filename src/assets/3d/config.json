@@ -1,0 +1,38 @@
+{
+  "renderMode": "overlay",
+  "edgeLineWidth": 1,
+  "thresholdAngle": 36,
+  "solidOpacity": 0.06,
+  "wfOpacity": 1,
+  "bgColor": "#796767",
+  "ambientIntensity": 1.5,
+  "keyIntensity": 2.8,
+  "fillIntensity": 1,
+  "hemiIntensity": 1.2,
+  "showGrid": true,
+  "showAxes": true,
+  "showCenterDot": false,
+  "showBBox": false,
+  "autoRotate": false,
+  "flatShading": false,
+  "sobel": false,
+  "bloom": false,
+  "fxaa": false,
+  "bloomThreshold": 0.6,
+  "bloomStrength": 1.5,
+  "bloomRadius": 0.4,
+  "cameraNear": 0.1,
+  "cameraFar": 2500,
+  "viewPreset": "large",
+  "camPos": {
+    "x": 153.66996398556648,
+    "y": 92.2019783913399,
+    "z": 215.13794957979312
+  },
+  "camTgt": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "solidSeeThrough": true
+}

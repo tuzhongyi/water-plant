@@ -1,0 +1,18 @@
+<div
+  class="header"
+  [ngStyle]="{
+    height: visibility ? '100%' : '0',
+  }"
+  [ngClass]="{
+    hidden: !visibility,
+  }"
+>
+  <div class="header-content">
+    <div class="header-content-info"></div>
+    <div class="header-content-title">{{ title }}</div>
+    <div class="header-content-info">
+      <howell-header-information [date]="date"></howell-header-information>
+      <app-account-operation></app-account-operation>
+    </div>
+  </div>
+</div>

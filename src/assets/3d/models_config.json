@@ -1,0 +1,116 @@
+{
+  "Administration_Complex.glb": {
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "h": 0,
+      "p": 0,
+      "b": 0
+    },
+    "colors": {
+      "normal": {
+        "edge": "#00cccc",
+        "background": "#000000"
+      },
+      "hover": {
+        "edge": "#ffaa00",
+        "background": "#000000"
+      },
+      "selected": {
+        "edge": "#ff0000",
+        "background": "#000000"
+      }
+    },
+    "render": {
+      "renderMode": "overlay",
+      "thresholdAngle": 36,
+      "edgeLineWidth": 1,
+      "solidOpacity": 0.06,
+      "wfOpacity": 1,
+      "bloom": false,
+      "bloomThreshold": 0.6,
+      "bloomStrength": 1.5,
+      "bloomRadius": 0.4,
+      "flatShading": false,
+      "solidSeeThrough": true
+    },
+    "materialColors": {
+      "材质 1": {
+        "normal": "#ffffff",
+        "hover": "#aeff00",
+        "selected": "#ff0000"
+      }
+    },
+    "meshVisibility": {
+      "FloorR": true,
+      "Floor1": true,
+      "Floor3": true,
+      "Floor2": true
+    }
+  },
+  "Administration_Complex_expansion.glb": {
+    "position": {
+      "x": -100,
+      "y": 0,
+      "z": 0
+    },
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "h": 0,
+      "p": 0,
+      "b": 0
+    },
+    "colors": {
+      "normal": {
+        "edge": "#04ff00",
+        "background": "#000000"
+      },
+      "hover": {
+        "edge": "#006eff",
+        "background": "#000000"
+      },
+      "selected": {
+        "edge": "#c800ff",
+        "background": "#000000"
+      }
+    },
+    "render": {
+      "renderMode": "overlay",
+      "thresholdAngle": 36,
+      "edgeLineWidth": 1,
+      "solidOpacity": 0.06,
+      "wfOpacity": 1,
+      "bloom": false,
+      "bloomThreshold": 0.6,
+      "bloomStrength": 1.5,
+      "bloomRadius": 0.4,
+      "flatShading": false,
+      "solidSeeThrough": true
+    },
+    "materialColors": {
+      "材质 1": {
+        "normal": "#11ff00",
+        "hover": "#00b3ff",
+        "selected": "#ae00ff"
+      }
+    },
+    "meshVisibility": {
+      "FloorR": true,
+      "Floor1": true,
+      "Floor3": true,
+      "Floor2": true
+    }
+  }
+}

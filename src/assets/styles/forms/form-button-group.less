@@ -1,0 +1,62 @@
+@import url(../colors/color-@.less);
+
+.button-group {
+  display: flex;
+
+  align-items: center;
+  gap: 10px;
+
+  &.flex-center {
+    justify-content: center;
+  }
+
+  &.flex-end {
+    justify-content: flex-end;
+  }
+
+  &-border {
+
+    display: flex;
+    align-items: center;
+    border: 1px solid;
+    height: 36px;
+    border-radius: 5px;
+
+
+    &>* {
+      border-right: 1px solid;
+      height: 100%;
+      padding: 0 10px;
+
+
+      &:first-child {}
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+    &.blue {
+      border-color: @blue;
+
+      &>* {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: @blue;
+        border-color: @blue;
+
+        &.selected {
+          color: @normal;
+        }
+
+        &:hover {
+          color: #fff;
+        }
+      }
+    }
+
+
+
+  }
+}

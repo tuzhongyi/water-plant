@@ -1,0 +1,4801 @@
+// @green: #23e353;
+// @red: #ff5151;
+// @orange: #ff762c;
+// @yellow: #fde546;
+// @normal: #ddf4ff;
+// @blue: #2d76ce;
+// @cyan: #00f5ff;
+
+@normal: #ddf4ff;
+@white :#ffffff;
+@green :#21e452;
+@red :#f73d3d;
+@redlight :#ff762c;
+@orange :#ffba00;
+@cyan :#00f5ff;
+@yellow :#fde546;
+@blue :#1e90ff;
+@gray :#666;
+@pink :#e879f9;
+@purple :#a78bfa;
+@sky :#38bdf8;
+@rgb: var(--color-r), var(--color-g), var(--color-b);
+
+html {
+  --white: @white;
+  --green: @green;
+  --red: @red;
+  --redlight: @redlight;
+  --orange: @orange;
+  --cyan: @cyan;
+  --yellow: @yellow;
+  --blue: @blue;
+  --gray: @gray;
+  --pink: @pink;
+  --purple: @purple;
+  --sky: @sky;
+
+
+  --color: var(--white);
+  --color-r: 255;
+  --color-g: 255;
+  --color-b: 255;
+
+
+  /* RGB 分量变量 */
+  --normal-r: 221;
+  --normal-g: 244;
+  --normal-b: 255;
+
+  --white-r: 255;
+  --white-g: 255;
+  --white-b: 255;
+
+  --green-r: 33;
+  --green-g: 228;
+  --green-b: 82;
+
+  --red-r: 247;
+  --red-g: 61;
+  --red-b: 61;
+
+  --redlight-r: 255;
+  --redlight-g: 118;
+  --redlight-b: 44;
+
+  --orange-r: 255;
+  --orange-g: 186;
+  --orange-b: 0;
+
+  --cyan-r: 0;
+  --cyan-g: 245;
+  --cyan-b: 255;
+
+  --yellow-r: 253;
+  --yellow-g: 229;
+  --yellow-b: 70;
+
+  --blue-r: 30;
+  --blue-g: 144;
+  --blue-b: 255;
+
+  --gray-r: 102;
+  --gray-g: 102;
+  --gray-b: 102;
+
+  --pink-r: 232;
+  --pink-g: 121;
+  --pink-b: 249;
+
+  --purple-r: 167;
+  --purple-g: 139;
+  --purple-b: 250;
+
+  --sky-r: 56;
+  --sky-g: 189;
+  --sky-b: 248;
+
+
+  /* ========== 颜色工具类 ========== */
+  .normal {
+    --color: var(--normal);
+    --color-r: var(--normal-r);
+    --color-g: var(--normal-g);
+    --color-b: var(--normal-b);
+  }
+
+  .white {
+    --color: var(--white);
+    --color-r: var(--white-r);
+    --color-g: var(--white-g);
+    --color-b: var(--white-b);
+  }
+
+  .green {
+    --color: var(--green);
+    --color-r: var(--green-r);
+    --color-g: var(--green-g);
+    --color-b: var(--green-b);
+  }
+
+  .red {
+    --color: var(--red);
+    --color-r: var(--red-r);
+    --color-g: var(--red-g);
+    --color-b: var(--red-b);
+  }
+
+  .redlight {
+    --color: var(--redlight);
+    --color-r: var(--redlight-r);
+    --color-g: var(--redlight-g);
+    --color-b: var(--redlight-b);
+  }
+
+  .orange {
+    --color: var(--orange);
+    --color-r: var(--orange-r);
+    --color-g: var(--orange-g);
+    --color-b: var(--orange-b);
+  }
+
+  .cyan {
+    --color: var(--cyan);
+    --color-r: var(--cyan-r);
+    --color-g: var(--cyan-g);
+    --color-b: var(--cyan-b);
+  }
+
+  .yellow {
+    --color: var(--yellow);
+    --color-r: var(--yellow-r);
+    --color-g: var(--yellow-g);
+    --color-b: var(--yellow-b);
+  }
+
+  .blue {
+    --color: var(--blue);
+    --color-r: var(--blue-r);
+    --color-g: var(--blue-g);
+    --color-b: var(--blue-b);
+  }
+
+  .gray {
+    --color: var(--gray);
+    --color-r: var(--gray-r);
+    --color-g: var(--gray-g);
+    --color-b: var(--gray-b);
+  }
+
+  .pink {
+    --color: var(--pink);
+    --color-r: var(--pink-r);
+    --color-g: var(--pink-g);
+    --color-b: var(--pink-b);
+  }
+
+  .purple {
+    --color: var(--purple);
+    --color-r: var(--purple-r);
+    --color-g: var(--purple-g);
+    --color-b: var(--purple-b);
+  }
+
+  .sky {
+    --color: var(--sky);
+    --color-r: var(--sky-r);
+    --color-g: var(--sky-g);
+    --color-b: var(--sky-b);
+  }
+
+  /* ====================== Red 红色通道 (0-255) ====================== */
+  .color-r-00,
+  .color-r-00,
+  .color-r-0 {
+    --color-r: 0
+  }
+
+  .color-r-01,
+  .color-r-01,
+  .color-r-1 {
+    --color-r: 1
+  }
+
+  .color-r-02,
+  .color-r-02,
+  .color-r-2 {
+    --color-r: 2
+  }
+
+  .color-r-03,
+  .color-r-03,
+  .color-r-3 {
+    --color-r: 3
+  }
+
+  .color-r-04,
+  .color-r-04,
+  .color-r-4 {
+    --color-r: 4
+  }
+
+  .color-r-05,
+  .color-r-05,
+  .color-r-5 {
+    --color-r: 5
+  }
+
+  .color-r-06,
+  .color-r-06,
+  .color-r-6 {
+    --color-r: 6
+  }
+
+  .color-r-07,
+  .color-r-07,
+  .color-r-7 {
+    --color-r: 7
+  }
+
+  .color-r-08,
+  .color-r-08,
+  .color-r-8 {
+    --color-r: 8
+  }
+
+  .color-r-09,
+  .color-r-09,
+  .color-r-9 {
+    --color-r: 9
+  }
+
+  .color-r-0a,
+  .color-r-0A,
+  .color-r-10 {
+    --color-r: 10
+  }
+
+  .color-r-0b,
+  .color-r-0B,
+  .color-r-11 {
+    --color-r: 11
+  }
+
+  .color-r-0c,
+  .color-r-0C,
+  .color-r-12 {
+    --color-r: 12
+  }
+
+  .color-r-0d,
+  .color-r-0D,
+  .color-r-13 {
+    --color-r: 13
+  }
+
+  .color-r-0e,
+  .color-r-0E,
+  .color-r-14 {
+    --color-r: 14
+  }
+
+  .color-r-0f,
+  .color-r-0F,
+  .color-r-15 {
+    --color-r: 15
+  }
+
+  .color-r-10,
+  .color-r-10,
+  .color-r-16 {
+    --color-r: 16
+  }
+
+  .color-r-11,
+  .color-r-11,
+  .color-r-17 {
+    --color-r: 17
+  }
+
+  .color-r-12,
+  .color-r-12,
+  .color-r-18 {
+    --color-r: 18
+  }
+
+  .color-r-13,
+  .color-r-13,
+  .color-r-19 {
+    --color-r: 19
+  }
+
+  .color-r-14,
+  .color-r-14,
+  .color-r-20 {
+    --color-r: 20
+  }
+
+  .color-r-15,
+  .color-r-15,
+  .color-r-21 {
+    --color-r: 21
+  }
+
+  .color-r-16,
+  .color-r-16,
+  .color-r-22 {
+    --color-r: 22
+  }
+
+  .color-r-17,
+  .color-r-17,
+  .color-r-23 {
+    --color-r: 23
+  }
+
+  .color-r-18,
+  .color-r-18,
+  .color-r-24 {
+    --color-r: 24
+  }
+
+  .color-r-19,
+  .color-r-19,
+  .color-r-25 {
+    --color-r: 25
+  }
+
+  .color-r-1a,
+  .color-r-1A,
+  .color-r-26 {
+    --color-r: 26
+  }
+
+  .color-r-1b,
+  .color-r-1B,
+  .color-r-27 {
+    --color-r: 27
+  }
+
+  .color-r-1c,
+  .color-r-1C,
+  .color-r-28 {
+    --color-r: 28
+  }
+
+  .color-r-1d,
+  .color-r-1D,
+  .color-r-29 {
+    --color-r: 29
+  }
+
+  .color-r-1e,
+  .color-r-1E,
+  .color-r-30 {
+    --color-r: 30
+  }
+
+  .color-r-1f,
+  .color-r-1F,
+  .color-r-31 {
+    --color-r: 31
+  }
+
+  .color-r-20,
+  .color-r-20,
+  .color-r-32 {
+    --color-r: 32
+  }
+
+  .color-r-21,
+  .color-r-21,
+  .color-r-33 {
+    --color-r: 33
+  }
+
+  .color-r-22,
+  .color-r-22,
+  .color-r-34 {
+    --color-r: 34
+  }
+
+  .color-r-23,
+  .color-r-23,
+  .color-r-35 {
+    --color-r: 35
+  }
+
+  .color-r-24,
+  .color-r-24,
+  .color-r-36 {
+    --color-r: 36
+  }
+
+  .color-r-25,
+  .color-r-25,
+  .color-r-37 {
+    --color-r: 37
+  }
+
+  .color-r-26,
+  .color-r-26,
+  .color-r-38 {
+    --color-r: 38
+  }
+
+  .color-r-27,
+  .color-r-27,
+  .color-r-39 {
+    --color-r: 39
+  }
+
+  .color-r-28,
+  .color-r-28,
+  .color-r-40 {
+    --color-r: 40
+  }
+
+  .color-r-29,
+  .color-r-29,
+  .color-r-41 {
+    --color-r: 41
+  }
+
+  .color-r-2a,
+  .color-r-2A,
+  .color-r-42 {
+    --color-r: 42
+  }
+
+  .color-r-2b,
+  .color-r-2B,
+  .color-r-43 {
+    --color-r: 43
+  }
+
+  .color-r-2c,
+  .color-r-2C,
+  .color-r-44 {
+    --color-r: 44
+  }
+
+  .color-r-2d,
+  .color-r-2D,
+  .color-r-45 {
+    --color-r: 45
+  }
+
+  .color-r-2e,
+  .color-r-2E,
+  .color-r-46 {
+    --color-r: 46
+  }
+
+  .color-r-2f,
+  .color-r-2F,
+  .color-r-47 {
+    --color-r: 47
+  }
+
+  .color-r-30,
+  .color-r-30,
+  .color-r-48 {
+    --color-r: 48
+  }
+
+  .color-r-31,
+  .color-r-31,
+  .color-r-49 {
+    --color-r: 49
+  }
+
+  .color-r-32,
+  .color-r-32,
+  .color-r-50 {
+    --color-r: 50
+  }
+
+  .color-r-33,
+  .color-r-33,
+  .color-r-51 {
+    --color-r: 51
+  }
+
+  .color-r-34,
+  .color-r-34,
+  .color-r-52 {
+    --color-r: 52
+  }
+
+  .color-r-35,
+  .color-r-35,
+  .color-r-53 {
+    --color-r: 53
+  }
+
+  .color-r-36,
+  .color-r-36,
+  .color-r-54 {
+    --color-r: 54
+  }
+
+  .color-r-37,
+  .color-r-37,
+  .color-r-55 {
+    --color-r: 55
+  }
+
+  .color-r-38,
+  .color-r-38,
+  .color-r-56 {
+    --color-r: 56
+  }
+
+  .color-r-39,
+  .color-r-39,
+  .color-r-57 {
+    --color-r: 57
+  }
+
+  .color-r-3a,
+  .color-r-3A,
+  .color-r-58 {
+    --color-r: 58
+  }
+
+  .color-r-3b,
+  .color-r-3B,
+  .color-r-59 {
+    --color-r: 59
+  }
+
+  .color-r-3c,
+  .color-r-3C,
+  .color-r-60 {
+    --color-r: 60
+  }
+
+  .color-r-3d,
+  .color-r-3D,
+  .color-r-61 {
+    --color-r: 61
+  }
+
+  .color-r-3e,
+  .color-r-3E,
+  .color-r-62 {
+    --color-r: 62
+  }
+
+  .color-r-3f,
+  .color-r-3F,
+  .color-r-63 {
+    --color-r: 63
+  }
+
+  .color-r-40,
+  .color-r-40,
+  .color-r-64 {
+    --color-r: 64
+  }
+
+  .color-r-41,
+  .color-r-41,
+  .color-r-65 {
+    --color-r: 65
+  }
+
+  .color-r-42,
+  .color-r-42,
+  .color-r-66 {
+    --color-r: 66
+  }
+
+  .color-r-43,
+  .color-r-43,
+  .color-r-67 {
+    --color-r: 67
+  }
+
+  .color-r-44,
+  .color-r-44,
+  .color-r-68 {
+    --color-r: 68
+  }
+
+  .color-r-45,
+  .color-r-45,
+  .color-r-69 {
+    --color-r: 69
+  }
+
+  .color-r-46,
+  .color-r-46,
+  .color-r-70 {
+    --color-r: 70
+  }
+
+  .color-r-47,
+  .color-r-47,
+  .color-r-71 {
+    --color-r: 71
+  }
+
+  .color-r-48,
+  .color-r-48,
+  .color-r-72 {
+    --color-r: 72
+  }
+
+  .color-r-49,
+  .color-r-49,
+  .color-r-73 {
+    --color-r: 73
+  }
+
+  .color-r-4a,
+  .color-r-4A,
+  .color-r-74 {
+    --color-r: 74
+  }
+
+  .color-r-4b,
+  .color-r-4B,
+  .color-r-75 {
+    --color-r: 75
+  }
+
+  .color-r-4c,
+  .color-r-4C,
+  .color-r-76 {
+    --color-r: 76
+  }
+
+  .color-r-4d,
+  .color-r-4D,
+  .color-r-77 {
+    --color-r: 77
+  }
+
+  .color-r-4e,
+  .color-r-4E,
+  .color-r-78 {
+    --color-r: 78
+  }
+
+  .color-r-4f,
+  .color-r-4F,
+  .color-r-79 {
+    --color-r: 79
+  }
+
+  .color-r-50,
+  .color-r-50,
+  .color-r-80 {
+    --color-r: 80
+  }
+
+  .color-r-51,
+  .color-r-51,
+  .color-r-81 {
+    --color-r: 81
+  }
+
+  .color-r-52,
+  .color-r-52,
+  .color-r-82 {
+    --color-r: 82
+  }
+
+  .color-r-53,
+  .color-r-53,
+  .color-r-83 {
+    --color-r: 83
+  }
+
+  .color-r-54,
+  .color-r-54,
+  .color-r-84 {
+    --color-r: 84
+  }
+
+  .color-r-55,
+  .color-r-55,
+  .color-r-85 {
+    --color-r: 85
+  }
+
+  .color-r-56,
+  .color-r-56,
+  .color-r-86 {
+    --color-r: 86
+  }
+
+  .color-r-57,
+  .color-r-57,
+  .color-r-87 {
+    --color-r: 87
+  }
+
+  .color-r-58,
+  .color-r-58,
+  .color-r-88 {
+    --color-r: 88
+  }
+
+  .color-r-59,
+  .color-r-59,
+  .color-r-89 {
+    --color-r: 89
+  }
+
+  .color-r-5a,
+  .color-r-5A,
+  .color-r-90 {
+    --color-r: 90
+  }
+
+  .color-r-5b,
+  .color-r-5B,
+  .color-r-91 {
+    --color-r: 91
+  }
+
+  .color-r-5c,
+  .color-r-5C,
+  .color-r-92 {
+    --color-r: 92
+  }
+
+  .color-r-5d,
+  .color-r-5D,
+  .color-r-93 {
+    --color-r: 93
+  }
+
+  .color-r-5e,
+  .color-r-5E,
+  .color-r-94 {
+    --color-r: 94
+  }
+
+  .color-r-5f,
+  .color-r-5F,
+  .color-r-95 {
+    --color-r: 95
+  }
+
+  .color-r-60,
+  .color-r-60,
+  .color-r-96 {
+    --color-r: 96
+  }
+
+  .color-r-61,
+  .color-r-61,
+  .color-r-97 {
+    --color-r: 97
+  }
+
+  .color-r-62,
+  .color-r-62,
+  .color-r-98 {
+    --color-r: 98
+  }
+
+  .color-r-63,
+  .color-r-63,
+  .color-r-99 {
+    --color-r: 99
+  }
+
+  .color-r-64,
+  .color-r-64,
+  .color-r-100 {
+    --color-r: 100
+  }
+
+  .color-r-65,
+  .color-r-65,
+  .color-r-101 {
+    --color-r: 101
+  }
+
+  .color-r-66,
+  .color-r-66,
+  .color-r-102 {
+    --color-r: 102
+  }
+
+  .color-r-67,
+  .color-r-67,
+  .color-r-103 {
+    --color-r: 103
+  }
+
+  .color-r-68,
+  .color-r-68,
+  .color-r-104 {
+    --color-r: 104
+  }
+
+  .color-r-69,
+  .color-r-69,
+  .color-r-105 {
+    --color-r: 105
+  }
+
+  .color-r-6a,
+  .color-r-6A,
+  .color-r-106 {
+    --color-r: 106
+  }
+
+  .color-r-6b,
+  .color-r-6B,
+  .color-r-107 {
+    --color-r: 107
+  }
+
+  .color-r-6c,
+  .color-r-6C,
+  .color-r-108 {
+    --color-r: 108
+  }
+
+  .color-r-6d,
+  .color-r-6D,
+  .color-r-109 {
+    --color-r: 109
+  }
+
+  .color-r-6e,
+  .color-r-6E,
+  .color-r-110 {
+    --color-r: 110
+  }
+
+  .color-r-6f,
+  .color-r-6F,
+  .color-r-111 {
+    --color-r: 111
+  }
+
+  .color-r-70,
+  .color-r-70,
+  .color-r-112 {
+    --color-r: 112
+  }
+
+  .color-r-71,
+  .color-r-71,
+  .color-r-113 {
+    --color-r: 113
+  }
+
+  .color-r-72,
+  .color-r-72,
+  .color-r-114 {
+    --color-r: 114
+  }
+
+  .color-r-73,
+  .color-r-73,
+  .color-r-115 {
+    --color-r: 115
+  }
+
+  .color-r-74,
+  .color-r-74,
+  .color-r-116 {
+    --color-r: 116
+  }
+
+  .color-r-75,
+  .color-r-75,
+  .color-r-117 {
+    --color-r: 117
+  }
+
+  .color-r-76,
+  .color-r-76,
+  .color-r-118 {
+    --color-r: 118
+  }
+
+  .color-r-77,
+  .color-r-77,
+  .color-r-119 {
+    --color-r: 119
+  }
+
+  .color-r-78,
+  .color-r-78,
+  .color-r-120 {
+    --color-r: 120
+  }
+
+  .color-r-79,
+  .color-r-79,
+  .color-r-121 {
+    --color-r: 121
+  }
+
+  .color-r-7a,
+  .color-r-7A,
+  .color-r-122 {
+    --color-r: 122
+  }
+
+  .color-r-7b,
+  .color-r-7B,
+  .color-r-123 {
+    --color-r: 123
+  }
+
+  .color-r-7c,
+  .color-r-7C,
+  .color-r-124 {
+    --color-r: 124
+  }
+
+  .color-r-7d,
+  .color-r-7D,
+  .color-r-125 {
+    --color-r: 125
+  }
+
+  .color-r-7e,
+  .color-r-7E,
+  .color-r-126 {
+    --color-r: 126
+  }
+
+  .color-r-7f,
+  .color-r-7F,
+  .color-r-127 {
+    --color-r: 127
+  }
+
+  .color-r-80,
+  .color-r-80,
+  .color-r-128 {
+    --color-r: 128
+  }
+
+  .color-r-81,
+  .color-r-81,
+  .color-r-129 {
+    --color-r: 129
+  }
+
+  .color-r-82,
+  .color-r-82,
+  .color-r-130 {
+    --color-r: 130
+  }
+
+  .color-r-83,
+  .color-r-83,
+  .color-r-131 {
+    --color-r: 131
+  }
+
+  .color-r-84,
+  .color-r-84,
+  .color-r-132 {
+    --color-r: 132
+  }
+
+  .color-r-85,
+  .color-r-85,
+  .color-r-133 {
+    --color-r: 133
+  }
+
+  .color-r-86,
+  .color-r-86,
+  .color-r-134 {
+    --color-r: 134
+  }
+
+  .color-r-87,
+  .color-r-87,
+  .color-r-135 {
+    --color-r: 135
+  }
+
+  .color-r-88,
+  .color-r-88,
+  .color-r-136 {
+    --color-r: 136
+  }
+
+  .color-r-89,
+  .color-r-89,
+  .color-r-137 {
+    --color-r: 137
+  }
+
+  .color-r-8a,
+  .color-r-8A,
+  .color-r-138 {
+    --color-r: 138
+  }
+
+  .color-r-8b,
+  .color-r-8B,
+  .color-r-139 {
+    --color-r: 139
+  }
+
+  .color-r-8c,
+  .color-r-8C,
+  .color-r-140 {
+    --color-r: 140
+  }
+
+  .color-r-8d,
+  .color-r-8D,
+  .color-r-141 {
+    --color-r: 141
+  }
+
+  .color-r-8e,
+  .color-r-8E,
+  .color-r-142 {
+    --color-r: 142
+  }
+
+  .color-r-8f,
+  .color-r-8F,
+  .color-r-143 {
+    --color-r: 143
+  }
+
+  .color-r-90,
+  .color-r-90,
+  .color-r-144 {
+    --color-r: 144
+  }
+
+  .color-r-91,
+  .color-r-91,
+  .color-r-145 {
+    --color-r: 145
+  }
+
+  .color-r-92,
+  .color-r-92,
+  .color-r-146 {
+    --color-r: 146
+  }
+
+  .color-r-93,
+  .color-r-93,
+  .color-r-147 {
+    --color-r: 147
+  }
+
+  .color-r-94,
+  .color-r-94,
+  .color-r-148 {
+    --color-r: 148
+  }
+
+  .color-r-95,
+  .color-r-95,
+  .color-r-149 {
+    --color-r: 149
+  }
+
+  .color-r-96,
+  .color-r-96,
+  .color-r-150 {
+    --color-r: 150
+  }
+
+  .color-r-97,
+  .color-r-97,
+  .color-r-151 {
+    --color-r: 151
+  }
+
+  .color-r-98,
+  .color-r-98,
+  .color-r-152 {
+    --color-r: 152
+  }
+
+  .color-r-99,
+  .color-r-99,
+  .color-r-153 {
+    --color-r: 153
+  }
+
+  .color-r-9a,
+  .color-r-9A,
+  .color-r-154 {
+    --color-r: 154
+  }
+
+  .color-r-9b,
+  .color-r-9B,
+  .color-r-155 {
+    --color-r: 155
+  }
+
+  .color-r-9c,
+  .color-r-9C,
+  .color-r-156 {
+    --color-r: 156
+  }
+
+  .color-r-9d,
+  .color-r-9D,
+  .color-r-157 {
+    --color-r: 157
+  }
+
+  .color-r-9e,
+  .color-r-9E,
+  .color-r-158 {
+    --color-r: 158
+  }
+
+  .color-r-9f,
+  .color-r-9F,
+  .color-r-159 {
+    --color-r: 159
+  }
+
+  .color-r-a0,
+  .color-r-A0,
+  .color-r-160 {
+    --color-r: 160
+  }
+
+  .color-r-a1,
+  .color-r-A1,
+  .color-r-161 {
+    --color-r: 161
+  }
+
+  .color-r-a2,
+  .color-r-A2,
+  .color-r-162 {
+    --color-r: 162
+  }
+
+  .color-r-a3,
+  .color-r-A3,
+  .color-r-163 {
+    --color-r: 163
+  }
+
+  .color-r-a4,
+  .color-r-A4,
+  .color-r-164 {
+    --color-r: 164
+  }
+
+  .color-r-a5,
+  .color-r-A5,
+  .color-r-165 {
+    --color-r: 165
+  }
+
+  .color-r-a6,
+  .color-r-A6,
+  .color-r-166 {
+    --color-r: 166
+  }
+
+  .color-r-a7,
+  .color-r-A7,
+  .color-r-167 {
+    --color-r: 167
+  }
+
+  .color-r-a8,
+  .color-r-A8,
+  .color-r-168 {
+    --color-r: 168
+  }
+
+  .color-r-a9,
+  .color-r-A9,
+  .color-r-169 {
+    --color-r: 169
+  }
+
+  .color-r-aa,
+  .color-r-AA,
+  .color-r-170 {
+    --color-r: 170
+  }
+
+  .color-r-ab,
+  .color-r-AB,
+  .color-r-171 {
+    --color-r: 171
+  }
+
+  .color-r-ac,
+  .color-r-AC,
+  .color-r-172 {
+    --color-r: 172
+  }
+
+  .color-r-ad,
+  .color-r-AD,
+  .color-r-173 {
+    --color-r: 173
+  }
+
+  .color-r-ae,
+  .color-r-AE,
+  .color-r-174 {
+    --color-r: 174
+  }
+
+  .color-r-af,
+  .color-r-AF,
+  .color-r-175 {
+    --color-r: 175
+  }
+
+  .color-r-b0,
+  .color-r-B0,
+  .color-r-176 {
+    --color-r: 176
+  }
+
+  .color-r-b1,
+  .color-r-B1,
+  .color-r-177 {
+    --color-r: 177
+  }
+
+  .color-r-b2,
+  .color-r-B2,
+  .color-r-178 {
+    --color-r: 178
+  }
+
+  .color-r-b3,
+  .color-r-B3,
+  .color-r-179 {
+    --color-r: 179
+  }
+
+  .color-r-b4,
+  .color-r-B4,
+  .color-r-180 {
+    --color-r: 180
+  }
+
+  .color-r-b5,
+  .color-r-B5,
+  .color-r-181 {
+    --color-r: 181
+  }
+
+  .color-r-b6,
+  .color-r-B6,
+  .color-r-182 {
+    --color-r: 182
+  }
+
+  .color-r-b7,
+  .color-r-B7,
+  .color-r-183 {
+    --color-r: 183
+  }
+
+  .color-r-b8,
+  .color-r-B8,
+  .color-r-184 {
+    --color-r: 184
+  }
+
+  .color-r-b9,
+  .color-r-B9,
+  .color-r-185 {
+    --color-r: 185
+  }
+
+  .color-r-ba,
+  .color-r-BA,
+  .color-r-186 {
+    --color-r: 186
+  }
+
+  .color-r-bb,
+  .color-r-BB,
+  .color-r-187 {
+    --color-r: 187
+  }
+
+  .color-r-bc,
+  .color-r-BC,
+  .color-r-188 {
+    --color-r: 188
+  }
+
+  .color-r-bd,
+  .color-r-BD,
+  .color-r-189 {
+    --color-r: 189
+  }
+
+  .color-r-be,
+  .color-r-BE,
+  .color-r-190 {
+    --color-r: 190
+  }
+
+  .color-r-bf,
+  .color-r-BF,
+  .color-r-191 {
+    --color-r: 191
+  }
+
+  .color-r-c0,
+  .color-r-C0,
+  .color-r-192 {
+    --color-r: 192
+  }
+
+  .color-r-c1,
+  .color-r-C1,
+  .color-r-193 {
+    --color-r: 193
+  }
+
+  .color-r-c2,
+  .color-r-C2,
+  .color-r-194 {
+    --color-r: 194
+  }
+
+  .color-r-c3,
+  .color-r-C3,
+  .color-r-195 {
+    --color-r: 195
+  }
+
+  .color-r-c4,
+  .color-r-C4,
+  .color-r-196 {
+    --color-r: 196
+  }
+
+  .color-r-c5,
+  .color-r-C5,
+  .color-r-197 {
+    --color-r: 197
+  }
+
+  .color-r-c6,
+  .color-r-C6,
+  .color-r-198 {
+    --color-r: 198
+  }
+
+  .color-r-c7,
+  .color-r-C7,
+  .color-r-199 {
+    --color-r: 199
+  }
+
+  .color-r-c8,
+  .color-r-C8,
+  .color-r-200 {
+    --color-r: 200
+  }
+
+  .color-r-c9,
+  .color-r-C9,
+  .color-r-201 {
+    --color-r: 201
+  }
+
+  .color-r-ca,
+  .color-r-CA,
+  .color-r-202 {
+    --color-r: 202
+  }
+
+  .color-r-cb,
+  .color-r-CB,
+  .color-r-203 {
+    --color-r: 203
+  }
+
+  .color-r-cc,
+  .color-r-CC,
+  .color-r-204 {
+    --color-r: 204
+  }
+
+  .color-r-cd,
+  .color-r-CD,
+  .color-r-205 {
+    --color-r: 205
+  }
+
+  .color-r-ce,
+  .color-r-CE,
+  .color-r-206 {
+    --color-r: 206
+  }
+
+  .color-r-cf,
+  .color-r-CF,
+  .color-r-207 {
+    --color-r: 207
+  }
+
+  .color-r-d0,
+  .color-r-D0,
+  .color-r-208 {
+    --color-r: 208
+  }
+
+  .color-r-d1,
+  .color-r-D1,
+  .color-r-209 {
+    --color-r: 209
+  }
+
+  .color-r-d2,
+  .color-r-D2,
+  .color-r-210 {
+    --color-r: 210
+  }
+
+  .color-r-d3,
+  .color-r-D3,
+  .color-r-211 {
+    --color-r: 211
+  }
+
+  .color-r-d4,
+  .color-r-D4,
+  .color-r-212 {
+    --color-r: 212
+  }
+
+  .color-r-d5,
+  .color-r-D5,
+  .color-r-213 {
+    --color-r: 213
+  }
+
+  .color-r-d6,
+  .color-r-D6,
+  .color-r-214 {
+    --color-r: 214
+  }
+
+  .color-r-d7,
+  .color-r-D7,
+  .color-r-215 {
+    --color-r: 215
+  }
+
+  .color-r-d8,
+  .color-r-D8,
+  .color-r-216 {
+    --color-r: 216
+  }
+
+  .color-r-d9,
+  .color-r-D9,
+  .color-r-217 {
+    --color-r: 217
+  }
+
+  .color-r-da,
+  .color-r-DA,
+  .color-r-218 {
+    --color-r: 218
+  }
+
+  .color-r-db,
+  .color-r-DB,
+  .color-r-219 {
+    --color-r: 219
+  }
+
+  .color-r-dc,
+  .color-r-DC,
+  .color-r-220 {
+    --color-r: 220
+  }
+
+  .color-r-dd,
+  .color-r-DD,
+  .color-r-221 {
+    --color-r: 221
+  }
+
+  .color-r-de,
+  .color-r-DE,
+  .color-r-222 {
+    --color-r: 222
+  }
+
+  .color-r-df,
+  .color-r-DF,
+  .color-r-223 {
+    --color-r: 223
+  }
+
+  .color-r-e0,
+  .color-r-E0,
+  .color-r-224 {
+    --color-r: 224
+  }
+
+  .color-r-e1,
+  .color-r-E1,
+  .color-r-225 {
+    --color-r: 225
+  }
+
+  .color-r-e2,
+  .color-r-E2,
+  .color-r-226 {
+    --color-r: 226
+  }
+
+  .color-r-e3,
+  .color-r-E3,
+  .color-r-227 {
+    --color-r: 227
+  }
+
+  .color-r-e4,
+  .color-r-E4,
+  .color-r-228 {
+    --color-r: 228
+  }
+
+  .color-r-e5,
+  .color-r-E5,
+  .color-r-229 {
+    --color-r: 229
+  }
+
+  .color-r-e6,
+  .color-r-E6,
+  .color-r-230 {
+    --color-r: 230
+  }
+
+  .color-r-e7,
+  .color-r-E7,
+  .color-r-231 {
+    --color-r: 231
+  }
+
+  .color-r-e8,
+  .color-r-E8,
+  .color-r-232 {
+    --color-r: 232
+  }
+
+  .color-r-e9,
+  .color-r-E9,
+  .color-r-233 {
+    --color-r: 233
+  }
+
+  .color-r-ea,
+  .color-r-EA,
+  .color-r-234 {
+    --color-r: 234
+  }
+
+  .color-r-eb,
+  .color-r-EB,
+  .color-r-235 {
+    --color-r: 235
+  }
+
+  .color-r-ec,
+  .color-r-EC,
+  .color-r-236 {
+    --color-r: 236
+  }
+
+  .color-r-ed,
+  .color-r-ED,
+  .color-r-237 {
+    --color-r: 237
+  }
+
+  .color-r-ee,
+  .color-r-EE,
+  .color-r-238 {
+    --color-r: 238
+  }
+
+  .color-r-ef,
+  .color-r-EF,
+  .color-r-239 {
+    --color-r: 239
+  }
+
+  .color-r-f0,
+  .color-r-F0,
+  .color-r-240 {
+    --color-r: 240
+  }
+
+  .color-r-f1,
+  .color-r-F1,
+  .color-r-241 {
+    --color-r: 241
+  }
+
+  .color-r-f2,
+  .color-r-F2,
+  .color-r-242 {
+    --color-r: 242
+  }
+
+  .color-r-f3,
+  .color-r-F3,
+  .color-r-243 {
+    --color-r: 243
+  }
+
+  .color-r-f4,
+  .color-r-F4,
+  .color-r-244 {
+    --color-r: 244
+  }
+
+  .color-r-f5,
+  .color-r-F5,
+  .color-r-245 {
+    --color-r: 245
+  }
+
+  .color-r-f6,
+  .color-r-F6,
+  .color-r-246 {
+    --color-r: 246
+  }
+
+  .color-r-f7,
+  .color-r-F7,
+  .color-r-247 {
+    --color-r: 247
+  }
+
+  .color-r-f8,
+  .color-r-F8,
+  .color-r-248 {
+    --color-r: 248
+  }
+
+  .color-r-f9,
+  .color-r-F9,
+  .color-r-249 {
+    --color-r: 249
+  }
+
+  .color-r-fa,
+  .color-r-FA,
+  .color-r-250 {
+    --color-r: 250
+  }
+
+  .color-r-fb,
+  .color-r-FB,
+  .color-r-251 {
+    --color-r: 251
+  }
+
+  .color-r-fc,
+  .color-r-FC,
+  .color-r-252 {
+    --color-r: 252
+  }
+
+  .color-r-fd,
+  .color-r-FD,
+  .color-r-253 {
+    --color-r: 253
+  }
+
+  .color-r-fe,
+  .color-r-FE,
+  .color-r-254 {
+    --color-r: 254
+  }
+
+  .color-r-ff,
+  .color-r-FF,
+  .color-r-255 {
+    --color-r: 255
+  }
+
+  /* ====================== Green 绿色通道 (0-255) ====================== */
+  .color-g-00,
+  .color-g-00,
+  .color-g-0 {
+    --color-g: 0
+  }
+
+  .color-g-01,
+  .color-g-01,
+  .color-g-1 {
+    --color-g: 1
+  }
+
+  .color-g-02,
+  .color-g-02,
+  .color-g-2 {
+    --color-g: 2
+  }
+
+  .color-g-03,
+  .color-g-03,
+  .color-g-3 {
+    --color-g: 3
+  }
+
+  .color-g-04,
+  .color-g-04,
+  .color-g-4 {
+    --color-g: 4
+  }
+
+  .color-g-05,
+  .color-g-05,
+  .color-g-5 {
+    --color-g: 5
+  }
+
+  .color-g-06,
+  .color-g-06,
+  .color-g-6 {
+    --color-g: 6
+  }
+
+  .color-g-07,
+  .color-g-07,
+  .color-g-7 {
+    --color-g: 7
+  }
+
+  .color-g-08,
+  .color-g-08,
+  .color-g-8 {
+    --color-g: 8
+  }
+
+  .color-g-09,
+  .color-g-09,
+  .color-g-9 {
+    --color-g: 9
+  }
+
+  .color-g-0a,
+  .color-g-0A,
+  .color-g-10 {
+    --color-g: 10
+  }
+
+  .color-g-0b,
+  .color-g-0B,
+  .color-g-11 {
+    --color-g: 11
+  }
+
+  .color-g-0c,
+  .color-g-0C,
+  .color-g-12 {
+    --color-g: 12
+  }
+
+  .color-g-0d,
+  .color-g-0D,
+  .color-g-13 {
+    --color-g: 13
+  }
+
+  .color-g-0e,
+  .color-g-0E,
+  .color-g-14 {
+    --color-g: 14
+  }
+
+  .color-g-0f,
+  .color-g-0F,
+  .color-g-15 {
+    --color-g: 15
+  }
+
+  .color-g-10,
+  .color-g-10,
+  .color-g-16 {
+    --color-g: 16
+  }
+
+  .color-g-11,
+  .color-g-11,
+  .color-g-17 {
+    --color-g: 17
+  }
+
+  .color-g-12,
+  .color-g-12,
+  .color-g-18 {
+    --color-g: 18
+  }
+
+  .color-g-13,
+  .color-g-13,
+  .color-g-19 {
+    --color-g: 19
+  }
+
+  .color-g-14,
+  .color-g-14,
+  .color-g-20 {
+    --color-g: 20
+  }
+
+  .color-g-15,
+  .color-g-15,
+  .color-g-21 {
+    --color-g: 21
+  }
+
+  .color-g-16,
+  .color-g-16,
+  .color-g-22 {
+    --color-g: 22
+  }
+
+  .color-g-17,
+  .color-g-17,
+  .color-g-23 {
+    --color-g: 23
+  }
+
+  .color-g-18,
+  .color-g-18,
+  .color-g-24 {
+    --color-g: 24
+  }
+
+  .color-g-19,
+  .color-g-19,
+  .color-g-25 {
+    --color-g: 25
+  }
+
+  .color-g-1a,
+  .color-g-1A,
+  .color-g-26 {
+    --color-g: 26
+  }
+
+  .color-g-1b,
+  .color-g-1B,
+  .color-g-27 {
+    --color-g: 27
+  }
+
+  .color-g-1c,
+  .color-g-1C,
+  .color-g-28 {
+    --color-g: 28
+  }
+
+  .color-g-1d,
+  .color-g-1D,
+  .color-g-29 {
+    --color-g: 29
+  }
+
+  .color-g-1e,
+  .color-g-1E,
+  .color-g-30 {
+    --color-g: 30
+  }
+
+  .color-g-1f,
+  .color-g-1F,
+  .color-g-31 {
+    --color-g: 31
+  }
+
+  .color-g-20,
+  .color-g-20,
+  .color-g-32 {
+    --color-g: 32
+  }
+
+  .color-g-21,
+  .color-g-21,
+  .color-g-33 {
+    --color-g: 33
+  }
+
+  .color-g-22,
+  .color-g-22,
+  .color-g-34 {
+    --color-g: 34
+  }
+
+  .color-g-23,
+  .color-g-23,
+  .color-g-35 {
+    --color-g: 35
+  }
+
+  .color-g-24,
+  .color-g-24,
+  .color-g-36 {
+    --color-g: 36
+  }
+
+  .color-g-25,
+  .color-g-25,
+  .color-g-37 {
+    --color-g: 37
+  }
+
+  .color-g-26,
+  .color-g-26,
+  .color-g-38 {
+    --color-g: 38
+  }
+
+  .color-g-27,
+  .color-g-27,
+  .color-g-39 {
+    --color-g: 39
+  }
+
+  .color-g-28,
+  .color-g-28,
+  .color-g-40 {
+    --color-g: 40
+  }
+
+  .color-g-29,
+  .color-g-29,
+  .color-g-41 {
+    --color-g: 41
+  }
+
+  .color-g-2a,
+  .color-g-2A,
+  .color-g-42 {
+    --color-g: 42
+  }
+
+  .color-g-2b,
+  .color-g-2B,
+  .color-g-43 {
+    --color-g: 43
+  }
+
+  .color-g-2c,
+  .color-g-2C,
+  .color-g-44 {
+    --color-g: 44
+  }
+
+  .color-g-2d,
+  .color-g-2D,
+  .color-g-45 {
+    --color-g: 45
+  }
+
+  .color-g-2e,
+  .color-g-2E,
+  .color-g-46 {
+    --color-g: 46
+  }
+
+  .color-g-2f,
+  .color-g-2F,
+  .color-g-47 {
+    --color-g: 47
+  }
+
+  .color-g-30,
+  .color-g-30,
+  .color-g-48 {
+    --color-g: 48
+  }
+
+  .color-g-31,
+  .color-g-31,
+  .color-g-49 {
+    --color-g: 49
+  }
+
+  .color-g-32,
+  .color-g-32,
+  .color-g-50 {
+    --color-g: 50
+  }
+
+  .color-g-33,
+  .color-g-33,
+  .color-g-51 {
+    --color-g: 51
+  }
+
+  .color-g-34,
+  .color-g-34,
+  .color-g-52 {
+    --color-g: 52
+  }
+
+  .color-g-35,
+  .color-g-35,
+  .color-g-53 {
+    --color-g: 53
+  }
+
+  .color-g-36,
+  .color-g-36,
+  .color-g-54 {
+    --color-g: 54
+  }
+
+  .color-g-37,
+  .color-g-37,
+  .color-g-55 {
+    --color-g: 55
+  }
+
+  .color-g-38,
+  .color-g-38,
+  .color-g-56 {
+    --color-g: 56
+  }
+
+  .color-g-39,
+  .color-g-39,
+  .color-g-57 {
+    --color-g: 57
+  }
+
+  .color-g-3a,
+  .color-g-3A,
+  .color-g-58 {
+    --color-g: 58
+  }
+
+  .color-g-3b,
+  .color-g-3B,
+  .color-g-59 {
+    --color-g: 59
+  }
+
+  .color-g-3c,
+  .color-g-3C,
+  .color-g-60 {
+    --color-g: 60
+  }
+
+  .color-g-3d,
+  .color-g-3D,
+  .color-g-61 {
+    --color-g: 61
+  }
+
+  .color-g-3e,
+  .color-g-3E,
+  .color-g-62 {
+    --color-g: 62
+  }
+
+  .color-g-3f,
+  .color-g-3F,
+  .color-g-63 {
+    --color-g: 63
+  }
+
+  .color-g-40,
+  .color-g-40,
+  .color-g-64 {
+    --color-g: 64
+  }
+
+  .color-g-41,
+  .color-g-41,
+  .color-g-65 {
+    --color-g: 65
+  }
+
+  .color-g-42,
+  .color-g-42,
+  .color-g-66 {
+    --color-g: 66
+  }
+
+  .color-g-43,
+  .color-g-43,
+  .color-g-67 {
+    --color-g: 67
+  }
+
+  .color-g-44,
+  .color-g-44,
+  .color-g-68 {
+    --color-g: 68
+  }
+
+  .color-g-45,
+  .color-g-45,
+  .color-g-69 {
+    --color-g: 69
+  }
+
+  .color-g-46,
+  .color-g-46,
+  .color-g-70 {
+    --color-g: 70
+  }
+
+  .color-g-47,
+  .color-g-47,
+  .color-g-71 {
+    --color-g: 71
+  }
+
+  .color-g-48,
+  .color-g-48,
+  .color-g-72 {
+    --color-g: 72
+  }
+
+  .color-g-49,
+  .color-g-49,
+  .color-g-73 {
+    --color-g: 73
+  }
+
+  .color-g-4a,
+  .color-g-4A,
+  .color-g-74 {
+    --color-g: 74
+  }
+
+  .color-g-4b,
+  .color-g-4B,
+  .color-g-75 {
+    --color-g: 75
+  }
+
+  .color-g-4c,
+  .color-g-4C,
+  .color-g-76 {
+    --color-g: 76
+  }
+
+  .color-g-4d,
+  .color-g-4D,
+  .color-g-77 {
+    --color-g: 77
+  }
+
+  .color-g-4e,
+  .color-g-4E,
+  .color-g-78 {
+    --color-g: 78
+  }
+
+  .color-g-4f,
+  .color-g-4F,
+  .color-g-79 {
+    --color-g: 79
+  }
+
+  .color-g-50,
+  .color-g-50,
+  .color-g-80 {
+    --color-g: 80
+  }
+
+  .color-g-51,
+  .color-g-51,
+  .color-g-81 {
+    --color-g: 81
+  }
+
+  .color-g-52,
+  .color-g-52,
+  .color-g-82 {
+    --color-g: 82
+  }
+
+  .color-g-53,
+  .color-g-53,
+  .color-g-83 {
+    --color-g: 83
+  }
+
+  .color-g-54,
+  .color-g-54,
+  .color-g-84 {
+    --color-g: 84
+  }
+
+  .color-g-55,
+  .color-g-55,
+  .color-g-85 {
+    --color-g: 85
+  }
+
+  .color-g-56,
+  .color-g-56,
+  .color-g-86 {
+    --color-g: 86
+  }
+
+  .color-g-57,
+  .color-g-57,
+  .color-g-87 {
+    --color-g: 87
+  }
+
+  .color-g-58,
+  .color-g-58,
+  .color-g-88 {
+    --color-g: 88
+  }
+
+  .color-g-59,
+  .color-g-59,
+  .color-g-89 {
+    --color-g: 89
+  }
+
+  .color-g-5a,
+  .color-g-5A,
+  .color-g-90 {
+    --color-g: 90
+  }
+
+  .color-g-5b,
+  .color-g-5B,
+  .color-g-91 {
+    --color-g: 91
+  }
+
+  .color-g-5c,
+  .color-g-5C,
+  .color-g-92 {
+    --color-g: 92
+  }
+
+  .color-g-5d,
+  .color-g-5D,
+  .color-g-93 {
+    --color-g: 93
+  }
+
+  .color-g-5e,
+  .color-g-5E,
+  .color-g-94 {
+    --color-g: 94
+  }
+
+  .color-g-5f,
+  .color-g-5F,
+  .color-g-95 {
+    --color-g: 95
+  }
+
+  .color-g-60,
+  .color-g-60,
+  .color-g-96 {
+    --color-g: 96
+  }
+
+  .color-g-61,
+  .color-g-61,
+  .color-g-97 {
+    --color-g: 97
+  }
+
+  .color-g-62,
+  .color-g-62,
+  .color-g-98 {
+    --color-g: 98
+  }
+
+  .color-g-63,
+  .color-g-63,
+  .color-g-99 {
+    --color-g: 99
+  }
+
+  .color-g-64,
+  .color-g-64,
+  .color-g-100 {
+    --color-g: 100
+  }
+
+  .color-g-65,
+  .color-g-65,
+  .color-g-101 {
+    --color-g: 101
+  }
+
+  .color-g-66,
+  .color-g-66,
+  .color-g-102 {
+    --color-g: 102
+  }
+
+  .color-g-67,
+  .color-g-67,
+  .color-g-103 {
+    --color-g: 103
+  }
+
+  .color-g-68,
+  .color-g-68,
+  .color-g-104 {
+    --color-g: 104
+  }
+
+  .color-g-69,
+  .color-g-69,
+  .color-g-105 {
+    --color-g: 105
+  }
+
+  .color-g-6a,
+  .color-g-6A,
+  .color-g-106 {
+    --color-g: 106
+  }
+
+  .color-g-6b,
+  .color-g-6B,
+  .color-g-107 {
+    --color-g: 107
+  }
+
+  .color-g-6c,
+  .color-g-6C,
+  .color-g-108 {
+    --color-g: 108
+  }
+
+  .color-g-6d,
+  .color-g-6D,
+  .color-g-109 {
+    --color-g: 109
+  }
+
+  .color-g-6e,
+  .color-g-6E,
+  .color-g-110 {
+    --color-g: 110
+  }
+
+  .color-g-6f,
+  .color-g-6F,
+  .color-g-111 {
+    --color-g: 111
+  }
+
+  .color-g-70,
+  .color-g-70,
+  .color-g-112 {
+    --color-g: 112
+  }
+
+  .color-g-71,
+  .color-g-71,
+  .color-g-113 {
+    --color-g: 113
+  }
+
+  .color-g-72,
+  .color-g-72,
+  .color-g-114 {
+    --color-g: 114
+  }
+
+  .color-g-73,
+  .color-g-73,
+  .color-g-115 {
+    --color-g: 115
+  }
+
+  .color-g-74,
+  .color-g-74,
+  .color-g-116 {
+    --color-g: 116
+  }
+
+  .color-g-75,
+  .color-g-75,
+  .color-g-117 {
+    --color-g: 117
+  }
+
+  .color-g-76,
+  .color-g-76,
+  .color-g-118 {
+    --color-g: 118
+  }
+
+  .color-g-77,
+  .color-g-77,
+  .color-g-119 {
+    --color-g: 119
+  }
+
+  .color-g-78,
+  .color-g-78,
+  .color-g-120 {
+    --color-g: 120
+  }
+
+  .color-g-79,
+  .color-g-79,
+  .color-g-121 {
+    --color-g: 121
+  }
+
+  .color-g-7a,
+  .color-g-7A,
+  .color-g-122 {
+    --color-g: 122
+  }
+
+  .color-g-7b,
+  .color-g-7B,
+  .color-g-123 {
+    --color-g: 123
+  }
+
+  .color-g-7c,
+  .color-g-7C,
+  .color-g-124 {
+    --color-g: 124
+  }
+
+  .color-g-7d,
+  .color-g-7D,
+  .color-g-125 {
+    --color-g: 125
+  }
+
+  .color-g-7e,
+  .color-g-7E,
+  .color-g-126 {
+    --color-g: 126
+  }
+
+  .color-g-7f,
+  .color-g-7F,
+  .color-g-127 {
+    --color-g: 127
+  }
+
+  .color-g-80,
+  .color-g-80,
+  .color-g-128 {
+    --color-g: 128
+  }
+
+  .color-g-81,
+  .color-g-81,
+  .color-g-129 {
+    --color-g: 129
+  }
+
+  .color-g-82,
+  .color-g-82,
+  .color-g-130 {
+    --color-g: 130
+  }
+
+  .color-g-83,
+  .color-g-83,
+  .color-g-131 {
+    --color-g: 131
+  }
+
+  .color-g-84,
+  .color-g-84,
+  .color-g-132 {
+    --color-g: 132
+  }
+
+  .color-g-85,
+  .color-g-85,
+  .color-g-133 {
+    --color-g: 133
+  }
+
+  .color-g-86,
+  .color-g-86,
+  .color-g-134 {
+    --color-g: 134
+  }
+
+  .color-g-87,
+  .color-g-87,
+  .color-g-135 {
+    --color-g: 135
+  }
+
+  .color-g-88,
+  .color-g-88,
+  .color-g-136 {
+    --color-g: 136
+  }
+
+  .color-g-89,
+  .color-g-89,
+  .color-g-137 {
+    --color-g: 137
+  }
+
+  .color-g-8a,
+  .color-g-8A,
+  .color-g-138 {
+    --color-g: 138
+  }
+
+  .color-g-8b,
+  .color-g-8B,
+  .color-g-139 {
+    --color-g: 139
+  }
+
+  .color-g-8c,
+  .color-g-8C,
+  .color-g-140 {
+    --color-g: 140
+  }
+
+  .color-g-8d,
+  .color-g-8D,
+  .color-g-141 {
+    --color-g: 141
+  }
+
+  .color-g-8e,
+  .color-g-8E,
+  .color-g-142 {
+    --color-g: 142
+  }
+
+  .color-g-8f,
+  .color-g-8F,
+  .color-g-143 {
+    --color-g: 143
+  }
+
+  .color-g-90,
+  .color-g-90,
+  .color-g-144 {
+    --color-g: 144
+  }
+
+  .color-g-91,
+  .color-g-91,
+  .color-g-145 {
+    --color-g: 145
+  }
+
+  .color-g-92,
+  .color-g-92,
+  .color-g-146 {
+    --color-g: 146
+  }
+
+  .color-g-93,
+  .color-g-93,
+  .color-g-147 {
+    --color-g: 147
+  }
+
+  .color-g-94,
+  .color-g-94,
+  .color-g-148 {
+    --color-g: 148
+  }
+
+  .color-g-95,
+  .color-g-95,
+  .color-g-149 {
+    --color-g: 149
+  }
+
+  .color-g-96,
+  .color-g-96,
+  .color-g-150 {
+    --color-g: 150
+  }
+
+  .color-g-97,
+  .color-g-97,
+  .color-g-151 {
+    --color-g: 151
+  }
+
+  .color-g-98,
+  .color-g-98,
+  .color-g-152 {
+    --color-g: 152
+  }
+
+  .color-g-99,
+  .color-g-99,
+  .color-g-153 {
+    --color-g: 153
+  }
+
+  .color-g-9a,
+  .color-g-9A,
+  .color-g-154 {
+    --color-g: 154
+  }
+
+  .color-g-9b,
+  .color-g-9B,
+  .color-g-155 {
+    --color-g: 155
+  }
+
+  .color-g-9c,
+  .color-g-9C,
+  .color-g-156 {
+    --color-g: 156
+  }
+
+  .color-g-9d,
+  .color-g-9D,
+  .color-g-157 {
+    --color-g: 157
+  }
+
+  .color-g-9e,
+  .color-g-9E,
+  .color-g-158 {
+    --color-g: 158
+  }
+
+  .color-g-9f,
+  .color-g-9F,
+  .color-g-159 {
+    --color-g: 159
+  }
+
+  .color-g-a0,
+  .color-g-A0,
+  .color-g-160 {
+    --color-g: 160
+  }
+
+  .color-g-a1,
+  .color-g-A1,
+  .color-g-161 {
+    --color-g: 161
+  }
+
+  .color-g-a2,
+  .color-g-A2,
+  .color-g-162 {
+    --color-g: 162
+  }
+
+  .color-g-a3,
+  .color-g-A3,
+  .color-g-163 {
+    --color-g: 163
+  }
+
+  .color-g-a4,
+  .color-g-A4,
+  .color-g-164 {
+    --color-g: 164
+  }
+
+  .color-g-a5,
+  .color-g-A5,
+  .color-g-165 {
+    --color-g: 165
+  }
+
+  .color-g-a6,
+  .color-g-A6,
+  .color-g-166 {
+    --color-g: 166
+  }
+
+  .color-g-a7,
+  .color-g-A7,
+  .color-g-167 {
+    --color-g: 167
+  }
+
+  .color-g-a8,
+  .color-g-A8,
+  .color-g-168 {
+    --color-g: 168
+  }
+
+  .color-g-a9,
+  .color-g-A9,
+  .color-g-169 {
+    --color-g: 169
+  }
+
+  .color-g-aa,
+  .color-g-AA,
+  .color-g-170 {
+    --color-g: 170
+  }
+
+  .color-g-ab,
+  .color-g-AB,
+  .color-g-171 {
+    --color-g: 171
+  }
+
+  .color-g-ac,
+  .color-g-AC,
+  .color-g-172 {
+    --color-g: 172
+  }
+
+  .color-g-ad,
+  .color-g-AD,
+  .color-g-173 {
+    --color-g: 173
+  }
+
+  .color-g-ae,
+  .color-g-AE,
+  .color-g-174 {
+    --color-g: 174
+  }
+
+  .color-g-af,
+  .color-g-AF,
+  .color-g-175 {
+    --color-g: 175
+  }
+
+  .color-g-b0,
+  .color-g-B0,
+  .color-g-176 {
+    --color-g: 176
+  }
+
+  .color-g-b1,
+  .color-g-B1,
+  .color-g-177 {
+    --color-g: 177
+  }
+
+  .color-g-b2,
+  .color-g-B2,
+  .color-g-178 {
+    --color-g: 178
+  }
+
+  .color-g-b3,
+  .color-g-B3,
+  .color-g-179 {
+    --color-g: 179
+  }
+
+  .color-g-b4,
+  .color-g-B4,
+  .color-g-180 {
+    --color-g: 180
+  }
+
+  .color-g-b5,
+  .color-g-B5,
+  .color-g-181 {
+    --color-g: 181
+  }
+
+  .color-g-b6,
+  .color-g-B6,
+  .color-g-182 {
+    --color-g: 182
+  }
+
+  .color-g-b7,
+  .color-g-B7,
+  .color-g-183 {
+    --color-g: 183
+  }
+
+  .color-g-b8,
+  .color-g-B8,
+  .color-g-184 {
+    --color-g: 184
+  }
+
+  .color-g-b9,
+  .color-g-B9,
+  .color-g-185 {
+    --color-g: 185
+  }
+
+  .color-g-ba,
+  .color-g-BA,
+  .color-g-186 {
+    --color-g: 186
+  }
+
+  .color-g-bb,
+  .color-g-BB,
+  .color-g-187 {
+    --color-g: 187
+  }
+
+  .color-g-bc,
+  .color-g-BC,
+  .color-g-188 {
+    --color-g: 188
+  }
+
+  .color-g-bd,
+  .color-g-BD,
+  .color-g-189 {
+    --color-g: 189
+  }
+
+  .color-g-be,
+  .color-g-BE,
+  .color-g-190 {
+    --color-g: 190
+  }
+
+  .color-g-bf,
+  .color-g-BF,
+  .color-g-191 {
+    --color-g: 191
+  }
+
+  .color-g-c0,
+  .color-g-C0,
+  .color-g-192 {
+    --color-g: 192
+  }
+
+  .color-g-c1,
+  .color-g-C1,
+  .color-g-193 {
+    --color-g: 193
+  }
+
+  .color-g-c2,
+  .color-g-C2,
+  .color-g-194 {
+    --color-g: 194
+  }
+
+  .color-g-c3,
+  .color-g-C3,
+  .color-g-195 {
+    --color-g: 195
+  }
+
+  .color-g-c4,
+  .color-g-C4,
+  .color-g-196 {
+    --color-g: 196
+  }
+
+  .color-g-c5,
+  .color-g-C5,
+  .color-g-197 {
+    --color-g: 197
+  }
+
+  .color-g-c6,
+  .color-g-C6,
+  .color-g-198 {
+    --color-g: 198
+  }
+
+  .color-g-c7,
+  .color-g-C7,
+  .color-g-199 {
+    --color-g: 199
+  }
+
+  .color-g-c8,
+  .color-g-C8,
+  .color-g-200 {
+    --color-g: 200
+  }
+
+  .color-g-c9,
+  .color-g-C9,
+  .color-g-201 {
+    --color-g: 201
+  }
+
+  .color-g-ca,
+  .color-g-CA,
+  .color-g-202 {
+    --color-g: 202
+  }
+
+  .color-g-cb,
+  .color-g-CB,
+  .color-g-203 {
+    --color-g: 203
+  }
+
+  .color-g-cc,
+  .color-g-CC,
+  .color-g-204 {
+    --color-g: 204
+  }
+
+  .color-g-cd,
+  .color-g-CD,
+  .color-g-205 {
+    --color-g: 205
+  }
+
+  .color-g-ce,
+  .color-g-CE,
+  .color-g-206 {
+    --color-g: 206
+  }
+
+  .color-g-cf,
+  .color-g-CF,
+  .color-g-207 {
+    --color-g: 207
+  }
+
+  .color-g-d0,
+  .color-g-D0,
+  .color-g-208 {
+    --color-g: 208
+  }
+
+  .color-g-d1,
+  .color-g-D1,
+  .color-g-209 {
+    --color-g: 209
+  }
+
+  .color-g-d2,
+  .color-g-D2,
+  .color-g-210 {
+    --color-g: 210
+  }
+
+  .color-g-d3,
+  .color-g-D3,
+  .color-g-211 {
+    --color-g: 211
+  }
+
+  .color-g-d4,
+  .color-g-D4,
+  .color-g-212 {
+    --color-g: 212
+  }
+
+  .color-g-d5,
+  .color-g-D5,
+  .color-g-213 {
+    --color-g: 213
+  }
+
+  .color-g-d6,
+  .color-g-D6,
+  .color-g-214 {
+    --color-g: 214
+  }
+
+  .color-g-d7,
+  .color-g-D7,
+  .color-g-215 {
+    --color-g: 215
+  }
+
+  .color-g-d8,
+  .color-g-D8,
+  .color-g-216 {
+    --color-g: 216
+  }
+
+  .color-g-d9,
+  .color-g-D9,
+  .color-g-217 {
+    --color-g: 217
+  }
+
+  .color-g-da,
+  .color-g-DA,
+  .color-g-218 {
+    --color-g: 218
+  }
+
+  .color-g-db,
+  .color-g-DB,
+  .color-g-219 {
+    --color-g: 219
+  }
+
+  .color-g-dc,
+  .color-g-DC,
+  .color-g-220 {
+    --color-g: 220
+  }
+
+  .color-g-dd,
+  .color-g-DD,
+  .color-g-221 {
+    --color-g: 221
+  }
+
+  .color-g-de,
+  .color-g-DE,
+  .color-g-222 {
+    --color-g: 222
+  }
+
+  .color-g-df,
+  .color-g-DF,
+  .color-g-223 {
+    --color-g: 223
+  }
+
+  .color-g-e0,
+  .color-g-E0,
+  .color-g-224 {
+    --color-g: 224
+  }
+
+  .color-g-e1,
+  .color-g-E1,
+  .color-g-225 {
+    --color-g: 225
+  }
+
+  .color-g-e2,
+  .color-g-E2,
+  .color-g-226 {
+    --color-g: 226
+  }
+
+  .color-g-e3,
+  .color-g-E3,
+  .color-g-227 {
+    --color-g: 227
+  }
+
+  .color-g-e4,
+  .color-g-E4,
+  .color-g-228 {
+    --color-g: 228
+  }
+
+  .color-g-e5,
+  .color-g-E5,
+  .color-g-229 {
+    --color-g: 229
+  }
+
+  .color-g-e6,
+  .color-g-E6,
+  .color-g-230 {
+    --color-g: 230
+  }
+
+  .color-g-e7,
+  .color-g-E7,
+  .color-g-231 {
+    --color-g: 231
+  }
+
+  .color-g-e8,
+  .color-g-E8,
+  .color-g-232 {
+    --color-g: 232
+  }
+
+  .color-g-e9,
+  .color-g-E9,
+  .color-g-233 {
+    --color-g: 233
+  }
+
+  .color-g-ea,
+  .color-g-EA,
+  .color-g-234 {
+    --color-g: 234
+  }
+
+  .color-g-eb,
+  .color-g-EB,
+  .color-g-235 {
+    --color-g: 235
+  }
+
+  .color-g-ec,
+  .color-g-EC,
+  .color-g-236 {
+    --color-g: 236
+  }
+
+  .color-g-ed,
+  .color-g-ED,
+  .color-g-237 {
+    --color-g: 237
+  }
+
+  .color-g-ee,
+  .color-g-EE,
+  .color-g-238 {
+    --color-g: 238
+  }
+
+  .color-g-ef,
+  .color-g-EF,
+  .color-g-239 {
+    --color-g: 239
+  }
+
+  .color-g-f0,
+  .color-g-F0,
+  .color-g-240 {
+    --color-g: 240
+  }
+
+  .color-g-f1,
+  .color-g-F1,
+  .color-g-241 {
+    --color-g: 241
+  }
+
+  .color-g-f2,
+  .color-g-F2,
+  .color-g-242 {
+    --color-g: 242
+  }
+
+  .color-g-f3,
+  .color-g-F3,
+  .color-g-243 {
+    --color-g: 243
+  }
+
+  .color-g-f4,
+  .color-g-F4,
+  .color-g-244 {
+    --color-g: 244
+  }
+
+  .color-g-f5,
+  .color-g-F5,
+  .color-g-245 {
+    --color-g: 245
+  }
+
+  .color-g-f6,
+  .color-g-F6,
+  .color-g-246 {
+    --color-g: 246
+  }
+
+  .color-g-f7,
+  .color-g-F7,
+  .color-g-247 {
+    --color-g: 247
+  }
+
+  .color-g-f8,
+  .color-g-F8,
+  .color-g-248 {
+    --color-g: 248
+  }
+
+  .color-g-f9,
+  .color-g-F9,
+  .color-g-249 {
+    --color-g: 249
+  }
+
+  .color-g-fa,
+  .color-g-FA,
+  .color-g-250 {
+    --color-g: 250
+  }
+
+  .color-g-fb,
+  .color-g-FB,
+  .color-g-251 {
+    --color-g: 251
+  }
+
+  .color-g-fc,
+  .color-g-FC,
+  .color-g-252 {
+    --color-g: 252
+  }
+
+  .color-g-fd,
+  .color-g-FD,
+  .color-g-253 {
+    --color-g: 253
+  }
+
+  .color-g-fe,
+  .color-g-FE,
+  .color-g-254 {
+    --color-g: 254
+  }
+
+  .color-g-ff,
+  .color-g-FF,
+  .color-g-255 {
+    --color-g: 255
+  }
+
+  /* ====================== Blue 蓝色通道 (0-255) ====================== */
+  .color-b-00,
+  .color-b-00,
+  .color-b-0 {
+    --color-b: 0
+  }
+
+  .color-b-01,
+  .color-b-01,
+  .color-b-1 {
+    --color-b: 1
+  }
+
+  .color-b-02,
+  .color-b-02,
+  .color-b-2 {
+    --color-b: 2
+  }
+
+  .color-b-03,
+  .color-b-03,
+  .color-b-3 {
+    --color-b: 3
+  }
+
+  .color-b-04,
+  .color-b-04,
+  .color-b-4 {
+    --color-b: 4
+  }
+
+  .color-b-05,
+  .color-b-05,
+  .color-b-5 {
+    --color-b: 5
+  }
+
+  .color-b-06,
+  .color-b-06,
+  .color-b-6 {
+    --color-b: 6
+  }
+
+  .color-b-07,
+  .color-b-07,
+  .color-b-7 {
+    --color-b: 7
+  }
+
+  .color-b-08,
+  .color-b-08,
+  .color-b-8 {
+    --color-b: 8
+  }
+
+  .color-b-09,
+  .color-b-09,
+  .color-b-9 {
+    --color-b: 9
+  }
+
+  .color-b-0a,
+  .color-b-0A,
+  .color-b-10 {
+    --color-b: 10
+  }
+
+  .color-b-0b,
+  .color-b-0B,
+  .color-b-11 {
+    --color-b: 11
+  }
+
+  .color-b-0c,
+  .color-b-0C,
+  .color-b-12 {
+    --color-b: 12
+  }
+
+  .color-b-0d,
+  .color-b-0D,
+  .color-b-13 {
+    --color-b: 13
+  }
+
+  .color-b-0e,
+  .color-b-0E,
+  .color-b-14 {
+    --color-b: 14
+  }
+
+  .color-b-0f,
+  .color-b-0F,
+  .color-b-15 {
+    --color-b: 15
+  }
+
+  .color-b-10,
+  .color-b-10,
+  .color-b-16 {
+    --color-b: 16
+  }
+
+  .color-b-11,
+  .color-b-11,
+  .color-b-17 {
+    --color-b: 17
+  }
+
+  .color-b-12,
+  .color-b-12,
+  .color-b-18 {
+    --color-b: 18
+  }
+
+  .color-b-13,
+  .color-b-13,
+  .color-b-19 {
+    --color-b: 19
+  }
+
+  .color-b-14,
+  .color-b-14,
+  .color-b-20 {
+    --color-b: 20
+  }
+
+  .color-b-15,
+  .color-b-15,
+  .color-b-21 {
+    --color-b: 21
+  }
+
+  .color-b-16,
+  .color-b-16,
+  .color-b-22 {
+    --color-b: 22
+  }
+
+  .color-b-17,
+  .color-b-17,
+  .color-b-23 {
+    --color-b: 23
+  }
+
+  .color-b-18,
+  .color-b-18,
+  .color-b-24 {
+    --color-b: 24
+  }
+
+  .color-b-19,
+  .color-b-19,
+  .color-b-25 {
+    --color-b: 25
+  }
+
+  .color-b-1a,
+  .color-b-1A,
+  .color-b-26 {
+    --color-b: 26
+  }
+
+  .color-b-1b,
+  .color-b-1B,
+  .color-b-27 {
+    --color-b: 27
+  }
+
+  .color-b-1c,
+  .color-b-1C,
+  .color-b-28 {
+    --color-b: 28
+  }
+
+  .color-b-1d,
+  .color-b-1D,
+  .color-b-29 {
+    --color-b: 29
+  }
+
+  .color-b-1e,
+  .color-b-1E,
+  .color-b-30 {
+    --color-b: 30
+  }
+
+  .color-b-1f,
+  .color-b-1F,
+  .color-b-31 {
+    --color-b: 31
+  }
+
+  .color-b-20,
+  .color-b-20,
+  .color-b-32 {
+    --color-b: 32
+  }
+
+  .color-b-21,
+  .color-b-21,
+  .color-b-33 {
+    --color-b: 33
+  }
+
+  .color-b-22,
+  .color-b-22,
+  .color-b-34 {
+    --color-b: 34
+  }
+
+  .color-b-23,
+  .color-b-23,
+  .color-b-35 {
+    --color-b: 35
+  }
+
+  .color-b-24,
+  .color-b-24,
+  .color-b-36 {
+    --color-b: 36
+  }
+
+  .color-b-25,
+  .color-b-25,
+  .color-b-37 {
+    --color-b: 37
+  }
+
+  .color-b-26,
+  .color-b-26,
+  .color-b-38 {
+    --color-b: 38
+  }
+
+  .color-b-27,
+  .color-b-27,
+  .color-b-39 {
+    --color-b: 39
+  }
+
+  .color-b-28,
+  .color-b-28,
+  .color-b-40 {
+    --color-b: 40
+  }
+
+  .color-b-29,
+  .color-b-29,
+  .color-b-41 {
+    --color-b: 41
+  }
+
+  .color-b-2a,
+  .color-b-2A,
+  .color-b-42 {
+    --color-b: 42
+  }
+
+  .color-b-2b,
+  .color-b-2B,
+  .color-b-43 {
+    --color-b: 43
+  }
+
+  .color-b-2c,
+  .color-b-2C,
+  .color-b-44 {
+    --color-b: 44
+  }
+
+  .color-b-2d,
+  .color-b-2D,
+  .color-b-45 {
+    --color-b: 45
+  }
+
+  .color-b-2e,
+  .color-b-2E,
+  .color-b-46 {
+    --color-b: 46
+  }
+
+  .color-b-2f,
+  .color-b-2F,
+  .color-b-47 {
+    --color-b: 47
+  }
+
+  .color-b-30,
+  .color-b-30,
+  .color-b-48 {
+    --color-b: 48
+  }
+
+  .color-b-31,
+  .color-b-31,
+  .color-b-49 {
+    --color-b: 49
+  }
+
+  .color-b-32,
+  .color-b-32,
+  .color-b-50 {
+    --color-b: 50
+  }
+
+  .color-b-33,
+  .color-b-33,
+  .color-b-51 {
+    --color-b: 51
+  }
+
+  .color-b-34,
+  .color-b-34,
+  .color-b-52 {
+    --color-b: 52
+  }
+
+  .color-b-35,
+  .color-b-35,
+  .color-b-53 {
+    --color-b: 53
+  }
+
+  .color-b-36,
+  .color-b-36,
+  .color-b-54 {
+    --color-b: 54
+  }
+
+  .color-b-37,
+  .color-b-37,
+  .color-b-55 {
+    --color-b: 55
+  }
+
+  .color-b-38,
+  .color-b-38,
+  .color-b-56 {
+    --color-b: 56
+  }
+
+  .color-b-39,
+  .color-b-39,
+  .color-b-57 {
+    --color-b: 57
+  }
+
+  .color-b-3a,
+  .color-b-3A,
+  .color-b-58 {
+    --color-b: 58
+  }
+
+  .color-b-3b,
+  .color-b-3B,
+  .color-b-59 {
+    --color-b: 59
+  }
+
+  .color-b-3c,
+  .color-b-3C,
+  .color-b-60 {
+    --color-b: 60
+  }
+
+  .color-b-3d,
+  .color-b-3D,
+  .color-b-61 {
+    --color-b: 61
+  }
+
+  .color-b-3e,
+  .color-b-3E,
+  .color-b-62 {
+    --color-b: 62
+  }
+
+  .color-b-3f,
+  .color-b-3F,
+  .color-b-63 {
+    --color-b: 63
+  }
+
+  .color-b-40,
+  .color-b-40,
+  .color-b-64 {
+    --color-b: 64
+  }
+
+  .color-b-41,
+  .color-b-41,
+  .color-b-65 {
+    --color-b: 65
+  }
+
+  .color-b-42,
+  .color-b-42,
+  .color-b-66 {
+    --color-b: 66
+  }
+
+  .color-b-43,
+  .color-b-43,
+  .color-b-67 {
+    --color-b: 67
+  }
+
+  .color-b-44,
+  .color-b-44,
+  .color-b-68 {
+    --color-b: 68
+  }
+
+  .color-b-45,
+  .color-b-45,
+  .color-b-69 {
+    --color-b: 69
+  }
+
+  .color-b-46,
+  .color-b-46,
+  .color-b-70 {
+    --color-b: 70
+  }
+
+  .color-b-47,
+  .color-b-47,
+  .color-b-71 {
+    --color-b: 71
+  }
+
+  .color-b-48,
+  .color-b-48,
+  .color-b-72 {
+    --color-b: 72
+  }
+
+  .color-b-49,
+  .color-b-49,
+  .color-b-73 {
+    --color-b: 73
+  }
+
+  .color-b-4a,
+  .color-b-4A,
+  .color-b-74 {
+    --color-b: 74
+  }
+
+  .color-b-4b,
+  .color-b-4B,
+  .color-b-75 {
+    --color-b: 75
+  }
+
+  .color-b-4c,
+  .color-b-4C,
+  .color-b-76 {
+    --color-b: 76
+  }
+
+  .color-b-4d,
+  .color-b-4D,
+  .color-b-77 {
+    --color-b: 77
+  }
+
+  .color-b-4e,
+  .color-b-4E,
+  .color-b-78 {
+    --color-b: 78
+  }
+
+  .color-b-4f,
+  .color-b-4F,
+  .color-b-79 {
+    --color-b: 79
+  }
+
+  .color-b-50,
+  .color-b-50,
+  .color-b-80 {
+    --color-b: 80
+  }
+
+  .color-b-51,
+  .color-b-51,
+  .color-b-81 {
+    --color-b: 81
+  }
+
+  .color-b-52,
+  .color-b-52,
+  .color-b-82 {
+    --color-b: 82
+  }
+
+  .color-b-53,
+  .color-b-53,
+  .color-b-83 {
+    --color-b: 83
+  }
+
+  .color-b-54,
+  .color-b-54,
+  .color-b-84 {
+    --color-b: 84
+  }
+
+  .color-b-55,
+  .color-b-55,
+  .color-b-85 {
+    --color-b: 85
+  }
+
+  .color-b-56,
+  .color-b-56,
+  .color-b-86 {
+    --color-b: 86
+  }
+
+  .color-b-57,
+  .color-b-57,
+  .color-b-87 {
+    --color-b: 87
+  }
+
+  .color-b-58,
+  .color-b-58,
+  .color-b-88 {
+    --color-b: 88
+  }
+
+  .color-b-59,
+  .color-b-59,
+  .color-b-89 {
+    --color-b: 89
+  }
+
+  .color-b-5a,
+  .color-b-5A,
+  .color-b-90 {
+    --color-b: 90
+  }
+
+  .color-b-5b,
+  .color-b-5B,
+  .color-b-91 {
+    --color-b: 91
+  }
+
+  .color-b-5c,
+  .color-b-5C,
+  .color-b-92 {
+    --color-b: 92
+  }
+
+  .color-b-5d,
+  .color-b-5D,
+  .color-b-93 {
+    --color-b: 93
+  }
+
+  .color-b-5e,
+  .color-b-5E,
+  .color-b-94 {
+    --color-b: 94
+  }
+
+  .color-b-5f,
+  .color-b-5F,
+  .color-b-95 {
+    --color-b: 95
+  }
+
+  .color-b-60,
+  .color-b-60,
+  .color-b-96 {
+    --color-b: 96
+  }
+
+  .color-b-61,
+  .color-b-61,
+  .color-b-97 {
+    --color-b: 97
+  }
+
+  .color-b-62,
+  .color-b-62,
+  .color-b-98 {
+    --color-b: 98
+  }
+
+  .color-b-63,
+  .color-b-63,
+  .color-b-99 {
+    --color-b: 99
+  }
+
+  .color-b-64,
+  .color-b-64,
+  .color-b-100 {
+    --color-b: 100
+  }
+
+  .color-b-65,
+  .color-b-65,
+  .color-b-101 {
+    --color-b: 101
+  }
+
+  .color-b-66,
+  .color-b-66,
+  .color-b-102 {
+    --color-b: 102
+  }
+
+  .color-b-67,
+  .color-b-67,
+  .color-b-103 {
+    --color-b: 103
+  }
+
+  .color-b-68,
+  .color-b-68,
+  .color-b-104 {
+    --color-b: 104
+  }
+
+  .color-b-69,
+  .color-b-69,
+  .color-b-105 {
+    --color-b: 105
+  }
+
+  .color-b-6a,
+  .color-b-6A,
+  .color-b-106 {
+    --color-b: 106
+  }
+
+  .color-b-6b,
+  .color-b-6B,
+  .color-b-107 {
+    --color-b: 107
+  }
+
+  .color-b-6c,
+  .color-b-6C,
+  .color-b-108 {
+    --color-b: 108
+  }
+
+  .color-b-6d,
+  .color-b-6D,
+  .color-b-109 {
+    --color-b: 109
+  }
+
+  .color-b-6e,
+  .color-b-6E,
+  .color-b-110 {
+    --color-b: 110
+  }
+
+  .color-b-6f,
+  .color-b-6F,
+  .color-b-111 {
+    --color-b: 111
+  }
+
+  .color-b-70,
+  .color-b-70,
+  .color-b-112 {
+    --color-b: 112
+  }
+
+  .color-b-71,
+  .color-b-71,
+  .color-b-113 {
+    --color-b: 113
+  }
+
+  .color-b-72,
+  .color-b-72,
+  .color-b-114 {
+    --color-b: 114
+  }
+
+  .color-b-73,
+  .color-b-73,
+  .color-b-115 {
+    --color-b: 115
+  }
+
+  .color-b-74,
+  .color-b-74,
+  .color-b-116 {
+    --color-b: 116
+  }
+
+  .color-b-75,
+  .color-b-75,
+  .color-b-117 {
+    --color-b: 117
+  }
+
+  .color-b-76,
+  .color-b-76,
+  .color-b-118 {
+    --color-b: 118
+  }
+
+  .color-b-77,
+  .color-b-77,
+  .color-b-119 {
+    --color-b: 119
+  }
+
+  .color-b-78,
+  .color-b-78,
+  .color-b-120 {
+    --color-b: 120
+  }
+
+  .color-b-79,
+  .color-b-79,
+  .color-b-121 {
+    --color-b: 121
+  }
+
+  .color-b-7a,
+  .color-b-7A,
+  .color-b-122 {
+    --color-b: 122
+  }
+
+  .color-b-7b,
+  .color-b-7B,
+  .color-b-123 {
+    --color-b: 123
+  }
+
+  .color-b-7c,
+  .color-b-7C,
+  .color-b-124 {
+    --color-b: 124
+  }
+
+  .color-b-7d,
+  .color-b-7D,
+  .color-b-125 {
+    --color-b: 125
+  }
+
+  .color-b-7e,
+  .color-b-7E,
+  .color-b-126 {
+    --color-b: 126
+  }
+
+  .color-b-7f,
+  .color-b-7F,
+  .color-b-127 {
+    --color-b: 127
+  }
+
+  .color-b-80,
+  .color-b-80,
+  .color-b-128 {
+    --color-b: 128
+  }
+
+  .color-b-81,
+  .color-b-81,
+  .color-b-129 {
+    --color-b: 129
+  }
+
+  .color-b-82,
+  .color-b-82,
+  .color-b-130 {
+    --color-b: 130
+  }
+
+  .color-b-83,
+  .color-b-83,
+  .color-b-131 {
+    --color-b: 131
+  }
+
+  .color-b-84,
+  .color-b-84,
+  .color-b-132 {
+    --color-b: 132
+  }
+
+  .color-b-85,
+  .color-b-85,
+  .color-b-133 {
+    --color-b: 133
+  }
+
+  .color-b-86,
+  .color-b-86,
+  .color-b-134 {
+    --color-b: 134
+  }
+
+  .color-b-87,
+  .color-b-87,
+  .color-b-135 {
+    --color-b: 135
+  }
+
+  .color-b-88,
+  .color-b-88,
+  .color-b-136 {
+    --color-b: 136
+  }
+
+  .color-b-89,
+  .color-b-89,
+  .color-b-137 {
+    --color-b: 137
+  }
+
+  .color-b-8a,
+  .color-b-8A,
+  .color-b-138 {
+    --color-b: 138
+  }
+
+  .color-b-8b,
+  .color-b-8B,
+  .color-b-139 {
+    --color-b: 139
+  }
+
+  .color-b-8c,
+  .color-b-8C,
+  .color-b-140 {
+    --color-b: 140
+  }
+
+  .color-b-8d,
+  .color-b-8D,
+  .color-b-141 {
+    --color-b: 141
+  }
+
+  .color-b-8e,
+  .color-b-8E,
+  .color-b-142 {
+    --color-b: 142
+  }
+
+  .color-b-8f,
+  .color-b-8F,
+  .color-b-143 {
+    --color-b: 143
+  }
+
+  .color-b-90,
+  .color-b-90,
+  .color-b-144 {
+    --color-b: 144
+  }
+
+  .color-b-91,
+  .color-b-91,
+  .color-b-145 {
+    --color-b: 145
+  }
+
+  .color-b-92,
+  .color-b-92,
+  .color-b-146 {
+    --color-b: 146
+  }
+
+  .color-b-93,
+  .color-b-93,
+  .color-b-147 {
+    --color-b: 147
+  }
+
+  .color-b-94,
+  .color-b-94,
+  .color-b-148 {
+    --color-b: 148
+  }
+
+  .color-b-95,
+  .color-b-95,
+  .color-b-149 {
+    --color-b: 149
+  }
+
+  .color-b-96,
+  .color-b-96,
+  .color-b-150 {
+    --color-b: 150
+  }
+
+  .color-b-97,
+  .color-b-97,
+  .color-b-151 {
+    --color-b: 151
+  }
+
+  .color-b-98,
+  .color-b-98,
+  .color-b-152 {
+    --color-b: 152
+  }
+
+  .color-b-99,
+  .color-b-99,
+  .color-b-153 {
+    --color-b: 153
+  }
+
+  .color-b-9a,
+  .color-b-9A,
+  .color-b-154 {
+    --color-b: 154
+  }
+
+  .color-b-9b,
+  .color-b-9B,
+  .color-b-155 {
+    --color-b: 155
+  }
+
+  .color-b-9c,
+  .color-b-9C,
+  .color-b-156 {
+    --color-b: 156
+  }
+
+  .color-b-9d,
+  .color-b-9D,
+  .color-b-157 {
+    --color-b: 157
+  }
+
+  .color-b-9e,
+  .color-b-9E,
+  .color-b-158 {
+    --color-b: 158
+  }
+
+  .color-b-9f,
+  .color-b-9F,
+  .color-b-159 {
+    --color-b: 159
+  }
+
+  .color-b-a0,
+  .color-b-A0,
+  .color-b-160 {
+    --color-b: 160
+  }
+
+  .color-b-a1,
+  .color-b-A1,
+  .color-b-161 {
+    --color-b: 161
+  }
+
+  .color-b-a2,
+  .color-b-A2,
+  .color-b-162 {
+    --color-b: 162
+  }
+
+  .color-b-a3,
+  .color-b-A3,
+  .color-b-163 {
+    --color-b: 163
+  }
+
+  .color-b-a4,
+  .color-b-A4,
+  .color-b-164 {
+    --color-b: 164
+  }
+
+  .color-b-a5,
+  .color-b-A5,
+  .color-b-165 {
+    --color-b: 165
+  }
+
+  .color-b-a6,
+  .color-b-A6,
+  .color-b-166 {
+    --color-b: 166
+  }
+
+  .color-b-a7,
+  .color-b-A7,
+  .color-b-167 {
+    --color-b: 167
+  }
+
+  .color-b-a8,
+  .color-b-A8,
+  .color-b-168 {
+    --color-b: 168
+  }
+
+  .color-b-a9,
+  .color-b-A9,
+  .color-b-169 {
+    --color-b: 169
+  }
+
+  .color-b-aa,
+  .color-b-AA,
+  .color-b-170 {
+    --color-b: 170
+  }
+
+  .color-b-ab,
+  .color-b-AB,
+  .color-b-171 {
+    --color-b: 171
+  }
+
+  .color-b-ac,
+  .color-b-AC,
+  .color-b-172 {
+    --color-b: 172
+  }
+
+  .color-b-ad,
+  .color-b-AD,
+  .color-b-173 {
+    --color-b: 173
+  }
+
+  .color-b-ae,
+  .color-b-AE,
+  .color-b-174 {
+    --color-b: 174
+  }
+
+  .color-b-af,
+  .color-b-AF,
+  .color-b-175 {
+    --color-b: 175
+  }
+
+  .color-b-b0,
+  .color-b-B0,
+  .color-b-176 {
+    --color-b: 176
+  }
+
+  .color-b-b1,
+  .color-b-B1,
+  .color-b-177 {
+    --color-b: 177
+  }
+
+  .color-b-b2,
+  .color-b-B2,
+  .color-b-178 {
+    --color-b: 178
+  }
+
+  .color-b-b3,
+  .color-b-B3,
+  .color-b-179 {
+    --color-b: 179
+  }
+
+  .color-b-b4,
+  .color-b-B4,
+  .color-b-180 {
+    --color-b: 180
+  }
+
+  .color-b-b5,
+  .color-b-B5,
+  .color-b-181 {
+    --color-b: 181
+  }
+
+  .color-b-b6,
+  .color-b-B6,
+  .color-b-182 {
+    --color-b: 182
+  }
+
+  .color-b-b7,
+  .color-b-B7,
+  .color-b-183 {
+    --color-b: 183
+  }
+
+  .color-b-b8,
+  .color-b-B8,
+  .color-b-184 {
+    --color-b: 184
+  }
+
+  .color-b-b9,
+  .color-b-B9,
+  .color-b-185 {
+    --color-b: 185
+  }
+
+  .color-b-ba,
+  .color-b-BA,
+  .color-b-186 {
+    --color-b: 186
+  }
+
+  .color-b-bb,
+  .color-b-BB,
+  .color-b-187 {
+    --color-b: 187
+  }
+
+  .color-b-bc,
+  .color-b-BC,
+  .color-b-188 {
+    --color-b: 188
+  }
+
+  .color-b-bd,
+  .color-b-BD,
+  .color-b-189 {
+    --color-b: 189
+  }
+
+  .color-b-be,
+  .color-b-BE,
+  .color-b-190 {
+    --color-b: 190
+  }
+
+  .color-b-bf,
+  .color-b-BF,
+  .color-b-191 {
+    --color-b: 191
+  }
+
+  .color-b-c0,
+  .color-b-C0,
+  .color-b-192 {
+    --color-b: 192
+  }
+
+  .color-b-c1,
+  .color-b-C1,
+  .color-b-193 {
+    --color-b: 193
+  }
+
+  .color-b-c2,
+  .color-b-C2,
+  .color-b-194 {
+    --color-b: 194
+  }
+
+  .color-b-c3,
+  .color-b-C3,
+  .color-b-195 {
+    --color-b: 195
+  }
+
+  .color-b-c4,
+  .color-b-C4,
+  .color-b-196 {
+    --color-b: 196
+  }
+
+  .color-b-c5,
+  .color-b-C5,
+  .color-b-197 {
+    --color-b: 197
+  }
+
+  .color-b-c6,
+  .color-b-C6,
+  .color-b-198 {
+    --color-b: 198
+  }
+
+  .color-b-c7,
+  .color-b-C7,
+  .color-b-199 {
+    --color-b: 199
+  }
+
+  .color-b-c8,
+  .color-b-C8,
+  .color-b-200 {
+    --color-b: 200
+  }
+
+  .color-b-c9,
+  .color-b-C9,
+  .color-b-201 {
+    --color-b: 201
+  }
+
+  .color-b-ca,
+  .color-b-CA,
+  .color-b-202 {
+    --color-b: 202
+  }
+
+  .color-b-cb,
+  .color-b-CB,
+  .color-b-203 {
+    --color-b: 203
+  }
+
+  .color-b-cc,
+  .color-b-CC,
+  .color-b-204 {
+    --color-b: 204
+  }
+
+  .color-b-cd,
+  .color-b-CD,
+  .color-b-205 {
+    --color-b: 205
+  }
+
+  .color-b-ce,
+  .color-b-CE,
+  .color-b-206 {
+    --color-b: 206
+  }
+
+  .color-b-cf,
+  .color-b-CF,
+  .color-b-207 {
+    --color-b: 207
+  }
+
+  .color-b-d0,
+  .color-b-D0,
+  .color-b-208 {
+    --color-b: 208
+  }
+
+  .color-b-d1,
+  .color-b-D1,
+  .color-b-209 {
+    --color-b: 209
+  }
+
+  .color-b-d2,
+  .color-b-D2,
+  .color-b-210 {
+    --color-b: 210
+  }
+
+  .color-b-d3,
+  .color-b-D3,
+  .color-b-211 {
+    --color-b: 211
+  }
+
+  .color-b-d4,
+  .color-b-D4,
+  .color-b-212 {
+    --color-b: 212
+  }
+
+  .color-b-d5,
+  .color-b-D5,
+  .color-b-213 {
+    --color-b: 213
+  }
+
+  .color-b-d6,
+  .color-b-D6,
+  .color-b-214 {
+    --color-b: 214
+  }
+
+  .color-b-d7,
+  .color-b-D7,
+  .color-b-215 {
+    --color-b: 215
+  }
+
+  .color-b-d8,
+  .color-b-D8,
+  .color-b-216 {
+    --color-b: 216
+  }
+
+  .color-b-d9,
+  .color-b-D9,
+  .color-b-217 {
+    --color-b: 217
+  }
+
+  .color-b-da,
+  .color-b-DA,
+  .color-b-218 {
+    --color-b: 218
+  }
+
+  .color-b-db,
+  .color-b-DB,
+  .color-b-219 {
+    --color-b: 219
+  }
+
+  .color-b-dc,
+  .color-b-DC,
+  .color-b-220 {
+    --color-b: 220
+  }
+
+  .color-b-dd,
+  .color-b-DD,
+  .color-b-221 {
+    --color-b: 221
+  }
+
+  .color-b-de,
+  .color-b-DE,
+  .color-b-222 {
+    --color-b: 222
+  }
+
+  .color-b-df,
+  .color-b-DF,
+  .color-b-223 {
+    --color-b: 223
+  }
+
+  .color-b-e0,
+  .color-b-E0,
+  .color-b-224 {
+    --color-b: 224
+  }
+
+  .color-b-e1,
+  .color-b-E1,
+  .color-b-225 {
+    --color-b: 225
+  }
+
+  .color-b-e2,
+  .color-b-E2,
+  .color-b-226 {
+    --color-b: 226
+  }
+
+  .color-b-e3,
+  .color-b-E3,
+  .color-b-227 {
+    --color-b: 227
+  }
+
+  .color-b-e4,
+  .color-b-E4,
+  .color-b-228 {
+    --color-b: 228
+  }
+
+  .color-b-e5,
+  .color-b-E5,
+  .color-b-229 {
+    --color-b: 229
+  }
+
+  .color-b-e6,
+  .color-b-E6,
+  .color-b-230 {
+    --color-b: 230
+  }
+
+  .color-b-e7,
+  .color-b-E7,
+  .color-b-231 {
+    --color-b: 231
+  }
+
+  .color-b-e8,
+  .color-b-E8,
+  .color-b-232 {
+    --color-b: 232
+  }
+
+  .color-b-e9,
+  .color-b-E9,
+  .color-b-233 {
+    --color-b: 233
+  }
+
+  .color-b-ea,
+  .color-b-EA,
+  .color-b-234 {
+    --color-b: 234
+  }
+
+  .color-b-eb,
+  .color-b-EB,
+  .color-b-235 {
+    --color-b: 235
+  }
+
+  .color-b-ec,
+  .color-b-EC,
+  .color-b-236 {
+    --color-b: 236
+  }
+
+  .color-b-ed,
+  .color-b-ED,
+  .color-b-237 {
+    --color-b: 237
+  }
+
+  .color-b-ee,
+  .color-b-EE,
+  .color-b-238 {
+    --color-b: 238
+  }
+
+  .color-b-ef,
+  .color-b-EF,
+  .color-b-239 {
+    --color-b: 239
+  }
+
+  .color-b-f0,
+  .color-b-F0,
+  .color-b-240 {
+    --color-b: 240
+  }
+
+  .color-b-f1,
+  .color-b-F1,
+  .color-b-241 {
+    --color-b: 241
+  }
+
+  .color-b-f2,
+  .color-b-F2,
+  .color-b-242 {
+    --color-b: 242
+  }
+
+  .color-b-f3,
+  .color-b-F3,
+  .color-b-243 {
+    --color-b: 243
+  }
+
+  .color-b-f4,
+  .color-b-F4,
+  .color-b-244 {
+    --color-b: 244
+  }
+
+  .color-b-f5,
+  .color-b-F5,
+  .color-b-245 {
+    --color-b: 245
+  }
+
+  .color-b-f6,
+  .color-b-F6,
+  .color-b-246 {
+    --color-b: 246
+  }
+
+  .color-b-f7,
+  .color-b-F7,
+  .color-b-247 {
+    --color-b: 247
+  }
+
+  .color-b-f8,
+  .color-b-F8,
+  .color-b-248 {
+    --color-b: 248
+  }
+
+  .color-b-f9,
+  .color-b-F9,
+  .color-b-249 {
+    --color-b: 249
+  }
+
+  .color-b-fa,
+  .color-b-FA,
+  .color-b-250 {
+    --color-b: 250
+  }
+
+  .color-b-fb,
+  .color-b-FB,
+  .color-b-251 {
+    --color-b: 251
+  }
+
+  .color-b-fc,
+  .color-b-FC,
+  .color-b-252 {
+    --color-b: 252
+  }
+
+  .color-b-fd,
+  .color-b-FD,
+  .color-b-253 {
+    --color-b: 253
+  }
+
+  .color-b-fe,
+  .color-b-FE,
+  .color-b-254 {
+    --color-b: 254
+  }
+
+  .color-b-ff,
+  .color-b-FF,
+  .color-b-255 {
+    --color-b: 255
+  }
+}

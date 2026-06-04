@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": false
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -10,12 +11,13 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
+          "standalone": true,
           "style": "less"
         }
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "hw",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -24,13 +26,25 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "less",
             "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/assets/config/config.json",
+              "src/web.config",
               {
                 "glob": "**/*",
                 "input": "public"
               }
             ],
             "styles": [
-              "src/styles.less"
+              "src/styles.less",
+              "node_modules/ngx-toastr/toastr.css",
+              "src/assets/js/bootstrap/datetimepicker/bootstrap-datetimepicker-dark.css",
+              "src/assets/js/bootstrap/datetimepicker/bootstrap-datetimepicker.css"
+            ],
+            "scripts": [
+              "src/assets/js/jquery/jquery-3.7.1.min.js",
+              "src/assets/js/bootstrap/datetimepicker/bootstrap-datetimepicker.js",
+              "src/assets/js/bootstrap/datetimepicker/bootstrap-datetimepicker.zh-CN.js"
             ]
           },
           "configurations": {
@@ -59,12 +73,18 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.ts"
+          },
           "configurations": {
             "production": {
               "buildTarget": "water-plant:build:production"
             },
             "development": {
-              "buildTarget": "water-plant:build:development"
+              "buildTarget": "water-plant:build:development",
+              "host": "127.0.0.1",
+              "port": 9000,
+              "open": false
             }
           },
           "defaultConfiguration": "development"

@@ -1,0 +1,68 @@
+input[type="checkbox"],
+input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  aspect-ratio: 1;
+  display: inline-block;
+  text-align: center;
+  vertical-align: center;
+  line-height: 20px;
+  position: relative;
+
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #388bff;
+  -webkit-tab-highlight-color: rgba(0, 0, 0, 0);
+  font-weight: bold;
+  background: transparent;
+
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:checked::before {
+    content: "\2713";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #388bff;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ddf4ff;
+
+  }
+
+  &:disabled::before {
+    background: transparent;
+    cursor: default;
+    color: #999;
+  }
+
+  &+label {
+    -moz-user-select: none;
+    /*火狐*/
+    -webkit-user-select: none;
+    /*webkit浏览器*/
+    -ms-user-select: none;
+    /*IE10*/
+    -khtml-user-select: none;
+    /*早期浏览器*/
+    user-select: none;
+  }
+
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

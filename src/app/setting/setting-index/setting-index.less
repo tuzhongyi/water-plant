@@ -1,0 +1,48 @@
+.setting {
+
+  @gap: 20px;
+  @column: 4;
+  @row: 3;
+
+  &-index {
+    width: 100%;
+    height: 100%;
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: @gap;
+
+    &>* {
+      width: calc((100% - @gap * (@column - 1)) / @column);
+      height: calc((100% - @gap * (@row - 1)) / @row);
+    }
+  }
+
+  &-item {
+
+    cursor: pointer;
+    opacity: 0.9;
+
+    &-container {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 50px;
+      gap: 20px;
+      padding-bottom: 20px;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &-icon {
+      color: #17f1c6;
+    }
+
+    &-name {
+      color: white;
+    }
+  }
+}

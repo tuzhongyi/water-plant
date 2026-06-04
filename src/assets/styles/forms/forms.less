@@ -1,0 +1,142 @@
+@import "./form-input.less";
+@import "./form-button/form-button.less";
+@import "./form-button-group.less";
+@import "./form-select.less";
+@import "./form-switch.less";
+@import "./form-label.less";
+
+
+.form {
+
+  &s {
+    display: flex;
+    gap: 10px 20px;
+
+    &.disabled {
+      color: #999 !important;
+    }
+  }
+
+  &-item {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: flex-start;
+
+    &.full {
+      width: 100% !important;
+    }
+
+    &.submit {
+      flex-grow: 0;
+      gap: 10px;
+    }
+
+    &.flex-grow {
+      flex-grow: 1;
+    }
+
+
+    &-text {
+      flex-grow: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      white-space: nowrap;
+      position: relative;
+
+      &.disabled {
+        color: #999;
+      }
+
+      .must {
+        color: red;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        right: -8px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      &.baseline {
+        align-self: baseline;
+
+        &+.form-item-value {
+          align-self: start;
+        }
+
+        &.textarea {
+          line-height: 30px;
+        }
+      }
+    }
+
+    &-value {
+      flex-grow: 1;
+      color: white;
+      display: flex;
+      align-items: center;
+      height: 100%;
+
+      &.icon {
+        display: flex;
+        position: relative;
+      }
+
+      &.unit {
+        display: flex;
+        position: relative;
+
+        &>* {
+          &:first-child {
+            width: 100%;
+          }
+
+          &+i {
+            position: absolute;
+            height: 36px;
+            line-height: 36px;
+            font-size: 20px;
+            color: #2d76ce;
+            right: 10px;
+            text-align: center;
+            pointer-events: none;
+            white-space: nowrap;
+            font-style: normal;
+            width: auto;
+
+            &.text {
+              font-size: 16px;
+            }
+          }
+        }
+
+      }
+
+      &.fill {
+        &>* {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      &.input_button {
+        display: flex;
+
+        &>input {
+          flex-grow: 1;
+          width: 90%;
+        }
+
+        &>button {
+          height: 100%;
+          aspect-ratio: 1;
+          border-left-width: 0;
+
+        }
+      }
+    }
+  }
+
+}

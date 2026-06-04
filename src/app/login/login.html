@@ -1,0 +1,41 @@
+<div class="login">
+  <div class="login-container">
+    <div class="login-head">用户登录</div>
+    <div class="login-line"></div>
+    <div class="login-body">
+      <div class="forms">
+        <div class="form-item username">
+          <div class="form-item-text icon">
+            <i class="howell-icon-people"></i>
+          </div>
+          <div class="form-item-value">
+            <input
+              type="text"
+              placeholder="用户名"
+              autocomplete="new-username"
+              name="lu"
+              [(ngModel)]="model.username"
+            />
+          </div>
+        </div>
+        <div class="form-item password">
+          <div class="form-item-text icon">
+            <i class="howell-icon-lock"></i>
+          </div>
+          <div class="form-item-value">
+            <input
+              type="password"
+              placeholder="密码"
+              autocomplete="new-password"
+              name="lp"
+              [(ngModel)]="model.password"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="login-foot">
+      <button class="login-button" (click)="on.login()">登录</button>
+    </div>
+  </div>
+</div>

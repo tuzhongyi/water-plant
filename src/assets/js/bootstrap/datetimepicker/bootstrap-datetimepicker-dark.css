@@ -1,0 +1,58 @@
+﻿.datetimepicker .datetimepicker-hours .table-condensed .hour legend {
+  color: white;
+}
+
+.datetimepicker {
+  position: absolute;
+  z-index: 10001;
+  display: none;
+}
+
+.datetimepicker.dropdown-menu {
+
+  background-color: #003a3b;
+  color: white;
+}
+
+.datetimepicker table tr td span.active:active,
+.datetimepicker table tr td span.active:hover:active,
+.datetimepicker table tr td span.active.disabled:active,
+.datetimepicker table tr td span.active.disabled:hover:active,
+.datetimepicker table tr td span.active.active,
+.datetimepicker table tr td span.active:hover.active,
+.datetimepicker table tr td span.active.disabled.active,
+.datetimepicker table tr td span.active.disabled:hover.active {
+
+  background-image: none;
+  background-color: rgba(23, 241, 198, 0.7);
+}
+
+.datetimepicker table tr td.active:active,
+.datetimepicker table tr td.active:hover:active,
+.datetimepicker table tr td.active.disabled:active,
+.datetimepicker table tr td.active.disabled:hover:active,
+.datetimepicker table tr td.active.active,
+.datetimepicker table tr td.active:hover.active,
+.datetimepicker table tr td.active.disabled.active,
+.datetimepicker table tr td.active.disabled:hover.active {
+
+  background-image: none;
+  background-color: rgba(23, 241, 198, 0.7);
+}
+
+.datetimepicker table tr td span:hover {
+  background-color: rgba(23, 241, 198, 0.5);
+}
+
+.datetimepicker thead tr:first-child th:hover,
+.datetimepicker tfoot th:hover {
+  background-color: rgba(23, 241, 198, 0.5);
+}
+
+.datetimepicker table tr td.day:hover {
+  background-color: rgba(23, 241, 198, 0.5);
+}
+
+.datetimepicker.dropdown-menu {
+  border: solid #07a990 1px;
+}

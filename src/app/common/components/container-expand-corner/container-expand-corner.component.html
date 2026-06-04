@@ -1,0 +1,18 @@
+<div
+  class="container-expand-corner"
+  [ngClass]="{
+    'top-left': top && left,
+    'top-right': top && !left,
+    'bottom-left': !top && left,
+    'bottom-right': !top && !left
+  }"
+>
+  <div class="container-expand-corner-button">
+    <div class="button">
+      <i [class]="icon"></i>
+    </div>
+  </div>
+  <div class="container-expand-corner-content">
+    <ng-content></ng-content>
+  </div>
+</div>

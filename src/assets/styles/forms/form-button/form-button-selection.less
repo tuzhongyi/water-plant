@@ -1,0 +1,92 @@
+@import "../../colors/color-@.less";
+
+.button-selection {
+  border: 1px solid rgba(221, 244, 255, 0.5);
+  color: #ddf4ff;
+  cursor: pointer;
+  transition: all 0.75s;
+  padding: 3px 5px;
+  border-radius: 3px;
+
+  &.selected {
+    background-color: rgba(221, 244, 255, 0.25);
+  }
+
+  &.green {
+    color: @green;
+    border: 1px solid rgba(35, 227, 83, 0.5);
+
+    &:hover {
+      border-color: @green;
+    }
+
+    &.selected {
+      background-color: rgba(35, 227, 83, 0.25);
+    }
+  }
+
+  &.red {
+    color: @red;
+    border: 1px solid rgba(255, 81, 81, 0.5);
+
+    &:hover {
+      border-color: @red;
+    }
+
+    &.selected {
+      background-color: rgba(255, 81, 81, 0.25);
+    }
+  }
+
+  &.orange {
+    color: @orange;
+    border: 1px solid rgba(255, 118, 44, 0.5);
+
+    &:hover {
+      border-color: @orange;
+    }
+
+    &.selected {
+      background-color: rgba(255, 118, 44, 0.25);
+    }
+  }
+
+  &.yellow {
+    color: @yellow;
+    border: 1px solid rgba(253, 229, 70, 0.5);
+
+    &:hover {
+      border-color: @yellow;
+    }
+
+    &.selected {
+      background-color: rgba(253, 229, 70, 0.25);
+    }
+  }
+
+  &.blue {
+    color: @blue;
+    border: 1px solid rgba(45, 118, 206, 0.5);
+
+    &:hover {
+      border-color: @blue;
+    }
+
+    &.selected {
+      background-color: rgba(45, 118, 206, 0.25);
+    }
+  }
+
+  &.cyan {
+    color: @cyan;
+    border: 1px solid rgba(0, 245, 255, 0.5);
+
+    &:hover {
+      border-color: @cyan;
+    }
+
+    &.selected {
+      background-color: rgba(0, 245, 255, 0.25);
+    }
+  }
+}

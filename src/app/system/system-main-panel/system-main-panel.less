@@ -1,0 +1,53 @@
+.system-main-panel {
+  width: 100%;
+  height: auto;
+
+  padding: 20px;
+  border: 2px solid rgba(23, 241, 198, 0.5);
+  // box-shadow: 0 0 10px rgba(23, 241, 198, 0.8);
+
+  background-color: rgba(4, 50, 45, 0.5);
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+
+
+  &-head {
+
+    color: white;
+
+
+    &-icon {
+      color: #17f1c6;
+    }
+  }
+
+  &-line {
+    width: 100%;
+    height: 0;
+    border-bottom: 1px solid rgba(23, 241, 198, 0.5);
+    margin: 20px 0;
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+
+    &-name {
+      color: #17f1c6b3;
+    }
+
+    &-value {
+      color: white;
+    }
+  }
+
+}

@@ -1,0 +1,51 @@
+<!-- <div class="fill-height fill-width window-mask" *ngIf="model.show">
+  <div class="background" [ngStyle]="style">
+    <div class="inner">
+      <div
+        class="window-content"
+        [ngClass]="{ 'custom-form-wrap': background }"
+      >
+        <a class="close-winow" (click)="closeButtonClick()" *ngIf="closeButton"
+          ><i class="howell-icon-Close alert-window-close-btn"></i
+        ></a>
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="window-mask" *ngIf="model.show">
+  <div class="window-background" [ngStyle]="style">
+    <div class="top">
+      <div class="left"></div>
+      <div class="center"></div>
+      <div class="right"></div>
+    </div>
+    <div class="middle">
+      <div class="left"></div>
+      <div class="center"></div>
+      <div class="right"></div>
+    </div>
+    <div class="bottom">
+      <div class="left"></div>
+      <div class="center"></div>
+      <div class="right"></div>
+    </div>
+
+    <div class="window-content">
+      <div class="window-content-head">
+        <div class="title window-content-head-title">
+          {{ title }}
+        </div>
+        <div class="operation">
+          <a class="close-winow" (click)="closeButtonClick()" *ngIf="closeButton"
+            ><i class="howell-icon-Close alert-window-close-btn"></i
+          ></a>
+        </div>
+      </div>
+      <div class="window-content-body">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</div>

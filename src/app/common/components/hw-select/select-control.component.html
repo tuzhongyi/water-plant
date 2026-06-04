@@ -1,0 +1,24 @@
+<div
+  class="select-control root-router"
+  [class.border]="borderable"
+  [class.disabled]="disabled"
+  [ngStyle]="style"
+  #current
+>
+  <ng-content></ng-content>
+  <div
+    class="clear"
+    *ngIf="nullable && selected !== undefined"
+    (click)="onclear($event)"
+  >
+    <i class="howell-icon-Close"></i>
+  </div>
+  <div
+    class="default"
+    [class.disabled]="disabled"
+    [style.left]="left + 'px'"
+    *ngIf="selected === undefined"
+  >
+    {{ nulltext }}
+  </div>
+</div>

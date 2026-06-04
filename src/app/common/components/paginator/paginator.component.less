@@ -1,0 +1,40 @@
+.paginator {
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  cursor: default;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+
+  &.gapable {
+    gap: unset;
+  }
+
+  ::ng-deep {
+
+    button {
+      cursor: pointer;
+      min-width: 25px;
+      white-space: nowrap;
+
+      &.current {
+        background-color: #4a8eff;
+        color: #FFF
+      }
+    }
+
+    .jumpText {
+      width: 40px;
+      height: 24px;
+      box-sizing: border-box;
+      border: none;
+      border-bottom: 1px solid #ddf4ff;
+      background-color: transparent;
+    }
+
+
+  }
+
+}

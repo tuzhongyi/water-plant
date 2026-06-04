@@ -1,0 +1,62 @@
+textarea,
+input[type="text"],
+input[type="number"],
+input[type="password"] {
+  background-color: #060f2b;
+  border: 1px solid #2d76ce;
+  outline: none;
+  width: 100%;
+  font-size: 16px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  height: 36px;
+  color: #ddf4ff;
+
+  &:-internal-autofill-previewed,
+  &:-internal-autofill-selected {
+    -webkit-text-fill-color: #FFFFFF !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+  }
+
+  &::-webkit-input-placeholder {
+    color: #ddf4ff;
+    font-size: 16px;
+  }
+
+  &::placeholder {
+    color: #999;
+  }
+
+  &:read-only {
+    // color: #71acff;
+    color: #fff;
+    cursor: default;
+  }
+
+  &:disabled {
+    color: #999;
+    cursor: not-allowed;
+    border-color: #2A5497;
+  }
+
+  &.input-login {
+    border: none;
+    height: 50px;
+  }
+}
+
+textarea {
+  padding: 3px 10px;
+  height: 78px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+input[type="number"] {
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}

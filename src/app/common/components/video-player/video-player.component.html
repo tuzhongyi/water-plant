@@ -1,0 +1,10 @@
+<div class="video-control">
+  @if (!!src) {
+    <iframe
+      #iframe
+      [src]="src"
+      (load)="onLoad($event)"
+      class="video-control selected fill-height fill-width"
+    ></iframe>
+  }
+</div>

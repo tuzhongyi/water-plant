@@ -1,0 +1,13 @@
+<div class="input-icon">
+  <input type="text" [value]="value ?? ''" (input)="oninput($event)" />
+  <div
+    class="input-icon-clear button"
+    *ngIf="!!value && canclear"
+    (click)="onclear()"
+  >
+    <i class="howell-icon-Close"></i>
+  </div>
+  <div class="input-icon-btn" [class.hover]="canhover">
+    <ng-content></ng-content>
+  </div>
+</div>

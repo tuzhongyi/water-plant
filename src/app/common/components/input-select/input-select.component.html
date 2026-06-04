@@ -1,0 +1,23 @@
+<div class="search-container">
+  <input
+    type="text"
+    [(ngModel)]="text"
+    [placeholder]="placeholder"
+    (blur)="onblur()"
+    (focus)="onfocus()"
+    (input)="oninput()"
+    (compositionend)="oninput()"
+    (compositionstart)="oninput()"
+    [title]="text"
+  />
+
+  <div class="search-results" *ngIf="is.dropdown">
+    <div
+      *ngFor="let result of results"
+      class="search-result-item"
+      (click)="onselect(result)"
+    >
+      {{ result.Name }}
+    </div>
+  </div>
+</div>

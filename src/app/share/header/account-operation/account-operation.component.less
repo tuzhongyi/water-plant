@@ -1,0 +1,80 @@
+.app-account-operation {
+  display: flex;
+  margin: 0 5px;
+  position: relative;
+
+  .operation-item {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 103, 100, 0.3);
+    color: #17f1c6;
+    border-radius: 50%;
+    padding: 4px;
+    font-size: 21px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+
+    .mat-icon {
+      font-size: 20px;
+    }
+  }
+
+  .menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: rgba(0, 103, 100);
+    border: 2px solid #07a990;
+    width: 150px;
+    z-index: 100;
+
+
+    &-item {
+      display: flex;
+      white-space: nowrap;
+      font-size: 1.1rem;
+      color: #fff;
+      width: 100%;
+      padding: 5px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+
+
+
+      i {
+        font-size: 20px;
+      }
+
+      &:hover {
+        background-color: rgba(194, 83, 68, 0.5);
+        color: #fff;
+      }
+    }
+  }
+}
+
+// 和 app-root是兄弟元素
+&~.cdk-overlay-container {
+  .cdk-overlay-pane {
+    .mat-menu-panel {
+      .mat-menu-content {
+        .mat-menu-item {
+          &:not(:first-child) {
+            cursor: pointer;
+
+            &:hover {
+              background-color: rgba(194, 83, 68, 0.5);
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+}

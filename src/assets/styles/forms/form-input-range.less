@@ -1,0 +1,32 @@
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  outline: 0;
+  background-color: transparent;
+
+  &::-webkit-slider-container {
+    /*可以修改容器的若干样式*/
+    height: 16px;
+    overflow: hidden;
+  }
+
+  &::-webkit-slider-runnable-track {
+    /*可以修改轨道的若干样式*/
+    height: 2px;
+    background: #eee;
+  }
+
+  &::-webkit-slider-thumb {
+    /*可以修改滑块的若干样式*/
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #2d76ce;
+    border: 1px solid transparent;
+    margin-top: -7px;
+    border-image: linear-gradient(#2d76ce, #2d76ce) 0 fill / 6 16 6 0 / 0px 0px 0 2000px;
+  }
+}

@@ -1,0 +1,39 @@
+<div class="timeline">
+  <div class="timeline-controls" *ngIf="playable">
+    <button (click)="control.play()" *ngIf="!control.playing">
+      <i class="mdi mdi-play"></i>
+    </button>
+    <button (click)="control.stop()" *ngIf="control.playing">
+      <i class="mdi mdi-stop"></i>
+    </button>
+  </div>
+  <div class="timeline-time">
+    {{ begin | date : "HH:mm:ss" }}
+  </div>
+  <div class="timeline-progress">
+    <input
+      type="range"
+      #timelineslider
+      [(ngModel)]="index"
+      [min]="0"
+      [max]="datas.length - 1"
+      [step]="1"
+      (input)="on.change()"
+      (mousedown)="mouse.down($event)"
+      (mouseup)="mouse.up($event)"
+    />
+    <div
+      class="timeline-current"
+      *ngIf="mouse.enter || control.playing"
+      [ngStyle]="{
+        left: mouse.left + 'px'
+      }"
+    >
+      {{ current | date : "HH:mm:ss" }}
+      <!-- | {{ index }} | {{ mouse.left }} -->
+    </div>
+  </div>
+  <div class="timeline-time">
+    {{ end | date : "HH:mm:ss" }}
+  </div>
+</div>

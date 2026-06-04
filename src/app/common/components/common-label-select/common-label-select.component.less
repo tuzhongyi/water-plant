@@ -1,0 +1,142 @@
+:host {
+  width: 100%;
+  height: auto;
+}
+
+.label-select {
+
+  width: 100%;
+  height: auto;
+  position: relative;
+  // background-image: url(../../../../assets/image/select-arrow.png);
+  background-position: center right 10px;
+  background-repeat: no-repeat;
+
+  background-color: #050d14;
+
+  .label-select-header {
+    display: flex;
+    height: 36px;
+    position: relative;
+    border: 1px solid #2d76ce;
+    cursor: pointer;
+    padding-right: 36px;
+    box-sizing: border-box;
+
+    .placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      color: #ddf4ff;
+      box-sizing: border-box;
+    }
+
+    .wrapper {
+      flex-grow: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: overlay;
+    }
+
+    .btn {
+      flex-shrink: 0;
+      font-size: 23px;
+    }
+  }
+
+  .label-select-body {
+    position: absolute;
+    top: 36px;
+    left: 0px;
+    z-index: 8000;
+    width: 100%;
+    height: auto;
+    max-height: 325px;
+    border-top: none;
+    overflow: auto;
+
+    border: 1px solid #2d76ce;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #050d14;
+
+    &.show {
+      display: block;
+    }
+
+    &.hide {
+      display: none;
+    }
+  }
+
+  .wrapper {
+    overflow-y: hidden;
+    height: calc(100% + 4px);
+    overflow-x: scroll;
+  }
+}
+
+
+.single {
+  overflow: hidden !important;
+  height: 100% !important;
+
+  &>.label-select-item {
+    width: 100%;
+    background-color: transparent;
+    color: #ddf4ff;
+    font-size: 16px;
+    overflow: hidden;
+    padding: 0 5px;
+    justify-content: space-between;
+    white-space: nowrap;
+
+  }
+}
+
+.clear {
+  display: flex;
+  align-items: center;
+  color: #ddf4ff;
+  cursor: pointer;
+  width: 16px;
+  height: 100%;
+
+
+  &:hover {
+    color: white
+  }
+}
+
+
+.label-select-item {
+  cursor: pointer;
+  // background: transparent;
+  font-size: 14px;
+  color: #eaedff;
+  margin: 2.5px;
+  padding: 2px 5px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background-color: rgb(25, 64, 118);
+
+
+  .close-btn {
+    color: #fff;
+
+    &:hover {
+      color: #e15e64;
+    }
+  }
+}

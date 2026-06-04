@@ -1,0 +1,43 @@
+
+{
+  "Administration_Complex.glb": {
+    "position": {
+      "x": 24.461514830242955,
+      "y": 38.47270205249652,
+      "z": 0
+    },
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "h": 0,
+      "p": 0,
+      "b": 0
+    },
+    "colors": {
+      "normal": {
+        "edge": "#00cccc"
+      },
+      "hover": {
+        "edge": "#ffaa00"
+      },
+      "selected": {
+        "edge": "#ff8800"
+      }
+    },
+    "render": {
+      "renderMode": "overlay",
+      "thresholdAngle": 36,
+      "edgeLineWidth": 1,
+      "solidOpacity": 0.31,
+      "wfOpacity": 1,
+      "bloom": false,
+      "bloomThreshold": 0.6,
+      "bloomStrength": 1.5,
+      "bloomRadius": 0.4,
+      "flatShading": false
+    }
+  }
+}

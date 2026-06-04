@@ -1,0 +1,8 @@
+<div class="system-main-three-container">
+  <hw-3d
+    [path]="path"
+    (modelClicked)="modelClicked.emit($event)"
+    (modelHovered)="modelHovered.emit($event)"
+    (transformChanged)="transformChanged.emit($event)"
+  ></hw-3d>
+</div>

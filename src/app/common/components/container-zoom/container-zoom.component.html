@@ -1,0 +1,40 @@
+<div class="container-zoom">
+  <div
+    class="container-zoom-content"
+    [style.transform]="
+      'scale(' +
+      scale +
+      ') translate(' +
+      translateX +
+      'px, ' +
+      translateY +
+      'px)'
+    "
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)"
+    (mouseleave)="onMouseUp($event)"
+    (dblclick)="onDoubleClick($event)"
+  >
+    <ng-content></ng-content>
+  </div>
+  <div class="container-zoom-buttons button-group">
+    <ng-content select="container-zoom-button-content"></ng-content>
+    <div
+      class="button panel-map"
+      title="预览大图"
+      *ngIf="fullable"
+      (click)="onfull($event)"
+    >
+      <i class="mdi mdi-fullscreen"></i>
+    </div>
+    <div
+      class="button panel-map"
+      title="重置"
+      *ngIf="resetable"
+      (click)="onreset($event)"
+    >
+      <i class="mdi mdi-backup-restore"></i>
+    </div>
+  </div>
+</div>

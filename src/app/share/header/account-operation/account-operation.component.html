@@ -1,0 +1,28 @@
+<div class="app-account-operation">
+  <div class="operation-item" (click)="menu.target($event)">
+    <div class="log-out">
+      <i class="howell-icon-account"></i>
+    </div>
+    <div>
+      @if (menu.show) {
+        <div class="menu">
+          @if (display.username) {
+            <div class="menu-item">
+              <i class="howell-icon-account"></i>
+              {{ username }}
+            </div>
+          }
+          @if (display.logout) {
+            <div class="menu-item" (click)="on.logout()">
+              <i class="howell-icon-logout"> </i>
+              退出登录
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <div class="operation-item" *ngIf="false" (click)="on.help()">
+    <i class="mdi mdi-help-circle"></i>
+  </div>
+</div>

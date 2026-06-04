@@ -1,0 +1,46 @@
+<div class="time-control" [class.disabled]="disabled">
+  <input
+    class="time-control time hour"
+    matInput
+    #hour
+    type="number"
+    max="23"
+    min="0"
+    step="1"
+    maxlength="2"
+    minlength="1"
+    [(ngModel)]="time.hour.view"
+    (input)="oninput($event)"
+    [disabled]="disabled ?? false"
+  />
+  <div><i class="howell-icon-colon"></i></div>
+  <input
+    class="time-control time minute"
+    matInput
+    #minute
+    type="number"
+    max="59"
+    min="0"
+    step="1"
+    maxlength="2"
+    minlength="2"
+    [(ngModel)]="time.minute.view"
+    (input)="oninput($event)"
+    [disabled]="disabled ?? false"
+  />
+  <div><i class="howell-icon-colon"></i></div>
+  <input
+    class="time-control time second"
+    matInput
+    #second
+    type="number"
+    max="59"
+    min="0"
+    step="1"
+    maxlength="2"
+    minlength="2"
+    [(ngModel)]="time.second.view"
+    (input)="oninput($event)"
+    [disabled]="disabled ?? false"
+  />
+</div>

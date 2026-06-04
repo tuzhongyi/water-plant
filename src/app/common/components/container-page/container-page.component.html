@@ -1,0 +1,35 @@
+<div class="container-page">
+  <div
+    class="container-page-control left"
+    [ngClass]="{
+      small: small
+    }"
+    *ngIf="
+      page &&
+      ((this.page.PageCount > 0 && this.page.PageIndex > 1) ||
+        (loop && this.page.PageCount > 1))
+    "
+    (click)="onprov()"
+  >
+    <i class="howell-icon-arrowleftbold"></i>
+  </div>
+
+  <div class="container-page-content">
+    <ng-content></ng-content>
+  </div>
+
+  <div
+    class="container-page-control right"
+    [ngClass]="{
+      small: small
+    }"
+    *ngIf="
+      page &&
+      (this.page.PageIndex < this.page.PageCount ||
+        (loop && this.page.PageCount > 1))
+    "
+    (click)="onnext()"
+  >
+    <i class="howell-icon-arrowrightbold"></i>
+  </div>
+</div>

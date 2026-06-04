@@ -1,0 +1,91 @@
+.container-expand-corner {
+  padding: 15px;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: all .3s;
+
+  &:hover {
+    .container-expand-corner-button {
+      display: none;
+    }
+
+    .container-expand-corner-content {
+      display: block;
+    }
+  }
+
+  &.top-left {
+    clip-path: polygon(0 0,
+        50px 0,
+        50px 50px,
+        0 50px);
+
+    &:hover {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+
+  &.top-right {
+    clip-path: polygon(calc(100% - 50px) 0,
+        100% 0, 100% 50px, calc(100% - 50px) 50px);
+
+    &:hover {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+
+  &.bottom-left {
+    clip-path: polygon(0 calc(100% - 50px),
+        50px calc(100% - 50px),
+        50px 100%,
+        0 100%);
+
+    &:hover {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+
+  &.bottom-right {
+    clip-path: polygon(calc(100% - 50px) calc(100% - 50px),
+        100% calc(100% - 50px), 100% 100%, calc(100% - 50px) 100%);
+
+    &:hover {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+
+
+  &-button {
+    font-size: 20px;
+
+    .button {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  &-content {
+    display: none;
+
+    &-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &-title {
+        font-size: 20px;
+        color: white;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+  }
+}

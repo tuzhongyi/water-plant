@@ -1,0 +1,59 @@
+<div
+  class="select-multiple"
+  [class.disabled]="disabled"
+  (click)="on.open($event)"
+>
+  <div class="select-multiple-selected" wheel-horizontal-scroll>
+    <div class="select-multiple-selected-item" *ngFor="let item of selecteds">
+      <div class="select-multiple-selected-item-name">
+        {{ item.Name }}
+      </div>
+      <div
+        class="select-multiple-selected-item-control"
+        (click)="on.remove(item, $event)"
+      >
+        <i class="howell-icon-Close"></i>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="select-multiple-search"
+    *ngIf="searchable"
+    [class.show]="show"
+    (click)="on.stop($event)"
+  >
+    <div class="select-multiple-search-text">
+      <input type="text" [(ngModel)]="name" />
+    </div>
+    <div
+      class="select-multiple-search-clean button"
+      *ngIf="!!name"
+      (click)="on.clean()"
+    >
+      <i class="howell-icon-Close"></i>
+    </div>
+    <div class="select-multiple-search-button button" (click)="on.search()">
+      <i class="mdi mdi-magnify"></i>
+    </div>
+  </div>
+
+  <div
+    class="select-multiple-option"
+    [class.show]="show"
+    [class.searchable]="searchable"
+    (click)="on.stop($event)"
+  >
+    <div
+      class="select-multiple-option-item"
+      *ngFor="let item of datas"
+      (click)="on.select(item)"
+      [title]="item.Name"
+    >
+      <label [for]="'item_' + item.Id">
+        <input type="checkbox" [id]="" [checked]="selecteds.includes(item)" />
+        {{ item.Name }}
+      </label>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+html {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  border: none;
+}
+
+
+
+
+.filter {
+  color: white;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  &>* {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
