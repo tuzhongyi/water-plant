@@ -1,0 +1,81 @@
+.map-tree {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  font-size: 18px;
+
+  ::ng-deep {
+
+    /* 节点图标 */
+    .map-tree-icon {
+      margin-right: 6px;
+      flex-shrink: 0;
+      font-size: 20px;
+      color: #17f1c6;
+    }
+
+    /* 操作按钮容器 — 默认隐藏，hover 时显示 */
+    .map-tree-actions {
+      display: none;
+      margin-left: auto;
+      gap: 4px;
+      flex-shrink: 0;
+      padding-right: 4px;
+    }
+
+    .map-tree-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 50%;
+      font-size: 14px;
+      color: inherit;
+
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+    }
+
+    .map-tree-btn-text {
+      font-size: 14px;
+    }
+
+    .treejs {
+
+      /* 隐藏 checkbox，使用背景色/前景色做选中效果 */
+      &-checkbox {
+        display: none !important;
+      }
+
+      &-node {
+        height: 40px;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          background-color: #ef6f5966;
+          color: #ffd0c8;
+
+          .map-tree-actions {
+            display: flex;
+          }
+        }
+
+        &.treejs-selected {
+          background-color: #1890ff;
+          color: #fff;
+        }
+      }
+
+      &-label {
+        font-size: 18px;
+        user-select: none;
+        height: 22px;
+        flex: 1;
+      }
+    }
+  }
+}

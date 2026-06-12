@@ -4,7 +4,7 @@ import { IIdNameModel } from '../interface/model.interface';
 import { Transformer } from '../transformer';
 import { GisPoint } from './gis-point.model';
 /**	Map (地图信息)	*/
-export class Map implements IIdNameModel {
+export class GeoMap implements IIdNameModel {
   /**	String	唯一标识符	M	*/
   Id!: string;
   /**	String	MD5字符串	O	*/

@@ -22,9 +22,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     title.setTitle('惠南水厂智慧平台');
   }
 
-  model = new LoginModel();
+  model = this.init();
   remember = false;
   handle: any;
+
+  private init() {
+    let model = new LoginModel();
+    model.username = 'admin';
+    model.password = 'Howell.net.cn';
+    return model;
+  }
+
   ngOnInit(): void {
     this.handle = this.on.keypress.bind(this);
     window.addEventListener('keypress', this.handle);

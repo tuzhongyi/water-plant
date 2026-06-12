@@ -1,0 +1,58 @@
+@import "../../colors/color-table.less";
+
+.table-split {
+  &-head {
+    border-bottom: 1px solid @border;
+    background: @thead-background;
+    color: @thead-text;
+    // height: 75px;
+    height: 9.0909090909%;
+    max-height: 75px;
+    box-sizing: border-box;
+    overflow-y: scroll;
+
+    table {
+      width: 100%;
+      height: 100%;
+
+      thead {
+        tr {
+          th {
+            text-align: left;
+            font-weight: normal;
+            padding: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &:first-child {
+              padding-left: 20px;
+
+              .center {
+                padding-left: 10px;
+              }
+            }
+
+            &.sort {
+              cursor: pointer;
+              user-select: none;
+            }
+
+            &.center {
+              text-align: center;
+
+
+              &>div {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

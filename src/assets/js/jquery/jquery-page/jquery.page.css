@@ -1,0 +1,86 @@
+:root {
+  /* --theme-color:#ff8e33;
+	*/
+  --theme-color: #333;
+  --text-color: #333333;
+  --title-color: #212224;
+  --sub-title-color: #666666;
+  --bg-color: #f0f0f0;
+  --bg-target-color: #f6f7f9;
+  --bg-nav-color: #090909;
+  /* --border-color:#e2e2e2;
+	*/
+  --border-color: #f2f2f2;
+  --font-size: 14px;
+  --font-size-title: 30px;
+  --content-width: 1200px;
+}
+
+/* 外面盒子样式---自己定义 */
+.page_div {
+  width: 80%;
+  box-sizing: border-box;
+  margin: 20px 10px 20px 0;
+  color: #666;
+  text-align: center;
+}
+
+/* 页数按钮样式 */
+.page_div button {
+  display: inline-block;
+  min-width: 30px;
+  height: 28px;
+  cursor: pointer;
+  color: #666;
+  font-size: 13px;
+  line-height: 28px;
+  background-color: #f9f9f9;
+  border: 1px solid #dce0e0;
+  text-align: center;
+  margin: 0 4px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+#firstPage,
+#lastPage,
+#nextPage,
+#prePage {
+  width: 50px;
+  color: var(--theme-color);
+  border: 1px solid var(--theme-color)
+}
+
+#firstPage,
+#lastPage {
+  display: none;
+}
+
+#nextPage,
+#prePage {
+  width: 70px
+}
+
+.page_div .current {
+  background-color: var(--theme-color);
+  border-color: var(--theme-color);
+  color: #FFF
+}
+
+/* 页面数量 */
+.totalPages {
+  margin: 0 10px
+}
+
+.totalPages span,
+.totalSize span {
+  color: var(--theme-color);
+  margin: 0 5px
+}
+
+/*button禁用*/
+.page_div button:disabled {
+  opacity: .5;
+  cursor: no-
+}

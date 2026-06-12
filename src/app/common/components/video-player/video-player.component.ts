@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -78,6 +79,7 @@ export class VideoPlayerComponent implements OnDestroy, OnInit, AfterViewInit, O
     private business: VideoPlayerBusiness,
     private sanitizer: DomSanitizer,
     private config: ConfigRequestService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   src?: SafeResourceUrl;
@@ -239,7 +241,7 @@ export class VideoPlayerComponent implements OnDestroy, OnInit, AfterViewInit, O
       .replace('127.0.0.1', location.hostname);
     this.webUrl = url;
 
-    if (location.port === '9526') {
+    if (location.port === '9000') {
       this.webUrl = Creater.WebUrl();
     }
     this.isinited = true;
@@ -262,6 +264,7 @@ export class VideoPlayerComponent implements OnDestroy, OnInit, AfterViewInit, O
             this.src = this.sanitizer.bypassSecurityTrustResourceUrl(src);
             this.isloaded = true;
             this.loaded.emit();
+            this.cdr.detectChanges();
           }
         }
         resolve();

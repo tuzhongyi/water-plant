@@ -1,10 +1,12 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChange,
   SimpleChanges,
 } from '@angular/core';
 
@@ -22,6 +24,7 @@ import {
   DateTimePickerView,
 } from '../../../common/directives/date-time-picker/date-time-picker.directive';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
+import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
 import { VideoPlayerWindowBusiness } from './video-player-window.business';
 
 @Component({
@@ -41,9 +44,13 @@ export class VideoPlayerWindowComponent
   @Input() end?: Date;
   @Input() autoplay: boolean = false;
   @Input() subtitle = false;
-  @Input() index = 255;
+  @Input() index = 0;
+  @Input('data') source?: VideoModel;
 
-  constructor(private business: VideoPlayerWindowBusiness) {
+  constructor(
+    private business: VideoPlayerWindowBusiness,
+    private cdr: ChangeDetectorRef,
+  ) {
     super();
     this.business = business;
     let duration = DateTimeTool.beforeOrAfter(this.date, 15);
@@ -57,34 +64,51 @@ export class VideoPlayerWindowComponent
   date: Date = new Date();
   duration: TimeDurationModel;
   data?: VideoModel;
+
   DateTimePickerView = DateTimePickerView;
   stop: EventEmitter<void> = new EventEmitter();
 
   ngOnChanges(changes: SimpleChanges): void {
-    if ('begin' in changes) {
-      if (this.begin) {
-        this.duration.begin = new TimeModel(this.begin);
-        this.date = this.begin;
-      }
-    }
-    if ('end' in changes) {
-      this.duration.end = new TimeModel(this.end);
-    }
-    if (this.mode === PlayMode.live) {
-      this.autoplay = true;
-    }
+    this.change.time.begin(changes['begin']);
+    this.change.time.begin(changes['end']);
+    this.change.mode(changes['mode']);
     if (this.autoplay) {
       this.loadData();
     }
   }
 
-  async loadData() {
-    if (this.cameraId) {
-      if (this.mode == PlayMode.live) {
-        this.preview();
-      } else {
-        this.playback();
+  private change = {
+    time: {
+      begin: (change: SimpleChange) => {
+        if (change) {
+          if (this.begin) {
+            this.duration.begin = new TimeModel(this.begin);
+            this.date = this.begin;
+          }
+        }
+      },
+      end: (change: SimpleChange) => {
+        if (change) {
+          if (this.end) {
+            this.duration.end = new TimeModel(this.end);
+          }
+        }
+      },
+    },
+    mode: (change: SimpleChange) => {
+      if (change) {
+        if (this.mode === PlayMode.live) {
+          this.autoplay = true;
+        }
       }
+    },
+  };
+
+  async loadData() {
+    if (this.mode == PlayMode.live) {
+      this.preview();
+    } else {
+      this.playback();
     }
   }
   changeMode(mode: PlayMode) {
@@ -97,21 +121,64 @@ export class VideoPlayerWindowComponent
       this.duration = new TimeDurationModel(duration.begin, duration.end);
     }
   }
-  async preview() {
-    this.mode = PlayMode.live;
-    if (this.cameraId) {
-      this.data = await this.business.load(this.cameraId, this.mode);
-    }
-  }
+
   webUrl?: string;
-  async playback() {
-    this.mode = PlayMode.vod;
-    let duration = {
-      begin: this.duration.begin.toDate(this.date),
-      end: this.duration.end.toDate(this.date),
-    };
+
+  preview() {
     if (this.cameraId) {
-      this.data = await this.business.load(this.cameraId, this.mode, duration);
+      this._.preview.camera(this.cameraId);
+    }
+    if (this.source) {
+      this._.preview.source(this.source);
     }
   }
+  playback() {
+    if (this.cameraId) {
+      this._.playback.camera(this.cameraId);
+    }
+    if (this.source) {
+      this._.playback.source(this.source);
+    }
+  }
+
+  private _ = {
+    preview: {
+      camera: async (cameraId: string) => {
+        this.mode = PlayMode.live;
+        this.data = await this.business.load(cameraId, this.mode);
+        this.cdr.detectChanges();
+      },
+      source: async (model: VideoModel) => {
+        this.mode = PlayMode.live;
+        this.data = ObjectTool.assign(model, VideoModel);
+      },
+    },
+
+    playback: {
+      camera: async (cameraId: string) => {
+        this.mode = PlayMode.vod;
+        let duration = {
+          begin: this.duration.begin.toDate(this.date),
+          end: this.duration.end.toDate(this.date),
+        };
+        this.data = await this.business.load(cameraId, this.mode, duration);
+        this.cdr.detectChanges();
+      },
+      source: async (model: VideoModel) => {
+        if (!model.beginTime) {
+          console.error('没有回放开始时间');
+          return;
+        }
+        if (!model.endTime) {
+          console.error('没有回放结束时间');
+          return;
+        }
+        this.mode = PlayMode.vod;
+        this.date = new Date(model.beginTime.getTime());
+        this.duration.begin = new TimeModel(model.beginTime);
+        this.duration.end = new TimeModel(model.endTime);
+        this.data = ObjectTool.assign(model, VideoModel);
+      },
+    },
+  };
 }

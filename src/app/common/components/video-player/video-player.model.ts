@@ -126,16 +126,16 @@ export class VideoModel {
     let uri = url.pathname;
     let nodes = uri.split('/');
 
-    this.mode = nodes[3] as PlayMode;
-    this.deviceId = nodes[4];
-    this.slot = parseInt(nodes[5]);
-    this.stream = parseInt(nodes[6]);
+    this.mode = nodes[4] as PlayMode;
+    this.deviceId = nodes[5];
+    this.slot = parseInt(nodes[6]);
+    this.stream = parseInt(nodes[7]);
 
     switch (this.mode) {
       case PlayMode.live:
         break;
       case PlayMode.vod:
-        let interval = nodes[7];
+        let interval = nodes[8];
         let times = interval.split('_');
         this.beginTime = new Date(times[0]);
         this.endTime = new Date(times[1]);

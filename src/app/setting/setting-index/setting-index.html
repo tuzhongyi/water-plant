@@ -1,32 +1,37 @@
-<div class="setting-index">
-  <div class="setting-item">
-    <howell-card>
-      <div class="setting-item-container">
-        <div class="setting-item-icon">
-          <i class="howell-icon-search"></i>
-        </div>
-        <div class="setting-item-name">搜索设备</div>
+<howell-card>
+  <div class="setting-index">
+    <div class="setting-index-title">
+      <div
+        class="button"
+        [class.selected]="path == SettingPath.device_search"
+        (click)="changePath(SettingPath.device_search)"
+      >
+        设备搜索
       </div>
-    </howell-card>
-  </div>
-  <div class="setting-item">
-    <howell-card>
-      <div class="setting-item-container">
-        <div class="setting-item-icon">
-          <i class="howell-icon-map5"></i>
-        </div>
-        <div class="setting-item-name">地图绑定</div>
+      <div
+        class="button"
+        [class.selected]="path == SettingPath.device_list"
+        (click)="changePath(SettingPath.device_list)"
+      >
+        设备列表
       </div>
-    </howell-card>
-  </div>
-  <div class="setting-item">
-    <howell-card>
-      <div class="setting-item-container">
-        <div class="setting-item-icon">
-          <i class="howell-icon-move2"></i>
-        </div>
-        <div class="setting-item-name">设备绑定</div>
+      <div
+        class="button"
+        [class.selected]="path == SettingPath.map"
+        (click)="changePath(SettingPath.map)"
+      >
+        地图布控
       </div>
-    </howell-card>
+      <div
+        class="button"
+        [class.selected]="path == SettingPath.db31"
+        (click)="changePath(SettingPath.db31)"
+      >
+        DB31元素配置
+      </div>
+    </div>
+    <div class="setting-index-content">
+      <ng-content></ng-content>
+    </div>
   </div>
-</div>
+</howell-card>

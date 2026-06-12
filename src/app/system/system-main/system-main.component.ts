@@ -51,13 +51,21 @@ export class SystemMainComponent implements OnInit {
 
   on = {
     test: () => {
-      if (this.data.device.datas.length > 0) {
-        let device = this.data.device.datas[0];
-        this.window.video.title = device.Name;
+      // if (this.data.device.datas.length > 0) {
+      //   let device = this.data.device.datas[0];
+      //   this.window.video.title = device.Name;
+      //   this.window.video.autoplay = true;
+      //   this.window.video.cameraId = device.DeviceId;
+      //   this.window.video.show = true;
+      // }
+    },
+    video: {
+      preview: (data: VideoChannel) => {
+        this.window.video.title = data.Name;
         this.window.video.autoplay = true;
-        this.window.video.cameraId = device.DeviceId;
+        this.window.video.cameraId = data.Id;
         this.window.video.show = true;
-      }
+      },
     },
   };
 }

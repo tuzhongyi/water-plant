@@ -1,4 +1,4 @@
-import { Component, HostListener, NgZone, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
@@ -16,7 +16,6 @@ export class AccountOperationComponent implements OnInit {
   constructor(
     private local: LocalStorage,
     private router: Router,
-    private zone: NgZone,
   ) {}
 
   username: string = '';
@@ -27,6 +26,12 @@ export class AccountOperationComponent implements OnInit {
     if (info) {
       this.username = info.username;
     }
+    this.init();
+  }
+
+  private init() {
+    let url = location.toString();
+    this.display.setting = !url.toLowerCase().includes('setting');
   }
 
   @HostListener('window:click')
@@ -48,6 +53,12 @@ export class AccountOperationComponent implements OnInit {
     },
     help: () => {
       window.open(`http://${location.hostname}:${location.port ?? 80}/help/help.html`);
+    },
+    setting: () => {
+      this.router.navigateByUrl(RoutePath.setting);
+    },
+    main: () => {
+      this.router.navigateByUrl(RoutePath.system);
     },
   };
 }

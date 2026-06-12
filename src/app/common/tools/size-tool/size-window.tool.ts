@@ -23,8 +23,10 @@ export class SizeWindowTool {
     width: HtmlTool.screen.has.head.from.height(
       screen.availHeight * 0.75,
       16 / 9,
-      60 + 12 + 20 + 4,
-      (20 + 2) * 2
+      // head + gap + button + border * 2
+      52 * 2 + 40,
+      // (left|right + border) * 2
+      52 * 2,
     ),
     height: `${screen.availHeight * 0.75}px`,
   };
@@ -41,11 +43,7 @@ export class SizeWindowTool {
   video = {
     path: {
       width: `${screen.availWidth * 0.85}px`,
-      height: HtmlTool.screen.has.head.from.width(
-        screen.availWidth * 0.85,
-        16 / 9,
-        -200
-      ),
+      height: HtmlTool.screen.has.head.from.width(screen.availWidth * 0.85, 16 / 9, -200),
     },
   };
 }

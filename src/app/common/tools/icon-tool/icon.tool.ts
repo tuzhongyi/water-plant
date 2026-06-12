@@ -1,24 +1,27 @@
-import { RoadObjectType } from '../../data-core/enums/road/road-object/road-object-type.enum';
+import { MapElementType } from '../../data-core/enums/geo/map-element-type.enum';
 
 export class IconTool {
-  static RoadObjectType(value?: RoadObjectType) {
+  static MapElementType(value?: MapElementType) {
     switch (value) {
-      case RoadObjectType.FireHydrant:
-        return 'howell-icon-fire-hydrant';
-      case RoadObjectType.BusStation:
-        return 'howell-icon-bus_stop';
-      case RoadObjectType.Passage:
-        return 'howell-icon-exit';
-      case RoadObjectType.TelephoneBooth:
-        return 'howell-icon-telephone';
-      case RoadObjectType.TrashCan:
-        return 'howell-icon-delete-bin';
-      case RoadObjectType.CycleLaneSeparator:
-        return 'howell-icon-barrier';
-      case RoadObjectType.NoParking:
-        return 'howell-icon-no_parking';
-      case RoadObjectType.PublicityWall:
-        return 'howell-icon-publicity_wall';
+      case MapElementType.Range:
+        return '';
+      case MapElementType.Building:
+        return 'howell-icon-Building';
+      case MapElementType.House:
+        return 'howell-icon-home';
+      case MapElementType.Camera:
+        return 'howell-icon-video';
+      case MapElementType.Door:
+        return 'howell-icon-door-state';
+      case MapElementType.Entrance:
+        return 'howell-icon-Entrance';
+      case MapElementType.Floor:
+        return 'howell-icon-Floor';
+      case MapElementType.IoTSensor:
+        return 'howell-icon-Sensor';
+      case MapElementType.Announciator:
+        return 'howell-icon-Announciator';
+
       default:
         return '';
     }

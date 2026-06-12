@@ -1,6 +1,8 @@
 import { ClassConstructor, instanceToPlain, plainToInstance } from 'class-transformer';
+import { ObjectModelTool } from './object-model.tool';
 
 export class ObjectTool {
+  static model = new ObjectModelTool();
   static keys(obj: Object, opts: 'porperty' | 'value' | 'all' = 'all') {
     let keys: string[];
     if (opts === 'porperty') {

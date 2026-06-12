@@ -12,7 +12,12 @@
       "schematics": {
         "@schematics/angular:component": {
           "standalone": true,
-          "style": "less"
+          "type": "component",
+          "style": "less",
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "type": "directive"
         }
       },
       "root": "",
@@ -44,7 +49,9 @@
             "scripts": [
               "src/assets/js/jquery/jquery-3.7.1.min.js",
               "src/assets/js/bootstrap/datetimepicker/bootstrap-datetimepicker.js",
-              "src/assets/js/bootstrap/datetimepicker/bootstrap-datetimepicker.zh-CN.js"
+              "src/assets/js/bootstrap/datetimepicker/bootstrap-datetimepicker.zh-CN.js",
+              "src/assets/js/base64.js",
+              "src/assets/js/guid.js"
             ]
           },
           "configurations": {

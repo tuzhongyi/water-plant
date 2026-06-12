@@ -1,0 +1,39 @@
+.setting-map-details {
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  border-top: 1px solid #006764;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+
+  @foot-height: 50px;
+
+  &-body {
+    height: calc(100% - @foot-height);
+    width: 100%;
+    flex-grow: 1;
+
+    .form {
+      &s {
+        flex-direction: column;
+      }
+
+      &-item {
+        &-text {
+          width: 64px;
+        }
+      }
+    }
+  }
+
+  &-foot {
+    height: @foot-height;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

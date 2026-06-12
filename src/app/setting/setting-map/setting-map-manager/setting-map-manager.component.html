@@ -1,0 +1,25 @@
+<div class="setting-map-manager">
+  <div class="setting-map-list">
+    <hw-setting-map-list
+      [load]="geo.map.load"
+      (details)="geo.map.details.open($event)"
+    ></hw-setting-map-list>
+  </div>
+  <div class="setting-map-three">
+    <hw-setting-map-three></hw-setting-map-three>
+  </div>
+
+  @if (window.details.map.show) {
+    <app-window
+      [model]="window.details.map"
+      [style]="window.details.map.style"
+      [title]="window.details.map.title"
+    >
+      <hw-setting-map-details
+        [data]="window.details.map.data"
+        (ok)="geo.map.details.ok($event)"
+        (close)="geo.map.details.close()"
+      ></hw-setting-map-details>
+    </app-window>
+  }
+</div>

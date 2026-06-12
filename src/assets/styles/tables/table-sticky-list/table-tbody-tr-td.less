@@ -1,0 +1,41 @@
+@import "./table-tbody-tr-td-center.less";
+@import "./table-tbody-tr-td-operation.less";
+
+.table-sticky-list {
+  table {
+    tbody {
+      tr {
+        td {
+          padding: 0 10px;
+          white-space: nowrap;
+          /* 文本不换行 */
+          overflow: hidden;
+          /* 隐藏溢出的内容 */
+          text-overflow: ellipsis;
+          /* 使用省略号表示溢出的文本 */
+
+          &:first-child {
+            padding-left: 20px;
+
+            .center {
+              padding-left: 10px;
+            }
+          }
+
+          &>div {
+            width: 100%;
+            height: 100%;
+            white-space: nowrap;
+            /* 文本不换行 */
+            overflow: hidden;
+            /* 隐藏溢出的内容 */
+            text-overflow: ellipsis;
+            /* 使用省略号表示溢出的文本 */
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
+    }
+  }
+}

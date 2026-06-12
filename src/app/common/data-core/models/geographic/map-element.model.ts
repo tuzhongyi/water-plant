@@ -4,7 +4,7 @@ import { IIdNameModel } from '../interface/model.interface';
 import { Transformer } from '../transformer';
 import { GisPoint } from './gis-point.model';
 /**	MapElement (地图元素信息)	*/
-export class MapElement implements IIdNameModel {
+export class GeoMapElement implements IIdNameModel {
   /**	String	地图元素ID	M	*/
   Id!: string;
   /**	String	元素名称	M	*/

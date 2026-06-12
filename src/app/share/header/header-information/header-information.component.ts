@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
 import { interval } from 'rxjs';
 import { Language } from '../../../common/tools/language-tool/language';
 import { HeaderInformationModel } from './header-information.model';
@@ -15,7 +15,7 @@ export class HeaderInformationComponent implements OnInit, OnChanges {
   constructor() {}
   date: Date = new Date();
 
-  model: HeaderInformationModel = new HeaderInformationModel();
+  model = signal<HeaderInformationModel>(new HeaderInformationModel());
 
   Language = Language;
 
@@ -38,8 +38,11 @@ export class HeaderInformationComponent implements OnInit, OnChanges {
 
     let date = new Date(this.input_date.getTime() + interval);
 
-    this.model.time = formatDate(date, Language.HHmmss, 'en');
-    this.model.date = formatDate(date, Language.YearMonthDay, 'en');
-    this.model.week = Language.Week(date.getDay(), '星期');
+    let model = new HeaderInformationModel();
+
+    model.time = formatDate(date, Language.HHmmss, 'en');
+    model.date = formatDate(date, Language.YearMonthDay, 'en');
+    model.week = Language.Week(date.getDay(), '星期');
+    this.model.set(model);
   }
 }

@@ -1,0 +1,48 @@
+@import "../../colors/color-table.less";
+
+.table-sticky-list {
+  overflow-y: auto;
+
+  table {
+    thead {
+      tr {
+        th {
+          background-color: @list-tr;
+          position: sticky;
+          top: 0;
+          height: 40px;
+          text-align: left;
+          font-weight: normal;
+          padding: 0 10px;
+          z-index: 1;
+          color: @list-thead-text;
+
+          &:first-child {
+            padding-left: 20px;
+
+            .center {
+              padding-left: 10px;
+            }
+          }
+
+          &.sort {
+            cursor: pointer;
+            user-select: none;
+          }
+
+          &.center {
+            text-align: center;
+
+            &>div {
+              display: flex;
+              align-items: center;
+              width: 100%;
+              height: 100%;
+              justify-content: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+@import "./table-tbody-tr-td.less";
+@import "../../colors/color-table.less";
+
+.table-page {
+  table {
+    tbody {
+      tr {
+        &:nth-child(odd) {
+          background-color: @tr-odd;
+        }
+
+        &:nth-child(even) {
+          background-color: @tr-even;
+        }
+
+        &:hover {
+          background-color: @tr-hover;
+          color: @tr-hover-text;
+        }
+
+        &.selected {
+          background-color: @tr-selected;
+
+          &:hover {
+            color: @tr-selected-text;
+          }
+        }
+
+        &.nohover {
+          background-color: initial;
+          cursor: default;
+        }
+
+        &.nodata {
+          display: inline-block;
+        }
+      }
+    }
+  }
+}

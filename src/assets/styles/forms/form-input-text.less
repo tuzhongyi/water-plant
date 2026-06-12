@@ -2,8 +2,8 @@ textarea,
 input[type="text"],
 input[type="number"],
 input[type="password"] {
-  background-color: #060f2b;
-  border: 1px solid #2d76ce;
+  background-color: #06999c4d;
+  border: 1px solid #07a990;
   outline: none;
   width: 100%;
   font-size: 16px;
@@ -11,6 +11,10 @@ input[type="password"] {
   box-sizing: border-box;
   height: 36px;
   color: #ddf4ff;
+
+  &:focus {
+    background-color: #c253441a;
+  }
 
   &:-internal-autofill-previewed,
   &:-internal-autofill-selected {

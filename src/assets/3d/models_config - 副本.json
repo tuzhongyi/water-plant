@@ -1,9 +1,133 @@
-
 {
   "Administration_Complex.glb": {
+    "name": "Administration_Complex.glb",
     "position": {
-      "x": 24.461514830242955,
-      "y": 38.47270205249652,
+      "x": -244.02650882168038,
+      "y": 7.101953132457588,
+      "z": 91.35214742439615
+    },
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "h": 0,
+      "p": 0,
+      "b": 0
+    },
+    "colors": {
+      "normal": {
+        "edge": "#007bff",
+        "background": "#000000"
+      },
+      "hover": {
+        "edge": "#248eff",
+        "background": "#000000"
+      },
+      "selected": {
+        "edge": "#ffbb00",
+        "background": "#000000"
+      }
+    },
+    "materialColors": {
+      "Wall": {
+        "normal": "#003c78",
+        "hover": "#0059b3",
+        "selected": "#785a00"
+      },
+      "Other": {
+        "normal": "#666666",
+        "hover": "#666666",
+        "selected": "#666666"
+      },
+      "Roof": {
+        "normal": "#007bff",
+        "hover": "#2491ff",
+        "selected": "#ffbb00"
+      }
+    },
+    "meshVisibility": {
+      "Mesh374": true,
+      "Mesh374_1": true,
+      "Mesh105": true,
+      "Mesh105_1": true,
+      "Mesh": true,
+      "Mesh_1": true,
+      "Mesh_2": true,
+      "Floor1": true
+    },
+    "label": "Administration_Complex.glb",
+    "labelVisible": true,
+    "labelPerHeight": 1,
+    "labelFontSize": 20
+  },
+  "Administration_Complex_expansion.glb": {
+    "name": "Administration_Complex_expansion.glb",
+    "position": {
+      "x": -356.31747760612916,
+      "y": 3.1860108313534568,
+      "z": 26.120028448912123
+    },
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "h": 0,
+      "p": 0,
+      "b": 0
+    },
+    "colors": {
+      "normal": {
+        "edge": "#007bff",
+        "background": "#000000"
+      },
+      "hover": {
+        "edge": "#248eff",
+        "background": "#000000"
+      },
+      "selected": {
+        "edge": "#ffbb00",
+        "background": "#000000"
+      }
+    },
+    "materialColors": {
+      "Wall": {
+        "normal": "#003c78",
+        "hover": "#0059b3",
+        "selected": "#785a00"
+      },
+      "Other": {
+        "normal": "#666666",
+        "hover": "#666666",
+        "selected": "#666666"
+      },
+      "Roof": {
+        "normal": "#007bff",
+        "hover": "#2491ff",
+        "selected": "#ffbb00"
+      }
+    },
+    "meshVisibility": {
+      "Floor2": true,
+      "Mesh747": true,
+      "Mesh747_1": true,
+      "Mesh547": true,
+      "Mesh547_1": true,
+      "Mesh547_2": true
+    },
+    "label": "Administration_Complex_expansion.glb",
+    "labelVisible": true,
+    "labelPerHeight": 1,
+    "labelFontSize": 20
+  },
+  "VIL.glb": {
+    "name": "VIL.glb",
+    "position": {
+      "x": 0,
+      "y": 0,
       "z": 0
     },
     "scale": {
@@ -18,26 +142,39 @@
     },
     "colors": {
       "normal": {
-        "edge": "#00cccc"
+        "edge": "#2264aa",
+        "background": "#000000"
       },
       "hover": {
-        "edge": "#ffaa00"
+        "edge": "#007bff",
+        "background": "#000000"
       },
       "selected": {
-        "edge": "#ff8800"
+        "edge": "#7a5a00",
+        "background": "#000000"
       }
     },
-    "render": {
-      "renderMode": "overlay",
-      "thresholdAngle": 36,
-      "edgeLineWidth": 1,
-      "solidOpacity": 0.31,
-      "wfOpacity": 1,
-      "bloom": false,
-      "bloomThreshold": 0.6,
-      "bloomStrength": 1.5,
-      "bloomRadius": 0.4,
-      "flatShading": false
-    }
+    "materialColors": {
+      "wall": {
+        "normal": "#12385e",
+        "hover": "#184d81",
+        "selected": "#473600"
+      },
+      "access": {
+        "normal": "#00ff00",
+        "hover": "#00e700",
+        "selected": "#00e700"
+      }
+    },
+    "meshVisibility": {
+      "platform": true,
+      "landscaping": true,
+      "security_booth": true,
+      "wall": true,
+      "gate2": true,
+      "gate1": true
+    },
+    "label": "VIL.glb",
+    "labelVisible": false
   }
 }

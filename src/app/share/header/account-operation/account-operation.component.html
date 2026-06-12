@@ -1,5 +1,14 @@
 <div class="app-account-operation">
-  <div class="operation-item" (click)="menu.target($event)">
+  @if (display.setting) {
+    <div class="operation-item" title="设置" (click)="on.setting()">
+      <i class="mdi mdi-settings"></i>
+    </div>
+  } @else {
+    <div class="operation-item" title="主页" (click)="on.main()">
+      <i class="howell-icon-map4"></i>
+    </div>
+  }
+  <div class="operation-item" title="账号" (click)="menu.target($event)">
     <div class="log-out">
       <i class="howell-icon-account"></i>
     </div>

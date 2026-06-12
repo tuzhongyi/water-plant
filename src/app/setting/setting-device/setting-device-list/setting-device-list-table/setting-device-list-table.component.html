@@ -1,0 +1,91 @@
+<div class="setting-device-list-table">
+  <div class="setting-device-list-table-body table-page">
+    <table border="0" cellpadding="0" cellspacing="0" TableSorter (sort)="on.sort($event)">
+      @for (width of widths; track $index) {
+        <colgroup>
+          <col [ngStyle]="{ width: width, 'min-width': minwidth[$index] }" />
+        </colgroup>
+      }
+      <thead>
+        <tr>
+          <th class="center">序号</th>
+          <th sort="Host">主机地址</th>
+          <th sort="Port">端口号</th>
+          <th sort="ProtocolType">协议类型</th>
+          <th sort="DeviceType">设备类型</th>
+          <th sort="SerialNumber">设备序列号</th>
+          <th sort="AlarmReceived">事件接收</th>
+          <th sort="SyncTime">自动校时</th>
+          <th sort="DeviceState">设备状态</th>
+          <th class="center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of datas(); track $index) {
+          <tr
+            (click)="onselect(item)"
+            [ngClass]="{
+              nohover: !item,
+              nodata: !item,
+              selected: item === selected,
+            }"
+          >
+            <td class="center">
+              <ng-container *ngIf="item">
+                {{ page.PageSize * (page.PageIndex - 1) + $index + 1 }}
+              </ng-container>
+              <ng-container *ngIf="item"> &nbsp; </ng-container>
+            </td>
+
+            <td [title]="item?.Host ?? ''">
+              {{ item?.Host }}
+            </td>
+            <td>
+              @if (item) {
+                {{ item.Port }}
+              }
+            </td>
+            <td>
+              {{ item?.ProtocolType }}
+            </td>
+            <td>
+              {{ item?.DeviceType }}
+            </td>
+            <td>
+              {{ item?.SerialNumber }}
+            </td>
+            <td>
+              {{ item?.AlarmReceived }}
+            </td>
+            <td>
+              {{ item?.SyncTime }}
+            </td>
+            <td>
+              {{ item?.DeviceState }}
+            </td>
+
+            <td class="center">
+              <div class="operation" *ngIf="item">
+                <!-- <div
+                class="button"
+                title="事件视频"
+                [class.disabled]="item.hasvideo"
+                (click)="on.video($event, item)"
+              >
+                <i class="mdi mdi-youtube-play"></i>
+              </div> -->
+
+                <div class="button" title="事件详情" (click)="on.details($event, item)">
+                  <i class="mdi mdi-clipboard-text"></i>
+                </div>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="setting-device-list-table-foot">
+    <paginator [page]="page" (change)="on.page($event)"> </paginator>
+  </div>
+</div>

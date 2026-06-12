@@ -1,0 +1,36 @@
+@import "./table-tbody-tr-td.less";
+@import "../../colors/color-table.less";
+
+.table-page-list {
+  table {
+    tbody {
+      tr {
+        height: 36px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: @tr-hover;
+          color: @tr-hover-text;
+        }
+
+        &.selected {
+          background-color: @tr-selected;
+
+          &:hover {
+            color: @tr-selected-text;
+          }
+        }
+
+        &.nohover {
+          background-color: initial;
+          cursor: default;
+        }
+
+        &.nodata {
+          background-color: transparent;
+          cursor: default;
+        }
+      }
+    }
+  }
+}

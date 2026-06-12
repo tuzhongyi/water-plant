@@ -4,7 +4,7 @@ import { ObjectTool } from '../../../../tools/object-tool/object.tool';
 
 import { HowellResponse } from '../../../models/howell-response.model';
 
-import { Map } from '../../../models/geographic/map.model';
+import { GeoMap } from '../../../models/geographic/map.model';
 import { GeographicUrl } from '../../../urls/geographic/geographic.url';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
@@ -17,36 +17,36 @@ export class GeographicMapRequestService {
   constructor(private http: HowellHttpClient) {}
   async array() {
     let url = GeographicUrl.map.basic();
-    return this.http.get<HowellResponse<Map[]>>(url).then((x) => {
-      return HowellResponseProcess.array(x, Map);
+    return this.http.get<HowellResponse<GeoMap[]>>(url).then((x) => {
+      return HowellResponseProcess.array(x, GeoMap);
     });
   }
-  async create(data: Map) {
+  async create(data: GeoMap) {
     let url = GeographicUrl.map.basic();
-    let _data = ObjectTool.serialize(data, Map);
+    let _data = ObjectTool.serialize(data, GeoMap);
     let plain = instanceToPlain(_data);
-    return this.http.post<HowellResponse<Map>, any>(url, plain).then((x) => {
-      return HowellResponseProcess.item(x, Map);
+    return this.http.post<HowellResponse<GeoMap>, any>(url, plain).then((x) => {
+      return HowellResponseProcess.item(x, GeoMap);
     });
   }
   async get(id: string) {
     let url = GeographicUrl.map.item(id);
-    return this.http.get<HowellResponse<Map>>(url).then((x) => {
-      return HowellResponseProcess.item(x, Map);
+    return this.http.get<HowellResponse<GeoMap>>(url).then((x) => {
+      return HowellResponseProcess.item(x, GeoMap);
     });
   }
   async delete(id: string) {
     let url = GeographicUrl.map.item(id);
-    return this.http.delete<HowellResponse<Map>>(url).then((x) => {
-      return HowellResponseProcess.item(x, Map);
+    return this.http.delete<HowellResponse<GeoMap>>(url).then((x) => {
+      return HowellResponseProcess.item(x, GeoMap);
     });
   }
-  async update(data: Map) {
+  async update(data: GeoMap) {
     let url = GeographicUrl.map.item(data.Id);
-    let _data = ObjectTool.serialize(data, Map);
+    let _data = ObjectTool.serialize(data, GeoMap);
     let plain = instanceToPlain(_data);
-    return this.http.put<any, HowellResponse<Map>>(url, plain).then((x) => {
-      return HowellResponseProcess.item(x, Map);
+    return this.http.put<any, HowellResponse<GeoMap>>(url, plain).then((x) => {
+      return HowellResponseProcess.item(x, GeoMap);
     });
   }
 

@@ -2,7 +2,7 @@
  * @Author: pmx
  * @Date: 2022-11-03 09:56:29
  * @Last Modified by: zzl
- * @Last Modified time: 2026-06-03 16:25:11
+ * @Last Modified time: 2026-06-11 16:55:19
  */
 const PROXY_CONFIG = [
   {
@@ -22,7 +22,7 @@ const PROXY_CONFIG = [
   },
 
   {
-    context: [, '/video/wsplayer/'],
+    context: ['/video/wsplayer/'],
     target: 'http://192.168.21.122:8800',
     changeOrigin: true,
     secure: false,

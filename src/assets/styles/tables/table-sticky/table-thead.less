@@ -1,0 +1,42 @@
+@import "../../colors/color-table.less";
+
+.table-sticky {
+  overflow-y: auto;
+
+  table {
+    thead {
+
+      background: @thead-background;
+      color: @thead-text;
+      position: sticky;
+      top: 0;
+
+      tr {
+        th {
+          border-bottom: 1px solid @border;
+          height: 75px;
+          text-align: left;
+          font-weight: normal;
+          padding: 0 10px;
+
+          &.sort {
+            cursor: pointer;
+            user-select: none;
+          }
+
+          &.center {
+            text-align: center;
+
+            &>div {
+              display: flex;
+              align-items: center;
+              width: 100%;
+              height: 100%;
+              justify-content: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}

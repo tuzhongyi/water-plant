@@ -1,0 +1,26 @@
+@import "../../colors/color-table.less";
+
+.table-sticky-list {
+  table {
+    tbody {
+      tr {
+        td {
+          .operation {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: @list-operation-text;
+            cursor: pointer;
+
+            &>* {
+              &:hover {
+                color: @list-operation-text-hover;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+}

@@ -1,0 +1,50 @@
+@import "../../colors/color-table.less";
+
+.table-page {
+  table {
+    thead {
+
+      background: @thead-background;
+      color: @thead-text;
+      height: 9.0909090909%;
+
+      tr {
+
+        th {
+          border-bottom: 1px solid @border;
+          max-height: 8vh;
+          text-align: left;
+          font-weight: normal;
+          padding: 0 10px;
+          white-space: nowrap;
+          font-size: 20px;
+
+          &:first-child {
+            padding-left: 20px;
+
+            .center {
+              padding-left: 10px;
+            }
+          }
+
+          &.sort {
+            cursor: pointer;
+            user-select: none;
+          }
+
+          &.center {
+            text-align: center !important;
+
+            &>div {
+              display: flex;
+              align-items: center;
+              width: 100%;
+              height: 100%;
+              justify-content: center;
+            }
+          }
+        }
+      }
+    }
+  }
+}

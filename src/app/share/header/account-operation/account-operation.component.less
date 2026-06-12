@@ -20,6 +20,11 @@
     .mat-icon {
       font-size: 20px;
     }
+
+    &:hover {
+      background-color: rgba(194, 83, 68, 0.5);
+      color: #fff;
+    }
   }
 
   .menu {
@@ -54,26 +59,6 @@
       &:hover {
         background-color: rgba(194, 83, 68, 0.5);
         color: #fff;
-      }
-    }
-  }
-}
-
-// 和 app-root是兄弟元素
-&~.cdk-overlay-container {
-  .cdk-overlay-pane {
-    .mat-menu-panel {
-      .mat-menu-content {
-        .mat-menu-item {
-          &:not(:first-child) {
-            cursor: pointer;
-
-            &:hover {
-              background-color: rgba(194, 83, 68, 0.5);
-              color: #fff;
-            }
-          }
-        }
       }
     }
   }
