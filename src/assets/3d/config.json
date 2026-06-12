@@ -211,7 +211,7 @@
         "Floor1": true
       },
       "label": "Administration_Complex_expansion.glb",
-      "labelMode": "always",
+      "labelMode": "never",
       "labelPerHeight": 1,
       "labelFontSize": 20,
       "locked": false,

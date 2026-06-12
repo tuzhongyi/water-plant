@@ -94,7 +94,6 @@ export class MarkerController {
 
     for (const [, item] of this.cache) {
       const cam = item.data;
-      /* 判断是否应显示 */
       let shouldShow = modelIds.has(cam.modelId);
       if (shouldShow && cam.meshId) {
         const entry = this.state.loadedModels.get(cam.modelId);
@@ -107,7 +106,6 @@ export class MarkerController {
         this.removeFromScene(item);
       }
     }
-
   }
 
   private addToScene(item: MarkerCache): void {
@@ -220,6 +218,15 @@ export class MarkerController {
     const id = this.getAtMouse(raycaster, mouse);
     if (id) { this.markerDblClick.emit(id); return true; }
     return false;
+  }
+
+  /** 调试：获取所有标记的场景状态 */
+  getDebugState(): { id: string; modelId: string; meshId?: string; inScene: boolean }[] {
+    const r: { id: string; modelId: string; meshId?: string; inScene: boolean }[] = [];
+    for (const [, item] of this.cache) {
+      r.push({ id: item.data.id, modelId: item.data.modelId, meshId: item.data.meshId, inScene: item.inScene });
+    }
+    return r;
   }
 
   /* ---- 清理 ---- */

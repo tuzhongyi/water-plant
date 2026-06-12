@@ -115,12 +115,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       const m = this.models();
       this.syncModels(m);
-      /* syncModels 执行后确保 marker/label 按最新 models 筛选 */
       this.markerCtrl.updateSceneVisibility(this.models());
       this.updateLabelVisibility();
     });
     effect(() => {
-      this.markerCtrl.syncCache(this.cameras(), this.modelCtrl.sceneReady);
+      const cams = this.cameras();
+      this.markerCtrl.syncCache(cams, this.modelCtrl.sceneReady);
       this.markerCtrl.updateSceneVisibility(this.models());
     });
     effect(() => this.markerCtrl.applySelection(this.selectedCameraId(), this.camerasMovable(), this.modelCtrl.sceneReady));
@@ -140,11 +140,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.bindEvents();
     this.bindCommands();
     this.sceneService.addBeforeRender(this.camBBoxUpdate);
-    this.modelCtrl.sceneReady = true; // 场景已就绪，syncModels 可以开始处理模型
 
-    /* 加载 config，完成后通知外部 */
+    /* 加载 config，完成后才允许处理模型 */
     this.configService.autoLoadModels().finally(() => {
-      /* 配置加载完成后，将设置应用到所有已加载的模型 */
+      this.modelCtrl.sceneReady = true;
+      /* config 就绪后触发一次模型同步 */
+      this.syncModels(this.models());
       this.applyLoadedConfig();
       this.inited.emit();
     });
@@ -158,20 +159,57 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     if (this.subCamSyncAdded) {
       this.sceneService.removeBeforeRender(this.subCamSync);
     }
+
+    /* 清理模型场景对象 */
     for (const s of this.modelCtrl.internalModels.values()) {
       this.scene.remove(s.group);
-      if (s.bboxHelper) {
-        this.scene.remove(s.bboxHelper);
-        s.bboxHelper.dispose();
-      }
+      if (s.bboxHelper) { this.scene.remove(s.bboxHelper); s.bboxHelper.dispose(); }
     }
     this.modelCtrl.internalModels.clear();
+    this.modelCtrl.loadingIds.clear();
+    this.modelCtrl.sceneReady = false;
+    this.modelCtrl.currentGlobalSettings = undefined;
+    this.modelCtrl.initViewFitted = false;
+
+    /* 清理摄像机 BBox */
     for (const h of this.cameraBBoxHelpers.values()) {
-      this.scene.remove(h);
-      h.dispose();
+      this.scene.remove(h); h.dispose();
     }
     this.cameraBBoxHelpers.clear();
+
+    /* 清理 marker */
     this.markerCtrl.dispose();
+
+    /* ---- 清理 state 缓存（先清理，避免 dispose 中触发回调） ---- */
+    this.state.selectedModelId$.next(null);
+    this.state.hoveredModelId$.next(null);
+    /* activeConfig 不清空：新实例可能先 syncModels 再 autoLoadModels，需要旧配置 */
+    this.state.modelFiles$.next([]);
+    this.state.sceneCameras$.next([]);
+    this.state.activeSceneCameraId$.next(null);
+    this.state.selectedSceneCameraId$.next(null);
+    this.state.loading$.next(false);
+    this.state.sceneReady$.next(false);
+    this.state.editMode$.next(false);
+    this.state.statusMessage$.next('');
+    this.state.viewPreset$.next('medium');
+
+    /* 清理全部 loadedModels 及其 Three.js 资源 */
+    const oldEntries = this.state.loadedModels;
+    this.state.loadedModels$.next(new Map());
+    for (const [, entry] of oldEntries) {
+      /* 先清理 depthPrePassGroup（disposeEntry 未覆盖） */
+      if (entry.depthPrePassGroup) {
+        entry.depthPrePassGroup.traverse((c: any) => {
+          if (c.geometry) c.geometry.dispose();
+          if (c.material) c.material.dispose();
+        });
+        entry.wrapper.remove(entry.depthPrePassGroup);
+        entry.depthPrePassGroup = undefined;
+      }
+      this.modelService.removeModel(entry.id);
+    }
+
     this.sceneService.dispose();
   }
 
@@ -185,6 +223,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.markerCtrl.updateSceneVisibility(this.models());
       this.updateLabelVisibility();
       if (this.modelCtrl.loadingIds.size === 0) this.modelCtrl.emitLoaded(this.models());
+      console.warn('[loaded完成] 摄像机场景状态:', JSON.stringify(this.markerCtrl.getDebugState()));
     }));
     this.subs.add(this.markerCtrl.markerClick.subscribe((id) => this.markerClick.emit(id)));
     this.subs.add(this.markerCtrl.markerDblClick.subscribe((id) => this.markerDblClick.emit(id)));

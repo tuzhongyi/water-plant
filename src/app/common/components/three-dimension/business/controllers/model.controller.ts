@@ -99,8 +99,13 @@ export class ModelController {
   /* ---- 内部状态管理 ---- */
 
   addToInternal(entry: ModelEntry): void {
-    /* 重新加入场景时，重置所有 mesh 为可见 */
+    /* 重新加入场景时，全部 mesh 重置为可见 */
     entry.model.traverse((c) => { if ((c as THREE.Mesh).isMesh) (c as THREE.Mesh).visible = true; });
+    /* 从 activeConfig 恢复 meshVisibility */
+    const transform = this.state.activeConfig?.models?.[entry.fileName];
+    if (transform?.meshVisibility) {
+      this.modelService.setNodeVisible(entry, transform.meshVisibility);
+    }
 
     const skipIds = new Set<number>();
     if (entry.edgesGroup) skipIds.add(entry.edgesGroup.id);
@@ -148,31 +153,36 @@ export class ModelController {
     this.state.statusMessage$.next(`正在加载: ${fileName}...`);
     const entry = await this.modelService.loadModel(url, fileName);
     if (entry) {
-      if (position) {
+      /* 始终从 activeConfig 查找并应用完整变换配置 */
+      const config = this.state.activeConfig;
+      const transform = config?.models?.[fileName];
+      if (transform) {
+        this.modelService.applyTransformConfig(entry, transform);
+        /* position 优先级：models 输入 > config */
+        if (position) {
+          entry.editPosition.set(position.x, position.y, position.z);
+          this.modelService.applyTransform(entry);
+        }
+        if (transform.materialColors) {
+          const actualNames = new Set(this.colorsService.getMaterials(entry).map((m) => m.name));
+          for (const [matName, state] of Object.entries(transform.materialColors)) {
+            if (actualNames.has(matName)) entry.materialColors.set(matName, { ...state });
+          }
+        }
+        if (transform.meshVisibility) {
+          this.modelService.setNodeVisible(entry, transform.meshVisibility);
+        }
+        if (transform.label !== undefined) entry.label = transform.label;
+        if (transform.labelMode !== undefined) entry.labelMode = transform.labelMode;
+        if (transform.labelPerHeight !== undefined) entry.labelPerHeight = transform.labelPerHeight;
+        if (transform.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
+        if (transform.locked !== undefined) entry.locked = transform.locked;
+        if (transform.gizmoVisible !== undefined) entry.gizmoVisible = transform.gizmoVisible;
+        this.modelService.updateLabel(entry);
+      } else if (position) {
+        /* 无 config 但有 position：直接应用位置 */
         entry.editPosition.set(position.x, position.y, position.z);
         this.modelService.applyTransform(entry);
-      } else {
-        const config = this.state.activeConfig;
-        const transform = config?.models?.[fileName];
-        if (transform) {
-          this.modelService.applyTransformConfig(entry, transform);
-          if (transform.materialColors) {
-            const actualNames = new Set(this.colorsService.getMaterials(entry).map((m) => m.name));
-            for (const [matName, state] of Object.entries(transform.materialColors)) {
-              if (actualNames.has(matName)) entry.materialColors.set(matName, { ...state });
-            }
-          }
-          if (transform.meshVisibility) {
-            this.modelService.setNodeVisible(entry, transform.meshVisibility);
-          }
-          if (transform.label !== undefined) entry.label = transform.label;
-          if (transform.labelMode !== undefined) entry.labelMode = transform.labelMode;
-          if (transform.labelPerHeight !== undefined) entry.labelPerHeight = transform.labelPerHeight;
-          if (transform.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
-          if (transform.locked !== undefined) entry.locked = transform.locked;
-          if (transform.gizmoVisible !== undefined) entry.gizmoVisible = transform.gizmoVisible;
-          this.modelService.updateLabel(entry);
-        }
       }
       this.colorsService.applyStateColors(entry, 'normal');
       this.state.statusMessage$.next(`已加载: ${fileName}`);

@@ -5,8 +5,9 @@ import { ApiConfigResponse } from '../models/types';
 
 @Injectable({ providedIn: 'root' })
 export class ApiConfigService {
-  /** 读取配置：优先 localStorage，否则加载 public/config.json */
+  /** 读取配置 */
   getConfig(): Observable<ApiConfigResponse> {
-    return from(fetch(PathTool.three.json.config.global).then((r) => r.json()));
+    const url = `${PathTool.three.json.config.global}?t=${Date.now()}`;
+    return from(fetch(url).then((r) => r.json()));
   }
 }
