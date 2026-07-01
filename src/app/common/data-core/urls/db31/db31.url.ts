@@ -1,9 +1,8 @@
-import { AbstractUrl } from '../abstract.url';
 import { BaseUrl } from '../base.url';
 import { DB31ChannelUrl } from './db31-channel';
 import { DB31DeviceUrl } from './db31-device.url';
 
-export class DB31Url extends AbstractUrl {
+export class DB31Url {
   private static base = `${BaseUrl.data_service}/DB31`;
 
   static get device() {
@@ -11,5 +10,9 @@ export class DB31Url extends AbstractUrl {
   }
   static get channel() {
     return new DB31ChannelUrl(this.base);
+  }
+
+  static capability() {
+    return `${this.base}/Capability`;
   }
 }

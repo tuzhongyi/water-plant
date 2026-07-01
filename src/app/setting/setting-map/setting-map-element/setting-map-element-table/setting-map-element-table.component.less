@@ -1,0 +1,67 @@
+@import url(../../../../../assets/styles/colors/color-table.less);
+
+.setting-map-element-table {
+  height: 100%;
+  width: 100%;
+  transition: all 0.5s;
+
+  @foot-height: 60px;
+
+  &-body {
+    height: calc(100% - @foot-height);
+
+    .image {
+      height: 80%;
+      cursor: pointer;
+    }
+
+    .noimage {
+      height: 100%;
+    }
+
+    table {
+      thead {
+        tr {
+          th {
+            white-space: nowrap;
+          }
+        }
+      }
+
+      tbody {
+        height: 100%;
+
+        tr {
+          height: 10%;
+
+          td {
+            height: 10%;
+            vertical-align: middle;
+            line-height: 0;
+
+            .datetime {
+              min-width: 200px;
+            }
+
+          }
+        }
+      }
+
+
+
+    }
+
+
+
+  }
+
+  &-foot {
+    height: @foot-height;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border: 1px solid @border;
+    border-top: none;
+    padding: 0 20px;
+  }
+}

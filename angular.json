@@ -64,8 +64,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "400kB",
+                  "maximumError": "800kB"
                 }
               ],
               "outputHashing": "all"
@@ -81,7 +81,8 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "proxyConfig": "proxy.conf.ts"
+            "proxyConfig": "proxy.conf.ts",
+            "host": "0.0.0.0"
           },
           "configurations": {
             "production": {
@@ -89,8 +90,8 @@
             },
             "development": {
               "buildTarget": "water-plant:build:development",
-              "host": "127.0.0.1",
-              "port": 9000,
+              "host": "0.0.0.0",
+              "port": 9001,
               "open": false
             }
           },

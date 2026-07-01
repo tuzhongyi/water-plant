@@ -1,0 +1,80 @@
+<div class="setting-map-element-table">
+  <div class="setting-map-element-table-body table-page">
+    <table border="0" cellpadding="0" cellspacing="0" TableSorter (sort)="on.sort($event)">
+      @for (width of widths; track $index) {
+        <colgroup>
+          <col [ngStyle]="{ width: width, 'min-width': minwidth[$index] }" />
+        </colgroup>
+      }
+      <thead>
+        <tr>
+          <th class="center">序号</th>
+          <th sort="Name">名称</th>
+          <th sort="ElementType">元素类型</th>
+          <th sort="ElementId">关联设备</th>
+          <th sort="ParentId">父元素</th>
+          <th sort="MapId">所属地图</th>
+          <th sort="CreateTime">创建时间</th>
+          <th class="center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of datas(); track $index) {
+          <tr
+            (click)="onselect(item)"
+            [ngClass]="{
+              nohover: !item,
+              nodata: !item,
+              selected: item === selected,
+            }"
+          >
+            <td class="center">
+              @if (item) {
+                {{ page.PageSize * (page.PageIndex - 1) + $index + 1 }}
+              }
+              @if (!item) {
+                &nbsp;
+              }
+            </td>
+
+            <td [title]="item?.Name ?? ''">
+              {{ item?.Name }}
+            </td>
+            <td>
+              @if (item) {
+                {{ Language.MapElementType(item.ElementType) }}
+              }
+            </td>
+            <td [title]="item?.ElementId ?? ''">
+              {{ item?.ElementId }}
+            </td>
+            <td [title]="item?.ParentId ?? ''">
+              {{ item?.ParentId }}
+            </td>
+            <td [title]="item?.MapId ?? ''">
+              {{ item?.MapId }}
+            </td>
+            <td>
+              @if (item) {
+                {{ item.CreateTime | date: 'yyyy-MM-dd HH:mm:ss' }}
+              }
+            </td>
+
+            <td class="center">
+              @if (item) {
+                <div class="operation">
+                  <div class="button" title="详情" (click)="on.details($event, item)">
+                    <i class="mdi mdi-clipboard-text"></i>
+                  </div>
+                </div>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="setting-map-element-table-foot">
+    <paginator [page]="page" (change)="on.page($event)"> </paginator>
+  </div>
+</div>

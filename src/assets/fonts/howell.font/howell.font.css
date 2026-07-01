@@ -2603,3 +2603,59 @@ a .howell-icon-flip-vertical:before {
 .howell-icon-dashboard:before {
     content: "\f406";
 }
+
+.howell-icon-claw_machine:before {
+    content: "\f407";
+}
+
+.howell-icon-hydraulic_machine:before {
+    content: "\f408";
+}
+
+.howell-icon-shop:before {
+    content: "\f409";
+}
+
+.howell-icon-alarm4:before {
+    content: "\f410";
+}
+
+.howell-icon-alarm5:before {
+    content: "\f411";
+}
+
+.howell-icon-ebike:before {
+    content: "\f412";
+}
+
+.howell-icon-exit:before {
+    content: "\f413";
+}
+
+.howell-icon-bus_stop:before {
+    content: "\f414";
+}
+
+.howell-icon-barrier:before {
+    content: "\f415";
+}
+
+.howell-icon-no_parking:before {
+    content: "\f416";
+}
+
+.howell-icon-publicity_wall:before {
+    content: "\f417";
+}
+
+.howell-icon-camera_line:before {
+    content: "\f418";
+}
+
+.howell-icon-sensor_line:before {
+    content: "\f419";
+}
+
+.howell-icon-device_line:before {
+    content: "\f420";
+}

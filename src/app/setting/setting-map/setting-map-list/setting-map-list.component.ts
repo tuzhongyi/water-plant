@@ -1,19 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { CardComponent } from '../../../common/components/card/card.component';
+import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
-import { MapTreeComponent } from '../../../share/map-tree/map-tree.component';
+import { TreeMapComponent } from '../../../share/tree/tree-map/tree-map.component';
 
 @Component({
   selector: 'hw-setting-map-list',
-  imports: [CommonModule, CardComponent, MapTreeComponent],
+  imports: [CommonModule, TreeMapComponent],
   templateUrl: './setting-map-list.component.html',
   styleUrl: './setting-map-list.component.less',
 })
 export class SettingMapListComponent implements OnInit {
   @Input() load?: EventEmitter<void>;
   @Output() details = new EventEmitter<GeoMap | undefined>();
+  @Output() loaded = new EventEmitter<GeoMap[]>();
+  @Input() selected?: GeoMap | GeoMapElement;
+  @Output() selectedChange = new EventEmitter<GeoMap | GeoMapElement>();
 
   constructor() {}
 
@@ -38,6 +41,11 @@ export class SettingMapListComponent implements OnInit {
       if (datas.length == 0) {
         this.details.emit();
       }
+      this.loaded.emit(datas);
+    },
+    select: (data?: GeoMap | GeoMapElement) => {
+      this.selected = data;
+      this.selectedChange.emit(this.selected);
     },
   };
 }

@@ -1,0 +1,12 @@
+<div class="setting-device-tree">
+  <hw-tree-device
+    [load]="tree.load"
+    (loaded)="tree.loaded($event)"
+    [selected]="selected()"
+    (selectedChange)="tree.select($event)"
+    [bound]="elements()"
+    (bind)="tree.bind($event)"
+    (unbind)="tree.unbind($event)"
+    (position)="tree.position($event)"
+  ></hw-tree-device>
+</div>

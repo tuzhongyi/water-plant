@@ -25,7 +25,7 @@ export class VideoPlayerWindowBusiness {
 
   private convert(data: VideoUrl) {
     let model = new VideoModel(data.Url);
-    if (location.hostname == '127.0.0.1' && location.port == '9000') {
+    if (location.hostname == '127.0.0.1' && location.port == '9001') {
       if (model.host == 'localhost' || model.host == '127.0.0.1') {
         model.host = '192.168.21.122';
       }

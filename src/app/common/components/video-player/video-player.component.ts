@@ -241,7 +241,7 @@ export class VideoPlayerComponent implements OnDestroy, OnInit, AfterViewInit, O
       .replace('127.0.0.1', location.hostname);
     this.webUrl = url;
 
-    if (location.port === '9000') {
+    if (location.port === '9001') {
       this.webUrl = Creater.WebUrl();
     }
     this.isinited = true;

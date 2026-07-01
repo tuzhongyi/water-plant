@@ -5,6 +5,10 @@
 .button-border {
   box-sizing: border-box;
   transition: all 0.5s;
+  height: 34px;
+  padding: 0 10px;
+  font-size: 18px;
+  border: 1px solid transparent;
 
   &.blue {
     border: 1px solid @blue;
@@ -13,12 +17,20 @@
 
   }
 
+  &.full {
+    background-color: #07a990;
+
+    &:hover {
+      border: 1px solid #f46855;
+      background-color: #c2534480;
+    }
+  }
+
 
   &.green {
     border: solid #07a990 1px;
-    height: 34px;
-    padding: 0 10px;
-    font-size: 18px;
+
+
 
     &:hover {
       border-color: #f46855;

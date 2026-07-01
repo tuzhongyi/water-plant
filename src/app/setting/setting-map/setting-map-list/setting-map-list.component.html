@@ -1,17 +1,9 @@
 <div class="setting-map-list">
-  <howell-card>
-    <div class="setting-map-list-container card-flex column">
-      <div class="card-head">
-        <div class="card-title">地图列表</div>
-      </div>
-      <div class="card-body">
-        <hw-map-tree [load]="tree.load" (loaded)="tree.loaded($event)"></hw-map-tree>
-      </div>
-      <div class="card-foot">
-        <div class="button-group">
-          <button class="button-border green">添加地图元素</button>
-        </div>
-      </div>
-    </div>
-  </howell-card>
+  <hw-tree-map
+    [load]="tree.load"
+    (loaded)="tree.loaded($event)"
+    [deselectable]="false"
+    [selected]="selected"
+    (selectedChange)="tree.select($event)"
+  ></hw-tree-map>
 </div>

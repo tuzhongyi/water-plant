@@ -16,21 +16,22 @@ import {
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { TransformControls } from 'three/examples/jsm/Addons.js';
+import { IIdNameModel } from '../../data-core/models/interface/model.interface';
+import { MarkerController } from './business/controllers/marker.controller';
+import { InternalModelState, ModelController } from './business/controllers/model.controller';
 import {
   CameraEntity,
-  MaterialColorState,
   ModelEntry,
   ModelTransformConfig,
   ModelViewerModel,
   RenderSettings,
   SceneCamera,
+  StandbyClickArgs,
   Vec3,
 } from './business/models/types';
 import { ColorsService } from './business/services/colors.service';
 import { ConfigService } from './business/services/config.service';
 import { EdgesService } from './business/services/edges.service';
-import { InternalModelState, ModelController } from './business/controllers/model.controller';
-import { MarkerController } from './business/controllers/marker.controller';
 import { ModelService } from './business/services/model.service';
 import { SceneService } from './business/services/scene.service';
 import { StateService } from './business/services/state.service';
@@ -47,6 +48,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
+  standby = input<IIdNameModel>();
   /* ---- Inputs ---- */
   models = input<ModelViewerModel[]>([]);
   sceneCameras = input<SceneCamera[]>([]);
@@ -60,6 +62,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   selectedCameraId = input<string | null>(null);
   /** 是否允许移动摄像机标记 */
   camerasMovable = input<boolean>(false);
+  /** marker label 显示模式: 'always' 常显, 'hover' 仅悬停/聚焦时显示 */
+  markerLabelMode = input<'always' | 'hover'>('hover');
+  /** 垂直旋转角度限制（度），默认 15，防止摄像机低于此角度 */
+  polarLimit = input<number>(-5);
 
   /* ---- Outputs ---- */
   modelClick = output<string>();
@@ -77,6 +83,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   markerDblClick = output<string>();
   /** 摄像机标记位置变化 */
   markerPositionChange = output<CameraEntity>();
+  /** standby 模式点击时输出坐标 */
+  standbyClick = output<StandbyClickArgs>();
+  /** standby 模式右键取消 */
+  standbyCancel = output<void>();
 
   /* ---- Services ---- */
   private zone = inject(NgZone);
@@ -108,8 +118,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private subCamSyncAdded = false;
   private camIdCounter = 0;
 
-  private subs = new Subscription();
+  /* standby 模式：跟随鼠标的半透明图标 */
+  private standbySprite?: THREE.Sprite;
 
+  private subs = new Subscription();
 
   constructor() {
     effect(() => {
@@ -122,8 +134,32 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       const cams = this.cameras();
       this.markerCtrl.syncCache(cams, this.modelCtrl.sceneReady);
       this.markerCtrl.updateSceneVisibility(this.models());
+      this.markerCtrl.labelMode = this.markerLabelMode();
     });
-    effect(() => this.markerCtrl.applySelection(this.selectedCameraId(), this.camerasMovable(), this.modelCtrl.sceneReady));
+    effect(() =>
+      this.markerCtrl.applySelection(
+        this.selectedCameraId(),
+        this.camerasMovable(),
+        this.modelCtrl.sceneReady,
+      ),
+    );
+    effect(() => {
+      this.polarLimit();
+      if (this.modelCtrl.sceneReady) this.applyPolarLimit();
+    });
+    /* standby 模式：有值时创建半透明跟随图标，无值时销毁 */
+    effect(() => {
+      const s = this.standby();
+      if (s) {
+        console.log(s);
+        this.ensureStandbySprite();
+      } else if (this.standbySprite) {
+        this.sceneService.scene.remove(this.standbySprite);
+        this.standbySprite.material.dispose();
+        this.standbySprite = undefined;
+        this.sceneService.renderer.domElement.style.cursor = '';
+      }
+    });
     /* BehaviorSubject 订阅在 bindCommands 中设置（effect 不追踪 RxJS Subject） */
   }
 
@@ -136,6 +172,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     this.scene = this.sceneService.scene;
     this.renderer = this.sceneService.renderer;
+
+    /* 设置垂直旋转角度限制 */
+    this.applyPolarLimit();
 
     this.bindEvents();
     this.bindCommands();
@@ -156,6 +195,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.disposeModelTC();
     this.disposeCameraTC();
     this.sceneService.removeBeforeRender(this.camBBoxUpdate);
+    this.sceneService.removeBeforeRender(this.fixSpriteScale);
     if (this.subCamSyncAdded) {
       this.sceneService.removeBeforeRender(this.subCamSync);
     }
@@ -163,7 +203,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     /* 清理模型场景对象 */
     for (const s of this.modelCtrl.internalModels.values()) {
       this.scene.remove(s.group);
-      if (s.bboxHelper) { this.scene.remove(s.bboxHelper); s.bboxHelper.dispose(); }
+      if (s.bboxHelper) {
+        this.scene.remove(s.bboxHelper);
+        s.bboxHelper.dispose();
+      }
     }
     this.modelCtrl.internalModels.clear();
     this.modelCtrl.loadingIds.clear();
@@ -173,7 +216,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     /* 清理摄像机 BBox */
     for (const h of this.cameraBBoxHelpers.values()) {
-      this.scene.remove(h); h.dispose();
+      this.scene.remove(h);
+      h.dispose();
     }
     this.cameraBBoxHelpers.clear();
 
@@ -213,21 +257,80 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.sceneService.dispose();
   }
 
+  private ensureStandbySprite(): void {
+    if (this.standbySprite) return;
+    const tex = new THREE.TextureLoader().load('assets/images/camera.png');
+    const mat = new THREE.SpriteMaterial({
+      map: tex,
+      depthTest: false,
+      depthWrite: false,
+      transparent: true,
+      opacity: 0.5,
+    });
+    this.standbySprite = new THREE.Sprite(mat);
+    this.standbySprite.scale.set(5, 5, 1);
+    this.standbySprite.renderOrder = 999;
+    this.standbySprite.visible = false;
+    this.sceneService.scene.add(this.standbySprite);
+    this.sceneService.addBeforeRender(this.fixSpriteScale);
+  }
+
+  /** 固定 standby sprite 为 32px，不随距离缩放 */
+  private fixSpriteScale = (): void => {
+    if (!this.standbySprite?.visible) return;
+    const cam = this.sceneService.camera as THREE.PerspectiveCamera;
+    const dist = cam.position.distanceTo(this.standbySprite.position);
+    const vFov = cam.fov * Math.PI / 180;
+    const height = 2 * dist * Math.tan(vFov / 2);
+    const px = height / this.renderer.domElement.clientHeight;
+    const s = 32 * px;
+    this.standbySprite.scale.set(s, s, 1);
+  }
+
+  private updateStandbyPosition(): void {
+    if (!this.standbySprite || !this.standby()) return;
+    this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
+    const all = this.getAllMeshes();
+    const hits = this.raycaster.intersectObjects(
+      all.map((a) => a.mesh),
+      false,
+    );
+    if (hits.length > 0) {
+      this.standbySprite.position.copy(hits[0].point);
+      this.standbySprite.visible = true;
+    } else {
+      this.standbySprite.visible = false;
+    }
+  }
+
+  private applyPolarLimit(): void {
+    const deg = this.polarLimit();
+    const rad = (deg * Math.PI) / 180;
+    this.sceneService.controls.maxPolarAngle = Math.PI / 2 + rad;
+  }
+
   /* ---- Commands ---- */
 
   private bindCommands(): void {
     /* 转发 controller 事件 */
     this.subs.add(this.modelCtrl.loaded.subscribe((configs) => this.loaded.emit(configs)));
-    this.subs.add(this.modelCtrl.asyncLoadDone.subscribe(() => {
-      this.fitAllModelsInView(this.models());
-      this.markerCtrl.updateSceneVisibility(this.models());
-      this.updateLabelVisibility();
-      if (this.modelCtrl.loadingIds.size === 0) this.modelCtrl.emitLoaded(this.models());
-      console.warn('[loaded完成] 摄像机场景状态:', JSON.stringify(this.markerCtrl.getDebugState()));
-    }));
+    this.subs.add(
+      this.modelCtrl.asyncLoadDone.subscribe(() => {
+        this.fitAllModelsInView(this.models());
+        this.markerCtrl.updateSceneVisibility(this.models());
+        this.updateLabelVisibility();
+        if (this.modelCtrl.loadingIds.size === 0) this.modelCtrl.emitLoaded(this.models());
+        console.warn(
+          '[loaded完成] 摄像机场景状态:',
+          JSON.stringify(this.markerCtrl.getDebugState()),
+        );
+      }),
+    );
     this.subs.add(this.markerCtrl.markerClick.subscribe((id) => this.markerClick.emit(id)));
     this.subs.add(this.markerCtrl.markerDblClick.subscribe((id) => this.markerDblClick.emit(id)));
-    this.subs.add(this.markerCtrl.markerPositionChange.subscribe((cam) => this.markerPositionChange.emit(cam)));
+    this.subs.add(
+      this.markerCtrl.markerPositionChange.subscribe((cam) => this.markerPositionChange.emit(cam)),
+    );
 
     this.subs.add(
       this.state.loadModelCmd$.subscribe((c) =>
@@ -356,7 +459,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   private bindEvents(): void {
     const c = this.sceneService.renderer.domElement;
-    c.addEventListener('contextmenu', (e: Event) => e.preventDefault());
+    c.addEventListener('contextmenu', (e: Event) => {
+      e.preventDefault();
+      if (this.standby()) {
+        this.standbyCancel.emit();
+      }
+    });
     c.addEventListener('pointermove', (e: PointerEvent) => this.onPointerMove(e));
     c.addEventListener('click', (e: MouseEvent) => this.onClick(e));
     c.addEventListener('dblclick', (e: MouseEvent) => this.onDoubleClick(e));
@@ -397,8 +505,15 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private onPointerMove(e: PointerEvent): void {
     this.updateMouse(e);
 
+    /* standby 模式：光标变手型 + 半透明图标跟随 */
+    if (this.standby()) {
+      this.updateStandbyPosition();
+      this.sceneService.renderer.domElement.style.cursor = 'grab';
+      return;
+    }
+
     /* 优先检测 marker hover */
-    this.markerCtrl.handleHover(this.raycaster, this.mouse);
+    this.markerCtrl.handle.hover(this.raycaster, this.mouse);
     if (this.markerCtrl.hoveredId) return;
 
     this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
@@ -443,8 +558,31 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private onClick(e: MouseEvent): void {
     this.updateMouse(e);
 
+    /* standby 模式：输出点击坐标 */
+    if (this.standby() && this.standbySprite?.visible) {
+      const p = this.standbySprite.position;
+      const all = this.getAllMeshes();
+      let modelId = '';
+      if (all.length > 0) {
+        this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
+        const hits = this.raycaster.intersectObjects(
+          all.map((a) => a.mesh),
+          false,
+        );
+        if (hits.length > 0) {
+          const found = all.find((a) => a.mesh === hits[0].object);
+          if (found) modelId = found.modelId;
+        }
+      }
+      this.standbyClick.emit({ x: p.x, y: p.y, z: p.z, modelId, data: this.standby()! });
+      return;
+    }
+
     /* 优先检测 marker click */
-    if (this.markerCtrl.handleClick(this.raycaster, this.mouse)) return;
+    if (this.markerCtrl.handle.click(this.raycaster, this.mouse)) return;
+
+    /* 非 marker 点击 → 清除聚焦 */
+    this.markerCtrl.handle.clearFocus();
 
     this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
     const all = this.getAllMeshes();
@@ -485,7 +623,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.updateMouse(e);
 
     /* 优先检测 marker dblclick */
-    if (this.markerCtrl.handleDblClick(this.raycaster, this.mouse)) return;
+    if (this.markerCtrl.handle.dblclick(this.raycaster, this.mouse)) return;
 
     this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
     const all = this.getAllMeshes();
@@ -1117,5 +1255,4 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     if (this.state.selectedSceneCameraId$.value === id)
       this.state.selectedSceneCameraId$.next(null);
   }
-
 }

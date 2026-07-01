@@ -1,7 +1,14 @@
 <div class="setting-map-three">
-  <howell-card>
-    <div class="setting-map-three-container">
-      <hw-3d [models]="models"></hw-3d>
-    </div>
-  </howell-card>
+  <div class="setting-map-three-container">
+    <hw-3d
+      [models]="three.model.datas()"
+      (inited)="three.on.inited()"
+      [standby]="standby"
+      (standbyClick)="three.on.standby($event)"
+      (standbyCancel)="three.on.standbyCancel()"
+      [cameras]="three.camera.datas()"
+      [selectedCameraId]="focusCameraId?.Id ?? null"
+      [camerasMovable]="false"
+    ></hw-3d>
+  </div>
 </div>

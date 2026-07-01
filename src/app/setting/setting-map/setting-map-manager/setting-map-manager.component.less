@@ -12,11 +12,16 @@
 
   &-list {
     height: 100%;
-    width: calc((100% - @gap) * 0.3);
+    width: calc((100% - @gap) * (1 - 0.618));
+
+    &-container {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   &-three {
-    width: calc((100% - @gap) * 0.7);
+    width: calc((100% - @gap) * 0.618);
   }
 
 }

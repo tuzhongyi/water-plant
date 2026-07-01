@@ -28,8 +28,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private init() {
     let model = new LoginModel();
-    model.username = 'admin';
-    model.password = 'Howell.net.cn';
+    // model.username = 'admin';
+    // model.password = 'Howell.net.cn';
     return model;
   }
 

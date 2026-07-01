@@ -9,7 +9,7 @@ export class DeviceCapability implements IModel {
   ProtocolTypes?: EnumNameValue[];
   /**	EnumNameValue[]	设备类型	O	*/
   @Type(() => EnumNameValue)
-  DeviceTypes?: EnumNameValue[];
+  DeviceTypes?: EnumNameValue<number>[];
   /**	EnumNameValue[]	音频格式类型	O	*/
   @Type(() => EnumNameValue)
   AudioFormats?: EnumNameValue[];
@@ -18,5 +18,5 @@ export class DeviceCapability implements IModel {
   VideoFormats?: EnumNameValue[];
   /**	EnumNameValue[]	设备状态	O	*/
   @Type(() => EnumNameValue)
-  DeviceStates?: EnumNameValue[];
+  DeviceStates?: EnumNameValue<number>[];
 }

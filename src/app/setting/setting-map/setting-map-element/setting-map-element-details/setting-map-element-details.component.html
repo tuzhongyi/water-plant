@@ -1,0 +1,40 @@
+<div class="setting-map-details">
+  <div class="setting-map-details-body">
+    <div class="forms">
+      <div class="form-item" *ngIf="args">
+        <div class="form-item-text" text-space-between>父元素</div>
+        <div class="form-item-value">
+          <input type="text" readonly [value]="args.parent.Name || ''" />
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text" text-space-between>元素名称</div>
+        <div class="form-item-value"><input type="text" [(ngModel)]="data.Name" /></div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text" text-space-between>元素类型</div>
+        <div class="form-item-value fill">
+          <hw-select [nullable]="false" [(selected)]="data.ElementType">
+            <select [(ngModel)]="data.ElementType">
+              @for (item of _source.types; track $index) {
+                <option [ngValue]="item.Value">{{ item.Name }}</option>
+              }
+            </select>
+          </hw-select>
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text baseline" text-space-between>描述</div>
+        <div class="form-item-value textarea">
+          <textarea [(ngModel)]="data.Description"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="setting-map-details-foot">
+    <div class="button-group">
+      <button class="button-border full" (click)="on.ok()">确定</button>
+      <button class="button-border green" (click)="on.close()">取消</button>
+    </div>
+  </div>
+</div>

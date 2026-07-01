@@ -2,21 +2,19 @@
   {
     "name": "Administration_Complex.glb",
     "size": 959412,
-    "ext": ".glb"
+    "ext": ".glb",
+	"type":"building"
   },
   {
     "name": "Administration_Complex_expansion.glb",
     "size": 1023292,
-    "ext": ".glb"
-  },
-  {
-    "name": "keyboard-v3.glb",
-    "size": 1730760,
-    "ext": ".glb"
+    "ext": ".glb",
+	"type":"floors"
   },
   {
     "name": "VIL.glb",
     "size": 64412,
-    "ext": ".glb"
+    "ext": ".glb",
+	"type":"village"
   }
 ]

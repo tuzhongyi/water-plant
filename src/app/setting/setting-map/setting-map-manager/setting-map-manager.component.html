@@ -1,12 +1,34 @@
 <div class="setting-map-manager">
   <div class="setting-map-list">
-    <hw-setting-map-list
-      [load]="geo.map.load"
-      (details)="geo.map.details.open($event)"
-    ></hw-setting-map-list>
+    <howell-card>
+      <div class="setting-map-list-container card-flex column">
+        <div class="card-head">设备信息</div>
+        <div class="card-line"></div>
+        <div class="card-body">
+          <hw-setting-device-tree
+            [load]="manager.load"
+            [elements]="geo.element.datas()"
+            (bind)="tree.standby($event)"
+            (position)="tree.position($event)"
+          ></hw-setting-device-tree>
+        </div>
+      </div>
+    </howell-card>
   </div>
+
   <div class="setting-map-three">
-    <hw-setting-map-three></hw-setting-map-three>
+    <howell-card>
+      <hw-setting-map-three
+        [load]="manager.load"
+        (maploaded)="three.on.loaded.map($event)"
+        (buildingloaded)="three.on.loaded.building($event)"
+        (cameraloaded)="three.on.loaded.camera($event)"
+        [standby]="three.standby()"
+        [focusCameraId]="three.selected()"
+        (binding)="three.on.bind($event)"
+        (standbyCancel)="three.standby.set(undefined)"
+      ></hw-setting-map-three>
+    </howell-card>
   </div>
 
   @if (window.details.map.show) {

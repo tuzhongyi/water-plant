@@ -3,17 +3,10 @@
     <div class="setting-index-title">
       <div
         class="button"
-        [class.selected]="path == SettingPath.device_search"
-        (click)="changePath(SettingPath.device_search)"
+        [class.selected]="path == SettingPath.map_element"
+        (click)="changePath(SettingPath.map_element)"
       >
-        设备搜索
-      </div>
-      <div
-        class="button"
-        [class.selected]="path == SettingPath.device_list"
-        (click)="changePath(SettingPath.device_list)"
-      >
-        设备列表
+        地图元素
       </div>
       <div
         class="button"
@@ -21,13 +14,6 @@
         (click)="changePath(SettingPath.map)"
       >
         地图布控
-      </div>
-      <div
-        class="button"
-        [class.selected]="path == SettingPath.db31"
-        (click)="changePath(SettingPath.db31)"
-      >
-        DB31元素配置
       </div>
     </div>
     <div class="setting-index-content">

@@ -26,4 +26,15 @@ export class IconTool {
         return '';
     }
   }
+
+  static DeviceType(value?: number) {
+    switch (value) {
+      case 1:
+        return 'howell-icon-camera_line';
+      case 2:
+        return 'howell-icon-device_line';
+      default:
+        return '';
+    }
+  }
 }

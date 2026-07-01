@@ -53,11 +53,11 @@ export class ModelController {
 
   syncModels(targets: ModelViewerModel[]): void {
     if (!this.sceneReady) return;
-    const targetIds = new Set(targets.map((m) => m.id));
+    const targetKeys = new Set(targets.map((m) => m.fileName));
 
     /* 移除不在目标列表中的模型 */
     for (const [id, s] of this.internalModels) {
-      if (!targetIds.has(id)) {
+      if (!targetKeys.has(id)) {
         this.sceneService.scene.remove(s.group);
         if (s.bboxHelper) {
           this.sceneService.scene.remove(s.bboxHelper);
@@ -71,18 +71,19 @@ export class ModelController {
 
     /* 加载/同步模型 */
     for (const model of targets) {
-      const entry = this.state.loadedModels.get(model.id);
+      const key = model.fileName;
+      const entry = this.state.loadedModels.get(key);
       if (entry) {
-        if (!this.internalModels.has(model.id)) {
+        if (!this.internalModels.has(key)) {
           this.addToInternal(entry);
         } else {
-          this.internalModels.get(model.id)!.locked = entry.locked;
+          this.internalModels.get(key)!.locked = entry.locked;
         }
-      } else if (!this.loadingIds.has(model.id)) {
-        this.loadingIds.add(model.id);
-        this.doLoadModel(model.url, model.fileName, model.position).finally(() => {
-          this.loadingIds.delete(model.id);
-          const e = this.state.loadedModels.get(model.id);
+      } else if (!this.loadingIds.has(key)) {
+        this.loadingIds.add(key);
+        this.doLoadModel(model.url, model.fileName, model.position, model.label).finally(() => {
+          this.loadingIds.delete(key);
+          const e = this.state.loadedModels.get(key);
           if (e) this.addToInternal(e);
           this.asyncLoadDone.next();
         });
@@ -91,7 +92,7 @@ export class ModelController {
 
     /* 清除已不存在的选中 */
     const selId = this.state.selectedModelId;
-    if (selId && !targetIds.has(selId)) {
+    if (selId && !targetKeys.has(selId)) {
       this.state.selectedModelId$.next(null);
     }
   }
@@ -148,7 +149,7 @@ export class ModelController {
 
   /* ---- 异步加载 ---- */
 
-  async doLoadModel(url: string, fileName: string, position?: Vec3): Promise<void> {
+  async doLoadModel(url: string, fileName: string, position?: Vec3, label?: string): Promise<void> {
     this.state.loading$.next(true);
     this.state.statusMessage$.next(`正在加载: ${fileName}...`);
     const entry = await this.modelService.loadModel(url, fileName);
@@ -178,6 +179,8 @@ export class ModelController {
         if (transform.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
         if (transform.locked !== undefined) entry.locked = transform.locked;
         if (transform.gizmoVisible !== undefined) entry.gizmoVisible = transform.gizmoVisible;
+        /* label 优先级：model 输入 > config */
+        if (label !== undefined) entry.label = label;
         this.modelService.updateLabel(entry);
       } else if (position) {
         /* 无 config 但有 position：直接应用位置 */
@@ -229,7 +232,7 @@ export class ModelController {
   fitAllModelsInView(targets: ModelViewerModel[], force = false): void {
     if (targets.length === 0) { this.initViewFitted = false; return; }
     if (!force && this.initViewFitted) return;
-    if (!force && !targets.every((m) => this.internalModels.has(m.id))) return;
+    if (!force && !targets.every((m) => this.internalModels.has(m.fileName))) return;
     if (this.internalModels.size === 0) return;
 
     const combined = new THREE.Box3();
@@ -317,9 +320,9 @@ export class ModelController {
   /* ---- loaded 导出 ---- */
 
   emitLoaded(models: ModelViewerModel[]): void {
-    const targetIds = new Set(models.map((m) => m.id));
+    const targetKeys = new Set(models.map((m) => m.fileName));
     const configs = Array.from(this.state.loadedModels.values())
-      .filter((e) => targetIds.has(e.id))
+      .filter((e) => targetKeys.has(e.fileName))
       .map((e) => this.entryToTransformConfig(e));
     this.loaded.emit(configs);
   }

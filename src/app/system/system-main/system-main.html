@@ -1,17 +1,27 @@
 <div class="system-main">
-  <howell-card>
-    <div class="system-main-container">
-      <hw-system-main-three-manager
-        (preview)="on.video.preview($event)"
-      ></hw-system-main-three-manager>
-      <div class="system-main-state" (click)="on.test()">
-        <hw-system-main-panel
-          [title]="'惠南水厂'"
-          [items]="data.device.state"
-        ></hw-system-main-panel>
-      </div>
+  <div class="system-main-left">
+    <div class="system-main-state">
+      <hw-system-main-state-device [datas]="data.device.datas"></hw-system-main-state-device>
     </div>
-  </howell-card>
+    <div class="system-main-record">
+      <howell-card> </howell-card>
+    </div>
+  </div>
+  <div class="system-main-three">
+    <howell-card>
+      <div class="system-main-container">
+        <hw-system-main-three-manager
+          (preview)="on.video.preview($event)"
+        ></hw-system-main-three-manager>
+        <div class="system-main-three-state" (click)="on.test()">
+          <hw-system-main-panel
+            [title]="'惠南水厂'"
+            [datas]="data.device.datas"
+          ></hw-system-main-panel>
+        </div>
+      </div>
+    </howell-card>
+  </div>
 
   @if (window.video.show) {
     <app-window [model]="window.video" [style]="window.video.style" [title]="window.video.title">

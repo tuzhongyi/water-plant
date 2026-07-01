@@ -1,0 +1,22 @@
+@import url(../../colors/color-@.less);
+
+.button-map {
+  width: 40px;
+  height: 42px;
+  color: @green;
+  background-image: url(../../../images/map/button-map.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background-image: url(../../../images/map/button-map-hover.png);
+  }
+
+  &.selected {
+    color: @redlight;
+    background-image: url(../../../images/map/button-map-selected.png);
+  }
+}

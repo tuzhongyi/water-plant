@@ -1,0 +1,106 @@
+.hw-tree {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  font-size: 18px;
+  color: #ddf4ff;
+
+  &-node {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    padding-right: 10px;
+
+    &:hover {
+      background-color: #ef6f5966;
+      color: #ffd0c8;
+    }
+
+    &.selected {
+      background-color: #ef6f5999;
+      color: #fff;
+
+      &:hover {
+        color: #ffd0c8;
+      }
+    }
+  }
+
+  &-toggle {
+    width: 20px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 18px;
+    line-height: 40px;
+    cursor: pointer;
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  &-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 22px;
+    overflow: hidden;
+  }
+
+  /* 节点内容样式 */
+  &-icon {
+    margin-right: 6px;
+    flex-shrink: 0;
+    font-size: 20px;
+    color: #17f1c6;
+  }
+
+  &-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-actions {
+    display: flex;
+    margin-left: auto;
+    gap: 4px;
+    flex-shrink: 0;
+    padding-right: 4px;
+    align-items: center;
+  }
+
+  &-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: inherit;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+  }
+
+  &-btn-text {
+    font-size: 14px;
+    border-radius: 4px;
+  }
+}
+
+/* 操作按钮（innerHTML 渲染需 ::ng-deep） */
+::ng-deep .hw-tree-action-btn {
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--color, inherit);
+
+  &:hover {
+    color: white !important;
+  }
+}

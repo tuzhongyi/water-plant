@@ -1,0 +1,44 @@
+@import url(../../colors/color-@.less);
+
+
+
+.button-full {
+  box-sizing: border-box;
+  transition: all 0.5s;
+
+
+  &.green {
+    border: solid #07a990 1px;
+    height: 34px;
+    padding: 0 10px;
+    font-size: 18px;
+
+    &:hover {
+      border-color: #f46855;
+      background-color: #c2534480;
+    }
+
+    &.selected {
+      border-color: #ef6f59b3;
+      background-color: #f4685580;
+    }
+  }
+
+  &.greendark {
+    border: solid #07a990 1px;
+    color: #fff;
+    background-color: #00676480;
+    cursor: pointer;
+    height: 34px;
+    font-size: 18px;
+    padding: 0 10px;
+
+    &:hover {
+      border-color: #f46855;
+      background-color: #c2534480;
+    }
+  }
+
+
+
+}
