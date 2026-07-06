@@ -9,6 +9,7 @@ import { GeoMapElement } from '../../../common/data-core/models/geographic/map-e
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
 import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
+import { DB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
 import { SettingDeviceTreeComponent } from '../../setting-device/setting-device-tree/setting-device-tree.component';
 import { SettingMapBusiness } from '../business/setting-map.business';
 import { BindingArgs } from '../business/setting-map.model';
@@ -84,7 +85,7 @@ export class SettingMapManagerComponent implements OnInit {
           let elements = [...datas, ...this.geo.element.datas()];
           this.geo.element.datas.set(elements);
         },
-        camera: (datas: GeoMapElement[]) => {
+        element: (datas: GeoMapElement[]) => {
           let source = this.geo.element.datas();
           let elements = [...datas, ...source];
           elements = ArrayTool.unique(elements, (a, b) => {
@@ -109,14 +110,12 @@ export class SettingMapManagerComponent implements OnInit {
           mapId = map.Id;
         }
 
-        if (standby instanceof VideoChannel) {
-          this.business.element.camera
-            .bind(standby, args.location, mapId, args.parent?.Id)
-            .then(() => {
-              this.toastr.success('摄像机添加成功');
-              this.three.standby.set(undefined);
-              this.manager.load.emit();
-            });
+        if (standby instanceof VideoChannel || standby instanceof DB31DeviceChannel) {
+          this.business.element.bind(standby, args.location, mapId, args.parent?.Id).then(() => {
+            this.toastr.success('绑定成功');
+            this.three.standby.set(undefined);
+            this.manager.load.emit();
+          });
         }
       },
     },
@@ -136,7 +135,8 @@ export class SettingMapManagerComponent implements OnInit {
       },
       unbind: () => {
         if (this.window.confirm.data) {
-          this.business.element.camera.unbind(this.window.confirm.data.Id).then((x) => {
+          this.business.element.unbind(this.window.confirm.data.Id).then((x) => {
+            this.toastr.success('解绑成功');
             this.window.confirm.show = false;
             this.manager.load.emit();
             this.business.element.all().then((x) => {

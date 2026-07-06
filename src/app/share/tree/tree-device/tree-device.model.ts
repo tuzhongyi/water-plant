@@ -32,7 +32,10 @@ export class DeviceIPC extends Device implements IDevice {
 export class DeviceDB31 extends DB31Device implements IDevice {
   Key: string = '';
   Icon: string = '';
-  Channels: DB31Channel[] = [];
+  Channels: DB31DeviceChannel[] = [];
+}
+export class DB31DeviceChannel extends DB31Channel {
+  DeviceName?: string;
 }
 export class KeyNameValue<T = number> extends NameValue<T> {
   Key: string = '';

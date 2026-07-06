@@ -1,28 +1,16 @@
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GisType } from '../../../common/data-core/enums/gis-type.enum';
-import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
+import { DB31Channel } from '../../../common/data-core/models/db31/db31-channel.model';
 import { GisPoint } from '../../../common/data-core/models/geographic/gis-point.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
-import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
-import { MapElementModel } from './setting-map.model';
+import { DB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
 
-export class SettingMapElementCameraBusiness {
+export class SettingMapElementDB31Business {
   constructor(private service: GeographicRequestService) {}
 
-  async load(parentId?: string): Promise<MapElementModel[]> {
-    let params = new GetMapElementsParams();
-    params.ElementTypes = [MapElementType.Camera];
-    params.ParentId = parentId;
-    let all = await this.service.map.element.all(params);
-    if (!parentId) {
-      return all.filter((x) => !x.ParentId);
-    }
-    return all;
-  }
-
   bind(
-    data: VideoChannel,
+    data: DB31Channel,
     location: { x: number; y: number; z: number },
     mapId: string,
     parentId?: string,
@@ -37,7 +25,7 @@ export class SettingMapElementCameraBusiness {
 
   private convert = {
     channel: (
-      data: VideoChannel,
+      data: DB31DeviceChannel,
       location: { x: number; y: number; z: number },
       mapId: string,
       parentId?: string,
@@ -54,11 +42,23 @@ export class SettingMapElementCameraBusiness {
       element.UpdateTime = new Date();
 
       element.ElementId = data.Id;
-      element.ElementType = MapElementType.Camera;
-      element.Name = data.Name;
+      element.ElementType = this.convert.type(data.DeviceType);
+      element.Name = `${data.DeviceName ?? ''}-${data.Name ?? ''}`;
       element.MapId = mapId;
       element.ParentId = parentId;
+      element.FromDB31 = true;
       return element;
+    },
+    type: (value: number) => {
+      switch (value) {
+        case 1:
+          return MapElementType.Announciator;
+        case 3:
+          return MapElementType.IoTSensor;
+
+        default:
+          throw new Error(`暂时不支持绑定类型${value}`);
+      }
     },
   };
 }

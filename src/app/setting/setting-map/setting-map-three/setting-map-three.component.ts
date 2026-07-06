@@ -1,10 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+  SimpleChange,
+  SimpleChanges,
+} from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { CardComponent } from '../../../common/components/card/card.component';
 import {
   FitView,
+  MarkerArgs,
   MarkerEntity,
   ModelFile,
   ModelViewerModel,
@@ -26,7 +38,7 @@ import { SettingMapThreeConverter } from './setting-map-three.converter';
   styleUrl: './setting-map-three.component.less',
   providers: [SettingMapBusiness, SettingMapThreeConverter],
 })
-export class SettingMapThreeComponent implements OnInit, OnDestroy {
+export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
   @Input() standby?: IIdNameModel;
   @Input() focusCameraId?: IIdNameModel;
   @Output() maploaded = new EventEmitter<GeoMap>();
@@ -34,7 +46,7 @@ export class SettingMapThreeComponent implements OnInit, OnDestroy {
   @Output() buildingloaded = new EventEmitter<GeoMapElement[]>();
   @Output() buildingselect = new EventEmitter<GeoMapElement>();
 
-  @Output() cameraloaded = new EventEmitter<GeoMapElement[]>();
+  @Output() elementloaded = new EventEmitter<GeoMapElement[]>();
   @Output() binding = new EventEmitter<BindingArgs>();
   @Output() standbyCancel = new EventEmitter<void>();
   @Input() load?: EventEmitter<void>;
@@ -46,16 +58,31 @@ export class SettingMapThreeComponent implements OnInit, OnDestroy {
 
   private subs = new Subscription();
   outputable = true;
-
+  ngOnChanges(changes: SimpleChanges): void {
+    this.change.standby(changes['standby']);
+  }
   ngOnInit(): void {
     this.map.load();
-    this.element.building.load();
-    this.element.camera.load();
+    this.building.load();
+    this.element.load();
     this.regist();
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
+
+  private change = {
+    standby: (change: SimpleChange) => {
+      if (change) {
+        if (this.standby) {
+          let entity = this.converter.args.from.data(this.standby);
+          this.element.standby.set(entity);
+        } else {
+          this.element.standby.set(undefined);
+        }
+      }
+    },
+  };
 
   private regist() {
     if (this.load) {
@@ -63,58 +90,56 @@ export class SettingMapThreeComponent implements OnInit, OnDestroy {
         this.load.subscribe((x) => {
           let floorId = this.floor.selected()?.Id;
 
-          this.element.camera.load(floorId);
+          this.element.load(floorId);
         }),
       );
     }
   }
-
-  element = {
-    building: {
-      datas: signal<GeoMapElement[]>([]),
-      get: (modelId: string) => {
-        let elements = this.element.building.datas();
-        return elements.find((x) => x.ElementId == modelId);
-      },
-      load: async () => {
-        let buildings = await this.business.element.building.load();
-        this.element.building.datas.set(buildings);
-        if (this.outputable) {
-          this.buildingloaded.emit(buildings);
-        }
-
-        await wait(() => {
-          return this.three.inited;
-        });
-
-        let datas = this.three.model.datas();
-        let models = buildings.map((x) => {
-          return this.converter.element.to.building(x);
-        });
-        this.three.model.datas.set([...datas, ...models]);
-      },
+  building = {
+    datas: signal<GeoMapElement[]>([]),
+    get: (modelId: string) => {
+      let elements = this.building.datas();
+      return elements.find((x) => x.ElementId == modelId);
     },
-    camera: {
-      datas: signal<GeoMapElement[]>([]),
-      get: (modelId: string) => {
-        let elements = this.element.camera.datas();
-        return elements.find((x) => x.ElementId == modelId);
-      },
-      load: async (floorId?: string) => {
-        let cameras = await this.business.element.camera.load(floorId);
+    load: async () => {
+      let buildings = await this.business.element.building.load();
+      this.building.datas.set(buildings);
+      if (this.outputable) {
+        this.buildingloaded.emit(buildings);
+      }
 
-        this.element.camera.datas.set(cameras);
-        if (this.outputable) {
-          this.cameraloaded.emit(cameras);
-        }
-        await wait(() => {
-          return this.three.inited;
-        });
+      await wait(() => {
+        return this.three.inited;
+      });
 
-        let all = cameras.map((x) => this.converter.element.to.camera(x));
-        let datas = await Promise.all(all);
-        this.three.camera.datas.set(datas);
-      },
+      let datas = this.three.model.datas();
+      let models = buildings.map((x) => {
+        return this.converter.element.to.building(x);
+      });
+      this.three.model.datas.set([...datas, ...models]);
+    },
+  };
+  element = {
+    standby: signal<MarkerArgs | undefined>(undefined),
+    datas: signal<GeoMapElement[]>([]),
+    get: (modelId: string) => {
+      let elements = this.element.datas();
+      return elements.find((x) => x.ElementId == modelId);
+    },
+    load: async (floorId?: string) => {
+      let cameras = await this.business.element.load(floorId);
+
+      this.element.datas.set(cameras);
+      if (this.outputable) {
+        this.elementloaded.emit(cameras);
+      }
+      await wait(() => {
+        return this.three.inited;
+      });
+
+      let all = cameras.map((x) => this.converter.element.to.camera(x));
+      let datas = await Promise.all(all);
+      this.three.camera.datas.set(datas);
     },
   };
 
@@ -176,7 +201,7 @@ export class SettingMapThreeComponent implements OnInit, OnDestroy {
         console.log(args);
         this.floor.target.emit(args);
 
-        this.element.camera.load(data.Id);
+        this.element.load(data.Id);
 
         setTimeout(() => {
           this.three.focus.emit();
@@ -187,11 +212,7 @@ export class SettingMapThreeComponent implements OnInit, OnDestroy {
         this.floor.clear();
         this.three.model.clear();
 
-        await Promise.all([
-          this.map.load(),
-          this.element.building.load(),
-          this.element.camera.load(),
-        ]);
+        await Promise.all([this.map.load(), this.building.load(), this.element.load()]);
 
         this.outputable = true;
       },
@@ -245,11 +266,11 @@ export class SettingMapThreeComponent implements OnInit, OnDestroy {
 
       building: {
         select: (modelId: string) => {
-          let building = this.element.building.get(modelId);
+          let building = this.building.get(modelId);
           console.log(building);
         },
         expand: async (modelId: string) => {
-          let building = this.element.building.get(modelId);
+          let building = this.building.get(modelId);
           if (building) {
             let expansion = await this.business.model.get.expansion(modelId);
             if (expansion) {

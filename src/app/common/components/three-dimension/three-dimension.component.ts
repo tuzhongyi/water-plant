@@ -16,11 +16,11 @@ import {
 import { Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { TransformControls } from 'three/examples/jsm/Addons.js';
-import { IIdNameModel } from '../../data-core/models/interface/model.interface';
 import { MarkerController } from './business/controllers/marker.controller';
 import { InternalModelState, ModelController } from './business/controllers/model.controller';
 import {
   FitView,
+  MarkerArgs,
   MarkerEntity,
   ModelEntry,
   ModelTransformConfig,
@@ -53,7 +53,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   renderMode = input<RenderMode>(RenderMode.overlay);
   gizmoVisible = input<boolean>(false);
-  standby = input<IIdNameModel>();
+  standby = input<MarkerArgs>();
   /* ---- Inputs ---- */
   models = input<ModelViewerModel[]>([]);
   sceneCameras = input<SceneCamera[]>([]);
@@ -294,9 +294,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   }
 
   private ensureStandbySprite(): void {
-    /* 从 standby 数据中读取 icon.normal，无值时 fallback 到默认图标 */
+    /* 从 standby MarkerArgs 的 icon 中读取 normal */
     const standbyData = this.standby();
-    const iconUrl = (standbyData as any)?.icon?.normal ?? 'assets/images/camera.png';
+    const iconUrl = standbyData?.icon?.normal ?? 'assets/images/camera.png';
 
     /* sprite 已存在：仅图标变化时更新纹理 */
     if (this.standbySprite) {
@@ -686,7 +686,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           meshId = (hits[0].object as THREE.Mesh).name;
         }
       }
-      this.standbyClick.emit({ x: p.x, y: p.y, z: p.z, modelId, meshId, data: this.standby()! });
+      this.standbyClick.emit({ x: p.x, y: p.y, z: p.z, modelId, meshId, data: this.standby()!.data });
       return;
     }
 

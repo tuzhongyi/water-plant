@@ -36,7 +36,7 @@ export class SystemMainThreeConverter {
 
   element = {
     to: {
-      camera: async (data: GeoMapElement): Promise<MarkerEntity> => {
+      marker: async (data: GeoMapElement): Promise<MarkerEntity> => {
         let building: GeoMapElement | undefined = undefined;
         let modelId = this.default;
         if (data.ParentId) {
@@ -56,7 +56,7 @@ export class SystemMainThreeConverter {
           },
           modelId: modelId,
           icon: PathTool.marker.get(data.ElementType),
-          offline: data.ElementState == 0,
+          offline: data.ElementState == 1,
           alarm: data.ElementState == 2,
           data: data,
         };

@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import {
+  MarkerArgs,
   MarkerEntity,
   ModelFile,
   ModelViewerModel,
 } from '../../../common/components/three-dimension/business/models/types';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
+import { DB31Channel } from '../../../common/data-core/models/db31/db31-channel.model';
+import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
+import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
 import { PathTool } from '../../../common/tools/path-tool/path.tool';
 import { SettingMapBusiness } from '../business/setting-map.business';
 
@@ -36,6 +40,16 @@ export class SettingMapThreeConverter {
 
   element = {
     to: {
+      type: (type: number) => {
+        switch (type) {
+          case 1:
+            return MapElementType.Announciator;
+          case 3:
+            return MapElementType.IoTSensor;
+          default:
+            return 0;
+        }
+      },
       camera: async (data: GeoMapElement): Promise<MarkerEntity> => {
         let building: GeoMapElement | undefined = undefined;
         let modelId = this.default;
@@ -87,6 +101,39 @@ export class SettingMapThreeConverter {
           url: PathTool.three.get.glb(filename),
         };
         return model;
+      },
+    },
+  };
+
+  args = {
+    from: {
+      data: (data: IIdNameModel) => {
+        if (data instanceof DB31Channel) {
+          return this.args.from.db31(data);
+        } else if (data instanceof VideoChannel) {
+          return this.args.from.video(data);
+        } else {
+          throw new Error('Standby 未知类型转换');
+        }
+      },
+      video: (data: VideoChannel) => {
+        let entity: MarkerArgs = {
+          id: data.Id,
+          name: data.Name,
+          icon: PathTool.marker.get(MapElementType.Camera),
+          data: data,
+        };
+        return entity;
+      },
+      db31: (data: DB31Channel) => {
+        let type = this.element.to.type(data.DeviceType);
+        let entity: MarkerArgs = {
+          id: data.Id,
+          name: data.Name || '',
+          icon: PathTool.marker.get(type),
+          data: data,
+        };
+        return entity;
       },
     },
   };

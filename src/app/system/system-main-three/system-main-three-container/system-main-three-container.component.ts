@@ -47,8 +47,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.map.load();
-    this.element.building.load();
-    this.element.camera.load();
+    this.building.load();
+    this.element.load();
     this.regist();
   }
   ngOnDestroy(): void {
@@ -61,7 +61,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.load.subscribe((x) => {
           let floorId = this.floor.selected()?.Id;
 
-          this.element.camera.load(floorId);
+          this.element.load(floorId);
         }),
       );
     }
@@ -116,53 +116,50 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       },
     },
   };
-
-  element = {
-    building: {
-      datas: signal<GeoMapElement[]>([]),
-      get: (modelId: string) => {
-        let elements = this.element.building.datas();
-        return elements.find((x) => x.ElementId == modelId);
-      },
-      load: async () => {
-        let buildings = await this.business.element.building.load();
-        this.element.building.datas.set(buildings);
-        if (this.outputable) {
-          this.buildingloaded.emit(buildings);
-        }
-
-        await wait(() => {
-          return this.three.inited;
-        });
-
-        let datas = this.three.model.datas();
-        let models = buildings.map((x) => {
-          return this.converter.element.to.building(x);
-        });
-        this.three.model.datas.set([...datas, ...models]);
-      },
+  building = {
+    datas: signal<GeoMapElement[]>([]),
+    get: (modelId: string) => {
+      let elements = this.building.datas();
+      return elements.find((x) => x.ElementId == modelId);
     },
-    camera: {
-      datas: signal<GeoMapElement[]>([]),
-      get: (modelId: string) => {
-        let elements = this.element.camera.datas();
-        return elements.find((x) => x.ElementId == modelId);
-      },
-      load: async (floorId?: string) => {
-        let cameras = await this.business.element.camera.load(floorId);
+    load: async () => {
+      let buildings = await this.business.element.building.load();
+      this.building.datas.set(buildings);
+      if (this.outputable) {
+        this.buildingloaded.emit(buildings);
+      }
 
-        this.element.camera.datas.set(cameras);
-        if (this.outputable) {
-          this.cameraloaded.emit(cameras);
-        }
-        await wait(() => {
-          return this.three.inited;
-        });
+      await wait(() => {
+        return this.three.inited;
+      });
 
-        let all = cameras.map((x) => this.converter.element.to.camera(x));
-        let datas = await Promise.all(all);
-        this.three.camera.datas.set(datas);
-      },
+      let datas = this.three.model.datas();
+      let models = buildings.map((x) => {
+        return this.converter.element.to.building(x);
+      });
+      this.three.model.datas.set([...datas, ...models]);
+    },
+  };
+  element = {
+    datas: signal<GeoMapElement[]>([]),
+    get: (modelId: string) => {
+      let elements = this.element.datas();
+      return elements.find((x) => x.ElementId == modelId);
+    },
+    load: async (floorId?: string) => {
+      let cameras = await this.business.element.load(floorId);
+
+      this.element.datas.set(cameras);
+      if (this.outputable) {
+        this.cameraloaded.emit(cameras);
+      }
+      await wait(() => {
+        return this.three.inited;
+      });
+
+      let all = cameras.map((x) => this.converter.element.to.marker(x));
+      let datas = await Promise.all(all);
+      this.three.camera.datas.set(datas);
     },
   };
 
@@ -224,7 +221,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         console.log(args);
         this.floor.target.emit(args);
 
-        this.element.camera.load(data.Id);
+        this.element.load(data.Id);
 
         setTimeout(() => {
           this.three.focus.emit();
@@ -235,11 +232,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.floor.clear();
         this.three.model.clear();
 
-        await Promise.all([
-          this.map.load(),
-          this.element.building.load(),
-          this.element.camera.load(),
-        ]);
+        await Promise.all([this.map.load(), this.building.load(), this.element.load()]);
 
         this.outputable = true;
       },
@@ -294,10 +287,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
 
       building: {
         select: (modelId: string) => {
-          let building = this.element.building.get(modelId);
+          let building = this.building.get(modelId);
         },
         expand: async (modelId: string) => {
-          let building = this.element.building.get(modelId);
+          let building = this.building.get(modelId);
           if (building) {
             let expansion = await this.business.model.expansion(modelId);
             if (expansion) {
@@ -312,7 +305,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       camera: {
         dblclick: (id: string) => {
           console.log(id);
-          let camera = this.element.camera.datas().find((x) => x.Id == id);
+          let camera = this.element.datas().find((x) => x.Id == id);
           this.preview.emit(camera);
         },
       },

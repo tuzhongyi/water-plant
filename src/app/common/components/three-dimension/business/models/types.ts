@@ -34,13 +34,13 @@ export interface Vec3 {
 }
 
 /** standby 点击事件参数 */
-export interface StandbyClickArgs {
+export interface StandbyClickArgs<T = any> {
   x: number;
   y: number;
   z: number;
   modelId: string;
   meshId?: string;
-  data: { Id: string; Name: string };
+  data: T;
 }
 
 export interface ModelColor {
@@ -137,17 +137,21 @@ interface AlarmEntityState extends EntityState {
   alarm?: EntityState;
 }
 
-/** 外部传入的场景摄像机标记 */
-export interface MarkerEntity<T = any> {
+export interface MarkerArgs<T = any> {
   id: string; // 唯一编号
   name: string; // label 显示名称
+  icon: EntityState;
+  data: T;
+}
+
+/** 外部传入的场景摄像机标记 */
+export interface MarkerEntity<T = any> extends MarkerArgs<T> {
   position: Vec3; // 所在位置
   modelId: string; // 所属模型 ID
   meshId?: string; // 模型 mesh 的 key（Group 名优先）
   offline?: boolean;
   alarm?: boolean;
   icon: AlarmEntityState;
-  data: T;
   [key: string]: any; // 可扩展
 }
 

@@ -51,7 +51,7 @@
   @if (manager.building.show) {
     <div class="system-main-three-building">
       <div class="button-group">
-        @for (item of element.building.datas(); track $index) {
+        @for (item of building.datas(); track $index) {
           <button class="button-border green-dark" (click)="manager.building.select(item)">
             {{ item.Name }}
           </button>

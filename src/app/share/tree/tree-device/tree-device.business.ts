@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { DB31Channel } from '../../../common/data-core/models/db31/db31-channel.model';
 import { DB31Device } from '../../../common/data-core/models/db31/db31-device.model';
 import { Device } from '../../../common/data-core/models/devices/device.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
@@ -10,7 +9,14 @@ import { DeviceRequestService } from '../../../common/data-core/request/services
 import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
-import { DeviceDB31, DeviceIPC, DeviceNVR, IDevice, KeyNameValue } from './tree-device.model';
+import {
+  DB31DeviceChannel,
+  DeviceDB31,
+  DeviceIPC,
+  DeviceNVR,
+  IDevice,
+  KeyNameValue,
+} from './tree-device.model';
 
 @Injectable()
 export class TreeDeviceBusiness {
@@ -80,9 +86,9 @@ export class TreeDeviceBusiness {
           throw new Error('未知设备类型');
       }
     } else {
-      let channels: DB31Channel[] = [];
+      let channels: DB31DeviceChannel[] = [];
       try {
-        channels = await this.data.db31.channels(data.Id);
+        channels = await this.data.db31.channels(data);
       } catch (error) {}
 
       let db31 = ObjectTool.assign(data, DeviceDB31);
@@ -125,10 +131,15 @@ export class TreeDeviceBusiness {
       load: () => {
         return this.service.db31.device.all();
       },
-      channels: (deviceId: string) => {
+      channels: async (device: DB31Device) => {
         let params = new GetDB31DeviceChannelsParams();
-        params.DeviceId = deviceId;
-        return this.service.db31.channel.all(params);
+        params.DeviceId = device.Id;
+        let channels = await this.service.db31.channel.all(params);
+        return channels.map((x) => {
+          let channel = ObjectTool.assign(x, DB31DeviceChannel);
+          channel.DeviceName = device.Name;
+          return channel;
+        });
       },
     },
   };

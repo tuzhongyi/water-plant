@@ -4,7 +4,7 @@
       [models]="three.model.datas()"
       (inited)="three.on.inited()"
       (loaded)="three.on.loaded()"
-      [standby]="standby"
+      [standby]="element.standby()"
       (standbyClick)="three.on.standby.binding($event)"
       (standbyCancel)="three.on.standby.cancel()"
       [markers]="three.camera.datas()"

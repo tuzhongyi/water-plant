@@ -24,7 +24,7 @@
           [load]="manager.load"
           (maploaded)="three.on.loaded.map($event)"
           (buildingloaded)="three.on.loaded.building($event)"
-          (cameraloaded)="three.on.loaded.camera($event)"
+          (elementloaded)="three.on.loaded.element($event)"
           [standby]="three.standby()"
           [focusCameraId]="three.selected()"
           (binding)="three.on.bind($event)"

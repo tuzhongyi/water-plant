@@ -30,17 +30,19 @@ export class SystemMainThreeBusiness {
     all: () => {
       return this.service.map.element.all();
     },
-    camera: {
-      load: async (parentId?: string): Promise<MapElementModel[]> => {
-        let params = new GetMapElementsParams();
-        params.ElementTypes = [MapElementType.Camera];
-        params.ParentId = parentId;
-        let all = await this.service.map.element.all(params);
-        if (!parentId) {
-          return all.filter((x) => !x.ParentId);
-        }
-        return all;
-      },
+    load: async (parentId?: string): Promise<MapElementModel[]> => {
+      let params = new GetMapElementsParams();
+      params.ElementTypes = [
+        MapElementType.Camera,
+        MapElementType.Announciator,
+        MapElementType.IoTSensor,
+      ];
+      params.ParentId = parentId;
+      let all = await this.service.map.element.all(params);
+      if (!parentId) {
+        all = all.filter((x) => !x.ParentId);
+      }
+      return all;
     },
     building: {
       load: async (): Promise<MapElementModel[]> => {

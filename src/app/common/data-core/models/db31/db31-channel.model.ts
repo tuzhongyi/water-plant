@@ -1,7 +1,7 @@
-import { IIdModel } from '../interface/model.interface';
+import { IIdNameModel } from '../interface/model.interface';
 
 /**	DB31Channel (DB31设备通道)	*/
-export class DB31Channel implements IIdModel {
+export class DB31Channel implements IIdNameModel<string, string | undefined> {
   /**	String	ID	M	*/
   Id!: string;
   /**	String	DB31系统ID	O	*/
@@ -9,9 +9,11 @@ export class DB31Channel implements IIdModel {
   /**	String	设备ID	M	*/
   DeviceId!: string;
   /**	String	名称	O	*/
-  Name?: string;
+  Name: string | undefined;
   /**	String	通道编号	M	*/
   ChannelNo!: string;
   /**	String	描述	O	*/
   Description?: string;
+  /**	Int32	设备类型	M	*/
+  DeviceType!: number;
 }
