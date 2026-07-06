@@ -27,12 +27,38 @@ export class IconTool {
     }
   }
 
-  static DeviceType(value?: number) {
+  static DeviceType(value?: number, db31 = false) {
+    if (db31) {
+      switch (value) {
+        case 1:
+          return 'howell-icon-alarm_line';
+        case 2:
+          return 'howell-icon-access_door';
+        case 3:
+          return 'howell-icon-sensor_line';
+        default:
+          return '';
+      }
+    }
     switch (value) {
       case 1:
         return 'howell-icon-camera_line';
       case 2:
         return 'howell-icon-device_line';
+      default:
+        return '';
+    }
+  }
+  static DeviceEventResource(value?: number) {
+    switch (value) {
+      case 1:
+        return 'howell-icon-camera_line';
+      case 2:
+        return 'howell-icon-alarm_line';
+      case 3:
+        return 'howell-icon-access_door';
+      case 4:
+        return 'howell-icon-sensor_line';
       default:
         return '';
     }

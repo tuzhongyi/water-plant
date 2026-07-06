@@ -1,14 +1,22 @@
 .system-main-three {
+
+
   &-manager {
     width: 100%;
     height: 100%;
     position: relative;
   }
 
+  &-container {
+    width: 100%;
+    height: 100%;
+  }
+
   &-floor {
     position: absolute;
     bottom: 50px;
     left: 20px;
+    z-index: 1;
 
     .button-group {
       display: flex;
@@ -18,6 +26,14 @@
       button {
         width: 76px;
       }
+    }
+  }
+
+  &-button {
+    &-group {
+      position: absolute;
+      bottom: 10px;
+      left: 20px;
     }
   }
 }

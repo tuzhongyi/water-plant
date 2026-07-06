@@ -12,7 +12,6 @@ export class MapElementModel extends GeoMapElement {
 }
 export interface BindingArgs {
   location: { x: number; y: number; z: number };
-  modelId: string;
   standby: IIdNameModel;
   parent?: GeoMapElement;
 }

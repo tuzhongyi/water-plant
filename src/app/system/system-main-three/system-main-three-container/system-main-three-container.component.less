@@ -1,0 +1,83 @@
+.system-main-three {
+  @button-height: 42px;
+  @padding-bottom: 10px;
+  @padding-left: 20px;
+  @gap: 10px;
+
+
+  &-container {
+
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  &-content {
+    width: 100%;
+    height: 100%;
+  }
+
+  &-floor {
+    position: absolute;
+    bottom: calc(@padding-bottom + @button-height + @gap);
+    left: 20px;
+    z-index: 1;
+
+    .button-group {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+
+      button {
+        min-width: 76px;
+      }
+    }
+  }
+
+  &-button {
+    &-group {
+      position: absolute;
+      bottom: @padding-bottom;
+      left: @padding-left;
+    }
+  }
+
+  &-building {
+    position: absolute;
+    bottom: calc(@padding-bottom + @button-height + @gap);
+    left: @padding-left;
+    z-index: 1;
+
+    .button-group {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+
+      button {
+        min-width: 76px;
+      }
+    }
+  }
+
+  &-viewer {
+    position: absolute;
+    bottom: calc(@padding-bottom + 6px);
+    right: @padding-left;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    width: calc(40px * 3 + 5px * 2);
+
+    &>* {
+      width: 40px;
+      color: #17f1c6;
+
+      &:hover,
+      &.selected {
+        color: white;
+      }
+
+    }
+
+  }
+}

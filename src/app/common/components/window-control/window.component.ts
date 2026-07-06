@@ -15,7 +15,7 @@ export class WindowComponent implements OnInit {
 
   @Output()
   OnClosing: EventEmitter<boolean> = new EventEmitter();
-
+  @Input() headable = true;
   @Input()
   background = true;
   @Input()

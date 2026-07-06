@@ -6,6 +6,6 @@ export class SystemMainDeviceBusiness {
   constructor(private service: DeviceRequestService) {}
 
   load() {
-    return this.service.all();
+    return this.service.cache.all();
   }
 }

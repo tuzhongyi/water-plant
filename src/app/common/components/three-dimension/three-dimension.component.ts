@@ -20,10 +20,12 @@ import { IIdNameModel } from '../../data-core/models/interface/model.interface';
 import { MarkerController } from './business/controllers/marker.controller';
 import { InternalModelState, ModelController } from './business/controllers/model.controller';
 import {
-  CameraEntity,
+  FitView,
+  MarkerEntity,
   ModelEntry,
   ModelTransformConfig,
   ModelViewerModel,
+  RenderMode,
   RenderSettings,
   SceneCamera,
   StandbyClickArgs,
@@ -35,6 +37,7 @@ import { EdgesService } from './business/services/edges.service';
 import { ModelService } from './business/services/model.service';
 import { SceneService } from './business/services/scene.service';
 import { StateService } from './business/services/state.service';
+import { ViewService } from './business/services/view.service';
 
 @Component({
   selector: 'hw-3d',
@@ -48,20 +51,22 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
+  renderMode = input<RenderMode>(RenderMode.overlay);
+  gizmoVisible = input<boolean>(false);
   standby = input<IIdNameModel>();
   /* ---- Inputs ---- */
   models = input<ModelViewerModel[]>([]);
   sceneCameras = input<SceneCamera[]>([]);
-  /** 外部触发 — 摄像机 45° 俯视适配全部模型 */
-  fitView = input<EventEmitter<void>>();
+  /** 摄像机视图切换：emit() 或 emit(Fit) 为 45° 俯视适配模型，emit(Top/Left/Right) 为方向视图 */
+  fitView = input<EventEmitter<FitView | void>>();
   /** 外部触发 — 修改指定模型的 mesh 组可见性 */
   meshVisibility = input<EventEmitter<{ id: string; visibility: Record<string, boolean> }>>();
   /** 场景摄像机标记列表 */
-  cameras = input<CameraEntity[]>([]);
+  markers = input<MarkerEntity[]>([]);
   /** 外部选中摄像机 ID */
-  selectedCameraId = input<string | null>(null);
+  selectedCameraId = input<string>();
   /** 是否允许移动摄像机标记 */
-  camerasMovable = input<boolean>(false);
+  markersMovable = input<boolean>(false);
   /** marker label 显示模式: 'always' 常显, 'hover' 仅悬停/聚焦时显示 */
   markerLabelMode = input<'always' | 'hover'>('hover');
   /** 垂直旋转角度限制（度），默认 15，防止摄像机低于此角度 */
@@ -69,6 +74,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   /* ---- Outputs ---- */
   modelClick = output<string>();
+
   modelHover = output<string | null>();
   modelDoubleClick = output<string>();
   cameraClick = output<string>();
@@ -82,7 +88,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   /** 摄像机标记双击 */
   markerDblClick = output<string>();
   /** 摄像机标记位置变化 */
-  markerPositionChange = output<CameraEntity>();
+  markerPositionChange = output<MarkerEntity>();
   /** standby 模式点击时输出坐标 */
   standbyClick = output<StandbyClickArgs>();
   /** standby 模式右键取消 */
@@ -98,6 +104,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private edgesService = inject(EdgesService);
   private modelCtrl = inject(ModelController);
   private markerCtrl = inject(MarkerController);
+  private viewService = inject(ViewService);
 
   /* ---- Three.js core ---- */
   private scene!: THREE.Scene;
@@ -120,6 +127,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   /* standby 模式：跟随鼠标的半透明图标 */
   private standbySprite?: THREE.Sprite;
+  /** 当前 standby sprite 使用的图标 URL，用于检测变化 */
+  private standbyIconUrl?: string;
 
   private subs = new Subscription();
 
@@ -127,20 +136,20 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       const m = this.models();
       this.syncModels(m);
-      this.markerCtrl.updateSceneVisibility(this.models());
+      this.markerCtrl.cache.visibility(this.models());
       this.updateLabelVisibility();
     });
     effect(() => {
-      const cams = this.cameras();
-      this.markerCtrl.syncCache(cams, this.modelCtrl.sceneReady);
-      this.markerCtrl.updateSceneVisibility(this.models());
+      const cams = this.markers();
+      this.markerCtrl.cache.sync(cams, this.modelCtrl.sceneReady);
+      this.markerCtrl.cache.visibility(this.models());
       this.markerCtrl.labelMode = this.markerLabelMode();
     });
     effect(() =>
-      this.markerCtrl.applySelection(
-        this.selectedCameraId(),
-        this.camerasMovable(),
+      this.markerCtrl.select.apply(
+        this.markersMovable(),
         this.modelCtrl.sceneReady,
+        this.selectedCameraId(),
       ),
     );
     effect(() => {
@@ -157,7 +166,31 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         this.sceneService.scene.remove(this.standbySprite);
         this.standbySprite.material.dispose();
         this.standbySprite = undefined;
+        this.standbyIconUrl = undefined;
         this.sceneService.renderer.domElement.style.cursor = '';
+      }
+    });
+    /** gizmoVisible 统一控制模型和摄像机标记的变换 Gizmo：true 时 attach，false 时 detach */
+    effect(() => {
+      const visible = this.gizmoVisible();
+      if (visible) {
+        if (this.tcEditEntry) this.modelTC?.attach(this.tcEditEntry.wrapper);
+        if (this.tcCameraEntry) this.cameraTC?.attach(this.tcCameraEntry.model);
+      } else {
+        this.modelTC?.detach();
+        this.cameraTC?.detach();
+      }
+    });
+    /** renderMode 有值时覆盖 config，无值时使用 config 中的值 */
+    effect(() => {
+      const rm = this.renderMode();
+      if (!rm) return;
+      this.state.updateSettings({ renderMode: rm });
+      for (const [, entry] of this.state.loadedModels) {
+        if (this.modelCtrl.internalModels.has(entry.id)) {
+          this.edgesService.applyRenderMode(entry, rm);
+          this.colorsService.reapplyCurrentState(entry);
+        }
       }
     });
     /* BehaviorSubject 订阅在 bindCommands 中设置（effect 不追踪 RxJS Subject） */
@@ -183,6 +216,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     /* 加载 config，完成后才允许处理模型 */
     this.configService.autoLoadModels().finally(() => {
       this.modelCtrl.sceneReady = true;
+      /* renderMode input 有值时覆盖 config */
+      const rm = this.renderMode();
+      if (rm) this.state.updateSettings({ renderMode: rm });
       /* config 就绪后触发一次模型同步 */
       this.syncModels(this.models());
       this.applyLoadedConfig();
@@ -258,8 +294,25 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   }
 
   private ensureStandbySprite(): void {
-    if (this.standbySprite) return;
-    const tex = new THREE.TextureLoader().load('assets/images/camera.png');
+    /* 从 standby 数据中读取 icon.normal，无值时 fallback 到默认图标 */
+    const standbyData = this.standby();
+    const iconUrl = (standbyData as any)?.icon?.normal ?? 'assets/images/camera.png';
+
+    /* sprite 已存在：仅图标变化时更新纹理 */
+    if (this.standbySprite) {
+      if (this.standbyIconUrl !== iconUrl) {
+        const tex = new THREE.TextureLoader().load(iconUrl);
+        const mat = this.standbySprite.material as THREE.SpriteMaterial;
+        if (mat.map) mat.map.dispose();
+        mat.map = tex;
+        mat.needsUpdate = true;
+        this.standbyIconUrl = iconUrl;
+      }
+      return;
+    }
+
+    this.standbyIconUrl = iconUrl;
+    const tex = new THREE.TextureLoader().load(iconUrl);
     const mat = new THREE.SpriteMaterial({
       map: tex,
       depthTest: false,
@@ -280,12 +333,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     if (!this.standbySprite?.visible) return;
     const cam = this.sceneService.camera as THREE.PerspectiveCamera;
     const dist = cam.position.distanceTo(this.standbySprite.position);
-    const vFov = cam.fov * Math.PI / 180;
+    const vFov = (cam.fov * Math.PI) / 180;
     const height = 2 * dist * Math.tan(vFov / 2);
     const px = height / this.renderer.domElement.clientHeight;
     const s = 32 * px;
     this.standbySprite.scale.set(s, s, 1);
-  }
+  };
 
   private updateStandbyPosition(): void {
     if (!this.standbySprite || !this.standby()) return;
@@ -309,6 +362,56 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.sceneService.controls.maxPolarAngle = Math.PI / 2 + rad;
   }
 
+  private applyCameraView(direction: FitView.Top | FitView.Left | FitView.Right): void {
+    /* 计算全部可见模型的包围盒 */
+    const combined = new THREE.Box3();
+    for (const [, s] of this.modelCtrl.internalModels) {
+      for (const mesh of s.meshes) {
+        if (!mesh.visible) continue;
+        combined.expandByObject(mesh);
+      }
+    }
+    if (combined.isEmpty()) return;
+
+    const center = new THREE.Vector3();
+    combined.getCenter(center);
+    const size = new THREE.Vector3();
+    combined.getSize(size);
+    const radius = Math.max(size.x, size.y, size.z) * 0.5;
+
+    const cam = this.sceneService.camera as THREE.PerspectiveCamera;
+    const dist = (radius / Math.tan((cam.fov * Math.PI) / 360)) * 1.5;
+
+    /* 垂直旋转角度上限 */
+    const polarMax = Math.PI / 2 + (this.polarLimit() * Math.PI) / 180;
+
+    let pos: THREE.Vector3;
+    switch (direction) {
+      case FitView.Top:
+        /* 俯视：正上方，polar angle = 0，必定在限制内 */
+        pos = new THREE.Vector3(center.x, center.y + dist, center.z);
+        break;
+      case FitView.Left:
+        pos = new THREE.Vector3(center.x - dist, center.y, center.z);
+        break;
+      case FitView.Right:
+        pos = new THREE.Vector3(center.x + dist, center.y, center.z);
+        break;
+    }
+
+    /* 左/右需要 clamp 到 polarMax 内：抬高摄像机使垂直角度不超标 */
+    if (direction !== FitView.Top) {
+      const hDist = Math.sqrt((pos.x - center.x) ** 2 + (pos.z - center.z) ** 2);
+      const polarAngle = Math.atan2(hDist, pos.y - center.y);
+      if (polarAngle > polarMax) {
+        pos.y = center.y + hDist / Math.tan(polarMax);
+      }
+    }
+
+    this.sceneService.controls.target.copy(center);
+    this.viewService.animateCamera(pos, center, 800);
+  }
+
   /* ---- Commands ---- */
 
   private bindCommands(): void {
@@ -317,13 +420,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.subs.add(
       this.modelCtrl.asyncLoadDone.subscribe(() => {
         this.fitAllModelsInView(this.models());
-        this.markerCtrl.updateSceneVisibility(this.models());
+        this.markerCtrl.cache.visibility(this.models());
         this.updateLabelVisibility();
         if (this.modelCtrl.loadingIds.size === 0) this.modelCtrl.emitLoaded(this.models());
-        console.warn(
-          '[loaded完成] 摄像机场景状态:',
-          JSON.stringify(this.markerCtrl.getDebugState()),
-        );
+        console.warn('[loaded完成] 摄像机场景状态:', JSON.stringify(this.markerCtrl.debug.state()));
       }),
     );
     this.subs.add(this.markerCtrl.markerClick.subscribe((id) => this.markerClick.emit(id)));
@@ -395,10 +495,20 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     /* 场景摄像机变化 */
     this.subs.add(this.state.sceneCameras$.subscribe((cams) => this.onSceneCamerasChange(cams)));
 
-    /* 外部触发 — 摄像机 45° 俯视适配全部模型 */
+    /** fitView：emit() 或 emit(Fit) 适配模型，emit(Top/Left/Right) 方向视图 */
     if (this.fitView()) {
-      this.subs.add(this.fitView()!.subscribe(() => this.fitAllModelsInView(this.models(), true)));
+      this.subs.add(
+        this.fitView()!.subscribe((view) => {
+          if (!this.modelCtrl.sceneReady) return;
+          if (!view || view === FitView.Fit) {
+            this.fitAllModelsInView(this.models(), true);
+          } else {
+            this.applyCameraView(view);
+          }
+        }),
+      );
     }
+
     /* 外部触发 — 修改指定模型的 mesh 组可见性 */
     if (this.meshVisibility()) {
       this.subs.add(
@@ -406,7 +516,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           const entry = this.state.loadedModels.get(id);
           if (entry) {
             this.modelService.setNodeVisible(entry, visibility);
-            this.markerCtrl.updateSceneVisibility(this.models());
+            this.markerCtrl.cache.visibility(this.models());
             this.fitAllModelsInView(this.models(), true);
           }
         }),
@@ -563,6 +673,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       const p = this.standbySprite.position;
       const all = this.getAllMeshes();
       let modelId = '';
+      let meshId = '';
       if (all.length > 0) {
         this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
         const hits = this.raycaster.intersectObjects(
@@ -572,9 +683,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         if (hits.length > 0) {
           const found = all.find((a) => a.mesh === hits[0].object);
           if (found) modelId = found.modelId;
+          meshId = (hits[0].object as THREE.Mesh).name;
         }
       }
-      this.standbyClick.emit({ x: p.x, y: p.y, z: p.z, modelId, data: this.standby()! });
+      this.standbyClick.emit({ x: p.x, y: p.y, z: p.z, modelId, meshId, data: this.standby()! });
       return;
     }
 
@@ -691,7 +803,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       if (transform) {
         this.modelService.applyTransformConfig(entry, transform);
         if (transform.locked !== undefined) entry.locked = transform.locked;
-        if (transform.gizmoVisible !== undefined) entry.gizmoVisible = transform.gizmoVisible;
       }
     }
     /* 同步锁定状态到内部模型 */
@@ -919,10 +1030,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.zone.runOutsideAngular(() => {
       if (!this.modelTC) this.initModelTC();
       this.modelTC!.setMode(this.state.transformMode$.value);
-      this.modelTC!.attach(entry.wrapper);
+      if (this.gizmoVisible()) {
+        this.modelTC!.attach(entry.wrapper);
+      }
     });
-    /* attach 后应用单模型的 gizmo 可见性 */
-    if (this.modelTC) this.modelTC.getHelper().visible = entry.gizmoVisible;
     this.syncEditInputs(entry);
   }
 
@@ -1033,7 +1144,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.zone.runOutsideAngular(() => {
       if (!this.cameraTC) this.initCameraTC();
       this.cameraTC!.setMode(this.state.transformMode$.value);
-      this.cameraTC!.attach(sc.model);
+      if (this.gizmoVisible()) {
+        this.cameraTC!.attach(sc.model);
+      }
     });
   }
 
@@ -1176,7 +1289,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           if (transform.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
           /* 恢复锁定状态 */
           if (transform.locked !== undefined) entry.locked = transform.locked;
-          if (transform.gizmoVisible !== undefined) entry.gizmoVisible = transform.gizmoVisible;
           this.modelService.updateLabel(entry);
         }
       }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FlatTreeNode } from './tree.model';
 export type { FlatTreeNode };
 
@@ -8,13 +8,28 @@ export type { FlatTreeNode };
   templateUrl: './tree.component.html',
   styleUrls: ['./tree.component.less'],
 })
-export class TreeComponent {
+export class TreeComponent implements OnChanges {
   @Input() nodes: FlatTreeNode[] = [];
   @Input() selectedId?: string;
+  /** 默认展开深度（level < displaydeep 的节点自动展开），默认 1 = 仅根展开 */
+  @Input() displaydeep = 1;
   @Output() selectedIdChange = new EventEmitter<string>();
   @Output() nodeClick = new EventEmitter<FlatTreeNode>();
   @Output() toggle = new EventEmitter<FlatTreeNode>();
   @Output() action = new EventEmitter<{ action: string; node: FlatTreeNode }>();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['nodes'] || changes['displaydeep']) {
+      this.applyExpandDeep();
+    }
+  }
+
+  private applyExpandDeep(): void {
+    for (const node of this.nodes) {
+      if (!node.expandable) continue;
+      node.expanded = node.level < this.displaydeep;
+    }
+  }
 
   /** 只返回可见节点（父级收起时隐藏子节点） */
   get visibleNodes(): FlatTreeNode[] {

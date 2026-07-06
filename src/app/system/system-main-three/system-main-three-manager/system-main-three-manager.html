@@ -1,31 +1,5 @@
 <div class="system-main-three-manager">
-  <hw-3d
-    [models]="model.datas()"
-    [fitView]="model.focus"
-    (modelClick)="on.model.click($event)"
-    (modelHover)="on.model.hover($event)"
-    (modelDoubleClick)="on.model.doubleClick($event)"
-    (inited)="on.inited()"
-    (loaded)="on.loaded($event)"
-    [meshVisibility]="model.floor.target"
-    [cameras]="camera.datas()"
-    (markerDblClick)="camera.on.click.dobule($event)"
-  ></hw-3d>
-
-  @if (model.floor.datas.length > 0) {
-    <div class="system-main-three-floor">
-      <div class="button-group">
-        <button class="button-border green" (click)="on.floor.back()">返回</button>
-        @for (item of model.floor.datas; track $index) {
-          <button
-            class="button-border green"
-            [class.selected]="model.floor.selected == item"
-            (click)="on.floor.select($index)"
-          >
-            {{ item }}
-          </button>
-        }
-      </div>
-    </div>
-  }
+  <div class="system-main-three-container">
+    <hw-system-main-three-container (preview)="on.preview($event)"></hw-system-main-three-container>
+  </div>
 </div>

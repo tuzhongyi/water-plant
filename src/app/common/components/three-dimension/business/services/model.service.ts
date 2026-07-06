@@ -85,7 +85,6 @@ export class ModelService {
       label: fileName,
       labelMode: 'always',
       locked: false,
-      gizmoVisible: true,
       geoCenter: new THREE.Vector3(),
     };
     /* 在 wrapper 加入 scene 前计算本地空间的几何中心 */
@@ -160,9 +159,6 @@ export class ModelService {
     }
     if (cfg.locked !== undefined) {
       entry.locked = cfg.locked;
-    }
-    if (cfg.gizmoVisible !== undefined) {
-      entry.gizmoVisible = cfg.gizmoVisible;
     }
     this.applyTransform(entry);
   }

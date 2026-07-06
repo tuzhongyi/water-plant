@@ -3,12 +3,34 @@
     <hw-3d
       [models]="three.model.datas()"
       (inited)="three.on.inited()"
+      (loaded)="three.on.loaded()"
       [standby]="standby"
-      (standbyClick)="three.on.standby($event)"
-      (standbyCancel)="three.on.standbyCancel()"
-      [cameras]="three.camera.datas()"
-      [selectedCameraId]="focusCameraId?.Id ?? null"
-      [camerasMovable]="false"
+      (standbyClick)="three.on.standby.binding($event)"
+      (standbyCancel)="three.on.standby.cancel()"
+      [markers]="three.camera.datas()"
+      [selectedCameraId]="focusCameraId?.Id"
+      [markersMovable]="false"
+      (modelClick)="three.on.building.select($event)"
+      (modelDoubleClick)="three.on.building.expand($event)"
+      [fitView]="three.focus"
+      [meshVisibility]="floor.target"
     ></hw-3d>
   </div>
+
+  @if (floor.datas().length > 0) {
+    <div class="setting-map-three-floor">
+      <div class="button-group">
+        <button class="button-border green" (click)="floor.on.back()">返回</button>
+        @for (item of floor.datas(); track $index) {
+          <button
+            class="button-border green"
+            [class.selected]="floor.selected()?.Id == item.Id"
+            (click)="floor.on.select(item)"
+          >
+            {{ item.Name }}
+          </button>
+        }
+      </div>
+    </div>
+  }
 </div>

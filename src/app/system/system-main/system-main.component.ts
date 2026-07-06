@@ -4,9 +4,10 @@ import { CardComponent } from '../../common/components/card/card.component';
 import { WindowComponent } from '../../common/components/window-control/window.component';
 import { DB31Device } from '../../common/data-core/models/db31/db31-device.model';
 import { Device } from '../../common/data-core/models/devices/device.model';
-import { VideoChannel } from '../../common/data-core/models/devices/video-channel.model';
+import { GeoMapElement } from '../../common/data-core/models/geographic/map-element.model';
 import { VideoPlayerWindowComponent } from '../../share/windows/video-player-window/video-player-window.component';
 import { SystemMainPanel } from '../system-main-panel/system-main-panel';
+import { SystemMainRecordManagerComponent } from '../system-main-record/system-main-record-manager/system-main-record-manager.component';
 import { SystemMainStateDeviceComponent } from '../system-main-state/system-main-state-device/system-main-state-device.component';
 import { SystemMainThreeManager } from '../system-main-three/system-main-three-manager/system-main-three-manager';
 import {
@@ -25,6 +26,7 @@ import { SystemMainWindow } from './system-main.window';
     SystemMainThreeManager,
     SystemMainPanel,
     SystemMainStateDeviceComponent,
+    SystemMainRecordManagerComponent,
   ],
   templateUrl: './system-main.html',
   styleUrl: './system-main.less',
@@ -68,10 +70,10 @@ export class SystemMainComponent implements OnInit {
       // }
     },
     video: {
-      preview: (data: VideoChannel) => {
+      preview: (data: GeoMapElement) => {
         this.window.video.title = data.Name;
         this.window.video.autoplay = true;
-        this.window.video.cameraId = data.Id;
+        this.window.video.cameraId = data.ElementId;
         this.window.video.show = true;
       },
     },

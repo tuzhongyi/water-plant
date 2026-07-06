@@ -37,9 +37,32 @@ export class ColorsService {
 
   /** 应用指定状态的完整外观（边缘 + 背景 + 材质颜色） */
   applyStateColors(entry: ModelEntry, state: ColorState): void {
+    if (this.state.renderMode === 'solid') {
+      this.applySolidColors(entry);
+      return;
+    }
     this.applyEdgeColor(entry, state);
     this.applyBackgroundColor(entry, state);
     this.applyMaterialState(entry, state);
+  }
+
+  /** solid 模式：去除所有颜色效果和透明度，还原模型原始颜色 */
+  private applySolidColors(entry: ModelEntry): void {
+    entry.model.traverse((c) => {
+      const m = c as THREE.Mesh;
+      if (m.isMesh) {
+        const mats = Array.isArray(m.material) ? m.material : [m.material];
+        for (const mat of mats) {
+          const sm = mat as THREE.MeshStandardMaterial;
+          if (sm.emissive) {
+            sm.emissive.set(0x000000);
+            sm.emissiveIntensity = 0;
+            sm.needsUpdate = true;
+          }
+        }
+      }
+    });
+    this.applyMaterialState(entry, 'normal');
   }
 
   /** 根据模型当前 hover/selected 状态重新应用对应颜色 */

@@ -23,20 +23,14 @@ export class ServiceCache<T extends IIdModel> implements IServiceCache {
     protected service: IService<T>,
     protected type?: ClassConstructor<T>,
     protected timeout = 1000 * 60 * 30,
-    private init = true
+    private init = true,
   ) {
-    try {
-      // console.log(key);
-      let cache = ServicePool[key];
-      if (!cache) {
-        cache = new AppCache(timeout);
-        ServicePool[key] = cache;
-      }
-      this.cache = cache;
-    } catch (error) {
-      console.error(error);
+    let cache = ServicePool[key];
+    if (!cache) {
+      cache = new AppCache(timeout);
+      ServicePool[key] = cache;
     }
-    this.cache = new AppCache(timeout);
+    this.cache = cache;
   }
   filter(datas: T[], args: IParams): T[] {
     return datas;
@@ -54,7 +48,7 @@ export class ServiceCache<T extends IIdModel> implements IServiceCache {
   }
 
   all(...args: any): Promise<T[]> {
-    return new Promise<T[]>((resolve) => {
+    return new Promise<T[]>((resolve, reject) => {
       wait(() => {
         return this.loading === false;
       })
@@ -70,6 +64,9 @@ export class ServiceCache<T extends IIdModel> implements IServiceCache {
                 this.save([...datas]);
                 resolve(datas);
               })
+              .catch((err) => {
+                reject(err);
+              })
               .finally(() => {
                 this.loading = false;
               });
@@ -77,6 +74,7 @@ export class ServiceCache<T extends IIdModel> implements IServiceCache {
         })
         .catch(() => {
           console.error('ServiceCache all wait error');
+          reject(new Error('ServiceCache all wait timeout'));
         });
     });
   }
@@ -100,25 +98,32 @@ export class ServiceCache<T extends IIdModel> implements IServiceCache {
   }
 
   async get(id: string): Promise<T> {
-    return new Promise<T>((resolve) => {
-      this.all().then((datas) => {
-        let index = datas.findIndex((x) => x.Id == id);
-        if (index < 0) {
-          this.loading = true;
-          this.service
-            .get(id)
-            .then((data) => {
-              datas.push(data);
-              this.save(datas);
-              resolve(data);
-            })
-            .finally(() => {
-              this.loading = false;
-            });
-        } else {
-          resolve(datas[index]);
-        }
-      });
+    return new Promise<T>((resolve, reject) => {
+      this.all()
+        .then((datas) => {
+          let index = datas.findIndex((x) => x.Id === id);
+          if (index < 0) {
+            this.loading = true;
+            this.service
+              .get(id)
+              .then((data) => {
+                datas.push(data);
+                this.save(datas);
+                resolve(data);
+              })
+              .catch((err) => {
+                reject(err);
+              })
+              .finally(() => {
+                this.loading = false;
+              });
+          } else {
+            resolve(datas[index]);
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 
@@ -136,7 +141,8 @@ export class ServiceCache<T extends IIdModel> implements IServiceCache {
     let count = datas.length;
 
     let start = (index - 1) * size;
-    let paged = datas.splice(start, size);
+    /* 使用 slice 而非 splice，避免破坏缓存中的原数组 */
+    let paged = datas.slice(start, start + size);
 
     let page = {
       PageIndex: index,

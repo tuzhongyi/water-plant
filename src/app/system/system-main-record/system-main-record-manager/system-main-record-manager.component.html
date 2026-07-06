@@ -1,1 +1,46 @@
-<p>system-main-record-manager works!</p>
+<howell-card>
+  <div class="system-main-record-manager">
+    <div class="card-head">
+      <div>报警列表</div>
+      <div>
+        共 <span class="count">{{ table.datas.length }}</span> 条
+      </div>
+    </div>
+    <div class="card-line"></div>
+    <div class="system-main-record-container card-body">
+      <div class="system-main-record-filter">
+        <div class="button-group">
+          <button
+            class="button-border green"
+            [class.selected]="!table.args.type"
+            (click)="table.on.filter()"
+          >
+            全部报警
+          </button>
+          <button
+            class="button-border green"
+            [class.selected]="table.args.type == Type.device"
+            (click)="table.on.filter(Type.device)"
+          >
+            设备故障
+          </button>
+          <button
+            class="button-border green"
+            [class.selected]="table.args.type == Type.other"
+            (click)="table.on.filter(Type.other)"
+          >
+            行为监测
+          </button>
+        </div>
+      </div>
+      <div class="system-main-record-table">
+        <hw-system-main-record-table
+          [args]="table.args"
+          [load]="table.load"
+          (loaded)="table.on.loaded($event)"
+        >
+        </hw-system-main-record-table>
+      </div>
+    </div>
+  </div>
+</howell-card>

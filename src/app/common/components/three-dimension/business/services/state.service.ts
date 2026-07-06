@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ModelEntry, RenderMode, RenderSettings, EditInputs, ModelFile, ModelConfig, SceneCamera } from '../models/types';
 import { DEFAULT_RENDER_SETTINGS } from '../models/constants';
+import {
+  EditInputs,
+  ModelConfig,
+  ModelEntry,
+  ModelFile,
+  RenderMode,
+  RenderSettings,
+  SceneCamera,
+} from '../models/types';
 
 @Injectable({ providedIn: 'root' })
 export class StateService {
@@ -10,7 +18,7 @@ export class StateService {
   readonly modelFiles$ = new BehaviorSubject<ModelFile[]>([]);
   readonly loadedModels$ = new BehaviorSubject<Map<string, ModelEntry>>(new Map());
   readonly loadedModelList$: Observable<ModelEntry[]> = this.loadedModels$.pipe(
-    map(m => Array.from(m.values()))
+    map((m) => Array.from(m.values())),
   );
 
   /* 选中 / 悬停 */
@@ -23,9 +31,15 @@ export class StateService {
   /* 编辑模式 */
   readonly editMode$ = new BehaviorSubject<boolean>(false);
   readonly editInputs$ = new BehaviorSubject<EditInputs>({
-    posX: 0, posY: 0, posZ: 0,
-    scaleX: 1, scaleY: 1, scaleZ: 1,
-    rotH: 0, rotP: 0, rotB: 0,
+    posX: 0,
+    posY: 0,
+    posZ: 0,
+    scaleX: 1,
+    scaleY: 1,
+    scaleZ: 1,
+    rotH: 0,
+    rotP: 0,
+    rotB: 0,
   });
 
   /* 配置 */
@@ -63,30 +77,66 @@ export class StateService {
   /** 模型节点可见性变化 → 触发 edge/depth 几何体重建 */
   readonly visibilityChanged$ = new Subject<string>();
 
-  get modelFiles(): ModelFile[] { return this.modelFiles$.value; }
-  get loadedModels(): Map<string, ModelEntry> { return this.loadedModels$.value; }
-  get selectedModelId(): string | null { return this.selectedModelId$.value; }
-  get hoveredModelId(): string | null { return this.hoveredModelId$.value; }
-  get settings(): RenderSettings { return this.settings$.value; }
-  get editMode(): boolean { return this.editMode$.value; }
-  get editInputs(): EditInputs { return this.editInputs$.value; }
-  get activeConfig(): ModelConfig | null { return this.activeConfig$.value; }
+  get modelFiles(): ModelFile[] {
+    return this.modelFiles$.value;
+  }
+  get loadedModels(): Map<string, ModelEntry> {
+    return this.loadedModels$.value;
+  }
+  get selectedModelId(): string | null {
+    return this.selectedModelId$.value;
+  }
+  get hoveredModelId(): string | null {
+    return this.hoveredModelId$.value;
+  }
+  get settings(): RenderSettings {
+    return this.settings$.value;
+  }
+  get editMode(): boolean {
+    return this.editMode$.value;
+  }
+  get editInputs(): EditInputs {
+    return this.editInputs$.value;
+  }
+  get activeConfig(): ModelConfig | null {
+    return this.activeConfig$.value;
+  }
 
   get selectedEntry(): ModelEntry | null {
     const id = this.selectedModelId;
-    return id ? this.loadedModels.get(id) ?? null : null;
+    return id ? (this.loadedModels.get(id) ?? null) : null;
   }
 
-  get renderMode(): RenderMode { return this.settings.renderMode; }
-  get thresholdAngle(): number { return this.settings.thresholdAngle; }
-  get edgeLineWidth(): number { return this.settings.edgeLineWidth; }
-  get solidOpacity(): number { return this.settings.solidOpacity; }
-  get wfOpacity(): number { return this.settings.wfOpacity; }
-  get bloomEnabled(): boolean { return this.settings.bloom; }
-  get flatShading(): boolean { return this.settings.flatShading; }
-  get showBBox(): boolean { return this.settings.showBBox; }
-  get sceneCameras(): SceneCamera[] { return this.sceneCameras$.value; }
-  get autoRotate(): boolean { return this.settings.autoRotate; }
+  get renderMode(): RenderMode {
+    return this.settings.renderMode as RenderMode;
+  }
+  get thresholdAngle(): number {
+    return this.settings.thresholdAngle;
+  }
+  get edgeLineWidth(): number {
+    return this.settings.edgeLineWidth;
+  }
+  get solidOpacity(): number {
+    return this.settings.solidOpacity;
+  }
+  get wfOpacity(): number {
+    return this.settings.wfOpacity;
+  }
+  get bloomEnabled(): boolean {
+    return this.settings.bloom;
+  }
+  get flatShading(): boolean {
+    return this.settings.flatShading;
+  }
+  get showBBox(): boolean {
+    return this.settings.showBBox;
+  }
+  get sceneCameras(): SceneCamera[] {
+    return this.sceneCameras$.value;
+  }
+  get autoRotate(): boolean {
+    return this.settings.autoRotate;
+  }
 
   addLoadedModel(entry: ModelEntry): void {
     const next = new Map(this.loadedModels);
@@ -128,6 +178,6 @@ export class StateService {
   }
 
   removeSceneCamera(id: string): void {
-    this.sceneCameras$.next(this.sceneCameras.filter(c => c.id !== id));
+    this.sceneCameras$.next(this.sceneCameras.filter((c) => c.id !== id));
   }
 }

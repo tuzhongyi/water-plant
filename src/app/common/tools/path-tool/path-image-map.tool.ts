@@ -1,63 +1,63 @@
-export class PathImageMapTool {
-  shop = {
-    white: {
-      normal: '/assets/image/map/marker/marker-shop-white.png',
-      hover: '/assets/image/map/marker/marker-shop-white-hover.png',
-      selected: '/assets/image/map/marker/marker-shop-white-selected.png',
-    },
-    green: {
-      normal: '/assets/image/map/marker/marker-shop-green.png',
-      hover: '/assets/image/map/marker/marker-shop-green-hover.png',
-      selected: '/assets/image/map/marker/marker-shop-green-selected.png',
-    },
-    orange: {
-      normal: '/assets/image/map/marker/marker-shop-orange.png',
-      hover: '/assets/image/map/marker/marker-shop-orange-hover.png',
-      selected: '/assets/image/map/marker/marker-shop-orange-selected.png',
-    },
-    blue: {
-      normal: '/assets/image/map/marker/marker-shop-blue.png',
-      hover: '/assets/image/map/marker/marker-shop-blue-hover.png',
-      selected: '/assets/image/map/marker/marker-shop-blue-selected.png',
-    },
-    red: {
-      normal: '/assets/image/map/marker/marker-shop-red.png',
-      hover: '/assets/image/map/marker/marker-shop-red-hover.png',
-      selected: '/assets/image/map/marker/marker-shop-red-selected.png',
-    },
-  };
-  point = {
-    blue: '/assets/image/map/point-blue.png',
-    red: '/assets/image/map/point-red.png',
-  };
-  alarm = {
-    icon: {
-      blue: '/assets/image/map/marker/marker-alarm-blue.png',
-      cyan: '/assets/image/map/marker/marker-alarm-cyan.png',
-      green: '/assets/image/map/marker/marker-alarm-green.png',
-      orange: '/assets/image/map/marker/marker-alarm-orange.png',
-      red: '/assets/image/map/marker/marker-alarm-red.png',
-    },
+import { MapElementType } from '../../data-core/enums/geo/map-element-type.enum';
 
-    breath: {
-      red: '/assets/image/map/breath_red.png',
-      orange: '/assets/image/map/breath_orange.png',
-      cyan: '/assets/image/map/breath_cyan.png',
-    },
-    info: {
-      red: '/assets/image/map/map-alarm-info.png',
+export interface MapImagePath {
+  normal: string;
+  hover: string;
+  selected: string;
+  offline: string;
+  alarm?: {
+    normal: string;
+    hover?: string;
+    selected?: string;
+    offline?: string;
+  };
+}
+
+export class PathImageMapTool {
+  camera: MapImagePath = {
+    normal: '/assets/images/map/marker/camera.png',
+    hover: '/assets/images/map/marker/camera-hover.png',
+    selected: '/assets/images/map/marker/camera-selected.png',
+    offline: '/assets/images/map/marker/camera-offline.png',
+    alarm: {
+      normal: '/assets/images/map/marker/camera-alarm.png',
+      hover: '/assets/images/map/marker/camera-alarm-hover.png',
+      selected: '/assets/images/map/marker/camera-alarm-selected.png',
     },
   };
-  device = {
-    mobile: {
-      online: '/assets/image/map/marker/marker-device-mobile-online.png',
-      offline: '/assets/image/map/marker/marker-device-mobile-offline.png',
+  announciator: MapImagePath = {
+    normal: '/assets/images/map/marker/announciator.png',
+    hover: '/assets/images/map/marker/announciator-hover.png',
+    selected: '/assets/images/map/marker/announciator-selected.png',
+    offline: '/assets/images/map/marker/announciator-offline.png',
+    alarm: {
+      normal: '/assets/images/map/marker/announciator-alarm.png',
+      hover: '/assets/images/map/marker/announciator-alarm-hover.png',
+      selected: '/assets/images/map/marker/announciator-alarm-selected.png',
     },
   };
-  object = {
-    busstation: '/assets/image/map/marker/marker-bus-station.png',
-    firehydrant: '/assets/image/map/marker/marker-fire-hydrant.png',
-    passage: '/assets/image/map/marker/marker-passage.png',
-    trashcan: '/assets/image/map/marker/marker-trash-can.png',
+  sensor: MapImagePath = {
+    normal: '/assets/images/map/marker/sensor.png',
+    hover: '/assets/images/map/marker/sensor-hover.png',
+    selected: '/assets/images/map/marker/sensor-selected.png',
+    offline: '/assets/images/map/marker/sensor-offline.png',
+    alarm: {
+      normal: '/assets/images/map/marker/sensor-alarm.png',
+      hover: '/assets/images/map/marker/sensor-alarm-hover.png',
+      selected: '/assets/images/map/marker/sensor-alarm-selected.png',
+    },
   };
+
+  get(type: MapElementType) {
+    switch (type) {
+      case MapElementType.Camera:
+        return this.camera;
+      case MapElementType.Announciator:
+        return this.announciator;
+      case MapElementType.IoTSensor:
+        return this.sensor;
+      default:
+        throw new Error('没找到MapElementType对映的图片');
+    }
+  }
 }

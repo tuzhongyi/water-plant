@@ -4,6 +4,7 @@ import { Device } from '../../../common/data-core/models/devices/device.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { TreeDeviceComponent } from '../../../share/tree/tree-device/tree-device.component';
+import { IDevice } from '../../../share/tree/tree-device/tree-device.model';
 
 @Component({
   selector: 'hw-setting-device-tree',
@@ -16,10 +17,11 @@ export class SettingDeviceTreeComponent implements OnDestroy {
   elements = input<GeoMapElement[]>([]);
 
   details = output<Device | undefined>();
-  loaded = output<Record<number, Device[]>>();
+  loaded = output<Record<number, IDevice[]>>();
   selected = input<Device>();
   selectedChange = output<Device>();
   bind = output<VideoChannel>();
+  unbind = output<VideoChannel>();
   position = output<VideoChannel>();
 
   constructor() {
@@ -47,7 +49,7 @@ export class SettingDeviceTreeComponent implements OnDestroy {
   tree = {
     load: new EventEmitter<void>(),
     bound: new EventEmitter<GeoMapElement[]>(),
-    loaded: (datas: Record<number, Device[]>) => {
+    loaded: (datas: Record<number, IDevice[]>) => {
       if (Object.keys(datas).length === 0) {
         this.details.emit(undefined);
       }
@@ -60,7 +62,7 @@ export class SettingDeviceTreeComponent implements OnDestroy {
       this.bind.emit(data);
     },
     unbind: (data: VideoChannel) => {
-      this.bind.emit(data);
+      this.unbind.emit(data);
     },
     position: (data: any) => {
       this.position.emit(data);

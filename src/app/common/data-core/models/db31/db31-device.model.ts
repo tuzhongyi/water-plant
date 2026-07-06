@@ -1,15 +1,15 @@
 import { Transform } from 'class-transformer';
-import { IIdModel } from '../interface/model.interface';
+import { IIdNameModel } from '../interface/model.interface';
 import { Transformer } from '../transformer';
 
 /**	DB31Device (DB31设备)	*/
-export class DB31Device implements IIdModel {
+export class DB31Device implements IIdNameModel<string, string | undefined> {
   /**	String	ID	M	*/
   Id!: string;
   /**	String	DB31系统ID	M	*/
   DB31Id!: string;
   /**	String	名称	O	*/
-  Name?: string;
+  Name: string | undefined;
   /**	String	访问地址：http://192.168.36.109:4001/	M	*/
   HostUrl!: string;
   /**	String	MQTT地址：ws:// 192.168.36.109:1883/	O	*/

@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, signal } from '@angular/core';
+import { Component, EventEmitter, OnInit, signal } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CardComponent } from '../../../common/components/card/card.component';
+import { WindowConfirmComponent } from '../../../common/components/window-confirm/window-confirm.component';
 import { WindowComponent } from '../../../common/components/window-control/window.component';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
+import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
 import { SettingDeviceTreeComponent } from '../../setting-device/setting-device-tree/setting-device-tree.component';
 import { SettingMapBusiness } from '../business/setting-map.business';
 import { BindingArgs } from '../business/setting-map.model';
@@ -21,6 +23,7 @@ import { SettingMapManagerWindow } from './setting-map-manager.window';
     SettingMapThreeComponent,
     SettingDeviceTreeComponent,
     WindowComponent,
+    WindowConfirmComponent,
     CardComponent,
     SettingMapDetailsComponent,
   ],
@@ -28,13 +31,19 @@ import { SettingMapManagerWindow } from './setting-map-manager.window';
   styleUrl: './setting-map-manager.component.less',
   providers: [SettingMapBusiness],
 })
-export class SettingMapManagerComponent {
+export class SettingMapManagerComponent implements OnInit {
   constructor(
     private business: SettingMapBusiness,
     private toastr: ToastrService,
   ) {}
 
   window = new SettingMapManagerWindow();
+
+  ngOnInit(): void {
+    this.business.element.all().then((x) => {
+      this.geo.element.datas.set(x);
+    });
+  }
 
   manager = {
     load: new EventEmitter<void>(),
@@ -76,14 +85,21 @@ export class SettingMapManagerComponent {
           this.geo.element.datas.set(elements);
         },
         camera: (datas: GeoMapElement[]) => {
-          this.geo.element.datas.set(datas);
+          let source = this.geo.element.datas();
+          let elements = [...datas, ...source];
+          elements = ArrayTool.unique(elements, (a, b) => {
+            return a.Id == b.Id;
+          });
+          if (elements.length != source.length) {
+            this.geo.element.datas.set(elements);
+          }
         },
       },
       bind: (args: BindingArgs) => {
         let standby = this.three.standby();
         if (standby?.Id != args.standby.Id) return;
 
-        let mapId = args.parent?.Id;
+        let mapId = args.parent?.MapId;
         if (!mapId) {
           let map = this.geo.map.data();
           if (!map) {
@@ -94,8 +110,8 @@ export class SettingMapManagerComponent {
         }
 
         if (standby instanceof VideoChannel) {
-          this.business.element
-            .bind(standby, args.location, mapId, args.modelId, args.parent?.Id)
+          this.business.element.camera
+            .bind(standby, args.location, mapId, args.parent?.Id)
             .then(() => {
               this.toastr.success('摄像机添加成功');
               this.three.standby.set(undefined);
@@ -110,6 +126,27 @@ export class SettingMapManagerComponent {
     standby: (data: IIdNameModel) => {
       this.three.standby.set(data);
     },
+    bind: {
+      confirm: (data: IIdNameModel) => {
+        let element = this.geo.element.datas().find((x) => x.ElementId == data.Id);
+        if (element) {
+          this.window.confirm.data = element;
+          this.window.confirm.show = true;
+        }
+      },
+      unbind: () => {
+        if (this.window.confirm.data) {
+          this.business.element.camera.unbind(this.window.confirm.data.Id).then((x) => {
+            this.window.confirm.show = false;
+            this.manager.load.emit();
+            this.business.element.all().then((x) => {
+              this.geo.element.datas.set(x);
+            });
+          });
+        }
+      },
+    },
+
     position: (data: VideoChannel) => {
       let element = this.geo.element.datas().find((x) => x.ElementId == data.Id);
       this.three.selected.set(element);

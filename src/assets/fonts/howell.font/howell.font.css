@@ -2659,3 +2659,36 @@ a .howell-icon-flip-vertical:before {
 .howell-icon-device_line:before {
     content: "\f420";
 }
+
+.howell-icon-alarm_line:before {
+    content: "\f421";
+}
+
+.howell-icon-access_door:before {
+    content: "\f422";
+}
+
+.howell-icon-filter:before {
+    content: "\f423";
+}
+
+.howell-icon-shade:before {
+    content: "\f424";
+}
+
+.howell-icon-view:before {
+    content: "\f425";
+}
+
+.howell-icon-top_view:before {
+    content: "\f426";
+}
+
+.howell-icon-left_view:before {
+    content: "\f427";
+}
+
+.howell-icon-right_view:before {
+    content: "\f428";
+}
+

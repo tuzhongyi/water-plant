@@ -30,4 +30,8 @@ export class GeoMapElement implements IIdNameModel {
   /**	DateTime	更新时间	M	*/
   @Transform(Transformer.datetime)
   UpdateTime!: Date;
+  /**	Boolean	是否来自于DB31设备	O */
+  FromDB31?: boolean;
+  /**	Int32	元素状态，0-正常，1-离线，2-报警	O */
+  ElementState?: number;
 }

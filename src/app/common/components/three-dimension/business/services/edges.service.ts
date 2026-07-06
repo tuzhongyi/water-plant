@@ -1,12 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import * as THREE from 'three';
-import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
+import { ModelEntry, RenderMode } from '../models/types';
+import { ColorsService } from './colors.service';
 import { SceneService } from './scene.service';
 import { StateService } from './state.service';
-import { ColorsService } from './colors.service';
-import { ModelEntry, RenderMode } from '../models/types';
 
 @Injectable({ providedIn: 'root' })
 export class EdgesService {
@@ -55,10 +55,12 @@ export class EdgesService {
         const b = new THREE.Vector3().fromBufferAttribute(pos, idx.getX(i * 3 + 1));
         const c = new THREE.Vector3().fromBufferAttribute(pos, idx.getX(i * 3 + 2));
         faceNormals.push(
-          new THREE.Vector3().crossVectors(
-            new THREE.Vector3().subVectors(b, a),
-            new THREE.Vector3().subVectors(c, a)
-          ).normalize()
+          new THREE.Vector3()
+            .crossVectors(
+              new THREE.Vector3().subVectors(b, a),
+              new THREE.Vector3().subVectors(c, a),
+            )
+            .normalize(),
         );
       }
 
@@ -67,7 +69,11 @@ export class EdgesService {
         const a = idx.getX(i * 3);
         const b = idx.getX(i * 3 + 1);
         const c = idx.getX(i * 3 + 2);
-        for (const [v0, v1] of [[a, b], [b, c], [c, a]]) {
+        for (const [v0, v1] of [
+          [a, b],
+          [b, c],
+          [c, a],
+        ]) {
           const min = Math.min(v0, v1);
           const max = Math.max(v0, v1);
           const key = `${min}_${max}`;
@@ -113,7 +119,7 @@ export class EdgesService {
       worldUnits: false,
       resolution: new THREE.Vector2(
         this.sceneService.renderer.domElement.width,
-        this.sceneService.renderer.domElement.height
+        this.sceneService.renderer.domElement.height,
       ),
       dashed: false,
       alphaToCoverage: false,
@@ -148,7 +154,7 @@ export class EdgesService {
         new THREE.MeshBasicMaterial({
           colorWrite: false,
           depthWrite: true,
-        })
+        }),
       );
       /* mesh 顶点 → wrapper 局部空间 */
       const meshToWrapper = wrapperWorldInverse.clone().multiply(mesh.matrixWorld);
@@ -167,12 +173,12 @@ export class EdgesService {
     const isOverlay = mode === 'overlay';
     const solidSeeThrough = isOverlay && this.state.settings.solidSeeThrough;
     const edgeSeeThrough = isOverlay && this.state.settings.edgeSeeThrough;
-    const opacity = mode === 'edges' ? 0 : this.state.solidOpacity;
+    const opacity = mode === 'edges' ? 0 : mode === 'solid' ? 0.5 : this.state.solidOpacity;
     const showColor = mode !== 'edges' && opacity > 0;
 
     for (const mesh of meshes) {
       if (Array.isArray(mesh.material)) {
-        mesh.material.forEach(m => {
+        mesh.material.forEach((m) => {
           m.side = solidSeeThrough ? THREE.DoubleSide : THREE.FrontSide;
           m.transparent = solidSeeThrough || opacity < 1;
           m.opacity = opacity;
@@ -197,7 +203,7 @@ export class EdgesService {
       entry.edgesGroup.visible = mode !== 'solid';
       if (mode !== 'solid') {
         const wfOpacity = this.state.wfOpacity;
-        entry.edgesGroup.traverse(c => {
+        entry.edgesGroup.traverse((c) => {
           if ((c as any).isLineSegments2) {
             (c as any).material.opacity = wfOpacity;
             (c as any).material.transparent = true;
@@ -220,7 +226,7 @@ export class EdgesService {
 
   removeEdgesForEntry(entry: ModelEntry): void {
     if (entry.edgesGroup) {
-      entry.edgesGroup.traverse(c => {
+      entry.edgesGroup.traverse((c) => {
         if (c instanceof LineSegments2) {
           c.geometry?.dispose();
           (c.material as THREE.Material)?.dispose();
@@ -241,7 +247,7 @@ export class EdgesService {
 
   removeDepthPrePass(entry: ModelEntry): void {
     if (entry.depthPrePassGroup) {
-      entry.depthPrePassGroup.traverse(c => {
+      entry.depthPrePassGroup.traverse((c) => {
         const m = c as THREE.Mesh;
         if (m.isMesh) {
           (m.material as THREE.Material)?.dispose();
@@ -258,7 +264,7 @@ export class EdgesService {
     if (entry.edgesGroup) skip.add(entry.edgesGroup);
 
     const result: THREE.Mesh[] = [];
-    entry.wrapper.traverse(c => {
+    entry.wrapper.traverse((c) => {
       if (!(c as THREE.Mesh).isMesh) return;
       if (skipInvisible && !c.visible) return;
       let p: THREE.Object3D | null = c.parent;

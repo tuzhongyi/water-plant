@@ -1,0 +1,87 @@
+import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { ModelFile } from '../../../common/components/three-dimension/business/models/types';
+import { ApiConfigService } from '../../../common/components/three-dimension/business/services/api-config.service';
+import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
+import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
+import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
+import { MapElementModel, MapModel } from '../../../setting/setting-map/business/setting-map.model';
+
+@Injectable()
+export class SystemMainThreeBusiness {
+  constructor(
+    private service: GeographicRequestService,
+    private api: ApiConfigService,
+  ) {}
+
+  map = {
+    load: async (): Promise<MapModel | undefined> => {
+      let maps = await this.service.map.array();
+      if (maps.length > 0) {
+        return maps[0];
+      }
+      return undefined;
+    },
+  };
+  element = {
+    get: (id: string) => {
+      return this.service.map.element.get(id);
+    },
+    all: () => {
+      return this.service.map.element.all();
+    },
+    camera: {
+      load: async (parentId?: string): Promise<MapElementModel[]> => {
+        let params = new GetMapElementsParams();
+        params.ElementTypes = [MapElementType.Camera];
+        params.ParentId = parentId;
+        let all = await this.service.map.element.all(params);
+        if (!parentId) {
+          return all.filter((x) => !x.ParentId);
+        }
+        return all;
+      },
+    },
+    building: {
+      load: async (): Promise<MapElementModel[]> => {
+        let params = new GetMapElementsParams();
+        params.ElementTypes = [MapElementType.Building];
+        return this.service.map.element.all(params);
+      },
+      floor: {
+        load: async (buildingId: string) => {
+          let params = new GetMapElementsParams();
+          params.ElementTypes = [MapElementType.Floor];
+          params.ParentId = buildingId;
+          return this.service.map.element.all(params);
+        },
+      },
+    },
+  };
+
+  private cache: ModelFile[] = [];
+  model = {
+    load: async (): Promise<ModelFile[]> => {
+      if (this.cache.length > 0) return this.cache;
+      this.cache = await firstValueFrom(this.api.models());
+      return this.cache;
+    },
+    item: async (modelId: string) => {
+      let all = await this.model.load();
+      return all.find((x) => x.name == modelId);
+    },
+    expansion: (modelId: string) => {
+      let id = this.convert.expansion(modelId);
+      return this.model.item(id);
+    },
+  };
+
+  private convert = {
+    expansion: (modelId: string) => {
+      const dot = modelId.lastIndexOf('.');
+      const base = dot > 0 ? modelId.substring(0, dot) : modelId;
+      const ext = dot > 0 ? modelId.substring(dot) : '';
+      return `${base}_expansion${ext}`;
+    },
+  };
+}

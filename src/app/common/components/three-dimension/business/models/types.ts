@@ -1,7 +1,24 @@
 import * as THREE from 'three';
 
-export type RenderMode = 'solid' | 'edges' | 'overlay';
 export type ViewPreset = 'small' | 'medium' | 'large';
+
+export enum RenderMode {
+  solid = 'solid',
+  edges = 'edges',
+  overlay = 'overlay',
+}
+
+/** 摄像机视图方向 */
+export enum FitView {
+  /** 45° 俯视适配全部模型 */
+  Fit = 'fit',
+  /** 俯视 — 模型正上方 */
+  Top = 'top',
+  /** 左方 */
+  Left = 'left',
+  /** 右方 */
+  Right = 'right',
+}
 
 export interface ViewPresetConfig {
   grid: number;
@@ -22,6 +39,7 @@ export interface StandbyClickArgs {
   y: number;
   z: number;
   modelId: string;
+  meshId?: string;
   data: { Id: string; Name: string };
 }
 
@@ -80,8 +98,6 @@ export interface ModelEntry {
   labelPerHeight?: number;
   labelFontSize?: number;
   locked: boolean;
-  /** 是否显示此模型的变换 Gizmo */
-  gizmoVisible: boolean;
   /** 模型几何中心（wrapper 本地空间），在加载时计算 */
   geoCenter: THREE.Vector3;
 }
@@ -109,16 +125,29 @@ export interface ModelTransformConfig {
   labelPerHeight?: number;
   labelFontSize?: number;
   locked?: boolean;
-  gizmoVisible?: boolean;
+}
+
+interface EntityState {
+  normal: string;
+  hover?: string;
+  selected?: string;
+  offline?: string;
+}
+interface AlarmEntityState extends EntityState {
+  alarm?: EntityState;
 }
 
 /** 外部传入的场景摄像机标记 */
-export interface CameraEntity {
+export interface MarkerEntity<T = any> {
   id: string; // 唯一编号
   name: string; // label 显示名称
   position: Vec3; // 所在位置
   modelId: string; // 所属模型 ID
   meshId?: string; // 模型 mesh 的 key（Group 名优先）
+  offline?: boolean;
+  alarm?: boolean;
+  icon: AlarmEntityState;
+  data: T;
   [key: string]: any; // 可扩展
 }
 
@@ -142,7 +171,7 @@ export interface ModelConfig {
 }
 
 export interface RenderSettings {
-  renderMode: RenderMode;
+  renderMode: RenderMode | string;
   edgeLineWidth: number;
   thresholdAngle: number;
   solidOpacity: number;

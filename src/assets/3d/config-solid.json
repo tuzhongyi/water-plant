@@ -1,0 +1,222 @@
+{
+  "settings": {
+    "renderMode": "overlay",
+    "edgeLineWidth": 1,
+    "thresholdAngle": 1,
+    "solidOpacity": 0.05,
+    "wfOpacity": 0.9,
+    "bgColor": "#20383c",
+    "ambientIntensity": 2.5,
+    "keyIntensity": 3,
+    "fillIntensity": 1,
+    "hemiIntensity": 1.2,
+    "showGrid": false,
+    "showAxes": false,
+    "showCenterDot": false,
+    "showBBox": false,
+    "autoRotate": false,
+    "flatShading": false,
+    "sobel": false,
+    "bloom": false,
+    "fxaa": false,
+    "edgeSeeThrough": false,
+    "solidSeeThrough": true,
+    "bloomThreshold": 0.6,
+    "bloomStrength": 1.5,
+    "bloomRadius": 0.4,
+    "showCameraHelpers": true,
+    "cameraNear": 0.1,
+    "cameraFar": 7500,
+    "cameraType": "perspective",
+    "viewPreset": "medium",
+    "camPos": {
+      "x": 146.67135563110656,
+      "y": 620.5330768834609,
+      "z": 690.3918420192989
+    },
+    "camTgt": {
+      "x": 26.51254747236085,
+      "y": -188.23056833911394,
+      "z": -44.80473522768596
+    },
+    "gizmoPivot": "origin",
+    "gizmoVisible": true
+  },
+  "models": {
+    "Administration_Complex.glb": {
+      "name": "Administration_Complex.glb",
+      "position": {
+        "x": -238.1890785863038,
+        "y": 6.846491967933318,
+        "z": 86.58587511245594
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "Wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "Other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "Roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Administration_Complex": true
+      },
+      "label": "Administration_Complex.glb",
+      "labelMode": "hover",
+      "labelPerHeight": 1,
+      "labelFontSize": 20,
+      "locked": false,
+      "gizmoVisible": false
+    },
+    "VIL.glb": {
+      "name": "VIL.glb",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#2264aa",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#2264aa",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#2264aa",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "wall": {
+          "normal": "#12385e",
+          "hover": "#12385e",
+          "selected": "#12385e"
+        },
+        "access": {
+          "normal": "#00e700",
+          "hover": "#00e700",
+          "selected": "#00e700"
+        }
+      },
+      "meshVisibility": {
+        "platform": true,
+        "landscaping": true,
+        "security_booth": true,
+        "wall": true,
+        "gate2": true,
+        "gate1": true
+      },
+      "label": "VIL.glb",
+      "labelMode": "never",
+      "locked": false,
+      "gizmoVisible": false
+    },
+    "Administration_Complex_expansion.glb": {
+      "name": "Administration_Complex_expansion.glb",
+      "position": {
+        "x": -474.04687000495005,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "Wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "Other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "Roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor2": true,
+        "Floor3": true,
+        "Floor1": true
+      },
+      "label": "Administration_Complex_expansion.glb",
+      "labelMode": "never",
+      "labelPerHeight": 1,
+      "labelFontSize": 20,
+      "locked": false,
+      "gizmoVisible": false
+    }
+  },
+  "sceneCameras": []
+}

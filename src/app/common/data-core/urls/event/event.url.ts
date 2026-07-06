@@ -8,4 +8,8 @@ export class EventUrl extends AbstractUrl {
   static get record() {
     return new EventRecordUrl(this.base);
   }
+
+  static capability() {
+    return `${this.base}/Capability`;
+  }
 }

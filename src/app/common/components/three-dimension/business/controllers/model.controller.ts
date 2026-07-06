@@ -178,7 +178,6 @@ export class ModelController {
         if (transform.labelPerHeight !== undefined) entry.labelPerHeight = transform.labelPerHeight;
         if (transform.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
         if (transform.locked !== undefined) entry.locked = transform.locked;
-        if (transform.gizmoVisible !== undefined) entry.gizmoVisible = transform.gizmoVisible;
         /* label 优先级：model 输入 > config */
         if (label !== undefined) entry.label = label;
         this.modelService.updateLabel(entry);
@@ -344,7 +343,7 @@ export class ModelController {
       rotation: { h: THREE.MathUtils.radToDeg(entry.editRotation.x), p: THREE.MathUtils.radToDeg(entry.editRotation.y), b: THREE.MathUtils.radToDeg(entry.editRotation.z) },
       colors: entry.colors, materialColors: mc, meshVisibility: mv,
       label: entry.label, labelMode: entry.labelMode, labelPerHeight: entry.labelPerHeight, labelFontSize: entry.labelFontSize,
-      locked: entry.locked, gizmoVisible: entry.gizmoVisible,
+      locked: entry.locked,
     };
   }
 }

@@ -1,20 +1,23 @@
-<app-window [model]="model" [style]="style">
+<app-window [model]="model" [style]="style" [headable]="false">
   <div class="confirm">
     <div class="confirm-head">
       <div class="hw-simple-title"><i class="mdi mdi-alert"></i> {{ title }}</div>
+      <div class="button" (click)="oncancel()">
+        <i class="howell-icon-Close"></i>
+      </div>
     </div>
     <div class="confirm-body">
-      <div class="hw-simple-title">
+      <div>
         {{ content }}
 
         <ng-content></ng-content>
       </div>
     </div>
     <div class="confirm-foot">
-      <button class="button-clip-gradient" (click)="onok()">
+      <button class="button-border full" (click)="onok()">
         <i class="howell-icon-Check"></i> 确定
       </button>
-      <button class="button-clip-blue" (click)="oncancel()">
+      <button class="button-border green" (click)="oncancel()">
         <i class="howell-icon-Close"></i> 取消
       </button>
     </div>

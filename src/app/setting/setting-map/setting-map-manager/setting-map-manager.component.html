@@ -1,36 +1,38 @@
 <div class="setting-map-manager">
-  <div class="setting-map-list">
-    <howell-card>
-      <div class="setting-map-list-container card-flex column">
-        <div class="card-head">设备信息</div>
-        <div class="card-line"></div>
-        <div class="card-body">
-          <hw-setting-device-tree
-            [load]="manager.load"
-            [elements]="geo.element.datas()"
-            (bind)="tree.standby($event)"
-            (position)="tree.position($event)"
-          ></hw-setting-device-tree>
+  <div class="setting-map-container">
+    <div class="setting-map-list">
+      <howell-card>
+        <div class="setting-map-list-container card-flex column">
+          <div class="card-head">设备信息</div>
+          <div class="card-line"></div>
+          <div class="card-body">
+            <hw-setting-device-tree
+              [load]="manager.load"
+              [elements]="geo.element.datas()"
+              (bind)="tree.standby($event)"
+              (unbind)="tree.bind.confirm($event)"
+              (position)="tree.position($event)"
+            ></hw-setting-device-tree>
+          </div>
         </div>
-      </div>
-    </howell-card>
-  </div>
+      </howell-card>
+    </div>
 
-  <div class="setting-map-three">
-    <howell-card>
-      <hw-setting-map-three
-        [load]="manager.load"
-        (maploaded)="three.on.loaded.map($event)"
-        (buildingloaded)="three.on.loaded.building($event)"
-        (cameraloaded)="three.on.loaded.camera($event)"
-        [standby]="three.standby()"
-        [focusCameraId]="three.selected()"
-        (binding)="three.on.bind($event)"
-        (standbyCancel)="three.standby.set(undefined)"
-      ></hw-setting-map-three>
-    </howell-card>
+    <div class="setting-map-three">
+      <howell-card>
+        <hw-setting-map-three
+          [load]="manager.load"
+          (maploaded)="three.on.loaded.map($event)"
+          (buildingloaded)="three.on.loaded.building($event)"
+          (cameraloaded)="three.on.loaded.camera($event)"
+          [standby]="three.standby()"
+          [focusCameraId]="three.selected()"
+          (binding)="three.on.bind($event)"
+          (standbyCancel)="three.standby.set(undefined)"
+        ></hw-setting-map-three>
+      </howell-card>
+    </div>
   </div>
-
   @if (window.details.map.show) {
     <app-window
       [model]="window.details.map"
@@ -43,5 +45,14 @@
         (close)="geo.map.details.close()"
       ></hw-setting-map-details>
     </app-window>
+  }
+  @if (window.confirm.show) {
+    <confirm-window
+      [model]="window.confirm"
+      [content]="window.confirm.content"
+      (ok)="tree.bind.unbind()"
+      (cancel)="window.confirm.show = false"
+    >
+    </confirm-window>
   }
 </div>

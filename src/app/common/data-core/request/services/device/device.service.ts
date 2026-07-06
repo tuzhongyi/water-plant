@@ -8,6 +8,8 @@ import { VideoUrl } from '../../../models/devices/video-url.model';
 import { HowellResponse } from '../../../models/howell-response.model';
 import { PagedList } from '../../../models/interface/page-list.model';
 import { DeviceUrl } from '../../../urls/device/device.url';
+import { Cache } from '../../cache/cache';
+import { AbstractService } from '../../cache/cache.interface';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
 import { DeviceFaceRequestService } from './device-face-snap.service';
@@ -22,8 +24,11 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class DeviceRequestService {
-  constructor(private http: HowellHttpClient) {}
+@Cache(DeviceUrl.basic(), Device)
+export class DeviceRequestService extends AbstractService<Device> {
+  constructor(private http: HowellHttpClient) {
+    super();
+  }
 
   async create(data: Device, channel: boolean) {
     let url = DeviceUrl.create(channel);
@@ -60,7 +65,7 @@ export class DeviceRequestService {
       return HowellResponseProcess.paged(x, Device);
     });
   }
-  all(params = new GetDevicesParams()): Promise<Device[]> {
+  override all(params = new GetDevicesParams()): Promise<Device[]> {
     return ServiceTool.all((p) => {
       return this.list(p);
     }, params);

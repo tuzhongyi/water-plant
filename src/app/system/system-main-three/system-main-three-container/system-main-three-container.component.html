@@ -1,0 +1,79 @@
+<div class="system-main-three-container">
+  <div class="system-main-three-content" (click)="manager.on.click()">
+    <hw-3d
+      [models]="three.model.datas()"
+      [renderMode]="three.renderMode()"
+      (inited)="three.on.inited()"
+      (loaded)="three.on.loaded()"
+      (standbyClick)="three.on.standby.binding($event)"
+      (standbyCancel)="three.on.standby.cancel()"
+      [markers]="three.camera.datas()"
+      [selectedCameraId]="focusCameraId?.Id"
+      [markersMovable]="false"
+      (modelClick)="three.on.building.select($event)"
+      (modelDoubleClick)="three.on.building.expand($event)"
+      [fitView]="three.focus"
+      [meshVisibility]="floor.target"
+      (markerDblClick)="three.on.camera.dblclick($event)"
+    ></hw-3d>
+  </div>
+  <div class="system-main-three-button-group button-group">
+    <button
+      class="button-map"
+      title="建筑列表"
+      (click)="manager.button.building()"
+      [class.selected]="manager.building.show || !!floor.model()"
+    >
+      <i class="howell-icon-MapVillage"></i>
+    </button>
+    <button class="button-map" title="渲染模式" (click)="manager.button.mode()">
+      <i class="howell-icon-shade"></i>
+    </button>
+    <button class="button-map" title="点位筛选"><i class="howell-icon-filter"></i></button>
+  </div>
+  <div class="system-main-three-viewer">
+    <div></div>
+    <button class="button-border green-dark" (click)="manager.button.view(FitView.Top)">
+      <i class="howell-icon-top_view"></i>
+    </button>
+    <div></div>
+    <button class="button-border green-dark" (click)="manager.button.view(FitView.Left)">
+      <i class="howell-icon-left_view"></i>
+    </button>
+    <button class="button-border green-dark" (click)="manager.button.view()">
+      <i class="howell-icon-view"></i>
+    </button>
+    <button class="button-border green-dark" (click)="manager.button.view(FitView.Right)">
+      <i class="howell-icon-right_view"></i>
+    </button>
+  </div>
+
+  @if (manager.building.show) {
+    <div class="system-main-three-building">
+      <div class="button-group">
+        @for (item of element.building.datas(); track $index) {
+          <button class="button-border green-dark" (click)="manager.building.select(item)">
+            {{ item.Name }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  @if (floor.datas().length > 0) {
+    <div class="system-main-three-floor">
+      <div class="button-group">
+        <button class="button-border green-dark" (click)="floor.on.back()">返回</button>
+        @for (item of floor.datas(); track $index) {
+          <button
+            class="button-border green-dark"
+            [class.selected]="floor.selected()?.Id == item.Id"
+            (click)="floor.on.select(item)"
+          >
+            {{ item.Name }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>
