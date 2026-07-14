@@ -13,7 +13,7 @@ import { DeviceRequestService } from '../../../common/data-core/request/services
 import { Duration } from '../../../common/tools/date-time-tool/duration.model';
 
 @Injectable()
-export class VideoPlayerWindowBusiness {
+export class VideoPlayerContainerBusiness {
   constructor(private service: DeviceRequestService) {}
 
   async load(cameraId: string, mode: PlayMode, duration?: Duration): Promise<VideoModel> {

@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import 'reflect-metadata';
+import { EnumNameValue } from '../capabilities/enum-name-value.model';
 import { IModel } from '../interface/model.interface';
-import { EnumNameValue } from './enum-name-value.model';
 /**	DeviceCapability (设备能力)	*/
 export class DeviceCapability implements IModel {
   /**	EnumNameValue[]	设备协议类型	O	*/

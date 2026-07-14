@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiConfigService } from '../../../common/components/three-dimension/business/services/api-config.service';
+import { ThreeDimensionApiService } from '../../../common/components/three-dimension/business/services/three-dimension-api.service';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
 import { SettingMapElementBusiness } from './setting-map-element.business';
 import { SettingMapModelBusiness } from './setting-map-model.business';
@@ -11,7 +11,7 @@ export class SettingMapBusiness {
   model: SettingMapModelBusiness;
   constructor(
     private service: GeographicRequestService,
-    api: ApiConfigService,
+    api: ThreeDimensionApiService,
   ) {
     this.element = new SettingMapElementBusiness(service);
     this.model = new SettingMapModelBusiness(api);

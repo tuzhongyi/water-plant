@@ -16,7 +16,7 @@ export class ThreePathTool {
   }
 
   get = {
-    glb: (filename: string) => {
+    file: (filename: string) => {
       return `${this.folder}/models/${filename}`;
     },
   };

@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ModelFile } from '../../../common/components/three-dimension/business/models/types';
-import { ApiConfigService } from '../../../common/components/three-dimension/business/services/api-config.service';
+import { ThreeDimensionApiService } from '../../../common/components/three-dimension/business/services/three-dimension-api.service';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
+import { LocaleCompare } from '../../../common/tools/compare-tool/compare.tool';
 import { MapElementModel, MapModel } from '../../../setting/setting-map/business/setting-map.model';
 
 @Injectable()
 export class SystemMainThreeBusiness {
   constructor(
     private service: GeographicRequestService,
-    private api: ApiConfigService,
+    private api: ThreeDimensionApiService,
   ) {}
 
   map = {
@@ -42,13 +43,18 @@ export class SystemMainThreeBusiness {
       if (!parentId) {
         all = all.filter((x) => !x.ParentId);
       }
+
       return all;
     },
     building: {
       load: async (): Promise<MapElementModel[]> => {
         let params = new GetMapElementsParams();
         params.ElementTypes = [MapElementType.Building];
-        return this.service.map.element.all(params);
+        let all = await this.service.map.element.all(params);
+        all = all.sort((a, b) => {
+          return LocaleCompare.compare(b.Name, a.Name);
+        });
+        return all;
       },
       floor: {
         load: async (buildingId: string) => {

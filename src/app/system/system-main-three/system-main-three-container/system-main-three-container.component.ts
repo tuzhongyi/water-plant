@@ -10,6 +10,7 @@ import {
   StandbyClickArgs,
 } from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionComponent } from '../../../common/components/three-dimension/three-dimension.component';
+import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
@@ -32,7 +33,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   @Output() buildingloaded = new EventEmitter<GeoMapElement[]>();
   @Output() buildingselect = new EventEmitter<GeoMapElement>();
 
-  @Output() cameraloaded = new EventEmitter<GeoMapElement[]>();
+  @Output() elementloaded = new EventEmitter<GeoMapElement[]>();
   @Output() binding = new EventEmitter<BindingArgs>();
   @Output() standbyCancel = new EventEmitter<void>();
   @Input() load?: EventEmitter<void>;
@@ -43,7 +44,6 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   ) {}
   FitView = FitView;
   private subs = new Subscription();
-  outputable = true;
 
   ngOnInit(): void {
     this.map.load();
@@ -109,6 +109,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     building: {
       show: false,
       select: (data: GeoMapElement) => {
+        this.building.moveto.emit(data.ElementId);
+      },
+      expand: (data: GeoMapElement) => {
         if (data.ElementId) {
           this.manager.building.show = false;
           this.three.on.building.expand(data.ElementId);
@@ -118,6 +121,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
   building = {
     datas: signal<GeoMapElement[]>([]),
+    moveto: new EventEmitter<string>(),
     get: (modelId: string) => {
       let elements = this.building.datas();
       return elements.find((x) => x.ElementId == modelId);
@@ -125,9 +129,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     load: async () => {
       let buildings = await this.business.element.building.load();
       this.building.datas.set(buildings);
-      if (this.outputable) {
-        this.buildingloaded.emit(buildings);
-      }
+
+      this.buildingloaded.emit(buildings);
 
       await wait(() => {
         return this.three.inited;
@@ -150,9 +153,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       let cameras = await this.business.element.load(floorId);
 
       this.element.datas.set(cameras);
-      if (this.outputable) {
-        this.cameraloaded.emit(cameras);
-      }
+
+      this.elementloaded.emit(cameras);
+
       await wait(() => {
         return this.three.inited;
       });
@@ -176,9 +179,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       let map = await this.business.map.load();
 
       this.map.data.set(map);
-      if (this.outputable) {
-        this.maploaded.emit(map);
-      }
+
+      this.maploaded.emit(map);
+
       if (map) {
         let datas = this.three.model.datas();
         let village = this.converter.map.to.village(map);
@@ -198,6 +201,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       this.floor.model.set(file);
       let datas = await this.business.element.building.floor.load(building.Id);
       this.floor.datas.set(datas);
+      if (datas.length == 1) {
+        this.floor.on.select(datas[0]);
+      }
     },
     clear: () => {
       this.floor.model.set(undefined);
@@ -228,13 +234,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         }, 10);
       },
       back: async () => {
-        this.outputable = false;
         this.floor.clear();
         this.three.model.clear();
 
         await Promise.all([this.map.load(), this.building.load(), this.element.load()]);
-
-        this.outputable = true;
       },
     },
   };
@@ -306,7 +309,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         dblclick: (id: string) => {
           console.log(id);
           let camera = this.element.datas().find((x) => x.Id == id);
-          this.preview.emit(camera);
+          if (camera && camera.ElementType == MapElementType.Camera) {
+            this.preview.emit(camera);
+          }
         },
       },
     },

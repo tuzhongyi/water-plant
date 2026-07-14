@@ -6,6 +6,6 @@ export class SystemMainDB31Business {
   constructor(private service: DB31RequestService) {}
 
   load() {
-    return this.service.device.all();
+    return this.service.device.cache.all();
   }
 }

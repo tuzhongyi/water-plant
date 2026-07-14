@@ -1,4 +1,4 @@
-import { EventCapability } from '../../data-core/models/capabilities/event.capability';
+import { EventCapability } from '../../data-core/models/events/event.capability';
 import { EventRequestService } from '../../data-core/request/services/event/event.service';
 import { PromiseValue } from '../value-tool/value.promise';
 

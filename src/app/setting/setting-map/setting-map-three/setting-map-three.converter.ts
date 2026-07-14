@@ -83,7 +83,7 @@ export class SettingMapThreeConverter {
           id: data.Id,
           fileName: filename,
           label: data.Name,
-          url: PathTool.three.get.glb(filename),
+          url: PathTool.three.get.file(filename),
         };
         return model;
       },
@@ -98,7 +98,7 @@ export class SettingMapThreeConverter {
           id: data.Id,
           fileName: filename,
           label: data.Name,
-          url: PathTool.three.get.glb(filename),
+          url: PathTool.three.get.file(filename),
         };
         return model;
       },
@@ -145,7 +145,7 @@ export class SettingMapThreeConverter {
           id: element.Id,
           fileName: file.name,
           label: element.Name,
-          url: PathTool.three.get.glb(file.name),
+          url: PathTool.three.get.file(file.name),
         };
         return model;
       },

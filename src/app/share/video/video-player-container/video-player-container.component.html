@@ -1,5 +1,5 @@
-<div class="video-player-window">
-  <div class="video-player-window-operation">
+<div class="video-player-container">
+  <div class="video-player-container-operation">
     <div *ngIf="mode === PlayMode.vod" (click)="changeMode(PlayMode.live)" title="预览">
       <i class="howell-icon-video"></i>
     </div>
@@ -7,9 +7,9 @@
       <i class="howell-icon-video-playback1"></i>
     </div>
   </div>
-  <div class="video-player-window-head" *ngIf="mode === PlayMode.vod">
-    <div class="video-player-window-head-item date">
-      <div class="video-player-window-head-item-title">日期：</div>
+  <div class="video-player-container-head" *ngIf="mode === PlayMode.vod">
+    <div class="video-player-container-head-item date">
+      <div class="video-player-container-head-item-title">日期：</div>
 
       <input
         type="text"
@@ -21,19 +21,19 @@
         class="date-select"
       />
     </div>
-    <div class="video-player-window-head-item">
-      <div class="video-player-window-head-item-title">时间：</div>
+    <div class="video-player-container-head-item">
+      <div class="video-player-container-head-item-title">时间：</div>
 
       <app-time-control [time]="duration.begin" [endTime]="duration.end"></app-time-control>
 
       <div class="_">-</div>
       <app-time-control [time]="duration.end" [beginTime]="duration.begin"></app-time-control>
     </div>
-    <div class="video-player-window-head-item">
+    <div class="video-player-container-head-item">
       <button class="button-border green" (click)="playback()">开始回放</button>
     </div>
   </div>
-  <div class="video-player-window-body" [class.playback]="mode === PlayMode.vod">
+  <div class="video-player-container-body" [class.playback]="mode === PlayMode.vod">
     <app-video-player
       *ngIf="data"
       [model]="data"

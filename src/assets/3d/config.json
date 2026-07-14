@@ -30,83 +30,25 @@
     "cameraType": "perspective",
     "viewPreset": "medium",
     "camPos": {
-      "x": 146.67135563110656,
-      "y": 620.5330768834609,
-      "z": 690.3918420192989
+      "x": 103.66488967013251,
+      "y": 477.32496635685555,
+      "z": 339.11105570695827
     },
     "camTgt": {
-      "x": 26.51254747236085,
-      "y": -188.23056833911394,
-      "z": -44.80473522768596
+      "x": 86.54461322337065,
+      "y": -53.43371521491479,
+      "z": 13.578313141726676
     },
     "gizmoPivot": "origin",
     "gizmoVisible": true
   },
   "models": {
-    "Administration_Complex.glb": {
-      "name": "Administration_Complex.glb",
-      "position": {
-        "x": -238.1890785863038,
-        "y": 6.846491967933318,
-        "z": 86.58587511245594
-      },
-      "scale": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "rotation": {
-        "h": 0,
-        "p": 0,
-        "b": 0
-      },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "Wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "Other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "Roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        }
-      },
-      "meshVisibility": {
-        "Administration_Complex": true
-      },
-      "label": "Administration_Complex.glb",
-      "labelMode": "hover",
-      "labelPerHeight": 1,
-      "labelFontSize": 20,
-      "locked": false,
-      "gizmoVisible": false
-    },
     "VIL.glb": {
       "name": "VIL.glb",
       "position": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": -0.3096191599413727,
+        "y": -4.7637694472157256e-11,
+        "z": -0.00130816239536935
       },
       "scale": {
         "x": 1,
@@ -145,24 +87,25 @@
         }
       },
       "meshVisibility": {
-        "platform": true,
-        "landscaping": true,
-        "security_booth": true,
+        "Platform": true,
+        "Landscaping": true,
+        "Security_Booth": true,
         "wall": true,
-        "gate2": true,
-        "gate1": true
+        "Gate2": true,
+        "Gate1": true,
+        "Road": true
       },
       "label": "VIL.glb",
       "labelMode": "never",
       "locked": false,
       "gizmoVisible": false
     },
-    "Administration_Complex_expansion.glb": {
-      "name": "Administration_Complex_expansion.glb",
+    "C_Filter.glb": {
+      "name": "C_Filter.glb",
       "position": {
-        "x": -474.04687000495005,
-        "y": 0,
-        "z": 0
+        "x": 89.38567315193406,
+        "y": 8.183900842834717,
+        "z": -56.04291692228594
       },
       "scale": {
         "x": 1,
@@ -189,33 +132,1948 @@
         }
       },
       "materialColors": {
-        "Wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "Other": {
+        "other": {
           "normal": "#666666",
           "hover": "#666666",
           "selected": "#666666"
         },
-        "Roof": {
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
           "normal": "#007bff",
           "hover": "#2491ff",
           "selected": "#ffbb00"
         }
       },
       "meshVisibility": {
+        "Floor1": true,
+        "Roof": true
+      },
+      "label": "C滤池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Dosing_Building.glb": {
+      "name": "Dosing_Building.glb",
+      "position": {
+        "x": -159.4498201035102,
+        "y": 5.91262021989915,
+        "z": -38.0536614176947
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true,
+        "Roof": true
+      },
+      "label": "加药间",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Dewatering_Building.glb": {
+      "name": "Dewatering_Building.glb",
+      "position": {
+        "x": -175.2438131448092,
+        "y": 11.562251729138094,
+        "z": -73.94035727570616
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true,
         "Floor2": true,
-        "Floor3": true,
+        "Roof": true,
+        "Floor3": true
+      },
+      "label": "脱水车间",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Pump_Station_2.glb": {
+      "name": "Pump_Station_2.glb",
+      "position": {
+        "x": 265.2039333592252,
+        "y": 5.302109599932239,
+        "z": 20.91100484334486
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true,
+        "Roof": true,
+        "Basement‌1": true
+      },
+      "label": "2号泵房",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Activated_Carbon_Filter.glb": {
+      "name": "Activated_Carbon_Filter.glb",
+      "position": {
+        "x": 252.56207730550332,
+        "y": 6.979763262732899,
+        "z": -73.10055326923798
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Roof": true,
         "Floor1": true
       },
-      "label": "Administration_Complex_expansion.glb",
+      "label": "活性炭滤池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Residential_Building.glb": {
+      "name": "Residential_Building.glb",
+      "position": {
+        "x": -249.36452255016272,
+        "y": 7.374951803618368,
+        "z": 49.67627936392523
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Roof": true,
+        "Floor2": true,
+        "Floor1": true
+      },
+      "label": "生活楼",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Water_Quality_Building.glb": {
+      "name": "Water_Quality_Building.glb",
+      "position": {
+        "x": -244.35025788081086,
+        "y": 7.5405750249503285,
+        "z": -1.1797595363093052
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Roof": true,
+        "Floor1": true,
+        "Floor2": true
+      },
+      "label": "水质楼",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "35kV_Substation.glb": {
+      "name": "35kV_Substation.glb",
+      "position": {
+        "x": 262.56437240571455,
+        "y": 4.328791765670722,
+        "z": 85.23570974675314
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Roof": true,
+        "Floor1": true
+      },
+      "label": "35kv配电站",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Sludge_Thickener.glb": {
+      "name": "Sludge_Thickener.glb",
+      "position": {
+        "x": -135.9518093219376,
+        "y": 5.17390416726904,
+        "z": -73.54465311119803
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "浓缩池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "pump_house.glb": {
+      "name": "pump_house.glb",
+      "position": {
+        "x": 126.45084518036654,
+        "y": 10.15988885398728,
+        "z": -52.15310246448381
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true,
+        "Roof": true
+      },
+      "label": "冲洗泵房",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Pump_Station_1.glb": {
+      "name": "Pump_Station_1.glb",
+      "position": {
+        "x": 31.479353599400326,
+        "y": 5.769837679027585,
+        "z": 119.05030910600598
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Roof": true,
+        "Floor1": true
+      },
+      "label": "1号泵房",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Raw_Water_Pump_House.glb": {
+      "name": "Raw_Water_Pump_House.glb",
+      "position": {
+        "x": -32.91875688586074,
+        "y": 6.263984435930576,
+        "z": 108.6711104699969
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true,
+        "Roof": true
+      },
+      "label": "浑水泵房",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Pre_ozonation_Contact_Tank.glb": {
+      "name": "Pre_ozonation_Contact_Tank.glb",
+      "position": {
+        "x": -126.75442077221041,
+        "y": 4.856357629271184,
+        "z": 44.750279929387965
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Mesh1": true
+      },
+      "label": "预臭氧接触池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Chlorination_Room.glb": {
+      "name": "Chlorination_Room.glb",
+      "position": {
+        "x": -94.19784371676421,
+        "y": 7.067234971892432,
+        "z": 105.92556591825172
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Roof": true,
+        "Floor1": true
+      },
+      "label": "加氯间",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Warehouse.glb": {
+      "name": "Warehouse.glb",
+      "position": {
+        "x": -133.1980235890527,
+        "y": 6.873588564918727,
+        "z": 106.06080831886388
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true,
+        "Roof": true
+      },
+      "label": "仓库",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Water_Softening_Room.glb": {
+      "name": "Water_Softening_Room.glb",
+      "position": {
+        "x": -117.17668449949488,
+        "y": 7.014870998601602,
+        "z": 122.4181281504975
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Roof": true,
+        "Floor1": true
+      },
+      "label": "水质软化间",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Maintenance_Workshop.glb": {
+      "name": "Maintenance_Workshop.glb",
+      "position": {
+        "x": -128.80023650828352,
+        "y": 7.297183796251836,
+        "z": 80.23527379375477
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Roof": true,
+        "Floor1": true
+      },
+      "label": "机修车间",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Solar_Power.glb": {
+      "name": "Solar_Power.glb",
+      "position": {
+        "x": 177.30813831316263,
+        "y": 4.965322894633363,
+        "z": 36.05520195702013
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "Solar_Power.glb",
       "labelMode": "never",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Post_Ozone_Contact_Tank.glb": {
+      "name": "Post_Ozone_Contact_Tank.glb",
+      "position": {
+        "x": 200.79260519534452,
+        "y": 4.691619522484292,
+        "z": -44.54579939348838
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Mesh1": true
+      },
+      "label": "后臭氧接触池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Backwash_Pump_House.glb": {
+      "name": "Backwash_Pump_House.glb",
+      "position": {
+        "x": 198.85778193311526,
+        "y": 6.993719772467404,
+        "z": -85.49285294239382
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true,
+        "Roof": true
+      },
+      "label": "反冲洗泵房",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "A1A2_Sedimentation_Tanks.glb": {
+      "name": "A1A2_Sedimentation_Tanks.glb",
+      "position": {
+        "x": -21.16580805002522,
+        "y": 3.5247176889560237,
+        "z": 65.38961691679287
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "A1A2沉淀池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "B1B2_Sedimentation_Tanks.glb": {
+      "name": "B1B2_Sedimentation_Tanks.glb",
+      "position": {
+        "x": -21.259540213255846,
+        "y": 3.5659329686314223,
+        "z": 9.293306481432381
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "B1B2沉淀池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "C1C2_Sedimentation_Tanks.glb": {
+      "name": "C1C2_Sedimentation_Tanks.glb",
+      "position": {
+        "x": -20.18045251015934,
+        "y": 3.0611431378257734,
+        "z": -37.9204578673622
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "C1C2沉淀池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "C3C4_Sedimentation_Tanks.glb": {
+      "name": "C3C4_Sedimentation_Tanks.glb",
+      "position": {
+        "x": -21.03901017883871,
+        "y": 3.1125435230783225,
+        "z": -73.52976731964169
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "C3C4沉淀池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "A_Filter.glb": {
+      "name": "A_Filter.glb",
+      "position": {
+        "x": 85.67330035164923,
+        "y": 5.504709755887525,
+        "z": 68.43601096119903
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "A滤池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "B_Filter.glb": {
+      "name": "B_Filter.glb",
+      "position": {
+        "x": 83.45844950186431,
+        "y": 4.576640485791451,
+        "z": 7.924040096255311
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "B滤池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Sodium_Hypochlorite_Storage_Tank.glb": {
+      "name": "Sodium_Hypochlorite_Storage_Tank.glb",
+      "position": {
+        "x": -86.19645200593192,
+        "y": 4.078239761923285,
+        "z": 116.96225306960288
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "次氯酸钠储液池",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Water_Intake.glb": {
+      "name": "Water_Intake.glb",
+      "position": {
+        "x": -40.3680097848452,
+        "y": 1.876615889500278,
+        "z": 155.24202028564787
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Water_Ntake": true
+      },
+      "label": "取水口",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Administration_Complex.glb": {
+      "name": "Administration_Complex.glb",
+      "position": {
+        "x": -238.1890785863038,
+        "y": 7.259035044983435,
+        "z": 86.58587511245594
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Administration_Complex": true
+      },
+      "label": "行政办公楼",
+      "labelMode": "always",
       "labelPerHeight": 1,
       "labelFontSize": 20,
       "locked": false,
-      "gizmoVisible": false
+      "gizmoVisible": true
+    },
+    "Carbon_Dioxide_Unit.glb": {
+      "name": "Carbon_Dioxide_Unit.glb",
+      "position": {
+        "x": -129.4872495226407,
+        "y": 3.660901080917901,
+        "z": 121.70453235215936
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "二氧化碳装置",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Carbon_Dioxide_Unit2.glb": {
+      "name": "Carbon_Dioxide_Unit2.glb",
+      "position": {
+        "x": -140.00881625489168,
+        "y": 4.043789085154682,
+        "z": 121.94492501605842
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "二氧化碳装置",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
+    },
+    "Liquid_Nitrogen_Station.glb": {
+      "name": "Liquid_Nitrogen_Station.glb",
+      "position": {
+        "x": 147.70761890348294,
+        "y": 3.36842716134716,
+        "z": -29.465514833978034
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "colors": {
+        "normal": {
+          "edge": "#007bff",
+          "background": "#000000"
+        },
+        "hover": {
+          "edge": "#248eff",
+          "background": "#000000"
+        },
+        "selected": {
+          "edge": "#ffbb00",
+          "background": "#000000"
+        }
+      },
+      "materialColors": {
+        "other": {
+          "normal": "#666666",
+          "hover": "#666666",
+          "selected": "#666666"
+        },
+        "door": {
+          "normal": "#00ff00",
+          "hover": "#00ff00",
+          "selected": "#00ff00"
+        },
+        "wall": {
+          "normal": "#003c78",
+          "hover": "#0059b3",
+          "selected": "#785a00"
+        },
+        "roof": {
+          "normal": "#007bff",
+          "hover": "#2491ff",
+          "selected": "#ffbb00"
+        }
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "液氮站",
+      "labelMode": "always",
+      "locked": false,
+      "gizmoVisible": true
     }
   },
   "sceneCameras": []

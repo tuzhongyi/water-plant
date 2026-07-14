@@ -22,8 +22,13 @@ export class ServiceCache<T extends IData> implements IServiceCache {
     ids: new Map<string, number>(),
     /** 失败 ID 的冷却时间（ms），默认 30 秒 */
     cooldown: 30_000,
+  };
+
+  pending = {
+    /** 正在进行的 all() 请求，避免并发发起多次全量加载 HTTP 请求 */
+    all: undefined as Promise<T[]> | undefined,
     /** 正在进行的 get(id) 请求，避免同一 ID 并发发起多次 HTTP 请求 */
-    pending: new Map<string, Promise<T>>(),
+    get: new Map<string, Promise<T>>(),
   };
 
   constructor(
@@ -104,7 +109,8 @@ export class ServiceCache<T extends IData> implements IServiceCache {
     this.loading = false;
     this.loaded = false;
     this.failed.ids.clear();
-    this.failed.pending.clear();
+    this.pending.get.clear();
+    this.pending.all = undefined;
     this.cache.del(this.key);
   }
 
@@ -141,18 +147,28 @@ export class ServiceCache<T extends IData> implements IServiceCache {
         this.loading = false;
       }
     }
-    return this.service
+
+    /* 如果已有正在进行的全量加载请求，复用该 Promise，避免并发重复请求 */
+    if (this.pending.all) {
+      return this.pending.all;
+    }
+
+    this.pending.all = this.service
       .all()
       .then((x) => {
         this.save(x);
         this.loaded = true;
         this.loading = false;
+        this.pending.all = undefined;
         return this.all(params);
       })
       .catch((err) => {
         this.loading = false;
+        this.pending.all = undefined;
         throw err;
       });
+
+    return this.pending.all;
   }
 
   async get(id: string): Promise<T> {
@@ -176,7 +192,7 @@ export class ServiceCache<T extends IData> implements IServiceCache {
       }
 
       /* 如果已有相同 ID 的请求正在飞行中，复用该 Promise，避免并发重复请求 */
-      const pending = this.failed.pending.get(id);
+      const pending = this.pending.get.get(id);
       if (pending) {
         return pending;
       }
@@ -197,11 +213,11 @@ export class ServiceCache<T extends IData> implements IServiceCache {
         })
         .finally(() => {
           this.loading = false;
-          this.failed.pending.delete(id);
+          this.pending.get.delete(id);
         });
 
       /* 注册到 pendingGets，后续并发调用将复用同一个 Promise */
-      this.failed.pending.set(id, promise);
+      this.pending.get.set(id, promise);
       return promise;
     });
   }
@@ -234,5 +250,13 @@ export class ServiceCache<T extends IData> implements IServiceCache {
       Page: page,
       Data: paged,
     };
+  }
+  async array(params: IParams): Promise<T[]> {
+    return new Promise<T[]>((resolve) => {
+      this.all().then((datas) => {
+        datas = this.filter(datas, params);
+        resolve(datas);
+      });
+    });
   }
 }

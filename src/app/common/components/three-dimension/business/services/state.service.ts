@@ -4,12 +4,12 @@ import { map } from 'rxjs/operators';
 import { DEFAULT_RENDER_SETTINGS } from '../models/constants';
 import {
   EditInputs,
-  ModelConfig,
   ModelEntry,
   ModelFile,
   RenderMode,
   RenderSettings,
   SceneCamera,
+  ThreeDimensionConfig,
 } from '../models/types';
 
 @Injectable({ providedIn: 'root' })
@@ -43,7 +43,7 @@ export class StateService {
   });
 
   /* 配置 */
-  readonly activeConfig$ = new BehaviorSubject<ModelConfig | null>(null);
+  readonly activeConfig$ = new BehaviorSubject<ThreeDimensionConfig | null>(null);
 
   /* 状态栏消息 */
   readonly statusMessage$ = new BehaviorSubject<string>('');
@@ -98,7 +98,7 @@ export class StateService {
   get editInputs(): EditInputs {
     return this.editInputs$.value;
   }
-  get activeConfig(): ModelConfig | null {
+  get activeConfig(): ThreeDimensionConfig | null {
     return this.activeConfig$.value;
   }
 

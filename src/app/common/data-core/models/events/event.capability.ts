@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
+import { EnumNameValue } from '../capabilities/enum-name-value.model';
 import { IModel } from '../interface/model.interface';
-import { EnumNameValue } from './enum-name-value.model';
 
 /**	EventCapability (事件记录能力)	*/
 export class EventCapability implements IModel {

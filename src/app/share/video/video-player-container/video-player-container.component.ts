@@ -25,16 +25,16 @@ import {
 } from '../../../common/directives/date-time-picker/date-time-picker.directive';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
 import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
-import { VideoPlayerWindowBusiness } from './video-player-window.business';
+import { VideoPlayerContainerBusiness } from './video-player-container.business';
 
 @Component({
-  selector: 'howell-video-player-window',
+  selector: 'howell-video-player-container',
   imports: [CommonModule, DateTimePickerDirective, TimeControlComponent, VideoPlayerComponent],
-  templateUrl: './video-player-window.component.html',
-  styleUrls: ['./video-player-window.component.less'],
-  providers: [VideoPlayerWindowBusiness],
+  templateUrl: './video-player-container.component.html',
+  styleUrls: ['./video-player-container.component.less'],
+  providers: [VideoPlayerContainerBusiness],
 })
-export class VideoPlayerWindowComponent
+export class VideoPlayerContainerComponent
   extends WindowComponent
   implements OnInit, OnChanges, OnDestroy
 {
@@ -48,7 +48,7 @@ export class VideoPlayerWindowComponent
   @Input('data') source?: VideoModel;
 
   constructor(
-    private business: VideoPlayerWindowBusiness,
+    private business: VideoPlayerContainerBusiness,
     private cdr: ChangeDetectorRef,
   ) {
     super();

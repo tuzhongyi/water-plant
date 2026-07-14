@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ModelFile } from '../../../common/components/three-dimension/business/models/types';
-import { ApiConfigService } from '../../../common/components/three-dimension/business/services/api-config.service';
+import { ThreeDimensionApiService } from '../../../common/components/three-dimension/business/services/three-dimension-api.service';
 
 @Injectable()
 export class SettingMapModelBusiness {
-  constructor(private service: ApiConfigService) {}
+  constructor(private service: ThreeDimensionApiService) {}
 
   private cache: ModelFile[] = [];
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { instanceToPlain } from 'class-transformer';
 import { ObjectTool } from '../../../../tools/object-tool/object.tool';
 import { ServiceTool } from '../../../../tools/service-tool/service.tool';
-import { DeviceCapability } from '../../../models/capabilities/device.capability';
+import { DeviceCapability } from '../../../models/devices/device.capability';
 import { Device } from '../../../models/devices/device.model';
 import { VideoUrl } from '../../../models/devices/video-url.model';
 import { HowellResponse } from '../../../models/howell-response.model';

@@ -8,4 +8,8 @@ export class GeographicUrl extends AbstractUrl {
   static get map() {
     return new GeographicMapUrl(this.base);
   }
+
+  static capability() {
+    return `${this.base}/Capability`;
+  }
 }

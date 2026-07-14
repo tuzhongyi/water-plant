@@ -8,15 +8,19 @@ import { ServiceTool } from '../../../../tools/service-tool/service.tool';
 import { DB31Device } from '../../../models/db31/db31-device.model';
 import { PagedList } from '../../../models/interface/page-list.model';
 import { DB31Url } from '../../../urls/db31/db31.url';
+import { Cache } from '../../cache/cache';
+import { AbstractService } from '../../cache/cache.interface';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
 import { GetDB31DevicesParams } from './db31.params';
-
 @Injectable({
   providedIn: 'root',
 })
-export class DB31DeviceRequestService {
-  constructor(private http: HowellHttpClient) {}
+@Cache(DB31Url.device.basic(), DB31Device)
+export class DB31DeviceRequestService extends AbstractService<DB31Device> {
+  constructor(private http: HowellHttpClient) {
+    super();
+  }
   async array() {
     let url = DB31Url.device.basic();
     return this.http.get<HowellResponse<DB31Device[]>>(url).then((x) => {
@@ -58,7 +62,7 @@ export class DB31DeviceRequestService {
       return HowellResponseProcess.paged(x, DB31Device);
     });
   }
-  all(params = new GetDB31DevicesParams()): Promise<DB31Device[]> {
+  override all(params = new GetDB31DevicesParams()): Promise<DB31Device[]> {
     return ServiceTool.all((p) => {
       return this.list(p);
     }, params);

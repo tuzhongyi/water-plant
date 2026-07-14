@@ -3,6 +3,7 @@ import 'reflect-metadata';
 import { IIdModel } from '../interface/model.interface';
 import { Transformer } from '../transformer';
 import { DeviceEventResource } from './device-event-resource.model';
+import { EventBehaviorAction } from './event-behavior-action.model';
 /**	DeviceEventRecord (设备事件记录)	*/
 export class DeviceEventRecord implements IIdModel {
   /**	String	事件ID	M	*/ Id!: string;
@@ -24,6 +25,9 @@ export class DeviceEventRecord implements IIdModel {
   DeviceId?: string;
   /**	String	设备名称	O	*/
   DeviceName?: string;
+  /**	Boolean	是否来自于DB31设备	O */
+  FromDB31?: boolean;
+
   /**	String	图片ID、图片地址	O	*/
   ImageUrl?: string;
   /**	Int32	事件触发类型	M	*/
@@ -31,4 +35,8 @@ export class DeviceEventRecord implements IIdModel {
   /**	DeviceEventResource	报警资源	O	*/
   @Type(() => DeviceEventResource)
   Resource?: DeviceEventResource;
+
+  /**	EventBehaviorAction[]	联动行为	O */
+  @Type(() => EventBehaviorAction)
+  Actions?: EventBehaviorAction;
 }

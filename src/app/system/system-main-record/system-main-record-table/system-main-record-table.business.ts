@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DeviceEventRecord } from '../../../common/data-core/models/events/device-event-record.model';
 import { DeviceEventResource } from '../../../common/data-core/models/events/device-event-resource.model';
+import { DB31RequestService } from '../../../common/data-core/request/services/db31/db31.service';
 import { DeviceRequestService } from '../../../common/data-core/request/services/device/device.service';
 import { GetDeviceEventRecordsParams } from '../../../common/data-core/request/services/event/event.params';
 import { EventRequestService } from '../../../common/data-core/request/services/event/event.service';
@@ -19,15 +20,17 @@ export class SystemMainRecordTableBusiness {
   constructor(
     event: EventRequestService,
     device: DeviceRequestService,
+    db31: DB31RequestService,
     private capability: CapabilityTool,
     private language: LanguageTool,
   ) {
-    this.service = { event, device };
+    this.service = { event, device, db31 };
   }
 
   private service: {
     event: EventRequestService;
     device: DeviceRequestService;
+    db31: DB31RequestService;
   };
 
   async load(args: SystemMainRecordTableArgs) {
@@ -41,25 +44,22 @@ export class SystemMainRecordTableBusiness {
       params.EventTypes = await this.types(args.type);
     }
 
-    let datas = await this.service.event.record.all(params);
-    let all = datas.map((x) => this.convert(x));
+    let paged = await this.service.event.record.list(params);
+    let all = paged.Data.map((x) => this.convert(x));
     return Promise.all(all);
   }
 
   private async convert(data: DeviceEventRecord) {
     let icon = IconTool.DeviceEventResource(data.Resource?.ResourceType);
     if (!icon && data.DeviceId) {
-      try {
-        let device = await this.service.device.cache.get(data.DeviceId);
-        icon = IconTool.DeviceType(device.DeviceType);
-      } catch (error) {}
+      icon = await this.get.icon(data.DeviceId, data.FromDB31);
     }
     let item: SystemMainRecordTableItem = {
       id: data.Id,
       time: data.EventTime,
       name: data.Resource?.ResourceName || data.DeviceName || '',
       description: data.Description,
-      color: this.color(data.EventType),
+      color: this.get.color(data.EventType),
       icon: icon,
       type: await this.language.event.EventTypes(data.EventType),
 
@@ -67,6 +67,46 @@ export class SystemMainRecordTableBusiness {
     };
     return item;
   }
+
+  get = {
+    color: (type: number) => {
+      let color = 'yellow';
+      switch (type) {
+        case 1:
+          color = 'green';
+          break;
+        case 2:
+          color = 'red';
+          break;
+        default:
+          break;
+      }
+      return color;
+    },
+    icon: (id: string, db31 = false) => {
+      if (db31) {
+        return this.get.db31(id);
+      } else {
+        return this.get.device(id);
+      }
+    },
+    device: async (id: string) => {
+      try {
+        let device = await this.service.device.cache.get(id);
+        return IconTool.DeviceType(device.DeviceType);
+      } catch (error) {
+        return '';
+      }
+    },
+    db31: async (id: string) => {
+      try {
+        let device = await this.service.db31.device.cache.get(id);
+        return IconTool.DeviceType(device.DeviceType, true);
+      } catch (error) {
+        return '';
+      }
+    },
+  };
 
   test() {
     let datas: DeviceEventRecord[] = [];
@@ -82,21 +122,6 @@ export class SystemMainRecordTableBusiness {
     console.log(datas);
     let all = datas.map((x) => this.convert(x));
     return Promise.all(all);
-  }
-
-  private color(type: number) {
-    let color = 'yellow';
-    switch (type) {
-      case 1:
-        color = 'green';
-        break;
-      case 2:
-        color = 'red';
-        break;
-      default:
-        break;
-    }
-    return color;
   }
 
   private async types(value: SystemMainRecordTableEventType) {

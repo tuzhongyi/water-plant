@@ -1,10 +1,14 @@
 import { PlayMode } from '../../common/components/video-player/video-player.model';
 import { WindowViewModel } from '../../common/components/window-control/window.model';
+import { SizeTool } from '../../common/tools/size-tool/size.tool';
 
 export class SystemMainWindow {
-  video = new VideoWindow();
+  video = {
+    single: new VideoSingleWindow(),
+    multiple: new VideoMultipleWindow(),
+  };
 }
-class VideoWindow extends WindowViewModel {
+class VideoSingleWindow extends WindowViewModel {
   constructor() {
     super();
   }
@@ -19,7 +23,24 @@ class VideoWindow extends WindowViewModel {
   end?: Date;
   subtitle = false;
   style = {
-    width: '80%',
-    height: 'calc(80% + 40px)',
+    ...SizeTool.window.large,
+  };
+}
+class VideoMultipleWindow extends WindowViewModel {
+  constructor() {
+    super();
+  }
+
+  cameraId?: string;
+  mode: PlayMode = PlayMode.live;
+
+  title: string = '';
+
+  autoplay: boolean = false;
+  begin?: Date;
+  end?: Date;
+  subtitle = false;
+  style = {
+    ...SizeTool.window.large,
   };
 }

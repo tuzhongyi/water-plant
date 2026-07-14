@@ -2,25 +2,30 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import * as THREE from 'three';
 import { DEFAULT_RENDER_SETTINGS, VIEW_PRESETS } from '../models/constants';
-import { ModelConfig, RenderSettings, SceneCamera, SceneCameraConfig } from '../models/types';
-import { ApiConfigService } from './api-config.service';
+import {
+  RenderSettings,
+  SceneCamera,
+  SceneCameraConfig,
+  ThreeDimensionConfig,
+} from '../models/types';
 import { ColorsService } from './colors.service';
 import { ModelService } from './model.service';
 import { SceneService } from './scene.service';
 import { StateService } from './state.service';
+import { ThreeDimensionApiService } from './three-dimension-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-  private configApi = inject(ApiConfigService);
+  private configApi = inject(ThreeDimensionApiService);
   private state = inject(StateService);
   private modelService = inject(ModelService);
   private colorsService = inject(ColorsService);
   private sceneService = inject(SceneService);
 
-  async loadConfig(): Promise<ModelConfig | null> {
+  async loadConfig(): Promise<ThreeDimensionConfig | null> {
     try {
-      const res = await firstValueFrom(this.configApi.getConfig());
-      const config: ModelConfig = {
+      const res = await firstValueFrom(this.configApi.config());
+      const config: ThreeDimensionConfig = {
         settings: res.settings,
         models: res.models,
         sceneCameras: res.sceneCameras ?? [],

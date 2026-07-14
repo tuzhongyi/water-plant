@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CardComponent } from '../../../common/components/card/card.component';
 import { DeviceEventRecord } from '../../../common/data-core/models/events/device-event-record.model';
 import { SystemMainRecordTableComponent } from '../system-main-record-table/system-main-record-table.component';
@@ -15,6 +15,7 @@ import {
   styleUrl: './system-main-record-manager.component.less',
 })
 export class SystemMainRecordManagerComponent {
+  @Output() playback = new EventEmitter<DeviceEventRecord>();
   Type = SystemMainRecordTableEventType;
   table = {
     args: new SystemMainRecordTableArgs(),
@@ -27,6 +28,9 @@ export class SystemMainRecordManagerComponent {
       filter: (type?: SystemMainRecordTableEventType) => {
         this.table.args.type = type;
         this.table.load.emit(this.table.args);
+      },
+      playback: (data: DeviceEventRecord) => {
+        this.playback.emit(data);
       },
     },
   };

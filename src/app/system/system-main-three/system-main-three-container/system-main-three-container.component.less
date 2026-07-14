@@ -47,13 +47,17 @@
     bottom: calc(@padding-bottom + @button-height + @gap);
     left: @padding-left;
     z-index: 1;
+    overflow-y: auto;
+    max-height: 50%;
 
     .button-group {
       display: flex;
       flex-direction: column-reverse;
       justify-content: flex-start;
+      padding-right: 10px;
 
       button {
+        width: 100%;
         min-width: 76px;
       }
     }

@@ -168,7 +168,7 @@ export interface SceneCameraConfig {
   colors: CameraColors;
 }
 
-export interface ModelConfig {
+export interface ThreeDimensionConfig {
   settings: RenderSettings;
   models: Record<string, ModelTransformConfig>;
   sceneCameras?: SceneCameraConfig[];
@@ -255,16 +255,6 @@ export interface EditInputs {
   rotH: number;
   rotP: number;
   rotB: number;
-}
-
-export interface ApiConfigResponse {
-  settings: RenderSettings;
-  models: Record<string, ModelTransformConfig>;
-  sceneCameras?: SceneCameraConfig[];
-}
-
-export interface ApiSaveResponse {
-  ok: boolean;
 }
 
 /* ModelViewerComponent 相关类型 */

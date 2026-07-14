@@ -10,17 +10,17 @@ export class IconTool {
       case MapElementType.House:
         return 'howell-icon-home';
       case MapElementType.Camera:
-        return 'howell-icon-video';
+        return 'howell-icon-camera_line';
       case MapElementType.Door:
         return 'howell-icon-door-state';
       case MapElementType.Entrance:
-        return 'howell-icon-Entrance';
+        return 'howell-icon-access_door';
       case MapElementType.Floor:
         return 'howell-icon-Floor';
       case MapElementType.IoTSensor:
-        return 'howell-icon-Sensor';
+        return 'howell-icon-sensor_line';
       case MapElementType.Announciator:
-        return 'howell-icon-Announciator';
+        return 'howell-icon-alarm_line';
 
       default:
         return '';

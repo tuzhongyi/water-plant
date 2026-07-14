@@ -1,8 +1,8 @@
-.video-player-window {
+.video-player-container {
   height: 100%;
   width: 100%;
-  @video-player-window-head-height: 34px;
-  @video-player-window-head-margin: 10px;
+  @video-player-container-head-height: 34px;
+  @video-player-container-head-margin: 10px;
   position: relative;
 
   &-operation {
@@ -23,8 +23,8 @@
   }
 
   &-head {
-    height: @video-player-window-head-height;
-    margin-bottom: @video-player-window-head-margin;
+    height: @video-player-container-head-height;
+    margin-bottom: @video-player-container-head-margin;
     display: flex;
     justify-content: start;
     align-items: center;
@@ -58,7 +58,7 @@
     background-color: black;
 
     &.playback {
-      height: calc(100% - @video-player-window-head-height - @video-player-window-head-margin);
+      height: calc(100% - @video-player-container-head-height - @video-player-container-head-margin);
     }
   }
 }

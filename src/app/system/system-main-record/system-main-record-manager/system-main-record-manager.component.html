@@ -38,6 +38,7 @@
           [args]="table.args"
           [load]="table.load"
           (loaded)="table.on.loaded($event)"
+          (playback)="table.on.playback($event)"
         >
         </hw-system-main-record-table>
       </div>

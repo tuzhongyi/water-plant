@@ -12,28 +12,19 @@
     height: 100%;
   }
 
-  &-floor {
+  &-state {
     position: absolute;
-    bottom: 50px;
-    left: 20px;
-    z-index: 1;
+    right: 20px;
+    top: 20px;
+    width: 280px;
+    height: 400px;
+    transition: all 0.5s;
+    opacity: 1;
 
-    .button-group {
-      display: flex;
-      flex-direction: column-reverse;
-      justify-content: flex-start;
-
-      button {
-        width: 76px;
-      }
+    &.none {
+      height: 0;
+      opacity: 0;
     }
   }
 
-  &-button {
-    &-group {
-      position: absolute;
-      bottom: 10px;
-      left: 20px;
-    }
-  }
 }

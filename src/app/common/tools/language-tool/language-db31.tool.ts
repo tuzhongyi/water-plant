@@ -1,4 +1,4 @@
-import { DeviceCapability } from '../../data-core/models/capabilities/device.capability';
+import { DeviceCapability } from '../../data-core/models/devices/device.capability';
 import { DB31RequestService } from '../../data-core/request/services/db31/db31.service';
 import { PromiseValue } from '../value-tool/value.promise';
 

@@ -71,6 +71,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   markerLabelMode = input<'always' | 'hover'>('hover');
   /** 垂直旋转角度限制（度），默认 15，防止摄像机低于此角度 */
   polarLimit = input<number>(-5);
+  moveto = input<EventEmitter<string>>();
 
   /* ---- Outputs ---- */
   modelClick = output<string>();
@@ -509,6 +510,17 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       );
     }
 
+    /** moveto：emit(modelId) 将场景摄像机聚焦到指定模型并选中 */
+    if (this.moveto()) {
+      this.subs.add(
+        this.moveto()!.subscribe((modelId) => {
+          if (!this.modelCtrl.sceneReady) return;
+          this.state.selectedModelId$.next(modelId);
+          this.doFocusModel(modelId);
+        }),
+      );
+    }
+
     /* 外部触发 — 修改指定模型的 mesh 组可见性 */
     if (this.meshVisibility()) {
       this.subs.add(
@@ -686,7 +698,14 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           meshId = (hits[0].object as THREE.Mesh).name;
         }
       }
-      this.standbyClick.emit({ x: p.x, y: p.y, z: p.z, modelId, meshId, data: this.standby()!.data });
+      this.standbyClick.emit({
+        x: p.x,
+        y: p.y,
+        z: p.z,
+        modelId,
+        meshId,
+        data: this.standby()!.data,
+      });
       return;
     }
 
@@ -1232,13 +1251,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     const d = Math.max(sz.x, sz.y, sz.z, 0.1) * 2.5;
     const cam = this.sceneService.camera;
     const ctrl = this.sceneService.controls;
-    cam.position.copy(
-      ctr
-        .clone()
-        .addScaledVector(new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(), d),
-    );
-    ctrl.target.copy(ctr);
-    ctrl.update();
+    const pos = ctr
+      .clone()
+      .addScaledVector(new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(), d);
+    this.viewService.animateCamera(pos, ctr, 600);
   }
 
   private doRemoveModel(id: string): void {

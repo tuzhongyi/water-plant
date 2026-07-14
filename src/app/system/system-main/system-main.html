@@ -4,7 +4,9 @@
       <hw-system-main-state-device [datas]="data.device.datas"></hw-system-main-state-device>
     </div>
     <div class="system-main-record">
-      <hw-system-main-record-manager></hw-system-main-record-manager>
+      <hw-system-main-record-manager
+        (playback)="on.video.playback($event)"
+      ></hw-system-main-record-manager>
     </div>
   </div>
   <div class="system-main-three">
@@ -13,27 +15,25 @@
         <hw-system-main-three-manager
           (preview)="on.video.preview($event)"
         ></hw-system-main-three-manager>
-        <div class="system-main-three-state" (click)="on.test()">
-          <hw-system-main-panel
-            [title]="'惠南水厂'"
-            [datas]="data.device.datas"
-          ></hw-system-main-panel>
-        </div>
       </div>
     </howell-card>
   </div>
 
-  @if (window.video.show) {
-    <app-window [model]="window.video" [style]="window.video.style" [title]="window.video.title">
-      <howell-video-player-window
-        [title]="window.video.title"
-        [autoplay]="window.video.autoplay"
-        [cameraId]="window.video.cameraId"
-        [mode]="window.video.mode"
-        [begin]="window.video.begin"
-        [end]="window.video.end"
-        [subtitle]="window.video.subtitle"
-      ></howell-video-player-window>
+  @if (window.video.single.show) {
+    <app-window
+      [model]="window.video.single"
+      [style]="window.video.single.style"
+      [title]="window.video.single.title"
+    >
+      <howell-video-player-container
+        [title]="window.video.single.title"
+        [autoplay]="window.video.single.autoplay"
+        [cameraId]="window.video.single.cameraId"
+        [mode]="window.video.single.mode"
+        [begin]="window.video.single.begin"
+        [end]="window.video.single.end"
+        [subtitle]="window.video.single.subtitle"
+      ></howell-video-player-container>
     </app-window>
   }
 </div>

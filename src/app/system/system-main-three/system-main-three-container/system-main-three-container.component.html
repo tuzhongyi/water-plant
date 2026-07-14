@@ -15,6 +15,7 @@
       [fitView]="three.focus"
       [meshVisibility]="floor.target"
       (markerDblClick)="three.on.camera.dblclick($event)"
+      [moveto]="building.moveto"
     ></hw-3d>
   </div>
   <div class="system-main-three-button-group button-group">
@@ -52,7 +53,11 @@
     <div class="system-main-three-building">
       <div class="button-group">
         @for (item of building.datas(); track $index) {
-          <button class="button-border green-dark" (click)="manager.building.select(item)">
+          <button
+            class="button-border green-dark"
+            (click)="manager.building.select(item)"
+            (dblclick)="manager.building.expand(item)"
+          >
             {{ item.Name }}
           </button>
         }

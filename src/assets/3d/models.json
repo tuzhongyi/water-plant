@@ -1,20 +1,302 @@
 [
   {
-    "name": "Administration_Complex.glb",
-    "size": 959412,
+    "name": "35kV_Substation_expansion.glb",
+    "size": 295920,
     "ext": ".glb",
-	"type":"building"
+    "type": "floors"
+  },
+  {
+    "name": "35kV_Substation.glb",
+    "size": 300768,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "A_Filter.glb",
+    "size": 65112,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "A1A2_Sedimentation_Tanks.glb",
+    "size": 62524,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Activated_Carbon_Filter_expansion.glb",
+    "size": 166904,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Activated_Carbon_Filter.glb",
+    "size": 170132,
+    "ext": ".glb",
+    "type": "building"
   },
   {
     "name": "Administration_Complex_expansion.glb",
-    "size": 1023292,
+    "size": 1023716,
     "ext": ".glb",
-	"type":"floors"
+    "type": "floors"
+  },
+  {
+    "name": "Administration_Complex.glb",
+    "size": 1025464,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "B_Filter.glb",
+    "size": 13220,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "B1B2_Sedimentation_Tanks.glb",
+    "size": 62524,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Backwash_Pump_House_expansion.glb",
+    "size": 149204,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Backwash_Pump_House.glb",
+    "size": 156952,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "C_Filter_expansion.glb",
+    "size": 132104,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "C_Filter.glb",
+    "size": 138128,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "C1C2_Sedimentation_Tanks.glb",
+    "size": 10456,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "C3C4_Sedimentation_Tanks.glb",
+    "size": 10456,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Carbon_Dioxide_Unit.glb",
+    "size": 8828,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Carbon_Dioxide_Unit2.glb",
+    "size": 8828,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Chlorination_Room_expansion.glb",
+    "size": 197952,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Chlorination_Room.glb",
+    "size": 201660,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Dewatering_Building_expansion.glb",
+    "size": 342420,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Dewatering_Building.glb",
+    "size": 344976,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Dosing_Building_expansion.glb",
+    "size": 212520,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Dosing_Building.glb",
+    "size": 190288,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Liquid_Nitrogen_Station.glb",
+    "size": 8828,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Maintenance_Workshop_expansion.glb",
+    "size": 178240,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Maintenance_Workshop.glb",
+    "size": 181488,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Post_Ozone_Contact_Tank.glb",
+    "size": 3456,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Pre_ozonation_Contact_Tank.glb",
+    "size": 5776,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "pump_house_expansion.glb",
+    "size": 143504,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "pump_house.glb",
+    "size": 146752,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Pump_Station_1_expansion.glb",
+    "size": 62584,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Pump_Station_1.glb",
+    "size": 68988,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Pump_Station_2_expansion.glb",
+    "size": 235300,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Pump_Station_2.glb",
+    "size": 240256,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Raw_Water_Pump_House_expansion.glb",
+    "size": 42624,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Raw_Water_Pump_House.glb",
+    "size": 45352,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Residential_Building_expansion.glb",
+    "size": 444296,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Residential_Building.glb",
+    "size": 449856,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Sludge_Thickener.glb",
+    "size": 3840,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Sodium_Hypochlorite_Storage_Tank.glb",
+    "size": 3700,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Solar_Power.glb",
+    "size": 223924,
+    "ext": ".glb",
+    "type": "building"
   },
   {
     "name": "VIL.glb",
-    "size": 64412,
+    "size": 67924,
     "ext": ".glb",
-	"type":"village"
+    "type": "village"
+  },
+  {
+    "name": "Warehouse_expansion.glb",
+    "size": 41632,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Warehouse.glb",
+    "size": 43344,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Water_Intake.glb",
+    "size": 21224,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Water_Quality_Building_expansion.glb",
+    "size": 656480,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Water_Quality_Building.glb",
+    "size": 663748,
+    "ext": ".glb",
+    "type": "building"
+  },
+  {
+    "name": "Water_Softening_Room_expansion.glb",
+    "size": 126644,
+    "ext": ".glb",
+    "type": "floors"
+  },
+  {
+    "name": "Water_Softening_Room.glb",
+    "size": 130032,
+    "ext": ".glb",
+    "type": "building"
   }
 ]
