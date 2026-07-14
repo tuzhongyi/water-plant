@@ -13,7 +13,7 @@ import {
   output,
   ViewChild,
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { TransformControls } from 'three/examples/jsm/Addons.js';
 import { MarkerController } from './business/controllers/marker.controller';
@@ -27,7 +27,6 @@ import {
   ModelViewerModel,
   RenderMode,
   RenderSettings,
-  SceneCamera,
   StandbyClickArgs,
   Vec3,
 } from './business/models/types';
@@ -37,6 +36,7 @@ import { EdgesService } from './business/services/edges.service';
 import { ModelService } from './business/services/model.service';
 import { SceneService } from './business/services/scene.service';
 import { StateService } from './business/services/state.service';
+import { ThreeDimensionApiService } from './business/services/three-dimension-api.service';
 import { ViewService } from './business/services/view.service';
 
 @Component({
@@ -51,49 +51,65 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
-  renderMode = input<RenderMode>(RenderMode.overlay);
-  gizmoVisible = input<boolean>(false);
-  standby = input<MarkerArgs>();
-  /* ---- Inputs ---- */
+  // ── Model ────────────────────────────────────────────────
+  /** 要加载和显示的模型列表，外部通过此 input 控制场景中的模型 */
   models = input<ModelViewerModel[]>([]);
-  sceneCameras = input<SceneCamera[]>([]);
-  /** 摄像机视图切换：emit() 或 emit(Fit) 为 45° 俯视适配模型，emit(Top/Left/Right) 为方向视图 */
+  /** 渲染模式：solid=实体 / edges=线框 / overlay=覆盖 */
+  renderMode = input<RenderMode>(RenderMode.overlay);
+  /** 变换 Gizmo 可见性，true 时对选中的模型显示位置/旋转/缩放手柄 */
+  gizmoVisible = input<boolean>(false);
+  /** 摄像机视图切换：emit() 或 emit(Fit) = 45° 俯视适配，emit(Top/Left/Right) = 方向视图 */
   fitView = input<EventEmitter<FitView | void>>();
-  /** 外部触发 — 修改指定模型的 mesh 组可见性 */
+  /** 修改指定模型的 mesh 组可见性 */
   meshVisibility = input<EventEmitter<{ id: string; visibility: Record<string, boolean> }>>();
+  /** 将摄像机移动到指定模型（通过 modelId） */
+  moveto = input<EventEmitter<string>>();
+
+  /** 模型左键单击 */
+  modelClick = output<string>();
+  /** 模型悬停/移出 */
+  modelHover = output<string | null>();
+  /** 模型双击 */
+  modelDoubleClick = output<string>();
+  /** 全部模型加载完成后触发，传出与 models() 对应的 ModelTransformConfig 列表 */
+  loaded = output<ModelTransformConfig[]>();
+
+  // ── Marker ───────────────────────────────────────────────
   /** 场景摄像机标记列表 */
   markers = input<MarkerEntity[]>([]);
   /** 外部选中摄像机 ID */
-  selectedCameraId = input<string>();
-  /** 是否允许移动摄像机标记 */
+  selectedMarkerId = input<string>();
+  /** 是否允许拖拽移动摄像机标记 */
   markersMovable = input<boolean>(false);
   /** marker label 显示模式: 'always' 常显, 'hover' 仅悬停/聚焦时显示 */
   markerLabelMode = input<'always' | 'hover'>('hover');
-  /** 垂直旋转角度限制（度），默认 15，防止摄像机低于此角度 */
-  polarLimit = input<number>(-5);
-  moveto = input<EventEmitter<string>>();
 
-  /* ---- Outputs ---- */
-  modelClick = output<string>();
-
-  modelHover = output<string | null>();
-  modelDoubleClick = output<string>();
-  cameraClick = output<string>();
-  blankClick = output<void>();
-  keyEvent = output<{ type: 'down' | 'up'; key: string }>();
-  inited = output<void>();
-  /** 全部模型加载完成后触发，传出与 models() 对应的 ModelTransformConfig 列表 */
-  loaded = output<ModelTransformConfig[]>();
-  /** 摄像机标记选中 */
+  /** 摄像机标记左键单击 */
   markerClick = output<string>();
   /** 摄像机标记双击 */
   markerDblClick = output<string>();
   /** 摄像机标记位置变化 */
   markerPositionChange = output<MarkerEntity>();
-  /** standby 模式点击时输出坐标 */
+
+  // ── Standby ──────────────────────────────────────────────
+  /** standby 模式：传入 MarkerArgs 后进入放置模式，光标跟随半透明图标 */
+  standby = input<MarkerArgs>();
+
+  /** standby 模式点击时输出放置坐标及原始 data */
   standbyClick = output<StandbyClickArgs>();
-  /** standby 模式右键取消 */
+  /** standby 模式右键取消放置 */
   standbyCancel = output<void>();
+
+  // ── Scene ────────────────────────────────────────────────
+  /** 垂直旋转角度限制（度），负值允许摄像机低于水平面 */
+  polarLimit = input<number>(-5);
+
+  /** 空白区域（无模型/标记）左键单击 */
+  blankClick = output<void>();
+  /** 键盘事件 */
+  keyEvent = output<{ type: 'down' | 'up'; key: string }>();
+  /** 场景就绪信号 */
+  inited = output<void>();
 
   /* ---- Services ---- */
   private zone = inject(NgZone);
@@ -102,6 +118,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private modelService = inject(ModelService);
   private colorsService = inject(ColorsService);
   private configService = inject(ConfigService);
+  private apiService = inject(ThreeDimensionApiService);
   private edgesService = inject(EdgesService);
   private modelCtrl = inject(ModelController);
   private markerCtrl = inject(MarkerController);
@@ -114,17 +131,11 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private mouse = new THREE.Vector2();
   /* ---- TransformControls ---- */
   private modelTC?: TransformControls;
-  private cameraTC?: TransformControls;
   private tcEditEntry?: ModelEntry;
-  private tcCameraEntry?: SceneCamera;
 
   /* ---- Internal state ---- */
   private hoveredId: string | null = null;
-  private hoveredCamId: string | null = null;
-  private cameraBBoxHelpers = new Map<string, THREE.Box3Helper>();
   private pressedKeys = new Set<string>();
-  private subCamSyncAdded = false;
-  private camIdCounter = 0;
 
   /* standby 模式：跟随鼠标的半透明图标 */
   private standbySprite?: THREE.Sprite;
@@ -150,7 +161,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.markerCtrl.select.apply(
         this.markersMovable(),
         this.modelCtrl.sceneReady,
-        this.selectedCameraId(),
+        this.selectedMarkerId(),
       ),
     );
     effect(() => {
@@ -171,15 +182,13 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         this.sceneService.renderer.domElement.style.cursor = '';
       }
     });
-    /** gizmoVisible 统一控制模型和摄像机标记的变换 Gizmo：true 时 attach，false 时 detach */
+    /** gizmoVisible 控制模型变换 Gizmo：true 时 attach，false 时 detach */
     effect(() => {
       const visible = this.gizmoVisible();
       if (visible) {
         if (this.tcEditEntry) this.modelTC?.attach(this.tcEditEntry.wrapper);
-        if (this.tcCameraEntry) this.cameraTC?.attach(this.tcCameraEntry.model);
       } else {
         this.modelTC?.detach();
-        this.cameraTC?.detach();
       }
     });
     /** renderMode 有值时覆盖 config，无值时使用 config 中的值 */
@@ -212,30 +221,39 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     this.bindEvents();
     this.bindCommands();
-    this.sceneService.addBeforeRender(this.camBBoxUpdate);
 
-    /* 加载 config，完成后才允许处理模型 */
-    this.configService.autoLoadModels().finally(() => {
-      this.modelCtrl.sceneReady = true;
-      /* renderMode input 有值时覆盖 config */
-      const rm = this.renderMode();
-      if (rm) this.state.updateSettings({ renderMode: rm });
-      /* config 就绪后触发一次模型同步 */
-      this.syncModels(this.models());
-      this.applyLoadedConfig();
-      this.inited.emit();
-    });
+    /* 预加载 models.json → 构建 config 缓存 → 再加载 config.json */
+    firstValueFrom(this.apiService.models())
+      .then((modelFiles) => {
+        const cache = new Map<string, ModelTransformConfig>();
+        for (const f of modelFiles) {
+          if (f.config && Object.keys(f.config).length > 0) {
+            cache.set(f.name, f.config);
+          }
+        }
+
+        this.modelCtrl.setConfigCache(cache);
+      })
+      .catch((err) => {
+        console.warn('[ThreeDimensionComponent] models.json 预加载失败, 模型将使用默认配置:', err);
+      })
+      .finally(() => {
+        /* 加载 config.json（settings），完成后才允许处理模型 */
+        this.configService.autoLoadModels().finally(() => {
+          this.modelCtrl.sceneReady = true;
+          const rm = this.renderMode();
+          if (rm) this.state.updateSettings({ renderMode: rm });
+          this.syncModels(this.models());
+          this.applyLoadedConfig();
+          this.inited.emit();
+        });
+      });
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
     this.disposeModelTC();
-    this.disposeCameraTC();
-    this.sceneService.removeBeforeRender(this.camBBoxUpdate);
     this.sceneService.removeBeforeRender(this.fixSpriteScale);
-    if (this.subCamSyncAdded) {
-      this.sceneService.removeBeforeRender(this.subCamSync);
-    }
 
     /* 清理模型场景对象 */
     for (const s of this.modelCtrl.internalModels.values()) {
@@ -251,13 +269,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.modelCtrl.currentGlobalSettings = undefined;
     this.modelCtrl.initViewFitted = false;
 
-    /* 清理摄像机 BBox */
-    for (const h of this.cameraBBoxHelpers.values()) {
-      this.scene.remove(h);
-      h.dispose();
-    }
-    this.cameraBBoxHelpers.clear();
-
     /* 清理 marker */
     this.markerCtrl.dispose();
 
@@ -266,9 +277,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.state.hoveredModelId$.next(null);
     /* activeConfig 不清空：新实例可能先 syncModels 再 autoLoadModels，需要旧配置 */
     this.state.modelFiles$.next([]);
-    this.state.sceneCameras$.next([]);
-    this.state.activeSceneCameraId$.next(null);
-    this.state.selectedSceneCameraId$.next(null);
     this.state.loading$.next(false);
     this.state.sceneReady$.next(false);
     this.state.editMode$.next(false);
@@ -445,9 +453,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.subs.add(this.state.removeModelCmd$.subscribe((id) => this.doRemoveModel(id)));
     this.subs.add(this.state.clearAllCmd$.subscribe(() => this.doClearAll()));
     this.subs.add(this.state.focusModelCmd$.subscribe((id) => this.doFocusModel(id)));
-    this.subs.add(this.state.addSceneCameraCmd$.subscribe(() => this.doAddCamera()));
-    this.subs.add(this.state.removeSceneCameraCmd$.subscribe((id) => this.doRemoveCamera(id)));
-    this.subs.add(this.state.setCameraViewCmd$.subscribe((id) => this.doToggleCameraView(id)));
 
     /* 显示参数变化（渲染模式通过 addToInternal/applyLoadedConfig 处理） */
     this.subs.add(
@@ -471,14 +476,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     /* 选中变化 → 管理编辑模式（TransformControls） */
     this.subs.add(
       this.state.selectedModelId$.subscribe((modelId) => {
-        const camId = this.state.selectedSceneCameraId$.value;
-        this.onSelectionChange(modelId, camId);
-      }),
-    );
-    this.subs.add(
-      this.state.selectedSceneCameraId$.subscribe((camId) => {
-        const modelId = this.state.selectedModelId;
-        this.onSelectionChange(modelId, camId);
+        this.onSelectionChange(modelId);
       }),
     );
 
@@ -486,15 +484,11 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.subs.add(
       this.state.transformMode$.subscribe((mode) => {
         if (this.modelTC) this.modelTC.setMode(mode);
-        if (this.cameraTC) this.cameraTC.setMode(mode);
       }),
     );
 
     /* 锁定状态变化 → 同步到内部状态 */
     this.subs.add(this.state.loadedModels$.subscribe(() => this.syncLockStates()));
-
-    /* 场景摄像机变化 */
-    this.subs.add(this.state.sceneCameras$.subscribe((cams) => this.onSceneCamerasChange(cams)));
 
     /** fitView：emit() 或 emit(Fit) 适配模型，emit(Top/Left/Right) 方向视图 */
     if (this.fitView()) {
@@ -543,10 +537,13 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.updateModelColors(selId, hovId);
   }
 
-  /** 根据 labelMode 和当前状态更新所有 label 的可见性 */
+  /** 根据 labelMode 和当前状态更新所有 label 的可见性
+   *  规则：model config 的 labelMode 为 'never' 时强制隐藏；
+   *       其他值（'always'/'hover'）跟随 markerLabelMode 输入决定行为 */
   private updateLabelVisibility(): void {
     const hovId = this.state.hoveredModelId;
     const show = this.state.settings.showLabels;
+    const markerMode = this.markerLabelMode();
     for (const [, entry] of this.state.loadedModels) {
       if (!entry.labelObject) continue;
       /* 已从场景移除的模型不显示 label */
@@ -554,17 +551,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         entry.labelObject.visible = false;
         continue;
       }
-      switch (entry.labelMode) {
-        case 'always':
-          entry.labelObject.visible = show;
-          break;
-        case 'hover':
-          entry.labelObject.visible = show && entry.id === hovId;
-          break;
-        case 'never':
-        default:
-          entry.labelObject.visible = false;
-          break;
+      if (entry.labelMode === 'never') {
+        /* never 优先：无论外部如何设置都隐藏 */
+        entry.labelObject.visible = false;
+      } else {
+        /* 其他值跟随 markerLabelMode：always=常显, hover=仅悬停时显 */
+        entry.labelObject.visible = show && (markerMode === 'always' || entry.id === hovId);
       }
     }
   }
@@ -617,6 +609,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     const r: { mesh: THREE.Mesh; modelId: string }[] = [];
     for (const [id, s] of this.modelCtrl.internalModels) {
       if (s.locked) continue;
+      const entry = this.state.loadedModels.get(id);
+      if (entry && !entry.selectable) continue;
       for (const m of s.meshes) r.push({ mesh: m, modelId: id });
     }
     return r;
@@ -654,25 +648,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.state.hoveredModelId$.next(newHovered);
       this.modelHover.emit(newHovered);
     }
-    this.detectCameraHover();
-  }
-
-  private detectCameraHover(): void {
-    const cams = this.state.sceneCameras;
-    const hits = this.raycaster.intersectObjects(
-      cams.map((c) => c.model),
-      true,
-    );
-    let newH: string | null = null;
-    if (hits.length > 0) {
-      for (const sc of cams) {
-        if (hits[0].object === sc.model || sc.model.children.includes(hits[0].object)) {
-          newH = sc.id;
-          break;
-        }
-      }
-    }
-    this.hoveredCamId = newH;
   }
 
   /* ---- Click ---- */
@@ -729,22 +704,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         return;
       }
     }
-    const cams = this.state.sceneCameras;
-    const camHits = this.raycaster.intersectObjects(
-      cams.map((c) => c.model),
-      true,
-    );
-    if (camHits.length > 0) {
-      for (const sc of cams) {
-        if (camHits[0].object === sc.model || sc.model.children.includes(camHits[0].object)) {
-          this.state.selectedSceneCameraId$.next(sc.id);
-          this.cameraClick.emit(sc.id);
-          return;
-        }
-      }
-    }
     this.state.selectedModelId$.next(null);
-    this.state.selectedSceneCameraId$.next(null);
     this.blankClick.emit();
   }
 
@@ -780,17 +740,11 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     )
       return;
     const key = e.key.toLowerCase();
-    if (this.state.activeSceneCameraId$.value && ['w', 'a', 's', 'd'].includes(key)) {
-      this.pressedKeys.add(key);
-      e.preventDefault();
-      return;
-    }
     /* 编辑模式快捷键由 model-viewer 内部处理 */
     const selEntry = this.state.selectedEntry;
     if (key === 'g' && selEntry) this.enterModelEdit(selEntry);
     else if (key === 'escape') {
       this.exitModelEdit();
-      this.exitCameraEdit();
     } else if ((key === 'delete' || key === 'backspace') && selEntry)
       this.doRemoveModel(selEntry.id);
     else if (key === 'f' && selEntry) this.doFocusModel(selEntry.id);
@@ -810,7 +764,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   /** 配置加载完成后，将设置应用到所有已加载模型 */
   private applyLoadedConfig(): void {
-    const config = this.state.activeConfig;
     for (const [, entry] of this.state.loadedModels) {
       if (!this.modelCtrl.internalModels.has(entry.id)) continue;
       /* 应用渲染模式 */
@@ -818,7 +771,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.edgesService.applyRenderMode(entry, this.state.renderMode);
       this.colorsService.reapplyCurrentState(entry);
       /* 应用模型变换配置（如果模型在 config 加载前就加载了） */
-      const transform = config?.models?.[entry.fileName];
+      const transform = this.modelCtrl.getModelConfig(entry.fileName);
       if (transform) {
         this.modelService.applyTransformConfig(entry, transform);
         if (transform.locked !== undefined) entry.locked = transform.locked;
@@ -835,9 +788,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         for (const m of this.modelCtrl.internalModels.values()) {
           if (!m.bboxHelper) this.createModelBBox(m);
         }
-        for (const cam of this.state.sceneCameras) {
-          if (!this.cameraBBoxHelpers.has(cam.id)) this.createCameraBBox(cam);
-        }
       } else {
         for (const m of this.modelCtrl.internalModels.values()) {
           if (m.bboxHelper) {
@@ -846,11 +796,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
             m.bboxHelper = undefined;
           }
         }
-        for (const [, h] of this.cameraBBoxHelpers) {
-          this.scene.remove(h);
-          h.dispose();
-        }
-        this.cameraBBoxHelpers.clear();
       }
     }
     if (s.showGrid !== undefined) this.sceneService.setGrid(s.showGrid);
@@ -869,106 +814,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     s.bboxHelper = h;
   }
 
-  private createCameraBBox(cam: SceneCamera): void {
-    const box = new THREE.Box3().setFromObject(cam.model);
-    if (new THREE.Vector3().copy(box.max).sub(box.min).length() < 0.01) return;
-    const h = new THREE.Box3Helper(box, new THREE.Color(0x07a990));
-    h.renderOrder = 999;
-    this.cameraBBoxHelpers.set(cam.id, h);
-    this.scene.add(h);
-  }
-
-  private onSceneCamerasChange(cams: SceneCamera[]): void {
-    if (!this.modelCtrl.sceneReady) return;
-    const ids = new Set(cams.map((c) => c.id));
-    for (const [id, h] of this.cameraBBoxHelpers) {
-      if (!ids.has(id)) {
-        this.scene.remove(h);
-        h.dispose();
-        this.cameraBBoxHelpers.delete(id);
-      }
-    }
-    for (const cam of cams) {
-      if (!cam.helper.parent) this.scene.add(cam.helper);
-      if (!cam.model.parent) this.scene.add(cam.model);
-    }
-    const activeId = this.state.activeSceneCameraId$.value;
-    if (activeId && cams.some((c) => c.id === activeId)) {
-      if (!this.subCamSyncAdded) {
-        this.sceneService.addBeforeRender(this.subCamSync);
-        this.subCamSyncAdded = true;
-      }
-    } else {
-      if (this.subCamSyncAdded) {
-        this.sceneService.removeBeforeRender(this.subCamSync);
-        this.subCamSyncAdded = false;
-        this.pressedKeys.clear();
-      }
-    }
-    if (this.state.showBBox) {
-      for (const cam of cams) {
-        if (!this.cameraBBoxHelpers.has(cam.id)) this.createCameraBBox(cam);
-      }
-    }
-  }
-
-  private camBBoxUpdate = (): void => {
-    if (!this.state.showBBox) return;
-    for (const cam of this.state.sceneCameras) {
-      const h = this.cameraBBoxHelpers.get(cam.id);
-      if (h) h.box.copy(new THREE.Box3().setFromObject(cam.model));
-    }
-  };
-
-  /* ---- Sub-camera sync ---- */
-
-  private subCamSync = (): void => {
-    const activeId = this.state.activeSceneCameraId$.value;
-    if (!activeId) return;
-    const sc = this.state.sceneCameras.find((c) => c.id === activeId);
-    if (!sc) return;
-    const mc = this.sceneService.camera;
-    const ctrl = this.sceneService.controls;
-    sc.perspCamera.position.copy(mc.position);
-    sc.perspCamera.quaternion.copy(mc.quaternion);
-    sc.orthoCamera.position.copy(mc.position);
-    sc.orthoCamera.quaternion.copy(mc.quaternion);
-    const d = new THREE.Vector3(0, 0, -1).applyQuaternion(mc.quaternion);
-    sc.perspCamera.lookAt(mc.position.clone().add(d));
-    sc.orthoCamera.lookAt(mc.position.clone().add(d));
-    if (mc instanceof THREE.PerspectiveCamera) {
-      sc.perspCamera.fov = mc.fov;
-      sc.perspCamera.updateProjectionMatrix();
-    } else if (mc instanceof THREE.OrthographicCamera) {
-      sc.orthoCamera.zoom = mc.zoom;
-      sc.orthoCamera.updateProjectionMatrix();
-    }
-    sc.perspCamera.updateMatrixWorld();
-    sc.orthoCamera.updateMatrixWorld();
-    sc.helper.update();
-    const sp = this.sceneService.wasdSpeed;
-    const cd = new THREE.Vector3();
-    mc.getWorldDirection(cd);
-    cd.normalize();
-    const r = new THREE.Vector3().crossVectors(cd, mc.up).normalize();
-    if (this.pressedKeys.has('w')) {
-      mc.position.addScaledVector(cd, sp);
-      ctrl.target.addScaledVector(cd, sp);
-    }
-    if (this.pressedKeys.has('s')) {
-      mc.position.addScaledVector(cd, -sp);
-      ctrl.target.addScaledVector(cd, -sp);
-    }
-    if (this.pressedKeys.has('a')) {
-      mc.position.addScaledVector(r, -sp);
-      ctrl.target.addScaledVector(r, -sp);
-    }
-    if (this.pressedKeys.has('d')) {
-      mc.position.addScaledVector(r, sp);
-      ctrl.target.addScaledVector(r, sp);
-    }
-  };
-
   /* ---- Colors ---- */
 
   private updateModelColors(selId: string | null, hovId: string | null): void {
@@ -980,43 +825,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         id === selId ? 'selected' : id === hovId ? 'hover' : 'normal',
       );
     }
-    for (const cam of this.state.sceneCameras) {
-      this.applyCameraColor(
-        cam,
-        cam.id === this.state.selectedSceneCameraId$.value
-          ? 'selected'
-          : cam.id === this.hoveredCamId
-            ? 'hover'
-            : 'normal',
-      );
-    }
-  }
-
-  private applyCameraColor(cam: SceneCamera, st: 'normal' | 'hover' | 'selected'): void {
-    const c = cam.colors[st];
-    const e = st === 'normal' ? 0.4 : st === 'hover' ? 0.7 : 0.6;
-    cam.bodyMat.color.set(c.body);
-    cam.bodyMat.emissive.set(c.body);
-    cam.bodyMat.emissiveIntensity = e;
-    cam.lensMat.color.set(c.lens);
-    cam.lensMat.emissive.set(c.lens);
-    cam.lensMat.emissiveIntensity = st === 'normal' ? 0.2 : 0.4;
-    cam.vfMat.color.set(c.viewfinder);
-    cam.vfMat.emissive.set(c.viewfinder);
-    cam.vfMat.emissiveIntensity = st === 'normal' ? 0.2 : 0.4;
   }
 
   /* ---- Selection → Edit ---- */
 
-  private onSelectionChange(modelId: string | null, camId: string | null): void {
+  private onSelectionChange(modelId: string | null): void {
     if (!this.modelCtrl.sceneReady) return;
-    /* 摄像机编辑优先 */
-    if (camId && !modelId) {
-      const sc = this.state.sceneCameras.find((c) => c.id === camId);
-      if (sc && this.tcCameraEntry?.id !== camId) this.enterCameraEdit(sc);
-    } else if (!camId && this.tcCameraEntry) {
-      this.exitCameraEdit();
-    }
     /* 模型编辑 */
     if (modelId) {
       const e = this.state.loadedModels.get(modelId);
@@ -1037,7 +851,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   private enterModelEdit(entry: ModelEntry): void {
     if (this.tcEditEntry?.id === entry.id) return;
-    if (this.tcCameraEntry) this.exitCameraEdit();
     this.tcEditEntry = entry;
     this.state.editMode$.next(true);
 
@@ -1104,7 +917,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     );
     (tc as any).size = 0.7;
     (tc as any).addEventListener('dragging-changed', (ev: any) => {
-      if (this.state.activeSceneCameraId$.value) return;
       this.sceneService.controls.enabled = !ev.value;
     });
     (tc as any).addEventListener('change', () => {
@@ -1151,73 +963,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.sceneService.overlayScene.remove(this.modelTC.getHelper());
     this.modelTC.dispose();
     this.modelTC = undefined;
-  }
-
-  /* ---- Camera TransformControls ---- */
-
-  private enterCameraEdit(sc: SceneCamera): void {
-    if (this.tcCameraEntry?.id === sc.id) return;
-    if (this.tcEditEntry) this.exitModelEdit();
-    this.tcCameraEntry = sc;
-    this.state.editMode$.next(true);
-    this.zone.runOutsideAngular(() => {
-      if (!this.cameraTC) this.initCameraTC();
-      this.cameraTC!.setMode(this.state.transformMode$.value);
-      if (this.gizmoVisible()) {
-        this.cameraTC!.attach(sc.model);
-      }
-    });
-  }
-
-  private exitCameraEdit(): void {
-    this.tcCameraEntry = undefined;
-    this.state.editMode$.next(false);
-    if (this.cameraTC) this.cameraTC.detach();
-  }
-
-  private initCameraTC(): void {
-    const tc = new TransformControls(
-      this.sceneService.camera,
-      this.sceneService.renderer.domElement,
-    );
-    (tc as any).size = 0.7;
-    (tc as any).addEventListener('dragging-changed', (ev: any) => {
-      if (this.state.activeSceneCameraId$.value) return;
-      this.sceneService.controls.enabled = !ev.value;
-    });
-    (tc as any).addEventListener('change', () => {
-      if (!this.tcCameraEntry) return;
-      const m = tc.object;
-      m.updateWorldMatrix(true, true);
-      const wp = new THREE.Vector3();
-      m.getWorldPosition(wp);
-      this.tcCameraEntry.perspCamera.position.copy(wp);
-      this.tcCameraEntry.orthoCamera.position.copy(wp);
-      this.tcCameraEntry.perspCamera.quaternion.copy(m.quaternion);
-      this.tcCameraEntry.orthoCamera.quaternion.copy(m.quaternion);
-      this.tcCameraEntry.perspCamera.updateMatrixWorld();
-      this.tcCameraEntry.perspCamera.updateProjectionMatrix();
-      this.tcCameraEntry.orthoCamera.updateMatrixWorld();
-      this.tcCameraEntry.orthoCamera.updateProjectionMatrix();
-      this.tcCameraEntry.helper.update();
-    });
-    this.sceneService.overlayScene.add(tc.getHelper());
-    tc.getHelper().traverse((c: any) => {
-      if (c.material) {
-        c.renderOrder = Infinity;
-        c.material.depthTest = false;
-        c.material.depthWrite = false;
-      }
-    });
-    this.cameraTC = tc;
-  }
-
-  private disposeCameraTC(): void {
-    if (!this.cameraTC) return;
-    this.cameraTC.detach();
-    this.sceneService.overlayScene.remove(this.cameraTC.getHelper());
-    this.cameraTC.dispose();
-    this.cameraTC = undefined;
   }
 
   private syncEditInputs(entry: ModelEntry): void {
@@ -1281,9 +1026,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         entry.editPosition.set(position.x, position.y, position.z);
         this.modelService.applyTransform(entry);
       } else {
-        /* 从已加载的 config 中查找对应的变换配置 */
-        const config = this.state.activeConfig;
-        const transform = config?.models?.[fileName];
+        /* 从 modelConfigMap 中查找对应的变换配置 */
+        const transform = this.modelCtrl.getModelConfig(fileName);
         if (transform) {
           this.modelService.applyTransformConfig(entry, transform);
           /* 恢复材质颜色 */
@@ -1320,67 +1064,5 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private doClearAll(): void {
     for (const id of Array.from(this.state.loadedModels.keys())) this.doRemoveModel(id);
     this.state.statusMessage$.next('已清空所有模型');
-  }
-
-  private doToggleCameraView(id: string): void {
-    const sc = this.state.sceneCameras.find((c) => c.id === id);
-    if (!sc) return;
-    const ok = this.sceneService.toggleCameraView(sc.camera);
-    this.state.statusMessage$.next(ok ? `已切换到: ${sc.name}` : '已切回主摄像机');
-  }
-
-  private doAddCamera(): void {
-    const {
-      camera: cam,
-      orthoCamera,
-      helper,
-      model,
-      bodyMat,
-      lensMat,
-      vfMat,
-    } = this.sceneService.createCameraObject();
-    this.scene.add(helper);
-    this.scene.add(model);
-    const id = 'cam_' + ++this.camIdCounter;
-    const dc = {
-      normal: { body: '#07a990', lens: '#1a1a1a', viewfinder: '#1a1a1a' },
-      hover: { body: '#17f1c6', lens: '#333333', viewfinder: '#333333' },
-      selected: { body: '#0adba8', lens: '#2a2a2a', viewfinder: '#2a2a2a' },
-    };
-    this.state.addSceneCamera({
-      id,
-      name: `Camera ${this.camIdCounter}`,
-      camera: cam,
-      perspCamera: cam,
-      orthoCamera,
-      isOrtho: false,
-      helper,
-      model,
-      colors: dc,
-      bodyMat,
-      lensMat,
-      vfMat,
-    });
-    this.state.selectedSceneCameraId$.next(id);
-    this.state.statusMessage$.next(`已添加: Camera ${this.camIdCounter}`);
-  }
-
-  private doRemoveCamera(id: string): void {
-    const sc = this.state.sceneCameras.find((c) => c.id === id);
-    if (!sc) return;
-    if (this.state.activeSceneCameraId$.value === id) {
-      this.sceneService.restoreMainCamView();
-      this.state.activeSceneCameraId$.next(null);
-    }
-    this.scene.remove(sc.helper);
-    sc.helper.dispose();
-    this.scene.remove(sc.model);
-    sc.model.traverse((c: any) => {
-      if (c.geometry) c.geometry.dispose();
-      if (c.material) c.material.dispose();
-    });
-    this.state.removeSceneCamera(id);
-    if (this.state.selectedSceneCameraId$.value === id)
-      this.state.selectedSceneCameraId$.next(null);
   }
 }

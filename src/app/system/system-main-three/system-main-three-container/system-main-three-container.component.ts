@@ -13,7 +13,6 @@ import { ThreeDimensionComponent } from '../../../common/components/three-dimens
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
-import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
 import { wait } from '../../../common/tools/wait';
 import { BindingArgs, MapModel } from '../../../setting/setting-map/business/setting-map.model';
 import { SystemMainThreeBusiness } from '../business/system-main-three.business';
@@ -27,7 +26,6 @@ import { SystemMainThreeConverter } from '../business/system-main-three.converte
   providers: [SystemMainThreeBusiness, SystemMainThreeConverter],
 })
 export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
-  @Input() focusCameraId?: IIdNameModel;
   @Output() maploaded = new EventEmitter<GeoMap>();
 
   @Output() buildingloaded = new EventEmitter<GeoMapElement[]>();

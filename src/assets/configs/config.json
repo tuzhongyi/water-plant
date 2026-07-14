@@ -1,16 +1,7 @@
 {
   "playback": {
     "begin": -15,
-    "end": 15,
-    "subtitle": {
-      "begin": -10,
-      "offset": -2
-    }
-  },
-  "track": {
-    "begin": -15,
-    "duration": 30,
-    "autoplay": true
+    "end": 15
   },
   "videoUrl": "http://127.0.0.1:8800/video/wsplayer/wsplayer.html",
   "user": {

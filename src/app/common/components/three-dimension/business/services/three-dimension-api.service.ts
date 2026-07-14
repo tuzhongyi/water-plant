@@ -8,12 +8,25 @@ export class ThreeDimensionApiService {
   /** 读取配置 */
   config(): Observable<ThreeDimensionConfig> {
     const url = `${PathTool.three.json.config.global}?t=${Date.now()}`;
-    return from(fetch(url).then((r) => r.json()));
+    return from(
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          return data as ThreeDimensionConfig;
+        }),
+    );
   }
 
   models(): Observable<ModelFile[]> {
     let url = `${PathTool.three.json.models}?t=${Date.now()}`;
-    return from(fetch(url).then((r) => r.json()));
+    return from(
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          const arr = data as ModelFile[];
+          return arr;
+        }),
+    );
   }
 
   model = {

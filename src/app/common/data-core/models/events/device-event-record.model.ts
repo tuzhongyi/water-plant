@@ -38,5 +38,5 @@ export class DeviceEventRecord implements IIdModel {
 
   /**	EventBehaviorAction[]	联动行为	O */
   @Type(() => EventBehaviorAction)
-  Actions?: EventBehaviorAction;
+  Actions?: EventBehaviorAction[];
 }

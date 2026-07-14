@@ -98,6 +98,8 @@ export interface ModelEntry {
   labelPerHeight?: number;
   labelFontSize?: number;
   locked: boolean;
+  /** 是否可选中（通过鼠标点击/悬停），默认 true */
+  selectable: boolean;
   /** 模型几何中心（wrapper 本地空间），在加载时计算 */
   geoCenter: THREE.Vector3;
 }
@@ -105,6 +107,8 @@ export interface ModelEntry {
 export interface ModelFile {
   name: string;
   type: ModelType;
+  /** 模型变换配置，由 config.json 的 models 字段迁移而来，无匹配时为空对象 */
+  config?: ModelTransformConfig;
 }
 export enum ModelType {
   building = 'building',
@@ -125,6 +129,7 @@ export interface ModelTransformConfig {
   labelPerHeight?: number;
   labelFontSize?: number;
   locked?: boolean;
+  selectable?: boolean;
 }
 
 interface EntityState {
@@ -155,23 +160,8 @@ export interface MarkerEntity<T = any> extends MarkerArgs<T> {
   [key: string]: any; // 可扩展
 }
 
-export interface SceneCameraConfig {
-  id: string;
-  name: string;
-  position: Vec3;
-  rotation: { h: number; p: number; b: number };
-  fov: number;
-  near: number;
-  far: number;
-  isOrtho: boolean;
-  zoom: number;
-  colors: CameraColors;
-}
-
 export interface ThreeDimensionConfig {
   settings: RenderSettings;
-  models: Record<string, ModelTransformConfig>;
-  sceneCameras?: SceneCameraConfig[];
 }
 
 export interface RenderSettings {
@@ -202,7 +192,6 @@ export interface RenderSettings {
   cameraNear: number;
   cameraFar: number;
   cameraType: 'perspective' | 'orthographic';
-  showCameraHelpers: boolean;
   showLabels: boolean;
   labelFontSize: number;
   labelHeight: number;
@@ -211,38 +200,6 @@ export interface RenderSettings {
   camTgt: Vec3;
   /** 变换工具参考点: 'origin'=模型文件原点, 'center'=模型几何中心 */
   gizmoPivot: 'origin' | 'center';
-}
-
-export interface CameraView {
-  pos: THREE.Vector3;
-  tgt: THREE.Vector3;
-}
-
-export interface CameraColor {
-  body: string;
-  lens: string;
-  viewfinder: string;
-}
-
-export interface CameraColors {
-  normal: CameraColor;
-  hover: CameraColor;
-  selected: CameraColor;
-}
-
-export interface SceneCamera {
-  id: string;
-  name: string;
-  helper: THREE.CameraHelper;
-  camera: THREE.PerspectiveCamera | THREE.OrthographicCamera;
-  perspCamera: THREE.PerspectiveCamera;
-  orthoCamera: THREE.OrthographicCamera;
-  isOrtho: boolean;
-  model: THREE.Group;
-  colors: CameraColors;
-  bodyMat: THREE.MeshStandardMaterial;
-  lensMat: THREE.MeshStandardMaterial;
-  vfMat: THREE.MeshStandardMaterial;
 }
 
 export interface EditInputs {

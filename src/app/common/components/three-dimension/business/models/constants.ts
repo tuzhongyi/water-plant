@@ -31,7 +31,6 @@ export const DEFAULT_RENDER_SETTINGS: RenderSettings = {
   bloomThreshold: 0.6,
   bloomStrength: 1.5,
   bloomRadius: 0.4,
-  showCameraHelpers: true,
   cameraNear: 0.1,
   cameraFar: 7500,
   cameraType: 'perspective',

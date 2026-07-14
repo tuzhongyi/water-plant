@@ -8,7 +8,6 @@ import {
   ModelFile,
   RenderMode,
   RenderSettings,
-  SceneCamera,
   ThreeDimensionConfig,
 } from '../models/types';
 
@@ -51,11 +50,6 @@ export class StateService {
   /* 视图预设 */
   readonly viewPreset$ = new BehaviorSubject<string>('medium');
 
-  /* 场景摄像机 */
-  readonly sceneCameras$ = new BehaviorSubject<SceneCamera[]>([]);
-  readonly activeSceneCameraId$ = new BehaviorSubject<string | null>(null);
-  readonly selectedSceneCameraId$ = new BehaviorSubject<string | null>(null);
-
   /* 加载状态 */
   readonly loading$ = new BehaviorSubject<boolean>(false);
 
@@ -70,9 +64,6 @@ export class StateService {
   readonly removeModelCmd$ = new Subject<string>();
   readonly clearAllCmd$ = new Subject<void>();
   readonly focusModelCmd$ = new Subject<string>();
-  readonly addSceneCameraCmd$ = new Subject<void>();
-  readonly removeSceneCameraCmd$ = new Subject<string>();
-  readonly setCameraViewCmd$ = new Subject<string>();
   readonly refreshModelList$ = new Subject<void>();
   /** 模型节点可见性变化 → 触发 edge/depth 几何体重建 */
   readonly visibilityChanged$ = new Subject<string>();
@@ -131,9 +122,6 @@ export class StateService {
   get showBBox(): boolean {
     return this.settings.showBBox;
   }
-  get sceneCameras(): SceneCamera[] {
-    return this.sceneCameras$.value;
-  }
   get autoRotate(): boolean {
     return this.settings.autoRotate;
   }
@@ -171,13 +159,5 @@ export class StateService {
 
   updateSettings(patch: Partial<RenderSettings>): void {
     this.settings$.next({ ...this.settings, ...patch });
-  }
-
-  addSceneCamera(cam: SceneCamera): void {
-    this.sceneCameras$.next([...this.sceneCameras, cam]);
-  }
-
-  removeSceneCamera(id: string): void {
-    this.sceneCameras$.next(this.sceneCameras.filter((c) => c.id !== id));
   }
 }

@@ -1,1 +1,21 @@
-<div class="system-main-record-details"></div>
+<div class="system-main-record-details">
+  @if (data) {
+    <div class="system-main-record-details-body">
+      <div class="system-main-record-details-media"></div>
+      <div class="system-main-record-details-info">
+        <div class="forms">
+          <div class="form-item">
+            <div class="form-item-text" text-space-between>地图名称</div>
+            <div class="form-item-value"><input type="text" [(ngModel)]="data.DeviceName" /></div>
+          </div>
+          <div class="form-item">
+            <div class="form-item-text baseline" text-space-between>描述</div>
+            <div class="form-item-value textarea">
+              <textarea [(ngModel)]="data.Description"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

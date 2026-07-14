@@ -1,0 +1,13 @@
+<app-video-player
+  [name]="name"
+  [play]="play"
+  [stop]="stop"
+  [index]="index"
+  [seek]="seek"
+  [pause]="pause"
+  [localsubtitle]="false"
+  (destroy)="ondestroy($event)"
+  (onStoping)="onstoping($event)"
+  (onViewerClicked)="onviewerclicked($event)"
+  (onPlaying)="onplaying($event)"
+></app-video-player>

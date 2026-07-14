@@ -1,22 +1,26 @@
 <div class="system-main">
-  <div class="system-main-left">
-    <div class="system-main-state">
-      <hw-system-main-state-device [datas]="data.device.datas"></hw-system-main-state-device>
-    </div>
-    <div class="system-main-record">
-      <hw-system-main-record-manager
-        (playback)="on.video.playback($event)"
-      ></hw-system-main-record-manager>
-    </div>
-  </div>
-  <div class="system-main-three">
-    <howell-card>
-      <div class="system-main-container">
-        <hw-system-main-three-manager
-          (preview)="on.video.preview($event)"
-        ></hw-system-main-three-manager>
+  <div class="system-main-container">
+    <div class="system-main-left">
+      <div class="system-main-state">
+        <hw-system-main-state-device [datas]="data.device.datas"></hw-system-main-state-device>
+
+        <button (click)="on.test()">test</button>
       </div>
-    </howell-card>
+      <div class="system-main-record">
+        <hw-system-main-record-manager
+          (playback)="record.on.playback($event)"
+        ></hw-system-main-record-manager>
+      </div>
+    </div>
+    <div class="system-main-three">
+      <howell-card>
+        <div class="system-main-container">
+          <hw-system-main-three-manager
+            (preview)="map.on.preview($event)"
+          ></hw-system-main-three-manager>
+        </div>
+      </howell-card>
+    </div>
   </div>
 
   @if (window.video.single.show) {
@@ -34,6 +38,40 @@
         [end]="window.video.single.end"
         [subtitle]="window.video.single.subtitle"
       ></howell-video-player-container>
+    </app-window>
+  }
+  @if (window.video.multiple.show) {
+    <app-window
+      [model]="window.video.multiple"
+      [style]="window.video.multiple.style"
+      [title]="window.video.multiple.title"
+    >
+      <howell-video-player-list
+        [mode]="window.video.multiple.screen.mode"
+        [play]="window.video.multiple.play"
+        [(index)]="window.video.multiple.screen.index"
+      ></howell-video-player-list>
+    </app-window>
+  }
+  @if (window.picture.show) {
+    <app-window
+      [model]="window.picture"
+      [style]="window.picture.style"
+      [title]="window.picture.title"
+    >
+      <div
+        style="
+          width: 100%;
+          height: 100%;
+          background-repeat: no-repeat;
+          background-position: center center;
+        "
+        [ngStyle]="{
+          backgroundImage: 'url(' + window.picture.url + ')',
+          opacity: window.picture.isError ? 0.3 : 1,
+          backgroundSize: window.picture.isError ? 'auto' : '100% 100%',
+        }"
+      ></div>
     </app-window>
   }
 </div>

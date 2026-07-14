@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 import { TimeControlComponent } from '../../../common/components/time-control/time-control.component';
 import {
   TimeDurationModel,
@@ -50,6 +51,7 @@ export class VideoPlayerContainerComponent
   constructor(
     private business: VideoPlayerContainerBusiness,
     private cdr: ChangeDetectorRef,
+    private toastr: ToastrService,
   ) {
     super();
     this.business = business;
@@ -144,9 +146,13 @@ export class VideoPlayerContainerComponent
   private _ = {
     preview: {
       camera: async (cameraId: string) => {
-        this.mode = PlayMode.live;
-        this.data = await this.business.load(cameraId, this.mode);
-        this.cdr.detectChanges();
+        try {
+          this.mode = PlayMode.live;
+          this.data = await this.business.load(cameraId, this.mode);
+          this.cdr.detectChanges();
+        } catch (error) {
+          this.toastr.error('获取视频链接失败');
+        }
       },
       source: async (model: VideoModel) => {
         this.mode = PlayMode.live;
@@ -156,21 +162,27 @@ export class VideoPlayerContainerComponent
 
     playback: {
       camera: async (cameraId: string) => {
-        this.mode = PlayMode.vod;
-        let duration = {
-          begin: this.duration.begin.toDate(this.date),
-          end: this.duration.end.toDate(this.date),
-        };
-        this.data = await this.business.load(cameraId, this.mode, duration);
-        this.cdr.detectChanges();
+        try {
+          this.mode = PlayMode.vod;
+          let duration = {
+            begin: this.duration.begin.toDate(this.date),
+            end: this.duration.end.toDate(this.date),
+          };
+          this.data = await this.business.load(cameraId, this.mode, duration);
+          this.cdr.detectChanges();
+        } catch (error) {
+          this.toastr.error('获取视频链接失败');
+        }
       },
       source: async (model: VideoModel) => {
         if (!model.beginTime) {
           console.error('没有回放开始时间');
+          this.toastr.error('没有回放开始时间');
           return;
         }
         if (!model.endTime) {
           console.error('没有回放结束时间');
+          this.toastr.error('没有回放结束时间');
           return;
         }
         this.mode = PlayMode.vod;

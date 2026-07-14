@@ -1,0 +1,29 @@
+.video-player-list {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+
+  &-screen {
+    border: 2px solid #006764;
+    width: calc(100% - 2px * 1);
+    height: calc(100% - 2px * 1);
+    cursor: pointer;
+    background-color: black;
+
+    &.four {
+      width: calc(100% / 2 - 2px * 2);
+      height: calc(100% / 2 - 2px * 2);
+    }
+
+    &.nine {
+      width: calc(100% / 3 - 2px * 2);
+      height: calc(100% / 3 - 2px * 2);
+    }
+
+    &.selected {
+      border-color: rgba(239, 111, 89, 0.7);
+    }
+  }
+}

@@ -49,11 +49,35 @@ export class ModelController {
   asyncLoadDone = new Subject<void>();
   initViewFitted = false;
 
+  /** 模型配置缓存：fileName → ModelTransformConfig，由组件预加载 models.json 后通过 setConfigCache 注入 */
+  private configCache = new Map<string, ModelTransformConfig>();
+
+  /** 由 ThreeDimensionComponent 在预加载 models.json 后调用 */
+  setConfigCache(cache: Map<string, ModelTransformConfig>): void {
+    this.configCache = cache;
+    const names = Array.from(cache.keys());
+  }
+
+  getModelConfig(fileName: string): ModelTransformConfig | undefined {
+    return this.configCache.get(fileName);
+  }
+
   /* ---- 模型同步 ---- */
 
   syncModels(targets: ModelViewerModel[]): void {
     if (!this.sceneReady) return;
     const targetKeys = new Set(targets.map((m) => m.fileName));
+
+    /* 日志：检查哪些模型在 configCache 中有配置 */
+    let hasConfigCount = 0;
+    let noConfigList: string[] = [];
+    for (const m of targets) {
+      if (this.configCache.has(m.fileName)) {
+        hasConfigCount++;
+      } else {
+        noConfigList.push(m.fileName);
+      }
+    }
 
     /* 移除不在目标列表中的模型 */
     for (const [id, s] of this.internalModels) {
@@ -101,9 +125,11 @@ export class ModelController {
 
   addToInternal(entry: ModelEntry): void {
     /* 重新加入场景时，全部 mesh 重置为可见 */
-    entry.model.traverse((c) => { if ((c as THREE.Mesh).isMesh) (c as THREE.Mesh).visible = true; });
-    /* 从 activeConfig 恢复 meshVisibility */
-    const transform = this.state.activeConfig?.models?.[entry.fileName];
+    entry.model.traverse((c) => {
+      if ((c as THREE.Mesh).isMesh) (c as THREE.Mesh).visible = true;
+    });
+    /* 从 configCache 恢复 meshVisibility */
+    const transform = this.configCache.get(entry.fileName);
     if (transform?.meshVisibility) {
       this.modelService.setNodeVisible(entry, transform.meshVisibility);
     }
@@ -123,7 +149,12 @@ export class ModelController {
       meshes.push(c as THREE.Mesh);
     });
 
-    const s: InternalModelState = { id: entry.id, group: entry.wrapper, meshes, locked: entry.locked };
+    const s: InternalModelState = {
+      id: entry.id,
+      group: entry.wrapper,
+      meshes,
+      locked: entry.locked,
+    };
     if (!entry.wrapper.parent) this.sceneService.scene.add(entry.wrapper);
     this.internalModels.set(entry.id, s);
 
@@ -154,9 +185,8 @@ export class ModelController {
     this.state.statusMessage$.next(`正在加载: ${fileName}...`);
     const entry = await this.modelService.loadModel(url, fileName);
     if (entry) {
-      /* 始终从 activeConfig 查找并应用完整变换配置 */
-      const config = this.state.activeConfig;
-      const transform = config?.models?.[fileName];
+      /* 从预加载的 configCache 按 fileName 查找变换配置 */
+      const transform = this.configCache.get(fileName);
       if (transform) {
         this.modelService.applyTransformConfig(entry, transform);
         /* position 优先级：models 输入 > config */
@@ -185,6 +215,10 @@ export class ModelController {
         /* 无 config 但有 position：直接应用位置 */
         entry.editPosition.set(position.x, position.y, position.z);
         this.modelService.applyTransform(entry);
+      } else {
+        console.warn(
+          `[ModelController.doLoadModel] ${fileName} 无 config 且无 position, 模型将使用默认原点位置`,
+        );
       }
       this.colorsService.applyStateColors(entry, 'normal');
       this.state.statusMessage$.next(`已加载: ${fileName}`);
@@ -198,7 +232,10 @@ export class ModelController {
     const s = this.internalModels.get(id);
     if (s) {
       this.sceneService.scene.remove(s.group);
-      if (s.bboxHelper) { this.sceneService.scene.remove(s.bboxHelper); s.bboxHelper.dispose(); }
+      if (s.bboxHelper) {
+        this.sceneService.scene.remove(s.bboxHelper);
+        s.bboxHelper.dispose();
+      }
       this.internalModels.delete(id);
     }
     this.modelService.removeModel(id);
@@ -215,13 +252,18 @@ export class ModelController {
     const e = this.state.loadedModels.get(id);
     if (!e) return;
     const bb = new THREE.Box3().setFromObject(e.wrapper);
-    const ctr = new THREE.Vector3(); bb.getCenter(ctr);
-    const sz = new THREE.Vector3(); bb.getSize(sz);
+    const ctr = new THREE.Vector3();
+    bb.getCenter(ctr);
+    const sz = new THREE.Vector3();
+    bb.getSize(sz);
     const d = Math.max(sz.x, sz.y, sz.z, 0.1) * 2.5;
     const cam = this.sceneService.camera;
     const ctrl = this.sceneService.controls;
-    cam.position.copy(ctr.clone().addScaledVector(
-      new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(), d));
+    cam.position.copy(
+      ctr
+        .clone()
+        .addScaledVector(new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(), d),
+    );
     ctrl.target.copy(ctr);
     ctrl.update();
   }
@@ -229,7 +271,10 @@ export class ModelController {
   /* ---- 全局视图拟合 ---- */
 
   fitAllModelsInView(targets: ModelViewerModel[], force = false): void {
-    if (targets.length === 0) { this.initViewFitted = false; return; }
+    if (targets.length === 0) {
+      this.initViewFitted = false;
+      return;
+    }
     if (!force && this.initViewFitted) return;
     if (!force && !targets.every((m) => this.internalModels.has(m.fileName))) return;
     if (this.internalModels.size === 0) return;
@@ -243,26 +288,36 @@ export class ModelController {
     }
     if (combined.isEmpty()) return;
 
-    const center = new THREE.Vector3(); combined.getCenter(center);
-    const size = new THREE.Vector3(); combined.getSize(size);
+    const center = new THREE.Vector3();
+    combined.getCenter(center);
+    const size = new THREE.Vector3();
+    combined.getSize(size);
     const radius = Math.max(size.x, size.y, size.z) * 0.5;
     const cam = this.sceneService.camera as THREE.PerspectiveCamera;
-    const dist = radius / Math.tan(cam.fov * Math.PI / 360);
+    const dist = radius / Math.tan((cam.fov * Math.PI) / 360);
     const angle = Math.PI / 4;
     const hDist = dist * Math.cos(angle);
     const vDist = dist * Math.sin(angle);
 
     const targetPos = new THREE.Vector3(center.x, center.y + vDist, center.z + hDist);
     const targetLookAt = center.clone();
-    const startPos = targetPos.clone().addScaledVector(
-      new THREE.Vector3().subVectors(targetPos, targetLookAt).normalize(), dist * 2);
+    const startPos = targetPos
+      .clone()
+      .addScaledVector(
+        new THREE.Vector3().subVectors(targetPos, targetLookAt).normalize(),
+        dist * 2,
+      );
     this.animateCamera(targetPos, targetLookAt, startPos);
     this.initViewFitted = true;
   }
 
   private cameraAnimId = 0;
 
-  private animateCamera(targetPos: THREE.Vector3, targetLookAt: THREE.Vector3, startPos: THREE.Vector3): void {
+  private animateCamera(
+    targetPos: THREE.Vector3,
+    targetLookAt: THREE.Vector3,
+    startPos: THREE.Vector3,
+  ): void {
     const cam = this.sceneService.camera;
     const ctrl = this.sceneService.controls;
     const startLookAt = targetLookAt.clone();
@@ -277,15 +332,24 @@ export class ModelController {
       cam.position.lerpVectors(startPos, targetPos, ease);
       ctrl.target.lerpVectors(startLookAt, targetLookAt, ease);
       ctrl.update();
-      if (t < 1) { this.cameraAnimId = requestAnimationFrame(animate); } else { this.cameraAnimId = 0; }
+      if (t < 1) {
+        this.cameraAnimId = requestAnimationFrame(animate);
+      } else {
+        this.cameraAnimId = 0;
+      }
     };
-    this.zone.runOutsideAngular(() => { this.cameraAnimId = requestAnimationFrame(animate); });
+    this.zone.runOutsideAngular(() => {
+      this.cameraAnimId = requestAnimationFrame(animate);
+    });
   }
 
   /* ---- BBox ---- */
 
   createModelBBox(s: InternalModelState): void {
-    const h = new THREE.Box3Helper(new THREE.Box3().setFromObject(s.group), new THREE.Color(0xff8800));
+    const h = new THREE.Box3Helper(
+      new THREE.Box3().setFromObject(s.group),
+      new THREE.Color(0xff8800),
+    );
     h.renderOrder = 999;
     this.sceneService.scene.add(h);
     s.bboxHelper = h;
@@ -309,8 +373,15 @@ export class ModelController {
       const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
       for (const mat of mats) {
         const sm = mat as THREE.MeshStandardMaterial;
-        if (isOverlay) { sm.transparent = true; sm.opacity = s.solidOpacity; sm.depthWrite = !s.solidSeeThrough; }
-        else { sm.transparent = false; sm.opacity = 1; sm.depthWrite = true; }
+        if (isOverlay) {
+          sm.transparent = true;
+          sm.opacity = s.solidOpacity;
+          sm.depthWrite = !s.solidSeeThrough;
+        } else {
+          sm.transparent = false;
+          sm.opacity = 1;
+          sm.depthWrite = true;
+        }
         sm.needsUpdate = true;
       }
     }
@@ -340,10 +411,20 @@ export class ModelController {
       name: entry.fileName,
       position: { x: entry.editPosition.x, y: entry.editPosition.y, z: entry.editPosition.z },
       scale: { x: entry.editScale.x, y: entry.editScale.y, z: entry.editScale.z },
-      rotation: { h: THREE.MathUtils.radToDeg(entry.editRotation.x), p: THREE.MathUtils.radToDeg(entry.editRotation.y), b: THREE.MathUtils.radToDeg(entry.editRotation.z) },
-      colors: entry.colors, materialColors: mc, meshVisibility: mv,
-      label: entry.label, labelMode: entry.labelMode, labelPerHeight: entry.labelPerHeight, labelFontSize: entry.labelFontSize,
+      rotation: {
+        h: THREE.MathUtils.radToDeg(entry.editRotation.x),
+        p: THREE.MathUtils.radToDeg(entry.editRotation.y),
+        b: THREE.MathUtils.radToDeg(entry.editRotation.z),
+      },
+      colors: entry.colors,
+      materialColors: mc,
+      meshVisibility: mv,
+      label: entry.label,
+      labelMode: entry.labelMode,
+      labelPerHeight: entry.labelPerHeight,
+      labelFontSize: entry.labelFontSize,
       locked: entry.locked,
+      selectable: entry.selectable,
     };
   }
 }
