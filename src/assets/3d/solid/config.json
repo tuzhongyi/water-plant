@@ -1,0 +1,44 @@
+{
+  "settings": {
+    "renderMode": "overlay",
+    "edgeLineWidth": 1,
+    "thresholdAngle": 1,
+    "solidOpacity": 0.05,
+    "wfOpacity": 0.9,
+    "bgColor": "#20383c",
+    "ambientIntensity": 2.5,
+    "keyIntensity": 3,
+    "fillIntensity": 1,
+    "hemiIntensity": 1.2,
+    "showGrid": false,
+    "showAxes": false,
+    "showCenterDot": false,
+    "showBBox": false,
+    "autoRotate": false,
+    "flatShading": false,
+    "sobel": false,
+    "bloom": false,
+    "fxaa": false,
+    "edgeSeeThrough": false,
+    "solidSeeThrough": true,
+    "bloomThreshold": 0.6,
+    "bloomStrength": 1.5,
+    "bloomRadius": 0.4,
+    "cameraNear": 0.1,
+    "cameraFar": 7500,
+    "cameraType": "perspective",
+    "viewPreset": "medium",
+    "camPos": {
+      "x": 103.66488967013251,
+      "y": 477.32496635685555,
+      "z": 339.11105570695827
+    },
+    "camTgt": {
+      "x": 86.54461322337065,
+      "y": -53.43371521491479,
+      "z": 13.578313141726676
+    },
+    "gizmoPivot": "origin",
+    "gizmoVisible": true
+  }
+}

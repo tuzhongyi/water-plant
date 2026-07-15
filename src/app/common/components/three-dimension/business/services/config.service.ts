@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { DEFAULT_RENDER_SETTINGS, VIEW_PRESETS } from '../models/constants';
-import { RenderSettings, ThreeDimensionConfig } from '../models/types';
+import { RenderMode, RenderSettings, ThreeDimensionConfig } from '../models/types';
 import { SceneService } from './scene.service';
 import { StateService } from './state.service';
 import { ThreeDimensionApiService } from './three-dimension-api.service';
@@ -12,9 +12,9 @@ export class ConfigService {
   private state = inject(StateService);
   private sceneService = inject(SceneService);
 
-  async loadConfig(): Promise<ThreeDimensionConfig | null> {
+  async loadConfig(mode: RenderMode): Promise<ThreeDimensionConfig | null> {
     try {
-      const res = await firstValueFrom(this.configApi.config());
+      const res = await firstValueFrom(this.configApi.config(mode));
       const config: ThreeDimensionConfig = { settings: res.settings };
       this.state.activeConfig$.next(config);
       /* 合并默认值确保旧 config 缺失字段仍有有效值 */
@@ -34,8 +34,8 @@ export class ConfigService {
     }
   }
 
-  async autoLoadModels(): Promise<void> {
-    const config = await this.loadConfig();
+  async autoLoadModels(mode: RenderMode): Promise<void> {
+    const config = await this.loadConfig(mode);
     if (!config) return;
 
     /* 模型文件由 viewer-container 通过 ApiModelService 加载，

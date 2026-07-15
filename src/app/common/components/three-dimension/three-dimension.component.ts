@@ -51,6 +51,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
+  find = input<number>();
+
   // ── Model ────────────────────────────────────────────────
   /** 要加载和显示的模型列表，外部通过此 input 控制场景中的模型 */
   models = input<ModelViewerModel[]>([]);
@@ -223,7 +225,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.bindCommands();
 
     /* 预加载 models.json → 构建 config 缓存 → 再加载 config.json */
-    firstValueFrom(this.apiService.models())
+    const mode = this.renderMode();
+    firstValueFrom(this.apiService.models(mode))
       .then((modelFiles) => {
         const cache = new Map<string, ModelTransformConfig>();
         for (const f of modelFiles) {
@@ -239,7 +242,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       })
       .finally(() => {
         /* 加载 config.json（settings），完成后才允许处理模型 */
-        this.configService.autoLoadModels().finally(() => {
+        this.configService.autoLoadModels(mode).finally(() => {
           this.modelCtrl.sceneReady = true;
           const rm = this.renderMode();
           if (rm) this.state.updateSettings({ renderMode: rm });

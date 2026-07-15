@@ -3,10 +3,11 @@ export class ThreePathTool {
 
   get json() {
     return {
-      models: `${this.folder}/models.json`,
-      config: {
-        models: `${this.folder}/models_config.json`,
-        global: `${this.folder}/config.json`,
+      models: (mode: string) => {
+        return `${this.folder}/${mode}/models.json`;
+      },
+      config: (mode: string) => {
+        return `${this.folder}/${mode}/config.json`;
       },
     };
   }
@@ -16,8 +17,8 @@ export class ThreePathTool {
   }
 
   get = {
-    file: (filename: string) => {
-      return `${this.folder}/models/${filename}`;
+    file: (mode: string, filename: string) => {
+      return `${this.folder}/${mode}/models/${filename}`;
     },
   };
 }

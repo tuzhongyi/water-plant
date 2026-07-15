@@ -19,7 +19,9 @@ import {
   MarkerArgs,
   MarkerEntity,
   ModelFile,
+  ModelTransformConfig,
   ModelViewerModel,
+  RenderMode,
   StandbyClickArgs,
 } from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionComponent } from '../../../common/components/three-dimension/three-dimension.component';
@@ -95,6 +97,36 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
       );
     }
   }
+
+  async init(map: GeoMap, buildings: GeoMapElement[]) {
+    let models = await this.business.model.load();
+    for (let i = 0; i < models.length; i++) {
+      const model = models[i];
+      if (model.name.indexOf('expansion') >= 0) {
+        if (model.config) {
+          let building = buildings.find(
+            (x) => x.ElementId == this.converter.model.from.expansion(model.name),
+          );
+          if (building) {
+            let floors = await this.business.element.building.floor.load(building.Id);
+            if (floors.length == 0) {
+              for (const key in model.config.meshVisibility) {
+                let args = {
+                  meshname: key,
+                  modelId: model.name,
+                  buildingId: building?.Id,
+                  mapId: map.Id,
+                  location: model.config.position,
+                };
+                this.business.element.building.floor.create(args);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   building = {
     datas: signal<GeoMapElement[]>([]),
     get: (modelId: string) => {
@@ -103,6 +135,10 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
     },
     load: async () => {
       let buildings = await this.business.element.building.load();
+      let map = this.map.data();
+      if (map) {
+        this.init(map, buildings);
+      }
       this.building.datas.set(buildings);
       if (this.outputable) {
         this.buildingloaded.emit(buildings);
@@ -114,7 +150,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
 
       let datas = this.three.model.datas();
       let models = buildings.map((x) => {
-        return this.converter.element.to.building(x);
+        return this.converter.element.to.building(x, this.three.mode);
       });
       this.three.model.datas.set([...datas, ...models]);
     },
@@ -161,7 +197,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
       }
       if (map) {
         let datas = this.three.model.datas();
-        let village = this.converter.map.to.village(map);
+        let village = this.converter.map.to.village(map, this.three.mode);
 
         this.three.model.datas.set([...datas, village]);
       }
@@ -221,6 +257,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
 
   three = {
     inited: false,
+    mode: RenderMode.overlay,
     focus: new EventEmitter<FitView | void>(),
     model: {
       datas: signal<ModelViewerModel[]>([]),
@@ -236,7 +273,8 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
       inited: () => {
         this.three.inited = true;
       },
-      loaded: () => {
+      loaded: (datas: ModelTransformConfig[]) => {
+        console.log(datas);
         setTimeout(() => {
           this.three.focus.emit();
         }, 10);
@@ -275,7 +313,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
             let expansion = await this.business.model.get.expansion(modelId);
             if (expansion) {
               this.floor.load(building, expansion);
-              let model = this.converter.model.from.file(expansion, building);
+              let model = this.converter.model.from.file(expansion, building, this.three.mode);
               model.position = { x: 0, y: 0, z: 0 };
               this.three.model.datas.set([model]);
             }

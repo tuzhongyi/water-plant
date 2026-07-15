@@ -1,4 +1,8 @@
 import { ClassConstructor } from 'class-transformer';
+import { Device } from '../../models/devices/device.model';
+import { GeoMapElement } from '../../models/geographic/map-element.model';
+import { DeviceServiceCache } from '../services/device/device.cache';
+import { GeographicMapElementServiceCache } from '../services/geographic/geographic-map-element.cache';
 import { ServiceCache } from './service.cache';
 
 export function Cache<T>(key: string, type?: ClassConstructor<T>) {
@@ -11,21 +15,12 @@ export function Cache<T>(key: string, type?: ClassConstructor<T>) {
           if (!this._cache) {
             if (type) {
               switch (type.name) {
-                // case Division.name:
-                //   this._cache = new DivisionServiceCache(key, this);
-                //   break;
-                // case GarbageStation.name:
-                //   this._cache = new GarbageStationServiceCache(key, this);
-                //   break;
-                // case DivisionNumberStatistic.name:
-                //   this._cache = new DivisionStatisticServiceCache(key, this);
-                //   break;
-                // case GarbageStationNumberStatistic.name:
-                //   this._cache = new GarbageStationStatisticServiceCache(
-                //     key,
-                //     this
-                //   );
-                //   break;
+                case Device.name:
+                  this._cache = new DeviceServiceCache(key, this);
+                  break;
+                case GeoMapElement.name:
+                  this._cache = new GeographicMapElementServiceCache(key, this);
+                  break;
                 default:
                   this._cache = new ServiceCache(key, this);
                   break;

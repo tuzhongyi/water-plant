@@ -8,6 +8,7 @@ import { ServiceTool } from '../../../../tools/service-tool/service.tool';
 import { GeoMapElement } from '../../../models/geographic/map-element.model';
 import { PagedList } from '../../../models/interface/page-list.model';
 import { GeographicUrl } from '../../../urls/geographic/geographic.url';
+import { Cache } from '../../cache/cache';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
 import { GetMapElementsParams } from './geographic.params';
@@ -15,6 +16,7 @@ import { GetMapElementsParams } from './geographic.params';
 @Injectable({
   providedIn: 'root',
 })
+@Cache(GeographicUrl.map.element.basic(), GeoMapElement)
 export class GeographicMapElementRequestService {
   constructor(private http: HowellHttpClient) {}
 

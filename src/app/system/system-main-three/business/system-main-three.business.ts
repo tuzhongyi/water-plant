@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { ModelFile } from '../../../common/components/three-dimension/business/models/types';
+import {
+  ModelFile,
+  RenderMode,
+} from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionApiService } from '../../../common/components/three-dimension/business/services/three-dimension-api.service';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
@@ -69,18 +72,18 @@ export class SystemMainThreeBusiness {
 
   private cache: ModelFile[] = [];
   model = {
-    load: async (): Promise<ModelFile[]> => {
+    load: async (mode: RenderMode): Promise<ModelFile[]> => {
       if (this.cache.length > 0) return this.cache;
-      this.cache = await firstValueFrom(this.api.models());
+      this.cache = await firstValueFrom(this.api.models(mode));
       return this.cache;
     },
-    item: async (modelId: string) => {
-      let all = await this.model.load();
+    item: async (mode: RenderMode, modelId: string) => {
+      let all = await this.model.load(mode);
       return all.find((x) => x.name == modelId);
     },
-    expansion: (modelId: string) => {
+    expansion: (mode: RenderMode, modelId: string) => {
       let id = this.convert.expansion(modelId);
-      return this.model.item(id);
+      return this.model.item(mode, id);
     },
   };
 

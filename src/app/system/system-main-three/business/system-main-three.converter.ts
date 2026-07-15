@@ -62,7 +62,7 @@ export class SystemMainThreeConverter {
         };
         return entity;
       },
-      building: (data: GeoMapElement): ModelViewerModel => {
+      building: (data: GeoMapElement, mode: string): ModelViewerModel => {
         let filename = data.ElementId;
 
         if (!filename) throw new Error('未绑定建筑');
@@ -71,7 +71,7 @@ export class SystemMainThreeConverter {
           id: data.Id,
           fileName: filename,
           label: data.Name,
-          url: PathTool.three.get.file(filename),
+          url: PathTool.three.get.file(mode, filename),
         };
         return model;
       },
@@ -80,13 +80,13 @@ export class SystemMainThreeConverter {
 
   map = {
     to: {
-      village: (data: GeoMap): ModelViewerModel => {
+      village: (data: GeoMap, mode: string): ModelViewerModel => {
         let filename = data.FileUrl ?? this.default;
         let model: ModelViewerModel = {
           id: data.Id,
           fileName: filename,
           label: data.Name,
-          url: PathTool.three.get.file(filename),
+          url: PathTool.three.get.file(mode, filename),
         };
         return model;
       },
@@ -95,12 +95,12 @@ export class SystemMainThreeConverter {
 
   model = {
     from: {
-      file: (file: ModelFile, element: GeoMapElement) => {
+      file: (file: ModelFile, element: GeoMapElement, mode: string) => {
         let model: ModelViewerModel = {
           id: element.Id,
           fileName: file.name,
           label: element.Name,
-          url: PathTool.three.get.file(file.name),
+          url: PathTool.three.get.file(mode, file.name),
         };
         return model;
       },

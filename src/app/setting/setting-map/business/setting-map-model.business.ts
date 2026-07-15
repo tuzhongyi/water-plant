@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { ModelFile } from '../../../common/components/three-dimension/business/models/types';
+import {
+  ModelFile,
+  RenderMode,
+} from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionApiService } from '../../../common/components/three-dimension/business/services/three-dimension-api.service';
 
 @Injectable()
@@ -11,7 +14,7 @@ export class SettingMapModelBusiness {
 
   async load(): Promise<ModelFile[]> {
     if (this.cache.length > 0) return this.cache;
-    this.cache = await firstValueFrom(this.service.models());
+    this.cache = await firstValueFrom(this.service.models(RenderMode.overlay));
     return this.cache;
   }
   get = {

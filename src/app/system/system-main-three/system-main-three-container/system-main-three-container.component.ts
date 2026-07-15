@@ -136,7 +136,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
 
       let datas = this.three.model.datas();
       let models = buildings.map((x) => {
-        return this.converter.element.to.building(x);
+        return this.converter.element.to.building(x, this.three.renderMode());
       });
       this.three.model.datas.set([...datas, ...models]);
     },
@@ -182,7 +182,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
 
       if (map) {
         let datas = this.three.model.datas();
-        let village = this.converter.map.to.village(map);
+        let village = this.converter.map.to.village(map, this.three.renderMode());
 
         this.three.model.datas.set([...datas, village]);
       }
@@ -293,10 +293,14 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         expand: async (modelId: string) => {
           let building = this.building.get(modelId);
           if (building) {
-            let expansion = await this.business.model.expansion(modelId);
+            let expansion = await this.business.model.expansion(this.three.renderMode(), modelId);
             if (expansion) {
               this.floor.load(building, expansion);
-              let model = this.converter.model.from.file(expansion, building);
+              let model = this.converter.model.from.file(
+                expansion,
+                building,
+                this.three.renderMode(),
+              );
               model.position = { x: 0, y: 0, z: 0 };
               this.three.model.datas.set([model]);
             }
