@@ -6,10 +6,12 @@ import {
 } from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionApiService } from '../../../common/components/three-dimension/business/services/three-dimension-api.service';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
+import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { ConfigRequestService } from '../../../common/data-core/request/config/config-request.service';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
 import { LocaleCompare } from '../../../common/tools/compare-tool/compare.tool';
+import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
 import { PromiseValue } from '../../../common/tools/value-tool/value.promise';
 import { MapElementModel, MapModel } from '../../../setting/setting-map/business/setting-map.model';
 import { SystemMainThreeArgs } from './system-main-three.model';
@@ -44,23 +46,42 @@ export class SystemMainThreeBusiness {
       return this.service.map.element.all();
     },
     load: async (args: SystemMainThreeArgs): Promise<MapElementModel[]> => {
+      if (args.buildingId) {
+        return this.element.from.building(args.buildingId, args);
+      }
       let params = new GetMapElementsParams();
       params.ElementTypes = [
         MapElementType.Camera,
         MapElementType.Announciator,
         MapElementType.IoTSensor,
       ];
-      params.ParentId = args.parent;
+      params.ParentId = args.floorId;
       params.Name = args.name;
       if (args.type != undefined) {
         params.ElementTypes = [args.type];
       }
+
       let all = await this.service.map.element.all(params);
-      if (!args.parent) {
+      if (!args.floorId) {
         all = all.filter((x) => !x.ParentId);
       }
 
       return all;
+    },
+    from: {
+      building: async (buildingId: string, args: SystemMainThreeArgs) => {
+        let floors = await this.element.building.floor.load(buildingId);
+        let elements: GeoMapElement[] = [];
+        for (let i = 0; i < floors.length; i++) {
+          const floor = floors[i];
+          let _args = ObjectTool.assign(args, SystemMainThreeArgs);
+          _args.buildingId = undefined;
+          _args.floorId = floor.Id;
+          let datas = await this.element.load(_args);
+          elements.push(...datas);
+        }
+        return elements;
+      },
     },
     building: {
       load: async (): Promise<MapElementModel[]> => {

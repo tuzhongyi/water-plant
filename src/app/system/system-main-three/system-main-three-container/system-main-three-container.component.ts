@@ -64,7 +64,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.load.subscribe((x) => {
           let floorId = this.floor.selected()?.Id;
-          this.manager.filter.args.parent = floorId;
+          this.manager.filter.args.floorId = floorId;
           this.element.load(this.manager.filter.args);
         }),
       );
@@ -83,15 +83,17 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     filter: {
       args: new SystemMainThreeArgs(),
       show: false,
-      clear: () => {
+      clear: (reload: boolean) => {
         this.manager.filter.args = new SystemMainThreeArgs();
-        this.element.load(this.manager.filter.args);
+        if (reload) {
+          this.element.load(this.manager.filter.args);
+        }
       },
       doing: () => {
         this.element.load(this.manager.filter.args);
       },
       close: () => {
-        this.manager.filter.clear();
+        this.manager.filter.clear(true);
         this.manager.filter.show = false;
       },
     },
@@ -110,7 +112,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       clear: () => {
         this.manager.building.show = false;
         this.manager.filter.show = false;
-        this.manager.filter.clear();
+        this.manager.filter.clear(false);
         if (this.element.find.finding) {
           this.element.find.stop.emit();
         }
@@ -292,7 +294,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         console.log(args);
         this.floor.target.emit(args);
 
-        this.manager.filter.args.parent = data.Id;
+        this.manager.filter.args.floorId = data.Id;
         this.element.load(this.manager.filter.args);
 
         setTimeout(() => {
@@ -300,9 +302,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         }, 10);
       },
       back: async () => {
+        this.manager.filter.clear(false);
         this.floor.clear();
         this.three.model.clear();
-        this.manager.filter.clear();
+
         await Promise.all([
           this.map.load(),
           this.building.load(),
@@ -354,6 +357,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
               model.position = { x: 0, y: 0, z: 0 };
               this.three.model.datas.set([model]);
             }
+            this.manager.filter.args.buildingId = building.Id;
+            this.element.load(this.manager.filter.args);
           }
         },
       },

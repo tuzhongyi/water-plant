@@ -14,6 +14,13 @@ export interface MarkerTextureSet {
   offline?: THREE.Texture;
 }
 
+interface AlarmRing {
+  mesh: THREE.Mesh;
+  material: THREE.MeshBasicMaterial;
+  /** 0~1 之间的相位偏移，用于多圈错开 */
+  phaseOffset: number;
+}
+
 interface MarkerCache {
   data: MarkerEntity;
   sprite: THREE.Sprite;
@@ -24,7 +31,20 @@ interface MarkerCache {
   /** 报警态下的纹理集（icon.alarm 存在时） */
   alarmTextures?: MarkerTextureSet;
   state: 'normal' | 'hover' | 'selected';
+  /** 报警扩散动画环 */
+  alarmRings?: AlarmRing[];
 }
+
+/** 报警扩散环动画参数 */
+const ALARM_RING_COLOR = 0xff4444;
+const ALARM_RING_DURATION = 1500; // 单次脉冲周期 ms
+const ALARM_RING_COUNT = 2; // 错开相位圈数
+const ALARM_RING_INITIAL_OPACITY = 0.6;
+/** 扩散环屏幕半径范围（像素），实际世界尺寸每帧根据相机距离动态换算 */
+const ALARM_RING_MIN_RADIUS_PX = 24;
+const ALARM_RING_MAX_RADIUS_PX = 96;
+/** 环在 marker 上方的 Y 轴偏移（单位：米），避免被地面/模型遮挡 */
+const ALARM_RING_Y_OFFSET = 0.3;
 
 @Injectable()
 export class MarkerController {
@@ -41,6 +61,8 @@ export class MarkerController {
   private tc?: TransformControls;
   labelMode: 'always' | 'hover' = 'hover';
   private labelUpdateRegistered = false;
+  private alarmRingAnimating = false;
+  private alarmAnimationStartTime = 0;
 
   /* 事件 */
   markerClick = new EventEmitter<string>();
@@ -115,6 +137,12 @@ export class MarkerController {
         item.sprite.position.set(cam.position.x, cam.position.y, cam.position.z);
         item.label.position.copy(item.sprite.position);
         item.label.visible = false;
+        /* 报警扩散环：alarm=true 时创建，false 时清理 */
+        if (cam.alarm) {
+          this.ensureAlarmRings(item);
+        } else {
+          this.removeAlarmRings(item);
+        }
       }
       if (!this.labelUpdateRegistered) {
         this.sceneService.addBeforeRender(this.updateLabelPositions);
@@ -343,10 +371,132 @@ export class MarkerController {
     return results;
   }
 
+  /* ================================================================
+     private — 报警扩散环
+     ================================================================ */
+
+  /** 为 marker 创建报警扩散动画环（已存在则跳过） */
+  private ensureAlarmRings(item: MarkerCache): void {
+    if (item.alarmRings && item.alarmRings.length > 0) return;
+    const rings: AlarmRing[] = [];
+    for (let i = 0; i < ALARM_RING_COUNT; i++) {
+      /* 较厚的环，避免缩放太小时看不见 */
+      const ringGeo = new THREE.RingGeometry(0.7, 1.0, 64);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: ALARM_RING_COLOR,
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide,
+        depthTest: false,
+        depthWrite: false,
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = -Math.PI / 2; // 平铺在 XZ 平面
+      ring.renderOrder = 998;
+      ring.position.copy(item.sprite.position);
+      ring.position.y += ALARM_RING_Y_OFFSET;
+      /* 初始比例在 updateAlarmRings 首帧计算，此处设 1 作为占位 */
+      ring.scale.set(1, 1, 1);
+      if (item.inScene) {
+        this.sceneService.scene.add(ring);
+      }
+      rings.push({ mesh: ring, material: ringMat, phaseOffset: i / ALARM_RING_COUNT });
+    }
+    item.alarmRings = rings;
+
+    /* 注册全局动画回调（仅首次） */
+    if (!this.alarmRingAnimating) {
+      this.alarmRingAnimating = true;
+      this.alarmAnimationStartTime = performance.now();
+      this.sceneService.addBeforeRender(this.updateAlarmRings);
+    }
+  }
+
+  /** 移除 marker 的报警扩散环并释放资源 */
+  private removeAlarmRings(item: MarkerCache): void {
+    if (!item.alarmRings) return;
+    for (const ring of item.alarmRings) {
+      this.sceneService.scene.remove(ring.mesh);
+      ring.mesh.geometry.dispose();
+      ring.material.dispose();
+    }
+    item.alarmRings = undefined;
+  }
+
+  /** 每帧更新所有报警扩散环的缩放和透明度（屏幕像素恒定） */
+  private updateAlarmRings = (): void => {
+    const now = performance.now();
+    const cam = this.sceneService.camera;
+    const renderer = this.sceneService.renderer;
+    const vpHeight = renderer?.domElement?.clientHeight || 600;
+    const isPerspective = cam instanceof THREE.PerspectiveCamera;
+
+    /* 正交相机：像素→世界单位的转换系数（所有 ring 相同） */
+    let orthoPxToWorld = 0;
+    if (!isPerspective) {
+      const frustumSize = 20;
+      const viewH = frustumSize / (cam as THREE.OrthographicCamera).zoom;
+      orthoPxToWorld = viewH / vpHeight;
+    }
+
+    let anyActive = false;
+    for (const [, item] of this._cache) {
+      if (!item.alarmRings || !item.inScene) continue;
+      anyActive = true;
+      for (const ring of item.alarmRings) {
+        /* 计算当前脉冲周期进度 0→1 */
+        const elapsed = now - this.alarmAnimationStartTime;
+        const t = (elapsed / ALARM_RING_DURATION + ring.phaseOffset) % 1;
+
+        /* 当前帧目标像素半径 */
+        const targetPx =
+          ALARM_RING_MIN_RADIUS_PX + t * (ALARM_RING_MAX_RADIUS_PX - ALARM_RING_MIN_RADIUS_PX);
+
+        /* 像素 → 世界单位 */
+        let worldRadius: number;
+        if (isPerspective) {
+          const dist = (cam as THREE.PerspectiveCamera).position.distanceTo(ring.mesh.position);
+          const vFov = ((cam as THREE.PerspectiveCamera).fov * Math.PI) / 180;
+          const viewH = 2 * dist * Math.tan(vFov / 2);
+          worldRadius = (targetPx * viewH) / vpHeight;
+        } else {
+          worldRadius = targetPx * orthoPxToWorld;
+        }
+
+        ring.mesh.scale.set(worldRadius, worldRadius, 1);
+
+        /* opacity: 前 10% 渐入，后 90% 渐出 */
+        const fadeIn = Math.min(t / 0.1, 1);
+        const fadeOut = 1 - Math.max(0, (t - 0.1) / 0.9);
+        ring.material.opacity = ALARM_RING_INITIAL_OPACITY * fadeIn * fadeOut;
+
+        /* 位置跟随 marker sprite，保持 Y 轴偏移 */
+        ring.mesh.position.copy(item.sprite.position);
+        ring.mesh.position.y += ALARM_RING_Y_OFFSET;
+      }
+    }
+    /* 没有任何活跃报警环时注销回调 */
+    if (!anyActive) {
+      this.alarmRingAnimating = false;
+      this.sceneService.removeBeforeRender(this.updateAlarmRings);
+    }
+  };
+
   /* ---- dispose ---- */
   dispose(): void {
+    /* 清理报警扩散环 */
+    if (this.alarmRingAnimating) {
+      this.sceneService.removeBeforeRender(this.updateAlarmRings);
+      this.alarmRingAnimating = false;
+    }
     for (const [, item] of this._cache) {
       if (item.inScene) this.removeFromScene(item);
+      if (item.alarmRings) {
+        for (const ring of item.alarmRings) {
+          ring.mesh.geometry.dispose();
+          ring.material.dispose();
+        }
+      }
       item.sprite.material.dispose();
       item.label.material.dispose();
       (item.label.material as THREE.SpriteMaterial).map?.dispose();
@@ -545,12 +695,23 @@ export class MarkerController {
   private addToScene(item: MarkerCache): void {
     this.sceneService.scene.add(item.sprite);
     this.sceneService.scene.add(item.label);
+    if (item.alarmRings) {
+      for (const ring of item.alarmRings) {
+        ring.mesh.visible = true;
+        this.sceneService.scene.add(ring.mesh);
+      }
+    }
     item.inScene = true;
   }
 
   private removeFromScene(item: MarkerCache): void {
     this.sceneService.scene.remove(item.sprite);
     this.sceneService.scene.remove(item.label);
+    if (item.alarmRings) {
+      for (const ring of item.alarmRings) {
+        this.sceneService.scene.remove(ring.mesh);
+      }
+    }
     if (this.hoveredId === item.data.id) {
       this.hoveredId = null;
       this.sceneService.renderer.domElement.style.cursor = '';

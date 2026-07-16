@@ -1,5 +1,6 @@
 export class SystemMainThreeArgs {
   name?: string;
   type?: number;
-  parent?: string;
+  floorId?: string;
+  buildingId?: string;
 }

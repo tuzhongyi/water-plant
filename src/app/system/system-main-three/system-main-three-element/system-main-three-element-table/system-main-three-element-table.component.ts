@@ -46,28 +46,25 @@ export class SystemMainThreeElementTableComponent implements OnChanges {
   };
 
   private async load(datas: GeoMapElement[]) {
-    let items = [];
+    const items: SystemMainThreeElementTableItem[] = [];
     for (let i = 0; i < datas.length; i++) {
-      let item = await this.convert(datas[i]);
-      items.push(item);
+      items.push(this.convert(datas[i]));
     }
     this.items = items.sort((a, b) => {
       return LocaleCompare.compare(a.type, b.type);
     });
   }
 
-  private async convert(data: GeoMapElement) {
-    let item: SystemMainThreeElementTableItem<GeoMapElement> = {
+  private convert(data: GeoMapElement): SystemMainThreeElementTableItem<GeoMapElement> {
+    return {
       data: data,
       id: data.Id,
       name: data.Name,
       type: data.ElementType,
       icon: IconTool.MapElementType(data.ElementType),
       color: ColorTool.from.MapElementState(data.ElementState).name,
-      state: await this.language.geo.ElementStates(data.ElementState),
       playable: data.ElementType == MapElementType.Camera,
     };
-    return item;
   }
 
   on = {
