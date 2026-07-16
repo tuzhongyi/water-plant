@@ -150,6 +150,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   /** 左键拖拽检测：区分左键单击（触发搜索）与左键拖拽（旋转视角） */
   private leftButtonMoved = false;
   private leftButtonDownPos = { x: 0, y: 0 };
+  /** 自追踪按钮按下状态，避免 e.buttons 在指针离开画布后归零导致拖拽误判为点击 */
+  private leftButtonPressed = false;
+  private rightButtonPressed = false;
 
   /* standby 模式：跟随鼠标的半透明图标 */
   private standbySprite?: THREE.Sprite;
@@ -615,25 +618,36 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     /* 记录按下位置，用于区分点击与拖拽视角（左键/右键） */
     c.addEventListener('pointerdown', (e: PointerEvent) => {
       if (e.button === 0) {
+        this.leftButtonPressed = true;
         this.leftButtonMoved = false;
         this.leftButtonDownPos.x = e.clientX;
         this.leftButtonDownPos.y = e.clientY;
       } else if (e.button === 2) {
+        this.rightButtonPressed = true;
         this.rightButtonMoved = false;
         this.rightButtonDownPos.x = e.clientX;
         this.rightButtonDownPos.y = e.clientY;
       }
     });
+    /* 记录松开，配合 pointerleave 确保按钮状态不依赖 e.buttons（离开画布后可能归零） */
+    c.addEventListener('pointerup', (e: PointerEvent) => {
+      if (e.button === 0) this.leftButtonPressed = false;
+      if (e.button === 2) this.rightButtonPressed = false;
+    });
+    c.addEventListener('pointerleave', () => {
+      this.leftButtonPressed = false;
+      this.rightButtonPressed = false;
+    });
     /* 按住拖动 ≥4px 视为移动视角，不触发 click/contextmenu 的业务逻辑 */
     c.addEventListener('pointermove', (e: PointerEvent) => {
-      if (e.buttons & 1) {
+      if (this.leftButtonPressed) {
         const dx = e.clientX - this.leftButtonDownPos.x;
         const dy = e.clientY - this.leftButtonDownPos.y;
         if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
           this.leftButtonMoved = true;
         }
       }
-      if (e.buttons & 2) {
+      if (this.rightButtonPressed) {
         const dx = e.clientX - this.rightButtonDownPos.x;
         const dy = e.clientY - this.rightButtonDownPos.y;
         if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
@@ -747,6 +761,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     /* find 模式：左键单击（无拖拽）时搜索范围内 marker 并关闭查找 */
     if (this.findActive && !this.leftButtonMoved) {
+      e.stopPropagation(); // 阻止冒泡到父级 div，避免误触 button.clear()→findstop
       const results =
         this.findCircle?.visible && this.findCircle.position
           ? this.markerCtrl.markersInRadius(this.findCircle.position, this.findRadius)
@@ -757,7 +772,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     }
 
     /* 左键拖拽视角时，不触发任何点击事件（模型选中、marker 选中等） */
-    if (this.leftButtonMoved) return;
+    if (this.leftButtonMoved) {
+      e.stopPropagation(); // 阻止冒泡，拖拽后松开不应触发父级 click
+      return;
+    }
 
     /* standby 模式：输出点击坐标（仅当命中模型的 findable=true 时触发） */
     if (this.standby() && this.standbySprite?.visible) {
