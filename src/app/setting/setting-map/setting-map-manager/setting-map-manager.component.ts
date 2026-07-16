@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit, signal } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CardComponent } from '../../../common/components/card/card.component';
 import { WindowConfirmComponent } from '../../../common/components/window-confirm/window-confirm.component';
@@ -31,11 +31,13 @@ import { SettingMapManagerWindow } from './setting-map-manager.window';
   templateUrl: './setting-map-manager.component.html',
   styleUrl: './setting-map-manager.component.less',
   providers: [SettingMapBusiness],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingMapManagerComponent implements OnInit {
   constructor(
     private business: SettingMapBusiness,
     private toastr: ToastrService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   window = new SettingMapManagerWindow();
@@ -43,12 +45,9 @@ export class SettingMapManagerComponent implements OnInit {
   ngOnInit(): void {
     this.business.element.all().then((x) => {
       this.geo.element.datas.set(x);
+      this.cdr.detectChanges();
     });
   }
-
-  manager = {
-    load: new EventEmitter<void>(),
-  };
 
   geo = {
     map: {
@@ -60,7 +59,8 @@ export class SettingMapManagerComponent implements OnInit {
           this.window.details.map.show = true;
         },
         ok: (data: GeoMap) => {
-          this.manager.load.emit();
+          this.three.load.emit();
+          this.tree.load.emit();
           this.geo.map.details.close();
         },
         close: () => {
@@ -74,6 +74,7 @@ export class SettingMapManagerComponent implements OnInit {
   };
 
   three = {
+    load: new EventEmitter<void>(),
     standby: signal<IIdNameModel | undefined>(undefined),
     selected: signal<IIdNameModel | undefined>(undefined),
     on: {
@@ -114,7 +115,7 @@ export class SettingMapManagerComponent implements OnInit {
           this.business.element.bind(standby, args.location, mapId, args.parent?.Id).then(() => {
             this.toastr.success('绑定成功');
             this.three.standby.set(undefined);
-            this.manager.load.emit();
+            this.three.load.emit();
           });
         }
       },
@@ -122,6 +123,7 @@ export class SettingMapManagerComponent implements OnInit {
   };
 
   tree = {
+    load: new EventEmitter<void>(),
     standby: (data: IIdNameModel) => {
       this.three.standby.set(data);
     },
@@ -138,7 +140,7 @@ export class SettingMapManagerComponent implements OnInit {
           this.business.element.unbind(this.window.confirm.data.Id).then((x) => {
             this.toastr.success('解绑成功');
             this.window.confirm.show = false;
-            this.manager.load.emit();
+            this.three.load.emit();
             this.business.element.all().then((x) => {
               this.geo.element.datas.set(x);
             });

@@ -98,32 +98,52 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  async init(map: GeoMap, buildings: GeoMapElement[]) {
+  async init(map: GeoMap) {
+    let changed = false;
     let models = await this.business.model.load();
-    for (let i = 0; i < models.length; i++) {
-      const model = models[i];
-      if (model.name.indexOf('expansion') >= 0) {
-        if (model.config) {
-          let building = buildings.find(
-            (x) => x.ElementId == this.converter.model.from.expansion(model.name),
-          );
-          if (building) {
-            let floors = await this.business.element.building.floor.load(building.Id);
-            if (floors.length == 0) {
-              for (const key in model.config.meshVisibility) {
-                let args = {
-                  meshname: key,
-                  modelId: model.name,
-                  buildingId: building?.Id,
-                  mapId: map.Id,
-                  location: model.config.position,
-                };
-                this.business.element.building.floor.create(args);
-              }
-            }
+    let buildings = await this.business.element.building.load();
+    let model = {
+      buildings: models.filter((x) => x.type == 'building'),
+      expansions: models.filter((x) => x.type == 'floors'),
+    };
+    for (let i = 0; i < model.buildings.length; i++) {
+      const item = model.buildings[i];
+
+      let building = buildings.find((x) => x.ElementId == item.name);
+      let expansion = model.expansions.find(
+        (x) => x.name == this.converter.model.to.expansion(item.name),
+      );
+      if (!building) {
+        let args = {
+          mapId: map.Id,
+          modelId: item.name,
+          name: item.config?.label ?? item.name,
+          expansion: expansion?.name,
+          location: item.config?.position,
+        };
+        building = await this.business.element.building.create(args);
+        changed = true;
+      }
+
+      if (expansion) {
+        let floors = await this.business.element.building.floor.load(building.Id);
+        if (floors.length == 0 && expansion.config) {
+          for (const key in expansion.config.meshVisibility) {
+            let args = {
+              meshname: key,
+              modelId: expansion.name,
+              buildingId: building.Id,
+              mapId: map.Id,
+              location: item.config?.position,
+            };
+            await this.business.element.building.floor.create(args);
+            changed = true;
           }
         }
       }
+    }
+    if (changed) {
+      this.toastr.success('初始化完成，请刷新界面');
     }
   }
 
@@ -135,10 +155,6 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
     },
     load: async () => {
       let buildings = await this.business.element.building.load();
-      let map = this.map.data();
-      if (map) {
-        this.init(map, buildings);
-      }
       this.building.datas.set(buildings);
       if (this.outputable) {
         this.buildingloaded.emit(buildings);
@@ -196,6 +212,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
         this.maploaded.emit(map);
       }
       if (map) {
+        await this.init(map);
         let datas = this.three.model.datas();
         let village = this.converter.map.to.village(map, this.three.mode);
 
@@ -214,6 +231,9 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
       this.floor.model.set(file);
       let datas = await this.business.element.building.floor.load(building.Id);
       this.floor.datas.set(datas);
+      if (datas.length == 1) {
+        this.floor.on.select(datas[0]);
+      }
     },
     clear: () => {
       this.floor.model.set(undefined);

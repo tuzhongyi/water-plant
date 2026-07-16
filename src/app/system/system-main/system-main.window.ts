@@ -17,7 +17,9 @@ export class SystemMainWindow {
     single: new VideoSingleWindow(),
     multiple: new VideoMultipleWindow(),
   };
-  picture = new PictureWindow();
+  table = {
+    element: new MapElementTableWindow(),
+  };
 }
 class VideoSingleWindow extends WindowViewModel {
   constructor() {
@@ -57,17 +59,33 @@ class VideoMultipleWindow extends WindowViewModel {
     ...SizeTool.window.large,
   };
 
-  open(data: DeviceEventRecord) {
-    this.title = data.Resource?.ResourceName ?? data.DeviceName ?? '';
-    this.show = true;
-
-    setTimeout(() => {
+  open(data: DeviceEventRecord | GeoMapElement[]) {
+    if (data instanceof DeviceEventRecord) {
       this.from.record(data);
-    }, 0);
+    } else {
+      this.from.map.element(data);
+    }
+    this.show = true;
   }
 
   private from = {
+    map: {
+      element: (datas: GeoMapElement[]) => {
+        let names = datas.map((x) => x.Name);
+        this.title = names.join(' | ');
+        let args = datas.map((x) => this.from.map.item(x));
+        setTimeout(() => {
+          this.play.emit(args);
+        }, 0);
+      },
+      item: (data: GeoMapElement) => {
+        let args = new PreviewArgs();
+        args.cameraId = data.ElementId ?? '';
+        return args;
+      },
+    },
     record: (data: DeviceEventRecord) => {
+      this.title = data.Resource?.ResourceName ?? data.DeviceName ?? '';
       let args: VideoPlayerArgs[] = [];
       if (data.Actions) {
         args = data.Actions.map((x) => this.from.action(x));
@@ -78,7 +96,10 @@ class VideoMultipleWindow extends WindowViewModel {
         item.cameraId = data.DeviceId ?? '';
         args = [item];
       }
-      this.play.emit(args);
+
+      setTimeout(() => {
+        this.play.emit(args);
+      }, 0);
     },
     action: (data: EventBehaviorAction) => {
       let args = new PreviewArgs();
@@ -112,4 +133,15 @@ export class PictureWindow extends WindowViewModel {
 
   //   this.show = true;
   // }
+}
+export class MapElementTableWindow extends WindowViewModel {
+  constructor() {
+    super();
+  }
+
+  title: string = '';
+  style = {
+    ...SizeTool.window.large,
+  };
+  datas: GeoMapElement[] = [];
 }

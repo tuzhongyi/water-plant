@@ -6,17 +6,25 @@ import {
 } from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionApiService } from '../../../common/components/three-dimension/business/services/three-dimension-api.service';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
+import { ConfigRequestService } from '../../../common/data-core/request/config/config-request.service';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
 import { LocaleCompare } from '../../../common/tools/compare-tool/compare.tool';
+import { PromiseValue } from '../../../common/tools/value-tool/value.promise';
 import { MapElementModel, MapModel } from '../../../setting/setting-map/business/setting-map.model';
+import { SystemMainThreeArgs } from './system-main-three.model';
 
 @Injectable()
 export class SystemMainThreeBusiness {
   constructor(
     private service: GeographicRequestService,
     private api: ThreeDimensionApiService,
-  ) {}
+    private config: ConfigRequestService,
+  ) {
+    this.config.get().then((x) => {
+      this.map.radius.set(x.map.find.radius);
+    });
+  }
 
   map = {
     load: async (): Promise<MapModel | undefined> => {
@@ -26,6 +34,7 @@ export class SystemMainThreeBusiness {
       }
       return undefined;
     },
+    radius: new PromiseValue<number>(),
   };
   element = {
     get: (id: string) => {
@@ -34,16 +43,20 @@ export class SystemMainThreeBusiness {
     all: () => {
       return this.service.map.element.all();
     },
-    load: async (parentId?: string): Promise<MapElementModel[]> => {
+    load: async (args: SystemMainThreeArgs): Promise<MapElementModel[]> => {
       let params = new GetMapElementsParams();
       params.ElementTypes = [
         MapElementType.Camera,
         MapElementType.Announciator,
         MapElementType.IoTSensor,
       ];
-      params.ParentId = parentId;
+      params.ParentId = args.parent;
+      params.Name = args.name;
+      if (args.type != undefined) {
+        params.ElementTypes = [args.type];
+      }
       let all = await this.service.map.element.all(params);
-      if (!parentId) {
+      if (!args.parent) {
         all = all.filter((x) => !x.ParentId);
       }
 
@@ -64,7 +77,11 @@ export class SystemMainThreeBusiness {
           let params = new GetMapElementsParams();
           params.ElementTypes = [MapElementType.Floor];
           params.ParentId = buildingId;
-          return this.service.map.element.all(params);
+          let datas = await this.service.map.element.all(params);
+          datas = datas.sort((a, b) => {
+            return LocaleCompare.compare(a.Name, b.Name);
+          });
+          return datas;
         },
       },
     },

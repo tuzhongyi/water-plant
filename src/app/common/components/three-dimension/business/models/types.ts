@@ -130,6 +130,7 @@ export interface ModelTransformConfig {
   labelFontSize?: number;
   locked?: boolean;
   selectable?: boolean;
+  findable?: boolean;
 }
 
 interface EntityState {

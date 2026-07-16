@@ -1,0 +1,22 @@
+<hw-card-statistic-1>
+  <div class="system-main-three-element-manager">
+    <div class="system-main-three-element-manager-head">
+      <div class="system-main-three-element-manager-head-title">点位列表</div>
+      <div class="system-main-three-element-manager-head-operation">
+        <div class="button" (click)="on.close()"><i class="howell-icon-Close"></i></div>
+      </div>
+    </div>
+    <div class="card-statistic-line"></div>
+    <div class="system-main-three-element-manager-body">
+      <hw-system-main-three-element-table
+        [datas]="datas"
+        (preview)="on.preview($event)"
+      ></hw-system-main-three-element-table>
+    </div>
+    <div class="system-main-three-element-manager-foot button-group">
+      <button class="button-border green" (click)="on.video()" [disabled]="disabled">
+        <i class="howell-icon-camera_line"></i> 全部播放
+      </button>
+    </div>
+  </div>
+</hw-card-statistic-1>

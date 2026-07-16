@@ -3,8 +3,6 @@
     <div class="system-main-left">
       <div class="system-main-state">
         <hw-system-main-state-device [datas]="data.device.datas"></hw-system-main-state-device>
-
-        <button (click)="on.test()">test</button>
       </div>
       <div class="system-main-record">
         <hw-system-main-record-manager
@@ -17,6 +15,7 @@
         <div class="system-main-container">
           <hw-system-main-three-manager
             (preview)="map.on.preview($event)"
+            (video)="map.on.video($event)"
           ></hw-system-main-three-manager>
         </div>
       </howell-card>
@@ -53,25 +52,14 @@
       ></howell-video-player-list>
     </app-window>
   }
-  @if (window.picture.show) {
+
+  @if (window.table.element.show) {
     <app-window
-      [model]="window.picture"
-      [style]="window.picture.style"
-      [title]="window.picture.title"
+      [model]="window.table.element"
+      [style]="window.table.element.style"
+      [title]="window.table.element.title"
     >
-      <div
-        style="
-          width: 100%;
-          height: 100%;
-          background-repeat: no-repeat;
-          background-position: center center;
-        "
-        [ngStyle]="{
-          backgroundImage: 'url(' + window.picture.url + ')',
-          opacity: window.picture.isError ? 0.3 : 1,
-          backgroundSize: window.picture.isError ? 'auto' : '100% 100%',
-        }"
-      ></div>
+      <hw-system-main-element-manager></hw-system-main-element-manager>
     </app-window>
   }
 </div>

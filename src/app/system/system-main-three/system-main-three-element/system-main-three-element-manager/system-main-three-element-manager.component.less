@@ -1,0 +1,40 @@
+.system-main-three-element-manager {
+  @head-height: 20px;
+  @foot-height: 34px;
+  @gap: 15px;
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: @gap;
+
+  &-head {
+    width: 100%;
+    height: @head-height;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-title {
+      font-size: 20px;
+      color: white;
+    }
+  }
+
+  &-body {
+    width: 100%;
+    height: calc(100% - @gap * 3 - @head-height - @foot-height - 1px);
+    flex-grow: 1;
+    flex-shrink: 0;
+
+
+  }
+
+  &-foot {
+    width: 100%;
+    height: @foot-height;
+    justify-content: center;
+
+  }
+}

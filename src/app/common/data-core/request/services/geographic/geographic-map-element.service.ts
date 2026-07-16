@@ -9,6 +9,7 @@ import { GeoMapElement } from '../../../models/geographic/map-element.model';
 import { PagedList } from '../../../models/interface/page-list.model';
 import { GeographicUrl } from '../../../urls/geographic/geographic.url';
 import { Cache } from '../../cache/cache';
+import { AbstractService } from '../../cache/cache.interface';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
 import { GetMapElementsParams } from './geographic.params';
@@ -17,8 +18,10 @@ import { GetMapElementsParams } from './geographic.params';
   providedIn: 'root',
 })
 @Cache(GeographicUrl.map.element.basic(), GeoMapElement)
-export class GeographicMapElementRequestService {
-  constructor(private http: HowellHttpClient) {}
+export class GeographicMapElementRequestService extends AbstractService<GeoMapElement> {
+  constructor(private http: HowellHttpClient) {
+    super();
+  }
 
   async create(data: GeoMapElement) {
     let url = GeographicUrl.map.element.basic();
@@ -55,7 +58,7 @@ export class GeographicMapElementRequestService {
       return HowellResponseProcess.paged(x, GeoMapElement);
     });
   }
-  all(params = new GetMapElementsParams()): Promise<GeoMapElement[]> {
+  override all(params = new GetMapElementsParams()): Promise<GeoMapElement[]> {
     return ServiceTool.all((p) => {
       return this.list(p);
     }, params);

@@ -8,5 +8,10 @@
     "username": "admin",
     "password": "howell.net.cn"
   },
-  "reload": 240
+  "reload": 240,
+  "map": {
+    "find": {
+      "radius": 20
+    }
+  }
 }

@@ -329,6 +329,20 @@ export class MarkerController {
     },
   };
 
+  /** 查询指定位置半径内的所有 marker（XZ 平面距离，水平方向搜索） */
+  markersInRadius(center: THREE.Vector3, radius: number): MarkerEntity[] {
+    const results: MarkerEntity[] = [];
+    for (const [, item] of this._cache) {
+      if (!item.inScene) continue;
+      const dx = item.sprite.position.x - center.x;
+      const dz = item.sprite.position.z - center.z;
+      if (Math.sqrt(dx * dx + dz * dz) <= radius) {
+        results.push(item.data);
+      }
+    }
+    return results;
+  }
+
   /* ---- dispose ---- */
   dispose(): void {
     for (const [, item] of this._cache) {

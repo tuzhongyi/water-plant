@@ -1,0 +1,22 @@
+<div class="system-main-three-element-table">
+  @for (item of items; track $index) {
+    <div class="system-main-three-element-table-tr" [class]="item.color" (click)="on.select(item)">
+      <div class="system-main-three-element-table-td icon" [style.width]="width[0]">
+        <i [class]="item.icon"></i>
+      </div>
+      <div class="system-main-three-element-table-td grow" [style.width]="width[1]">
+        {{ item.name }}
+      </div>
+      <div class="system-main-three-element-table-td" [style.width]="width[2]">
+        <div class="button-group">
+          <button (click)="on.preview($event, item)" title="播放视频" [disabled]="!item.playable">
+            <i class="howell-icon-video-play"></i>
+          </button>
+          <!-- <button (click)="on.details($event, item)" title="详细信息">
+            <i class="howell-icon-details"></i>
+          </button> -->
+        </div>
+      </div>
+    </div>
+  }
+</div>

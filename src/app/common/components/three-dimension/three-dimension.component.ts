@@ -51,8 +51,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
-  find = input<number>();
-
+  findbegin = input<EventEmitter<number>>();
+  findend = output<MarkerEntity[]>();
+  findstop = input<EventEmitter<void>>();
   // ── Model ────────────────────────────────────────────────
   /** 要加载和显示的模型列表，外部通过此 input 控制场景中的模型 */
   models = input<ModelViewerModel[]>([]);
@@ -139,6 +140,17 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private hoveredId: string | null = null;
   private pressedKeys = new Set<string>();
 
+  /* find 模式：搜索范围指示圈 */
+  private findCircle: THREE.Group | null = null;
+  private findActive = false;
+  private findRadius = 0;
+  /** 右键拖拽检测：区分右键点击（停止搜索）与右键拖拽（旋转/平移视角） */
+  private rightButtonMoved = false;
+  private rightButtonDownPos = { x: 0, y: 0 };
+  /** 左键拖拽检测：区分左键单击（触发搜索）与左键拖拽（旋转视角） */
+  private leftButtonMoved = false;
+  private leftButtonDownPos = { x: 0, y: 0 };
+
   /* standby 模式：跟随鼠标的半透明图标 */
   private standbySprite?: THREE.Sprite;
   /** 当前 standby sprite 使用的图标 URL，用于检测变化 */
@@ -177,7 +189,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         console.log(s);
         this.ensureStandbySprite();
       } else if (this.standbySprite) {
-        this.sceneService.scene.remove(this.standbySprite);
+        this.sceneService.overlayScene.remove(this.standbySprite);
         this.standbySprite.material.dispose();
         this.standbySprite = undefined;
         this.standbyIconUrl = undefined;
@@ -254,6 +266,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.cleanupFindMode();
     this.subs.unsubscribe();
     this.disposeModelTC();
     this.sceneService.removeBeforeRender(this.fixSpriteScale);
@@ -329,14 +342,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       map: tex,
       depthTest: false,
       depthWrite: false,
-      transparent: true,
-      opacity: 0.5,
     });
     this.standbySprite = new THREE.Sprite(mat);
     this.standbySprite.scale.set(5, 5, 1);
-    this.standbySprite.renderOrder = 999;
+    this.standbySprite.renderOrder = Infinity;
     this.standbySprite.visible = false;
-    this.sceneService.scene.add(this.standbySprite);
+    this.sceneService.overlayScene.add(this.standbySprite);
     this.sceneService.addBeforeRender(this.fixSpriteScale);
   }
 
@@ -355,7 +366,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private updateStandbyPosition(): void {
     if (!this.standbySprite || !this.standby()) return;
     this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
-    const all = this.getAllMeshes();
+    const all = this.getMeshesForFind();
     const hits = this.raycaster.intersectObjects(
       all.map((a) => a.mesh),
       false,
@@ -435,7 +446,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         this.markerCtrl.cache.visibility(this.models());
         this.updateLabelVisibility();
         if (this.modelCtrl.loadingIds.size === 0) this.modelCtrl.emitLoaded(this.models());
-        console.warn('[loaded完成] 摄像机场景状态:', JSON.stringify(this.markerCtrl.debug.state()));
       }),
     );
     this.subs.add(this.markerCtrl.markerClick.subscribe((id) => this.markerClick.emit(id)));
@@ -531,6 +541,32 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         }),
       );
     }
+
+    /** findbegin：emit(radius) 进入搜索模式，radius 为搜索半径（米） */
+    if (this.findbegin()) {
+      this.subs.add(
+        this.findbegin()!.subscribe((radius) => {
+          console.log(
+            `[Find] 进入搜索模式, 半径: ${radius}m, 场景就绪: ${this.modelCtrl.sceneReady}`,
+          );
+          this.findRadius = radius;
+          this.findActive = true;
+          this.ensureFindCircle(radius);
+        }),
+      );
+    }
+
+    /** findstop：外部停止查找，行为同右键取消 */
+    if (this.findstop()) {
+      this.subs.add(
+        this.findstop()!.subscribe(() => {
+          if (this.findActive) {
+            this.cleanupFindMode();
+            this.findend.emit([]);
+          }
+        }),
+      );
+    }
   }
 
   /** 对所有已加载模型重新应用当前颜色状态 */
@@ -576,13 +612,48 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   private bindEvents(): void {
     const c = this.sceneService.renderer.domElement;
+    /* 记录按下位置，用于区分点击与拖拽视角（左键/右键） */
+    c.addEventListener('pointerdown', (e: PointerEvent) => {
+      if (e.button === 0) {
+        this.leftButtonMoved = false;
+        this.leftButtonDownPos.x = e.clientX;
+        this.leftButtonDownPos.y = e.clientY;
+      } else if (e.button === 2) {
+        this.rightButtonMoved = false;
+        this.rightButtonDownPos.x = e.clientX;
+        this.rightButtonDownPos.y = e.clientY;
+      }
+    });
+    /* 按住拖动 ≥4px 视为移动视角，不触发 click/contextmenu 的业务逻辑 */
+    c.addEventListener('pointermove', (e: PointerEvent) => {
+      if (e.buttons & 1) {
+        const dx = e.clientX - this.leftButtonDownPos.x;
+        const dy = e.clientY - this.leftButtonDownPos.y;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+          this.leftButtonMoved = true;
+        }
+      }
+      if (e.buttons & 2) {
+        const dx = e.clientX - this.rightButtonDownPos.x;
+        const dy = e.clientY - this.rightButtonDownPos.y;
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+          this.rightButtonMoved = true;
+        }
+      }
+      this.onPointerMove(e);
+    });
     c.addEventListener('contextmenu', (e: Event) => {
       e.preventDefault();
-      if (this.standby()) {
+      /* 查找模式：仅纯右键点击（无拖拽）时停止搜索；右键拖拽视角不停止 */
+      if (this.findActive && !this.rightButtonMoved) {
+        this.cleanupFindMode();
+        this.findend.emit([]);
+        return;
+      }
+      if (this.standby() && !this.rightButtonMoved) {
         this.standbyCancel.emit();
       }
     });
-    c.addEventListener('pointermove', (e: PointerEvent) => this.onPointerMove(e));
     c.addEventListener('click', (e: MouseEvent) => this.onClick(e));
     c.addEventListener('dblclick', (e: MouseEvent) => this.onDoubleClick(e));
   }
@@ -619,10 +690,26 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     return r;
   }
 
+  /** 查找模式专用：不过滤 selectable，仅排除 locked。findable 由调用方按 config 判断 */
+  private getMeshesForFind(): { mesh: THREE.Mesh; modelId: string }[] {
+    const r: { mesh: THREE.Mesh; modelId: string }[] = [];
+    for (const [id, s] of this.modelCtrl.internalModels) {
+      if (s.locked) continue;
+      for (const m of s.meshes) r.push({ mesh: m, modelId: id });
+    }
+    return r;
+  }
+
   /* ---- Pointer / Hover ---- */
 
   private onPointerMove(e: PointerEvent): void {
     this.updateMouse(e);
+
+    /* find 模式：鼠标移动时更新搜索圈位置 */
+    if (this.findActive) {
+      this.updateFindCircle();
+      return;
+    }
 
     /* standby 模式：光标变手型 + 半透明图标跟随 */
     if (this.standby()) {
@@ -658,7 +745,21 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private onClick(e: MouseEvent): void {
     this.updateMouse(e);
 
-    /* standby 模式：输出点击坐标 */
+    /* find 模式：左键单击（无拖拽）时搜索范围内 marker 并关闭查找 */
+    if (this.findActive && !this.leftButtonMoved) {
+      const results =
+        this.findCircle?.visible && this.findCircle.position
+          ? this.markerCtrl.markersInRadius(this.findCircle.position, this.findRadius)
+          : [];
+      this.cleanupFindMode();
+      this.findend.emit(results);
+      return;
+    }
+
+    /* 左键拖拽视角时，不触发任何点击事件（模型选中、marker 选中等） */
+    if (this.leftButtonMoved) return;
+
+    /* standby 模式：输出点击坐标（仅当命中模型的 findable=true 时触发） */
     if (this.standby() && this.standbySprite?.visible) {
       const p = this.standbySprite.position;
       const all = this.getAllMeshes();
@@ -672,7 +773,14 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         );
         if (hits.length > 0) {
           const found = all.find((a) => a.mesh === hits[0].object);
-          if (found) modelId = found.modelId;
+          if (found) {
+            const entry = this.state.loadedModels.get(found.modelId);
+            const config = entry
+              ? this.modelCtrl.getModelConfig(entry.fileName)
+              : undefined;
+            if (config?.findable !== true) return;
+            modelId = found.modelId;
+          }
           meshId = (hits[0].object as THREE.Mesh).name;
         }
       }
@@ -1067,5 +1175,130 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private doClearAll(): void {
     for (const id of Array.from(this.state.loadedModels.keys())) this.doRemoveModel(id);
     this.state.statusMessage$.next('已清空所有模型');
+  }
+
+  /* ---- Find mode helpers ---- */
+
+  /** 确保搜索圈已创建（radius 变化时重建） */
+  private ensureFindCircle(radius: number): void {
+    if (this.findCircle) {
+      this.scene.remove(this.findCircle);
+      this.disposeFindCircleObject();
+    }
+    this.findCircle = this.createFindCircle(radius);
+    this.findCircle.visible = false;
+    this.scene.add(this.findCircle);
+  }
+
+  /** 创建搜索范围指示圈（填充圆盘 + 轮廓线） */
+  private createFindCircle(radius: number): THREE.Group {
+    const group = new THREE.Group();
+    group.name = 'find-circle';
+
+    /* 半透明填充圆盘 */
+    const discGeo = new THREE.RingGeometry(0, radius, 64);
+    const discMat = new THREE.MeshBasicMaterial({
+      color: 0x00ff00,
+      transparent: true,
+      opacity: 0.15,
+      side: THREE.DoubleSide,
+      depthTest: false,
+      depthWrite: false,
+    });
+    const disc = new THREE.Mesh(discGeo, discMat);
+    disc.renderOrder = 998;
+    group.add(disc);
+
+    /* 轮廓线 */
+    const points: THREE.Vector3[] = [];
+    for (let i = 0; i <= 64; i++) {
+      const angle = (i / 64) * Math.PI * 2;
+      points.push(new THREE.Vector3(Math.cos(angle) * radius, Math.sin(angle) * radius, 0));
+    }
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0x00ff00,
+      depthTest: false,
+      depthWrite: false,
+      transparent: true,
+      opacity: 0.8,
+    });
+    const line = new THREE.LineLoop(lineGeo, lineMat);
+    line.renderOrder = 999;
+    group.add(line);
+
+    /* 中心点：标识鼠标精确位置 */
+    const dotGeo = new THREE.SphereGeometry(0.3, 8, 8);
+    const dotMat = new THREE.MeshBasicMaterial({
+      color: 0x00ff00,
+      depthTest: false,
+      depthWrite: false,
+    });
+    const dot = new THREE.Mesh(dotGeo, dotMat);
+    dot.renderOrder = 1000;
+    group.add(dot);
+
+    /* 旋转到水平面（XZ 平面） */
+    group.rotation.x = -Math.PI / 2;
+
+    return group;
+  }
+
+  /** 更新搜索圈位置：跟随鼠标与模型的交点（仅 findable 模型响应，穿透非 findable 模型） */
+  private updateFindCircle(): void {
+    if (!this.findCircle) return;
+    this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
+    const all = this.getMeshesForFind();
+    const hits = this.raycaster.intersectObjects(
+      all.map((a) => a.mesh),
+      false,
+    );
+    /* 遍历所有命中，穿透 findable=false 的模型，找到第一个 findable=true 的 */
+    for (const hit of hits) {
+      const found = all.find((a) => a.mesh === hit.object);
+      const modelId = found?.modelId ?? '';
+      const entry = modelId ? this.state.loadedModels.get(modelId) : undefined;
+      const config = entry ? this.modelCtrl.getModelConfig(entry.fileName) : undefined;
+      const findable = config?.findable === true;
+
+      if (findable) {
+        this.findCircle.position.copy(hit.point);
+        this.findCircle.visible = true;
+        return;
+      }
+    }
+    /* 所有命中均非 findable，或没有任何命中 */
+    this.findCircle.visible = false;
+  }
+
+  /** 清理搜索圈并退出查找模式 */
+  private cleanupFindMode(): void {
+    this.findActive = false;
+    if (this.findCircle) {
+      this.scene.remove(this.findCircle);
+      this.disposeFindCircleObject();
+    }
+    if (this.sceneService.renderer) {
+      this.sceneService.renderer.domElement.style.cursor = '';
+    }
+  }
+
+  /** 释放搜索圈的几何体和材质 */
+  private disposeFindCircleObject(): void {
+    if (!this.findCircle) return;
+    this.findCircle.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.geometry?.dispose();
+        if (child.material instanceof THREE.Material) {
+          child.material.dispose();
+        }
+      } else if (child instanceof THREE.Line) {
+        child.geometry?.dispose();
+        if (child.material instanceof THREE.Material) {
+          child.material.dispose();
+        }
+      }
+    });
+    this.findCircle = null;
   }
 }

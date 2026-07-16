@@ -12,7 +12,7 @@ import { MqttRequestService } from '../../common/data-core/request/services/mqtt
 import { DateTimeTool } from '../../common/tools/date-time-tool/datetime.tool';
 import { VideoPlayerContainerComponent } from '../../share/video/video-player-container/video-player-container.component';
 import { VideoPlayerListComponent } from '../../share/video/video-player-list/video-player-list.component';
-import { SystemMainPanel } from '../system-main-panel/system-main-panel';
+import { SystemMainElementManagerComponent } from '../system-main-element/system-main-element-manager/system-main-element-manager.component';
 import { SystemMainRecordManagerComponent } from '../system-main-record/system-main-record-manager/system-main-record-manager.component';
 import { SystemMainStateDeviceComponent } from '../system-main-state/system-main-state-device/system-main-state-device.component';
 import { SystemMainThreeManager } from '../system-main-three/system-main-three-manager/system-main-three-manager';
@@ -30,10 +30,10 @@ import { SystemMainWindow } from './system-main.window';
     WindowComponent,
     VideoPlayerContainerComponent,
     SystemMainThreeManager,
-    SystemMainPanel,
     SystemMainStateDeviceComponent,
     SystemMainRecordManagerComponent,
     VideoPlayerListComponent,
+    SystemMainElementManagerComponent,
   ],
   templateUrl: './system-main.html',
   styleUrl: './system-main.less',
@@ -90,6 +90,9 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       preview: (data: GeoMapElement) => {
         this.video.single.preview(data);
       },
+      video: (datas: GeoMapElement[]) => {
+        this.video.multple.preview(datas);
+      },
     },
   };
 
@@ -128,6 +131,11 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   };
 
   video = {
+    multple: {
+      preview: (datas: GeoMapElement[]) => {
+        this.window.video.multiple.open(datas);
+      },
+    },
     single: {
       preview: (data: GeoMapElement) => {
         this.window.video.single.title = data.Name;

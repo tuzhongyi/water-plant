@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -13,12 +14,11 @@ import { GeoMapElement } from '../../../common/data-core/models/geographic/map-e
 import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
-import { TreeMapElementComponent } from '../../../share/tree/tree-map-element/tree-map-element.component';
 import { SystemMainThreeState } from './system-main-three-state.model';
 
 @Component({
   selector: 'hw-system-main-three-state',
-  imports: [CommonModule, CardStatistic1Component, TreeMapElementComponent],
+  imports: [CommonModule, CardStatistic1Component],
   templateUrl: './system-main-three-state.component.html',
   styleUrl: './system-main-three-state.component.less',
 })
@@ -27,7 +27,10 @@ export class SystemMainThreeStateComponent implements OnChanges {
   @Input('datas') source: GeoMapElement[] = [];
   @Output() hide = new EventEmitter<void>();
 
-  constructor(private language: LanguageTool) {}
+  constructor(
+    private language: LanguageTool,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   datas: SystemMainThreeState[] = [];
 
@@ -54,6 +57,7 @@ export class SystemMainThreeStateComponent implements OnChanges {
       items.push(item);
     }
     this.datas = items;
+    this.cdr.detectChanges();
   }
   private async convert(type: number, elements: GeoMapElement[]) {
     let offline = elements.filter((x) => x.ElementState == 1);

@@ -4,32 +4,78 @@ import { GisPoint } from '../../../common/data-core/models/geographic/gis-point.
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
+import { LocaleCompare } from '../../../common/tools/compare-tool/compare.tool';
 import { MapElementModel } from './setting-map.model';
 
 export class SettingMapElementBuildingBusiness {
+  private cache: MapElementModel[] = [];
+
   constructor(private service: GeographicRequestService) {}
 
   async load(): Promise<MapElementModel[]> {
-    let params = new GetMapElementsParams();
-    params.ElementTypes = [MapElementType.Building];
-    let buildings = await this.service.map.element.all(params);
+    let datas = await this.all();
+    datas = datas.filter((x) => x.ElementType === MapElementType.Building);
+    return datas;
+  }
 
-    return buildings;
+  private async all(): Promise<GeoMapElement[]> {
+    if (this.cache.length > 0) return this.cache;
+
+    let params = new GetMapElementsParams();
+    params.ElementTypes = [MapElementType.Building, MapElementType.Floor];
+    let datas = await this.service.map.element.all(params);
+    this.cache = datas;
+    return datas;
+  }
+
+  async create(args: {
+    mapId: string;
+    modelId: string;
+    name: string;
+    expansion?: string;
+    location?: { x: number; y: number; z: number };
+  }): Promise<GeoMapElement> {
+    let element = new GeoMapElement();
+    element.Id = '';
+    element.CreateTime = new Date();
+    element.UpdateTime = new Date();
+    element.ElementType = MapElementType.Building;
+
+    element.Name = args.name;
+    element.MapId = args.mapId;
+    element.ElementId = args.modelId;
+    element.Tags = args.expansion ? [args.expansion] : [];
+
+    if (args.location) {
+      element.Location = new GisPoint();
+      element.Location.Longitude = args.location.x;
+      element.Location.Latitude = args.location.z;
+      element.Location.Altitude = args.location.y;
+      element.Location.GisType = GisType.Other;
+    }
+
+    let result = await this.service.map.element.create(element);
+    if (this.cache) {
+      this.cache.push(result as MapElementModel);
+    }
+    return result;
   }
 
   floor = {
     load: async (buildingId: string) => {
-      let params = new GetMapElementsParams();
-      params.ElementTypes = [MapElementType.Floor];
-      params.ParentId = buildingId;
-      return this.service.map.element.all(params);
+      await this.all();
+      return this.cache!.filter(
+        (x) => x.ElementType === MapElementType.Floor && x.ParentId === buildingId,
+      ).sort((a, b) => {
+        return LocaleCompare.compare(a.Name, b.Name);
+      });
     },
-    create: (args: {
+    create: async (args: {
       buildingId?: string;
       meshname: string;
       mapId: string;
       modelId: string;
-      location: { x: number; y: number; z: number };
+      location?: { x: number; y: number; z: number };
     }) => {
       let element = new GeoMapElement();
       element.Id = '';
@@ -43,13 +89,19 @@ export class SettingMapElementBuildingBusiness {
       element.ParentId = args.buildingId;
       element.Tags = [args.modelId];
 
-      element.Location = new GisPoint();
-      element.Location.Longitude = args.location.x;
-      element.Location.Latitude = args.location.z;
-      element.Location.Altitude = args.location.y;
-      element.Location.GisType = GisType.Other;
+      if (args.location) {
+        element.Location = new GisPoint();
+        element.Location.Longitude = args.location.x;
+        element.Location.Latitude = args.location.z;
+        element.Location.Altitude = args.location.y;
+        element.Location.GisType = GisType.Other;
+      }
 
-      return this.service.map.element.create(element);
+      let result = await this.service.map.element.create(element);
+      if (this.cache) {
+        this.cache.push(result as MapElementModel);
+      }
+      return result;
     },
   };
 

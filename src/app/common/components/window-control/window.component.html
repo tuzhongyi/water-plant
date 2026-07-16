@@ -4,7 +4,7 @@
       <div class="window-content">
         @if (headable) {
           <div class="window-content-head">
-            <div class="title window-content-head-title">
+            <div class="title window-content-head-title" [title]="title || ''">
               {{ title }}
             </div>
             <div class="operation">

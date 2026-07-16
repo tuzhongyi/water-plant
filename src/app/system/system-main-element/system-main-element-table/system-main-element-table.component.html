@@ -1,0 +1,79 @@
+<div class="system-main-element-table">
+  <div class="system-main-element-table-body table-page">
+    <table border="0" cellpadding="0" cellspacing="0">
+      <colgroup>
+        <col [ngStyle]="{ width: width }" *ngFor="let width of widths" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="center">
+            <input
+              type="checkbox"
+              [checked]="selecteds.length > 0 && selecteds.length === page.RecordCount"
+              (click)="select.all()"
+            />
+          </th>
+          <th class="center">序号</th>
+          <th>名称</th>
+          <th>类型</th>
+          <th>所在</th>
+          <th>状态</th>
+          <th class="center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let item of datas; let index = index"
+          (click)="select.on(item)"
+          [ngClass]="{
+            selected: item && selecteds.find((x) => x.Id == item!.id),
+            nodata: !item,
+          }"
+          [ngStyle]="{
+            height: item ? 100 / page.PageSize + '%' : 0,
+          }"
+        >
+          <td class="center">
+            <input
+              type="checkbox"
+              *ngIf="item"
+              [checked]="item && selecteds.find((x) => x.Id == item!.id)"
+            />
+          </td>
+          <td class="center">
+            <div *ngIf="item">
+              {{ page.PageSize * (page.PageIndex - 1) + index + 1 }}
+            </div>
+          </td>
+
+          <td [title]="item?.name || ''">
+            {{ item?.name || '-' }}
+          </td>
+          <td [title]="item?.type || ''">
+            {{ item?.type || '-' }}
+          </td>
+          <td [title]="item?.parent || ''">
+            {{ item?.parent || '-' }}
+          </td>
+          <td [title]="item?.state?.name || ''" [style.color]="item?.state?.color">
+            {{ item?.state?.name || '-' }}
+          </td>
+
+          <td class="center">
+            <div class="operation" *ngIf="item">
+              <!-- <div class="button" title="" (click)="onvideo($event, item)">
+                <i class="howell-icon-details"></i>
+              </div> -->
+              <div class="button" title="视频预览" (click)="onvideo($event, item)">
+                <i class="howell-icon-video"></i>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="system-main-element-table-foot" *ngIf="page.TotalRecordCount">
+    <paginator [page]="page" (change)="onpage($event)"> </paginator>
+  </div>
+</div>

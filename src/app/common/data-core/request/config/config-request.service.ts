@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PathTool } from '../../../tools/path-tool/path.tool';
 import { Config } from './config.model';
@@ -7,7 +6,7 @@ import { Config } from './config.model';
   providedIn: 'root',
 })
 export class ConfigRequestService {
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   get version() {
     return fetch(`${PathTool.config.version}?t=${new Date().getTime()}`).then((res) =>

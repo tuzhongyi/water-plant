@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -35,7 +36,7 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
   @Output() playing = new EventEmitter<number>();
   @Output() stoping = new EventEmitter<number>();
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   datas: VideoPlayerListItem[] = [];
 
@@ -97,6 +98,7 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
     for (let i = 0; i < this.datas.length; i++) {
       this.datas[i].selected = this.index === i;
     }
+    this.cdr.detectChanges();
   }
 
   registEvent() {
@@ -111,15 +113,15 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.play) {
       let sub = this.play.subscribe((datas) => {
-        datas.map((args) => {
+        datas.map((args, index) => {
           this.mode = this.get.screen(datas.length);
           this.initScreens();
 
-          if (this.datas.length > this.index) {
+          if (this.datas.length > index) {
             if (args instanceof PreviewArgs) {
-              this.datas[this.index].preview(args);
+              this.datas[index].preview(args);
             } else if (args instanceof PlaybackArgs) {
-              this.datas[this.index].playback(args);
+              this.datas[index].playback(args);
             } else {
               throw new Error('Invalid args type');
             }

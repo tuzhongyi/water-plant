@@ -1,0 +1,37 @@
+<hw-card-statistic-1>
+  <div class="system-main-three-filter">
+    <div class="system-main-three-filter-head">筛选</div>
+    <div class="card-statistic-line"></div>
+    <div class="system-main-three-filter-body">
+      <div class="forms">
+        <div class="form-item">
+          <div class="form-item-text">名称</div>
+          <div class="form-item-value">
+            <input type="text" [(ngModel)]="args.name" />
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-item-text">类型</div>
+          <div class="form-item-value">
+            <select [(ngModel)]="args.type">
+              <option [ngValue]="undefined">全部</option>
+              @for (item of source.type.elements; track $index) {
+                <option [ngValue]="item.Value">
+                  {{ item.Name }}
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="system-main-three-filter-foot button-group">
+      <button class="button-border full" (click)="on.ok()">
+        <i class="howell-icon-Check"></i> 确定
+      </button>
+      <button class="button-border green" (click)="on.cancel()">
+        <i class="howell-icon-Close"></i> 关闭
+      </button>
+    </div>
+  </div>
+</hw-card-statistic-1>

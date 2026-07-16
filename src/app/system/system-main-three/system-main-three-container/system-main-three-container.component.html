@@ -5,8 +5,6 @@
       [renderMode]="three.renderMode()"
       (inited)="three.on.inited()"
       (loaded)="three.on.loaded()"
-      (standbyClick)="three.on.standby.binding($event)"
-      (standbyCancel)="three.on.standby.cancel()"
       [markers]="three.camera.datas()"
       [markersMovable]="false"
       (modelClick)="three.on.building.select($event)"
@@ -15,6 +13,9 @@
       [meshVisibility]="floor.target"
       (markerDblClick)="three.on.camera.dblclick($event)"
       [moveto]="building.moveto"
+      [findbegin]="element.find.begin"
+      [findstop]="element.find.stop"
+      (findend)="element.find.end($event)"
     ></hw-3d>
   </div>
   <div class="system-main-three-button-group button-group">
@@ -29,7 +30,17 @@
     <button class="button-map" title="渲染模式" (click)="manager.button.mode()">
       <i class="howell-icon-shade"></i>
     </button>
-    <button class="button-map" title="点位筛选"><i class="howell-icon-filter"></i></button>
+    <button class="button-map" title="点位筛选" (click)="manager.button.filter()">
+      <i class="howell-icon-filter"></i>
+    </button>
+    <button
+      class="button-map"
+      title="查找点位"
+      [class.selected]="element.find.finding"
+      (click)="manager.button.find()"
+    >
+      <i class="mdi mdi-adjust"></i>
+    </button>
   </div>
   <div class="system-main-three-viewer">
     <div></div>
@@ -78,6 +89,27 @@
           </button>
         }
       </div>
+    </div>
+  }
+
+  @if (manager.filter.show) {
+    <div class="system-main-three-filter">
+      <hw-system-main-three-filter
+        [(args)]="manager.filter.args"
+        (argsChange)="manager.filter.doing()"
+        (close)="manager.filter.close()"
+      ></hw-system-main-three-filter>
+    </div>
+  }
+
+  @if (element.find.found.length > 0) {
+    <div class="system-main-three-found">
+      <hw-system-main-three-element-manager
+        [datas]="element.find.found"
+        (close)="element.find.found = []"
+        (video)="manager.on.video($event)"
+        (preview)="manager.on.preview($event)"
+      ></hw-system-main-three-element-manager>
     </div>
   }
 </div>

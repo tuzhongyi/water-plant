@@ -7,7 +7,7 @@
           <div class="card-line"></div>
           <div class="card-body">
             <hw-setting-device-tree
-              [load]="manager.load"
+              [load]="tree.load"
               [elements]="geo.element.datas()"
               (bind)="tree.standby($event)"
               (unbind)="tree.bind.confirm($event)"
@@ -21,7 +21,7 @@
     <div class="setting-map-three">
       <howell-card>
         <hw-setting-map-three
-          [load]="manager.load"
+          [load]="three.load"
           (maploaded)="three.on.loaded.map($event)"
           (buildingloaded)="three.on.loaded.building($event)"
           (elementloaded)="three.on.loaded.element($event)"

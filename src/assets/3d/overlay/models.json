@@ -1163,7 +1163,8 @@
       "label": "二氧化碳装置",
       "labelMode": "always",
       "locked": false,
-      "gizmoVisible": true
+      "gizmoVisible": true,
+      "selectable": false
     }
   },
   {
@@ -1230,7 +1231,8 @@
       "label": "二氧化碳装置2",
       "labelMode": "always",
       "locked": false,
-      "gizmoVisible": true
+      "gizmoVisible": true,
+      "selectable": false
     }
   },
   {
@@ -1710,7 +1712,8 @@
       "label": "液氮站",
       "labelMode": "always",
       "locked": false,
-      "gizmoVisible": true
+      "gizmoVisible": true,
+      "selectable": false
     }
   },
   {
@@ -2865,7 +2868,8 @@
       "label": "太阳能",
       "labelMode": "always",
       "locked": false,
-      "gizmoVisible": true
+      "gizmoVisible": true,
+      "selectable": false
     }
   },
   {
@@ -2939,7 +2943,8 @@
       "labelMode": "never",
       "locked": false,
       "gizmoVisible": false,
-      "selectable": false
+      "selectable": false,
+      "findable": true
     }
   },
   {

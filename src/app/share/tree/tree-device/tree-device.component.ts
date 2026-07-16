@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -45,6 +46,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   constructor(
     private business: TreeDeviceBusiness,
     private language: LanguageTool,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   private subs = new Subscription();
@@ -55,7 +57,12 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['bound']) {
       this.elements = this.bound;
-      if (this.lastDatas && this.lastTypes) this.buildTree(this.lastTypes, this.lastDatas);
+      // 首次加载时全量构建，后续只增量刷新绑定按钮，保留折叠状态
+      if (this.nodes.length === 0 && this.lastDatas && this.lastTypes) {
+        this.buildTree(this.lastTypes, this.lastDatas);
+      } else {
+        this.refreshChannelActions();
+      }
     }
   }
 
@@ -118,6 +125,29 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
         this.addDeviceNode(d, t.Key);
       }
     }
+    this.cdr.detectChanges();
+  }
+
+  /* ---- bound 增量刷新 ---- */
+
+  private refreshChannelActions(): void {
+    for (const node of this.nodes) {
+      if (node.level === 2 && node.data) {
+        const ch = node.data as VideoChannel | DB31Channel;
+        const isBound = this.elements.some((b) => b.ElementId === ch.Id);
+        node.actionsHtml = isBound
+          ? `<div class="button hw-tree-action-btn hw-tree-action-position green" title="定位">
+               <i class="glyphicon glyphicon-map-marker"></i>
+             </div>
+             <div class="button hw-tree-action-btn hw-tree-action-unbind redlight" title="解绑">
+               <i class="howell-icon-Unlink"></i>
+             </div>`
+          : `<div class="button hw-tree-action-btn hw-tree-action-bind green" title="绑定">
+               <i class="howell-icon-Link"></i>
+             </div>`;
+      }
+    }
+    this.cdr.detectChanges();
   }
 
   /* ---- 节点添加 ---- */

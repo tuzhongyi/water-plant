@@ -7,35 +7,41 @@ import {
   ModelFile,
   ModelViewerModel,
   RenderMode,
-  StandbyClickArgs,
 } from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionComponent } from '../../../common/components/three-dimension/three-dimension.component';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { wait } from '../../../common/tools/wait';
-import { BindingArgs, MapModel } from '../../../setting/setting-map/business/setting-map.model';
+import { MapModel } from '../../../setting/setting-map/business/setting-map.model';
 import { SystemMainThreeBusiness } from '../business/system-main-three.business';
 import { SystemMainThreeConverter } from '../business/system-main-three.converter';
+import { SystemMainThreeArgs } from '../business/system-main-three.model';
+import { SystemMainThreeElementManagerComponent } from '../system-main-three-element/system-main-three-element-manager/system-main-three-element-manager.component';
+import { SystemMainThreeFilterComponent } from '../system-main-three-filter/system-main-three-filter.component';
 
 @Component({
   selector: 'hw-system-main-three-container',
-  imports: [CommonModule, ThreeDimensionComponent],
+  imports: [
+    CommonModule,
+    ThreeDimensionComponent,
+    SystemMainThreeFilterComponent,
+    SystemMainThreeElementManagerComponent,
+  ],
   templateUrl: './system-main-three-container.component.html',
   styleUrl: './system-main-three-container.component.less',
   providers: [SystemMainThreeBusiness, SystemMainThreeConverter],
 })
 export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
+  @Input() elementload?: EventEmitter<SystemMainThreeArgs>;
   @Output() maploaded = new EventEmitter<GeoMap>();
-
   @Output() buildingloaded = new EventEmitter<GeoMapElement[]>();
   @Output() buildingselect = new EventEmitter<GeoMapElement>();
-
   @Output() elementloaded = new EventEmitter<GeoMapElement[]>();
-  @Output() binding = new EventEmitter<BindingArgs>();
-  @Output() standbyCancel = new EventEmitter<void>();
   @Input() load?: EventEmitter<void>;
   @Output() preview = new EventEmitter<GeoMapElement>();
+  @Output() video = new EventEmitter<GeoMapElement[]>();
+  @Output() found = new EventEmitter<GeoMapElement[]>();
   constructor(
     private business: SystemMainThreeBusiness,
     private converter: SystemMainThreeConverter,
@@ -46,7 +52,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.map.load();
     this.building.load();
-    this.element.load();
+    this.element.load(this.manager.filter.args);
     this.regist();
   }
   ngOnDestroy(): void {
@@ -58,28 +64,67 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.load.subscribe((x) => {
           let floorId = this.floor.selected()?.Id;
-
-          this.element.load(floorId);
+          this.manager.filter.args.parent = floorId;
+          this.element.load(this.manager.filter.args);
+        }),
+      );
+    }
+    if (this.elementload) {
+      this.subs.add(
+        this.elementload.subscribe((x) => {
+          this.manager.filter.args = x;
+          this.element.load(this.manager.filter.args);
         }),
       );
     }
   }
 
   manager = {
+    filter: {
+      args: new SystemMainThreeArgs(),
+      show: false,
+      clear: () => {
+        this.manager.filter.args = new SystemMainThreeArgs();
+        this.element.load(this.manager.filter.args);
+      },
+      doing: () => {
+        this.element.load(this.manager.filter.args);
+      },
+      close: () => {
+        this.manager.filter.clear();
+        this.manager.filter.show = false;
+      },
+    },
     on: {
       click: () => {
         this.manager.button.clear();
+      },
+      video: (datas: GeoMapElement[]) => {
+        this.video.emit(datas);
+      },
+      preview: (data: GeoMapElement) => {
+        this.preview.emit(data);
       },
     },
     button: {
       clear: () => {
         this.manager.building.show = false;
+        this.manager.filter.show = false;
+        this.manager.filter.clear();
+        if (this.element.find.finding) {
+          this.element.find.stop.emit();
+        }
+        if (this.element.find.finding) {
+          this.element.find.stop.emit();
+          this.element.find.found = [];
+        }
       },
       building: () => {
+        this.manager.button.clear();
         if (this.floor.model()) {
           this.floor.on.back();
         } else {
-          this.manager.building.show = !this.manager.building.show;
+          this.manager.building.show = true;
         }
       },
       mode: () => {
@@ -98,10 +143,22 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       },
       filter: () => {
         this.manager.button.clear();
+        this.manager.filter.show = true;
       },
       view: (mode?: FitView) => {
         this.manager.button.clear();
         this.three.focus.emit(mode);
+      },
+      find: async () => {
+        this.manager.button.clear();
+        if (this.element.find.finding) {
+          this.element.find.stop.emit();
+        } else {
+          this.element.find.found = [];
+          let radius = await this.business.map.radius.get();
+          this.element.find.begin.emit(radius);
+          this.element.find.finding = true;
+        }
       },
     },
     building: {
@@ -143,12 +200,22 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
   element = {
     datas: signal<GeoMapElement[]>([]),
+    find: {
+      finding: false,
+      found: [] as GeoMapElement[],
+      begin: new EventEmitter<number>(),
+      stop: new EventEmitter<void>(),
+      end: (datas: MarkerEntity[]) => {
+        this.element.find.found = datas.map((x) => x.data);
+        this.element.find.finding = false;
+      },
+    },
     get: (modelId: string) => {
       let elements = this.element.datas();
       return elements.find((x) => x.ElementId == modelId);
     },
-    load: async (floorId?: string) => {
-      let cameras = await this.business.element.load(floorId);
+    load: async (args: SystemMainThreeArgs) => {
+      let cameras = await this.business.element.load(args);
 
       this.element.datas.set(cameras);
 
@@ -225,7 +292,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         console.log(args);
         this.floor.target.emit(args);
 
-        this.element.load(data.Id);
+        this.manager.filter.args.parent = data.Id;
+        this.element.load(this.manager.filter.args);
 
         setTimeout(() => {
           this.three.focus.emit();
@@ -234,8 +302,12 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       back: async () => {
         this.floor.clear();
         this.three.model.clear();
-
-        await Promise.all([this.map.load(), this.building.load(), this.element.load()]);
+        this.manager.filter.clear();
+        await Promise.all([
+          this.map.load(),
+          this.building.load(),
+          this.element.load(this.manager.filter.args),
+        ]);
       },
     },
   };
@@ -262,28 +334,6 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           this.three.focus.emit();
         }, 10);
-      },
-      standby: {
-        binding: (data: StandbyClickArgs) => {
-          let parent: GeoMapElement | undefined;
-          if (this.floor.model()) {
-            let floor = this.floor.selected();
-            if (!floor) {
-              return;
-            }
-            parent = floor;
-          }
-          let args: BindingArgs = {
-            location: { x: data.x, y: data.y, z: data.z },
-            standby: data.data,
-            parent: parent,
-          };
-
-          this.binding.emit(args);
-        },
-        cancel: () => {
-          this.standbyCancel.emit();
-        },
       },
 
       building: {
