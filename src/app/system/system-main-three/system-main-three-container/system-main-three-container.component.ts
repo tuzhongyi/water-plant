@@ -295,6 +295,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.floor.target.emit(args);
 
         this.manager.filter.args.floorId = data.Id;
+        this.manager.filter.args.buildingId = undefined;
         this.element.load(this.manager.filter.args);
 
         setTimeout(() => {
@@ -356,9 +357,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
               );
               model.position = { x: 0, y: 0, z: 0 };
               this.three.model.datas.set([model]);
+              this.manager.filter.args.buildingId = building.Id;
+              this.element.load(this.manager.filter.args);
             }
-            this.manager.filter.args.buildingId = building.Id;
-            this.element.load(this.manager.filter.args);
           }
         },
       },

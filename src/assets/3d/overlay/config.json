@@ -3,7 +3,7 @@
     "renderMode": "overlay",
     "edgeLineWidth": 1,
     "thresholdAngle": 1,
-    "solidOpacity": 0.05,
+    "solidOpacity": 0.1,
     "wfOpacity": 0.9,
     "bgColor": "#20383c",
     "ambientIntensity": 2.5,
@@ -24,21 +24,152 @@
     "bloomThreshold": 0.6,
     "bloomStrength": 1.5,
     "bloomRadius": 0.4,
+    "showCameraHelpers": true,
     "cameraNear": 0.1,
     "cameraFar": 7500,
     "cameraType": "perspective",
     "viewPreset": "medium",
     "camPos": {
-      "x": 103.66488967013251,
-      "y": 477.32496635685555,
-      "z": 339.11105570695827
+      "x": 122.49821393556286,
+      "y": 195.84241445259613,
+      "z": 309.9827330010433
     },
     "camTgt": {
-      "x": 86.54461322337065,
-      "y": -53.43371521491479,
-      "z": 13.578313141726676
+      "x": 239.12083875772586,
+      "y": -71.85512799902584,
+      "z": 84.6574998306739
     },
-    "gizmoPivot": "origin",
-    "gizmoVisible": true
+    "gizmoPivot": "center",
+    "gizmoVisible": false,
+    "orthoZoom": 0.04425390695862034
+  },
+  "sceneCameras": [],
+  "typeColorPresets": {
+    "building": {
+      "normal": {
+        "edge": "#007bff",
+        "background": "#000000",
+        "materials": {
+          "wall": "#003c78",
+          "roof": "#007bff",
+          "other": "#666666",
+          "door": "#007800"
+        }
+      },
+      "hover": {
+        "edge": "#3399ff",
+        "background": "#000000",
+        "materials": {
+          "wall": "#0059b3",
+          "roof": "#2491ff",
+          "other": "#888888",
+          "door": "#00c800"
+        }
+      },
+      "selected": {
+        "edge": "#ffbb00",
+        "background": "#000000",
+        "materials": {
+          "wall": "#785a00",
+          "roof": "#ffbb00",
+          "other": "#999999",
+          "door": "#00ff00"
+        }
+      },
+      "alarm": {
+        "edge": "#ff2222",
+        "background": "#000000",
+        "materials": {
+          "wall": "#440000",
+          "roof": "#660000",
+          "other": "#333333",
+          "door": "#550000"
+        }
+      }
+    },
+    "floors": {
+      "normal": {
+        "edge": "#007bff",
+        "background": "#000000",
+        "materials": {
+          "wall": "#003c78",
+          "roof": "#007bff",
+          "other": "#666666",
+          "door": "#007800"
+        }
+      },
+      "hover": {
+        "edge": "#3399ff",
+        "background": "#000000",
+        "materials": {
+          "wall": "#0059b3",
+          "roof": "#2491ff",
+          "other": "#888888",
+          "door": "#00c800"
+        }
+      },
+      "selected": {
+        "edge": "#ffbb00",
+        "background": "#000000",
+        "materials": {
+          "wall": "#785a00",
+          "roof": "#ffbb00",
+          "other": "#999999",
+          "door": "#00ff00"
+        }
+      },
+      "alarm": {
+        "edge": "#ff2222",
+        "background": "#000000",
+        "materials": {
+          "wall": "#440000",
+          "roof": "#660000",
+          "other": "#333333",
+          "door": "#550000"
+        }
+      }
+    },
+    "village": {
+      "normal": {
+        "edge": "#2264aa",
+        "background": "#000000",
+        "materials": {
+          "wall": "#12385e",
+          "roof": "#ffbb00",
+          "other": "#666666",
+          "door": "#007800"
+        }
+      },
+      "hover": {
+        "edge": "#007bff",
+        "background": "#332200",
+        "materials": {
+          "wall": "#184d81",
+          "roof": "#ffcc33",
+          "other": "#888888",
+          "door": "#00c800"
+        }
+      },
+      "selected": {
+        "edge": "#7a5a00",
+        "background": "#331a00",
+        "materials": {
+          "wall": "#473600",
+          "roof": "#ff8800",
+          "other": "#999999",
+          "door": "#00ff00"
+        }
+      },
+      "alarm": {
+        "edge": "#ff2222",
+        "background": "#1a0000",
+        "materials": {
+          "wall": "#440000",
+          "roof": "#660000",
+          "other": "#333333",
+          "door": "#550000"
+        }
+      }
+    }
   }
 }

@@ -15,8 +15,12 @@ export class ConfigService {
   async loadConfig(mode: RenderMode): Promise<ThreeDimensionConfig | null> {
     try {
       const res = await firstValueFrom(this.configApi.config(mode));
-      const config: ThreeDimensionConfig = { settings: res.settings };
+      const config: ThreeDimensionConfig = {
+        settings: res.settings,
+        typeColorPresets: res.typeColorPresets,
+      };
       this.state.activeConfig$.next(config);
+      this.state.typeColorPresets$.next(res.typeColorPresets || {});
       /* 合并默认值确保旧 config 缺失字段仍有有效值 */
       const mergedSettings: RenderSettings = {
         ...DEFAULT_RENDER_SETTINGS,

@@ -1,18 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
-import { SystemMainElementManagerComponent } from '../../system-main-element/system-main-element-manager/system-main-element-manager.component';
 import { SystemMainThreeContainerComponent } from '../system-main-three-container/system-main-three-container.component';
 import { SystemMainThreeStateComponent } from '../system-main-three-state/system-main-three-state.component';
 
 @Component({
   selector: 'hw-system-main-three-manager',
-  imports: [
-    CommonModule,
-    SystemMainThreeContainerComponent,
-    SystemMainThreeStateComponent,
-    SystemMainElementManagerComponent,
-  ],
+  imports: [CommonModule, SystemMainThreeContainerComponent, SystemMainThreeStateComponent],
   templateUrl: './system-main-three-manager.html',
   styleUrl: './system-main-three-manager.less',
   providers: [],

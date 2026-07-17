@@ -2,7 +2,6 @@ import { EventEmitter, Injectable, NgZone, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import * as THREE from 'three';
 import {
-  MaterialColorState,
   ModelEntry,
   ModelTransformConfig,
   ModelViewerModel,
@@ -51,11 +50,25 @@ export class ModelController {
 
   /** 模型配置缓存：fileName → ModelTransformConfig，由组件预加载 models.json 后通过 setConfigCache 注入 */
   private configCache = new Map<string, ModelTransformConfig>();
+  /** 模型类型缓存：fileName → ModelType，用于从 typeColorPresets 匹配颜色 */
+  private typeCache = new Map<string, string>();
 
   /** 由 ThreeDimensionComponent 在预加载 models.json 后调用 */
-  setConfigCache(cache: Map<string, ModelTransformConfig>): void {
-    this.configCache = cache;
-    const names = Array.from(cache.keys());
+  setConfigCache(files: { name: string; type?: string; config?: ModelTransformConfig }[]): void {
+    this.configCache.clear();
+    this.typeCache.clear();
+    for (const f of files) {
+      if (f.config && Object.keys(f.config).length > 0) {
+        this.configCache.set(f.name, f.config);
+      }
+      if (f.type) {
+        this.typeCache.set(f.name, f.type);
+      }
+    }
+  }
+
+  getModelType(fileName: string): string | undefined {
+    return this.typeCache.get(fileName);
   }
 
   getModelConfig(fileName: string): ModelTransformConfig | undefined {
@@ -187,18 +200,14 @@ export class ModelController {
     if (entry) {
       /* 从预加载的 configCache 按 fileName 查找变换配置 */
       const transform = this.configCache.get(fileName);
+      /* 从 typeCache 查找模型类型，用于匹配 typeColorPresets */
+      const modelType = this.typeCache.get(fileName);
       if (transform) {
         this.modelService.applyTransformConfig(entry, transform);
         /* position 优先级：models 输入 > config */
         if (position) {
           entry.editPosition.set(position.x, position.y, position.z);
           this.modelService.applyTransform(entry);
-        }
-        if (transform.materialColors) {
-          const actualNames = new Set(this.colorsService.getMaterials(entry).map((m) => m.name));
-          for (const [matName, state] of Object.entries(transform.materialColors)) {
-            if (actualNames.has(matName)) entry.materialColors.set(matName, { ...state });
-          }
         }
         if (transform.meshVisibility) {
           this.modelService.setNodeVisible(entry, transform.meshVisibility);
@@ -219,6 +228,12 @@ export class ModelController {
         console.warn(
           `[ModelController.doLoadModel] ${fileName} 无 config 且无 position, 模型将使用默认原点位置`,
         );
+      }
+      /* 从 typeColorPresets 应用颜色（替代旧 config.colors / config.materialColors） */
+      if (modelType) {
+        this.colorsService.applyTypeColorPresets(entry, modelType);
+      } else {
+        this.colorsService.initMaterialColors(entry);
       }
       this.colorsService.applyStateColors(entry, 'normal');
       this.state.statusMessage$.next(`已加载: ${fileName}`);
@@ -398,8 +413,6 @@ export class ModelController {
   }
 
   entryToTransformConfig(entry: ModelEntry): ModelTransformConfig {
-    const mc: Record<string, MaterialColorState> = {};
-    for (const [n, s] of entry.materialColors) mc[n] = { ...s };
     const mv: Record<string, boolean> = {};
     entry.model.traverse((c) => {
       const m = c as THREE.Mesh;
@@ -416,8 +429,6 @@ export class ModelController {
         p: THREE.MathUtils.radToDeg(entry.editRotation.y),
         b: THREE.MathUtils.radToDeg(entry.editRotation.z),
       },
-      colors: entry.colors,
-      materialColors: mc,
       meshVisibility: mv,
       label: entry.label,
       labelMode: entry.labelMode,

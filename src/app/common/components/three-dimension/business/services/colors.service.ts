@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import * as THREE from 'three';
 import { StateService } from './state.service';
-import { ModelEntry, ModelColors, MaterialColorState } from '../models/types';
+import { ModelEntry, ModelColors, MaterialColorState, TypeColorPreset } from '../models/types';
 
 export type ColorState = 'normal' | 'hover' | 'selected';
 
@@ -119,7 +119,7 @@ export class ColorsService {
     return result;
   }
 
-  /** 加载模型后初始化材质颜色（从模型已有颜色读取） */
+  /** 加载模型后初始化材质颜色（从模型已有颜色读取，typeColorPresets 不可用时的回退） */
   initMaterialColors(entry: ModelEntry): void {
     const materials = this.getMaterials(entry);
     entry.materialColors.clear();
@@ -129,6 +129,48 @@ export class ColorsService {
         normal: hex,
         hover: hex,
         selected: hex,
+      });
+    }
+  }
+
+  /** 根据 config.json 的 typeColorPresets 为模型应用 edge/background/材质颜色 */
+  applyTypeColorPresets(entry: ModelEntry, modelType: string): void {
+    const presets = this.state.typeColorPresets;
+    const preset: TypeColorPreset | undefined = presets[modelType];
+    if (!preset) {
+      /* 无对应预设时回退到模型原始颜色 */
+      this.initMaterialColors(entry);
+      return;
+    }
+
+    /* 应用 edge + background 颜色 */
+    entry.colors = {
+      normal: { edge: preset.normal.edge, background: preset.normal.background },
+      hover: { edge: preset.hover.edge, background: preset.hover.background },
+      selected: { edge: preset.selected.edge, background: preset.selected.background },
+    };
+
+    /* 应用材质颜色：按 mat name 小写匹配 preset.materials 中的 key */
+    const materials = this.getMaterials(entry);
+    entry.materialColors.clear();
+    for (const { name } of materials) {
+      const matKey = name.toLowerCase();
+      const normalHex =
+        preset.normal.materials[matKey] ??
+        preset.normal.materials['other'] ??
+        '#cccccc';
+      const hoverHex =
+        preset.hover.materials[matKey] ??
+        preset.hover.materials['other'] ??
+        normalHex;
+      const selectedHex =
+        preset.selected.materials[matKey] ??
+        preset.selected.materials['other'] ??
+        normalHex;
+      entry.materialColors.set(name, {
+        normal: normalHex,
+        hover: hoverHex,
+        selected: selectedHex,
       });
     }
   }

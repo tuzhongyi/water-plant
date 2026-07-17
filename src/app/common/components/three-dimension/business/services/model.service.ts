@@ -10,7 +10,6 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { SceneService } from './scene.service';
 import { StateService } from './state.service';
 import { EdgesService } from './edges.service';
-import { ColorsService } from './colors.service';
 import { ModelEntry, ModelTransformConfig } from '../models/types';
 import { DEFAULT_MODEL_COLORS } from '../models/constants';
 
@@ -19,7 +18,6 @@ export class ModelService {
   private sceneService = inject(SceneService);
   private state = inject(StateService);
   private edgesService = inject(EdgesService);
-  private colorsService = inject(ColorsService);
 
   private gltfLoader = new GLTFLoader();
   private fbxLoader = new FBXLoader();
@@ -91,8 +89,6 @@ export class ModelService {
     /* 在 wrapper 加入 scene 前计算本地空间的几何中心 */
     entry.bbox.getCenter(entry.geoCenter);
 
-    this.colorsService.initMaterialColors(entry);
-
     if (transform) {
       this.applyTransformConfig(entry, transform);
     }
@@ -130,19 +126,6 @@ export class ModelService {
       THREE.MathUtils.degToRad(cfg.rotation.p),
       THREE.MathUtils.degToRad(cfg.rotation.b)
     );
-    if (cfg.colors) {
-      entry.colors = {
-        normal: { ...cfg.colors.normal },
-        hover: { ...cfg.colors.hover },
-        selected: { ...cfg.colors.selected },
-      };
-    }
-    if (cfg.materialColors) {
-      entry.materialColors.clear();
-      for (const [matName, state] of Object.entries(cfg.materialColors)) {
-        entry.materialColors.set(matName, { ...state });
-      }
-    }
     if (cfg.meshVisibility) {
       this.setNodeVisible(entry, cfg.meshVisibility);
     }

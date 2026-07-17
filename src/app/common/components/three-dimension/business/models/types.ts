@@ -116,13 +116,26 @@ export enum ModelType {
   village = 'village',
 }
 
+/** 单个颜色状态（edge + background + 各材质颜色），来自 config.json 的 typeColorPresets */
+export interface TypeColorState {
+  edge: string;
+  background: string;
+  materials: Record<string, string>;
+}
+
+/** 一个模型类型的完整颜色预设（按交互状态分） */
+export interface TypeColorPreset {
+  normal: TypeColorState;
+  hover: TypeColorState;
+  selected: TypeColorState;
+  alarm?: TypeColorState;
+}
+
 export interface ModelTransformConfig {
   name?: string;
   position: Vec3;
   scale: Vec3;
   rotation: { h: number; p: number; b: number };
-  colors?: ModelColors;
-  materialColors?: Record<string, MaterialColorState>;
   meshVisibility?: Record<string, boolean>;
   label?: string;
   labelMode?: 'always' | 'never' | 'hover';
@@ -163,6 +176,8 @@ export interface MarkerEntity<T = any> extends MarkerArgs<T> {
 
 export interface ThreeDimensionConfig {
   settings: RenderSettings;
+  /** 按模型类型(building/floors/village)分组的颜色预设 */
+  typeColorPresets?: Record<string, TypeColorPreset>;
 }
 
 export interface RenderSettings {
@@ -180,6 +195,7 @@ export interface RenderSettings {
   showAxes: boolean;
   showCenterDot: boolean;
   showBBox: boolean;
+  gizmoVisible: boolean;
   autoRotate: boolean;
   flatShading: boolean;
   sobel: boolean;

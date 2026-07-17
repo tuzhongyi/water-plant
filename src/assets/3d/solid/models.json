@@ -7,9 +7,9 @@
     "config": {
       "name": "35kV_Substation_expansion.glb",
       "position": {
-        "x": 320.28260927008,
-        "y": 0,
-        "z": 101.2935636325006
+        "x": 400.73120219759284,
+        "y": -0.9374406192781973,
+        "z": 154.40728769634495
       },
       "scale": {
         "x": 1,
@@ -21,73 +21,25 @@
         "p": 90,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "Other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "Roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "35kV_Substation_expansion.glb",
       "labelMode": "always",
-      "locked": false,
-      "gizmoVisible": true,
       "selectable": false
     }
   },
   {
     "name": "35kV_Substation.glb",
-    "size": 300768,
+    "size": 2724152,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "35kV_Substation.glb",
       "position": {
-        "x": 262.56437240571455,
-        "y": 4.328791765670722,
-        "z": 85.23570974675314
+        "x": 263.3041009562034,
+        "y": 4.989429186227287,
+        "z": 88.03314658225287
       },
       "scale": {
         "x": 1,
@@ -99,49 +51,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Roof": true,
         "Floor1": true
       },
       "label": "35kv配电站",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -153,9 +69,9 @@
     "config": {
       "name": "A_Filter.glb",
       "position": {
-        "x": 83.21080116389692,
-        "y": 5.534208538465165,
-        "z": 67.62587386285716
+        "x": 84.22514243202473,
+        "y": 5.186465831985742,
+        "z": 66.24990088434399
       },
       "scale": {
         "x": 1,
@@ -167,48 +83,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "A滤池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -220,9 +100,9 @@
     "config": {
       "name": "A1A2_Sedimentation_Tanks.glb",
       "position": {
-        "x": -23.05471391996099,
-        "y": 3.1520561585371603,
-        "z": 64.41388159050592
+        "x": -21.859000927111374,
+        "y": 3.277770230498163,
+        "z": 61.712284371251876
       },
       "scale": {
         "x": 1,
@@ -234,48 +114,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "A1A2沉淀池/清水池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -287,9 +131,9 @@
     "config": {
       "name": "Activated_Carbon_Filter_expansion.glb",
       "position": {
-        "x": 401.34049466601573,
+        "x": -280.2750498709418,
         "y": 0,
-        "z": -78.24280315550521
+        "z": 266.87136100230697
       },
       "scale": {
         "x": 1,
@@ -298,51 +142,14 @@
       },
       "rotation": {
         "h": 0,
-        "p": 0,
+        "p": 90,
         "b": 0
-      },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
       },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "Activated_Carbon_Filter_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -355,9 +162,9 @@
     "config": {
       "name": "Activated_Carbon_Filter.glb",
       "position": {
-        "x": 252.56207730550332,
-        "y": 6.979763262732899,
-        "z": -73.10055326923798
+        "x": 250.07316354972832,
+        "y": 6.772943383606731,
+        "z": -73.33158136718103
       },
       "scale": {
         "x": 1,
@@ -369,49 +176,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Roof": true,
         "Floor1": true
       },
       "label": "活性炭滤池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -423,9 +194,9 @@
     "config": {
       "name": "Administration_Complex_expansion.glb",
       "position": {
-        "x": -252.09676902177836,
+        "x": -374.7876303587339,
         "y": 0,
-        "z": 191.9947023169599
+        "z": 147.39028524614685
       },
       "scale": {
         "x": 1,
@@ -437,47 +208,6 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        },
-        "Roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        }
-      },
       "meshVisibility": {
         "Floor2": true,
         "Floor3": true,
@@ -485,7 +215,6 @@
       },
       "label": "Administration_Complex_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -498,9 +227,9 @@
     "config": {
       "name": "Administration_Complex.glb",
       "position": {
-        "x": -238.1890785863038,
-        "y": 6.846491967933318,
-        "z": 86.58587511245594
+        "x": -239.1188014179796,
+        "y": 7.3516668348138445,
+        "z": 86.9628689526387
       },
       "scale": {
         "x": 1,
@@ -512,50 +241,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Administration_Complex": true
       },
       "label": "行政办公楼",
       "labelMode": "always",
-      "labelPerHeight": 1,
-      "labelFontSize": 20,
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -567,9 +258,9 @@
     "config": {
       "name": "B_Filter.glb",
       "position": {
-        "x": 81.92453192395315,
-        "y": 4.300949331653641,
-        "z": 9.610133633101974
+        "x": 84.18525036533644,
+        "y": 4.269683150313806,
+        "z": 8.701109943972375
       },
       "scale": {
         "x": 1,
@@ -581,48 +272,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "B滤池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -634,9 +289,9 @@
     "config": {
       "name": "B1B2_Sedimentation_Tanks.glb",
       "position": {
-        "x": -23.137989623210856,
-        "y": 3.3443056088472503,
-        "z": 6.196756839971499
+        "x": -21.165569004014237,
+        "y": 3.179173295501867,
+        "z": 7.960696637372385
       },
       "scale": {
         "x": 1,
@@ -648,48 +303,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "B1B2沉淀池/清水池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -701,9 +320,9 @@
     "config": {
       "name": "Backwash_Pump_House_expansion.glb",
       "position": {
-        "x": 187.4811254453915,
+        "x": -368.18765482918076,
         "y": 0,
-        "z": -196.47115247787934
+        "z": 56.32563772265115
       },
       "scale": {
         "x": 1,
@@ -715,48 +334,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "Backwash_Pump_House_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -769,9 +351,9 @@
     "config": {
       "name": "Backwash_Pump_House.glb",
       "position": {
-        "x": 199.27726104858942,
-        "y": 7.801033456414544,
-        "z": -79.56181545322775
+        "x": 197.0326763795961,
+        "y": 6.111093858990721,
+        "z": -82.35045442821531
       },
       "scale": {
         "x": 1,
@@ -783,49 +365,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Roof": true
       },
       "label": "反冲洗泵房",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -837,9 +383,9 @@
     "config": {
       "name": "C_Filter_expansion.glb",
       "position": {
-        "x": 84.23822826311432,
+        "x": 89.6831396691379,
         "y": 0,
-        "z": -192.1867000920143
+        "z": -172.82894354136718
       },
       "scale": {
         "x": 1,
@@ -851,48 +397,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "C_Filter_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -905,9 +414,9 @@
     "config": {
       "name": "C_Filter.glb",
       "position": {
-        "x": 89.38567315193406,
-        "y": 8.183900842834717,
-        "z": -56.04291692228594
+        "x": 89.72988052447265,
+        "y": 8.30478252794229,
+        "z": -56.14905280761802
       },
       "scale": {
         "x": 1,
@@ -919,49 +428,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Roof": true
       },
       "label": "C滤池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -973,9 +446,9 @@
     "config": {
       "name": "C1C2_Sedimentation_Tanks.glb",
       "position": {
-        "x": -22.19889836088808,
-        "y": 3.2146444114733264,
-        "z": -40.822377633090355
+        "x": -20.724547360336548,
+        "y": 3.2822923363991094,
+        "z": -37.769455513135696
       },
       "scale": {
         "x": 1,
@@ -987,48 +460,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "C1C2沉淀池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -1040,9 +477,9 @@
     "config": {
       "name": "C3C4_Sedimentation_Tanks.glb",
       "position": {
-        "x": -22.19977906631621,
-        "y": 3.5798527916694454,
-        "z": -76.18798198805263
+        "x": -20.847991463632194,
+        "y": 3.1847732198748417,
+        "z": -73.71549037943133
       },
       "scale": {
         "x": 1,
@@ -1054,48 +491,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "C3C4沉淀池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -1107,9 +508,9 @@
     "config": {
       "name": "Carbon_Dioxide_Unit.glb",
       "position": {
-        "x": -128.59305931921827,
-        "y": 3.49379974214367,
-        "z": 123.36570834808602
+        "x": -136.8544237346531,
+        "y": 3.543482071407735,
+        "z": 121.28125557510505
       },
       "scale": {
         "x": 1,
@@ -1121,48 +522,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "二氧化碳装置",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -1175,9 +539,9 @@
     "config": {
       "name": "Carbon_Dioxide_Unit2.glb",
       "position": {
-        "x": -137.75836287504208,
-        "y": 4.075852179013797,
-        "z": 123.69779048804037
+        "x": -128.3960119340265,
+        "y": 3.620499406163977,
+        "z": 121.2755995277359
       },
       "scale": {
         "x": 1,
@@ -1189,48 +553,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
-      "label": "二氧化碳装置2",
+      "label": "二氧化碳装置",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -1243,9 +570,9 @@
     "config": {
       "name": "Chlorination_Room_expansion.glb",
       "position": {
-        "x": -92.60106567023135,
+        "x": -357.207521039578,
         "y": 0,
-        "z": 170.66939293564693
+        "z": -30.119387221878696
       },
       "scale": {
         "x": 1,
@@ -1257,48 +584,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "Chlorination_Room_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -1311,9 +601,9 @@
     "config": {
       "name": "Chlorination_Room.glb",
       "position": {
-        "x": -91.85920703377062,
-        "y": 7.067234971892432,
-        "z": 105.92556591825172
+        "x": -90.96825818156982,
+        "y": 6.994597917332619,
+        "z": 106.0069049491393
       },
       "scale": {
         "x": 1,
@@ -1325,49 +615,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Roof": true,
         "Floor1": true
       },
       "label": "加氯间",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -1379,9 +633,9 @@
     "config": {
       "name": "Dewatering_Building_expansion.glb",
       "position": {
-        "x": -187.05500157093397,
+        "x": 101.9534772831305,
         "y": 0,
-        "z": -201.8621653283164
+        "z": 252.26976649851088
       },
       "scale": {
         "x": 1,
@@ -1393,42 +647,6 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Floor2": true,
@@ -1436,7 +654,6 @@
       },
       "label": "Dewatering_Building_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -1449,9 +666,9 @@
     "config": {
       "name": "Dewatering_Building.glb",
       "position": {
-        "x": -175.2438131448092,
-        "y": 11.562251729138094,
-        "z": -73.94035727570616
+        "x": -170.51776273581083,
+        "y": 11.608016883988526,
+        "z": -73.27091499489832
       },
       "scale": {
         "x": 1,
@@ -1463,42 +680,6 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Floor2": true,
@@ -1507,7 +688,7 @@
       },
       "label": "脱水车间",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -1519,9 +700,9 @@
     "config": {
       "name": "Dosing_Building_expansion.glb",
       "position": {
-        "x": -110.18789320794008,
+        "x": 264.2746793857983,
         "y": 0,
-        "z": -189.80375355869063
+        "z": 255.1320687616435
       },
       "scale": {
         "x": 1,
@@ -1533,49 +714,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Basement1": true
       },
       "label": "Dosing_Building_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -1588,9 +732,9 @@
     "config": {
       "name": "Dosing_Building.glb",
       "position": {
-        "x": -159.4498201035102,
-        "y": 5.91262021989915,
-        "z": -38.0536614176947
+        "x": -160.58468290915079,
+        "y": 5.85857994183209,
+        "z": -37.68207788876337
       },
       "scale": {
         "x": 1,
@@ -1602,49 +746,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Roof": true
       },
       "label": "加药间",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -1656,9 +764,9 @@
     "config": {
       "name": "Liquid_Nitrogen_Station.glb",
       "position": {
-        "x": 153.25877019090746,
-        "y": 3.818252509511135,
-        "z": -26.947168977660844
+        "x": 152.9982120641381,
+        "y": 3.8316320800795998,
+        "z": -29.874411373729732
       },
       "scale": {
         "x": 1,
@@ -1670,48 +778,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "液氮站",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -1724,9 +795,9 @@
     "config": {
       "name": "Maintenance_Workshop_expansion.glb",
       "position": {
-        "x": -354.27662009182154,
+        "x": -394.32545001662726,
         "y": 0,
-        "z": 79.27818030639503
+        "z": -124.55296132891084
       },
       "scale": {
         "x": 1,
@@ -1738,48 +809,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "Maintenance_Workshop_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -1792,9 +826,9 @@
     "config": {
       "name": "Maintenance_Workshop.glb",
       "position": {
-        "x": -128.80023650828352,
-        "y": 7.297183796251836,
-        "z": 80.23527379375477
+        "x": -121.11037181476894,
+        "y": 6.548470780705999,
+        "z": 75.74820060457334
       },
       "scale": {
         "x": 1,
@@ -1806,49 +840,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Roof": true,
         "Floor1": true
       },
       "label": "机修车间",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -1860,9 +858,9 @@
     "config": {
       "name": "Post_Ozone_Contact_Tank.glb",
       "position": {
-        "x": 200.86795535314164,
-        "y": 4.69051542129743,
-        "z": -45.2487511007775
+        "x": 199.23963322039538,
+        "y": 4.430428101696179,
+        "z": -45.89413163756512
       },
       "scale": {
         "x": 1,
@@ -1874,48 +872,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Mesh1": true
       },
       "label": "后臭氧接触池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -1927,9 +889,9 @@
     "config": {
       "name": "Pre_ozonation_Contact_Tank.glb",
       "position": {
-        "x": -126.75442077221041,
-        "y": 4.856357629271184,
-        "z": 44.750279929387965
+        "x": -120.95599219479269,
+        "y": 5.5344450678374315,
+        "z": 47.361042336353165
       },
       "scale": {
         "x": 1,
@@ -1941,48 +903,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Mesh1": true
       },
       "label": "预臭氧接触池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -1994,9 +920,9 @@
     "config": {
       "name": "pump_house_expansion.glb",
       "position": {
-        "x": 130.9797872881927,
-        "y": 0,
-        "z": -191.62199260574883
+        "x": 413.12242172250774,
+        "y": -0.19633170876217543,
+        "z": 21.39149782040306
       },
       "scale": {
         "x": 1,
@@ -2005,51 +931,14 @@
       },
       "rotation": {
         "h": 0,
-        "p": 0,
+        "p": 90,
         "b": 0
-      },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
       },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "pump_house_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -2062,9 +951,9 @@
     "config": {
       "name": "pump_house.glb",
       "position": {
-        "x": 126.45084518036654,
-        "y": 10.15988885398728,
-        "z": -52.15310246448381
+        "x": 126.74704774266564,
+        "y": 10.425912193423155,
+        "z": -52.29617622833507
       },
       "scale": {
         "x": 1,
@@ -2076,49 +965,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Roof": true
       },
       "label": "冲洗泵房",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -2130,9 +983,9 @@
     "config": {
       "name": "Pump_Station_1_expansion.glb",
       "position": {
-        "x": 40.24574564324226,
+        "x": 277.87924711047026,
         "y": 0,
-        "z": 176.9216686702536
+        "z": -240.97073124443216
       },
       "scale": {
         "x": 1,
@@ -2144,48 +997,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "Pump_Station_1_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -2198,9 +1014,9 @@
     "config": {
       "name": "Pump_Station_1.glb",
       "position": {
-        "x": 31.479353599400326,
-        "y": 5.769837679027585,
-        "z": 119.05030910600598
+        "x": 31.430862183270847,
+        "y": 4.779993930317485,
+        "z": 119.03855080790369
       },
       "scale": {
         "x": 1,
@@ -2212,49 +1028,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Roof": true,
         "Floor1": true
       },
       "label": "1号泵房",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -2266,9 +1046,9 @@
     "config": {
       "name": "Pump_Station_2_expansion.glb",
       "position": {
-        "x": 317.5907180780845,
-        "y": 0,
-        "z": 11.399597032345355
+        "x": -249.8143286521773,
+        "y": -2.4542084221414306,
+        "z": -194.38054825078882
       },
       "scale": {
         "x": 1,
@@ -2277,44 +1057,8 @@
       },
       "rotation": {
         "h": 0,
-        "p": 0,
+        "p": 90,
         "b": 0
-      },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
       },
       "meshVisibility": {
         "Floor1": true,
@@ -2322,7 +1066,6 @@
       },
       "label": "Pump_Station_2_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -2335,9 +1078,9 @@
     "config": {
       "name": "Pump_Station_2.glb",
       "position": {
-        "x": 265.2039333592252,
-        "y": 5.302109599932239,
-        "z": 20.91100484334486
+        "x": 265.2995234147679,
+        "y": 7.7678120803620825,
+        "z": 23.413345079789686
       },
       "scale": {
         "x": 1,
@@ -2349,42 +1092,6 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Roof": true,
@@ -2392,7 +1099,7 @@
       },
       "label": "2号泵房",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -2404,9 +1111,9 @@
     "config": {
       "name": "Raw_Water_Pump_House_expansion.glb",
       "position": {
-        "x": -31.590637356361412,
+        "x": -211.7905983214676,
         "y": 0,
-        "z": 199.33396666197766
+        "z": -263.46235223164285
       },
       "scale": {
         "x": 1,
@@ -2418,48 +1125,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "Raw_Water_Pump_House_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -2472,9 +1142,9 @@
     "config": {
       "name": "Raw_Water_Pump_House.glb",
       "position": {
-        "x": -32.91875688586074,
-        "y": 6.263984435930576,
-        "z": 108.6711104699969
+        "x": -26.728213611096603,
+        "y": 6.23951032721686,
+        "z": 108.096738844069
       },
       "scale": {
         "x": 1,
@@ -2486,49 +1156,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Roof": true
       },
       "label": "浑水泵房",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -2540,9 +1174,9 @@
     "config": {
       "name": "Residential_Building_expansion.glb",
       "position": {
-        "x": -347.5667700948195,
+        "x": -127.91650446703332,
         "y": 0,
-        "z": 38.83545296520748
+        "z": -273.42012600472844
       },
       "scale": {
         "x": 1,
@@ -2554,49 +1188,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor2": true,
         "Floor1": true
       },
       "label": "Residential_Building_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -2609,9 +1206,9 @@
     "config": {
       "name": "Residential_Building.glb",
       "position": {
-        "x": -249.36452255016272,
-        "y": 7.374951803618368,
-        "z": 49.67627936392523
+        "x": -249.41643121158427,
+        "y": 7.301260076184684,
+        "z": 49.72036210230323
       },
       "scale": {
         "x": 1,
@@ -2623,42 +1220,6 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Roof": true,
         "Floor2": true,
@@ -2666,7 +1227,7 @@
       },
       "label": "生活楼",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -2678,9 +1239,9 @@
     "config": {
       "name": "Sludge_Thickener.glb",
       "position": {
-        "x": -135.9518093219376,
-        "y": 5.17390416726904,
-        "z": -73.54465311119803
+        "x": -130.6991722057005,
+        "y": 5.188225038563233,
+        "z": -73.35258282692219
       },
       "scale": {
         "x": 1,
@@ -2692,48 +1253,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
-      "label": "浓缩池",
+      "label": "浓缩池/预浓缩池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -2745,9 +1270,9 @@
     "config": {
       "name": "Sodium_Hypochlorite_Storage_Tank.glb",
       "position": {
-        "x": -86.63475300788137,
-        "y": 4.779710493444357,
-        "z": 116.82840139639643
+        "x": -86.06108395054257,
+        "y": 0,
+        "z": 116.85071549088904
       },
       "scale": {
         "x": 1,
@@ -2759,48 +1284,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "次氯酸钠储液池",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -2812,9 +1301,9 @@
     "config": {
       "name": "Solar_Power.glb",
       "position": {
-        "x": 174.8561430624456,
-        "y": 5.593368496396359,
-        "z": 35.74877150664693
+        "x": 176.52794193534507,
+        "y": 6.0132905331502435,
+        "z": 36.960710661933604
       },
       "scale": {
         "x": 1,
@@ -2825,64 +1314,27 @@
         "h": 0,
         "p": 0,
         "b": 0
-      },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
       },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "太阳能",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
   },
   {
     "name": "VIL.glb",
-    "size": 67924,
+    "size": 67940,
     "ext": ".glb",
-    "type": "building",
+    "type": "village",
     "config": {
       "name": "VIL.glb",
       "position": {
-        "x": -0.8065900651339133,
-        "y": -4.7637694472157256e-11,
-        "z": -0.00130816239536935
+        "x": 0,
+        "y": 0,
+        "z": 0
       },
       "scale": {
         "x": 1,
@@ -2893,42 +1345,6 @@
         "h": 0,
         "p": 0,
         "b": 0
-      },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
       },
       "meshVisibility": {
         "Platform": true,
@@ -2941,8 +1357,7 @@
       },
       "label": "VIL.glb",
       "labelMode": "never",
-      "locked": false,
-      "gizmoVisible": false,
+      "gizmoVisible": true,
       "selectable": false,
       "findable": true
     }
@@ -2955,9 +1370,9 @@
     "config": {
       "name": "Warehouse_expansion.glb",
       "position": {
-        "x": -143.11023917367942,
+        "x": -20.943839675210512,
         "y": 0,
-        "z": 185.8590968463266
+        "z": -273.2301665917948
       },
       "scale": {
         "x": 1,
@@ -2969,48 +1384,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "Warehouse_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -3023,9 +1401,9 @@
     "config": {
       "name": "Warehouse.glb",
       "position": {
-        "x": -133.1980235890527,
-        "y": 6.873588564918727,
-        "z": 106.06080831886388
+        "x": -132.76974251925088,
+        "y": 6.69718672264173,
+        "z": 105.92676194051431
       },
       "scale": {
         "x": 1,
@@ -3037,49 +1415,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Roof": true
       },
       "label": "仓库",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -3091,9 +1433,9 @@
     "config": {
       "name": "Water_Intake.glb",
       "position": {
-        "x": -36.81617900779773,
-        "y": 2.0335990807601476,
-        "z": 155.26025222846997
+        "x": -26.57488813394349,
+        "y": 1.9470816847256671,
+        "z": 155.22577936558932
       },
       "scale": {
         "x": 1,
@@ -3105,48 +1447,12 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Water_Ntake": true
       },
       "label": "取水口",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -3158,9 +1464,9 @@
     "config": {
       "name": "Water_Quality_Building_expansion.glb",
       "position": {
-        "x": -366.08292899823994,
+        "x": 148.73317934202538,
         "y": 0,
-        "z": -31.715263016726567
+        "z": -260.23332545694797
       },
       "scale": {
         "x": 1,
@@ -3172,49 +1478,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true,
         "Floor2": true
       },
       "label": "Water_Quality_Building_expansion.glb",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -3227,9 +1497,9 @@
     "config": {
       "name": "Water_Quality_Building.glb",
       "position": {
-        "x": -244.35025788081086,
-        "y": 7.6761347433282126,
-        "z": -1.1797595363093052
+        "x": -247.64013072234317,
+        "y": 7.5303366912008896,
+        "z": -1.2838200197838248
       },
       "scale": {
         "x": 1,
@@ -3241,42 +1511,6 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Roof": true,
         "Floor1": true,
@@ -3284,7 +1518,7 @@
       },
       "label": "水质楼",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   },
@@ -3296,9 +1530,9 @@
     "config": {
       "name": "Water_Softening_Room_expansion.glb",
       "position": {
-        "x": -121.68685803263492,
+        "x": 411.43040286318063,
         "y": 0,
-        "z": 208.93185977777037
+        "z": 231.59850565883892
       },
       "scale": {
         "x": 1,
@@ -3310,48 +1544,11 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Floor1": true
       },
       "label": "Water_Softening_Room_expansion.glb",
       "labelMode": "always",
-      "locked": false,
       "gizmoVisible": true,
       "selectable": false
     }
@@ -3364,9 +1561,9 @@
     "config": {
       "name": "Water_Softening_Room.glb",
       "position": {
-        "x": -117.17668449949488,
-        "y": 7.014870998601602,
-        "z": 122.4181281504975
+        "x": -117.10844054921373,
+        "y": 7.051877962942614,
+        "z": 120.65655890351415
       },
       "scale": {
         "x": 1,
@@ -3378,49 +1575,13 @@
         "p": 0,
         "b": 0
       },
-      "colors": {
-        "normal": {
-          "edge": "#007bff",
-          "background": "#000000"
-        },
-        "hover": {
-          "edge": "#248eff",
-          "background": "#000000"
-        },
-        "selected": {
-          "edge": "#ffbb00",
-          "background": "#000000"
-        }
-      },
-      "materialColors": {
-        "wall": {
-          "normal": "#003c78",
-          "hover": "#0059b3",
-          "selected": "#785a00"
-        },
-        "roof": {
-          "normal": "#007bff",
-          "hover": "#2491ff",
-          "selected": "#ffbb00"
-        },
-        "other": {
-          "normal": "#666666",
-          "hover": "#666666",
-          "selected": "#666666"
-        },
-        "door": {
-          "normal": "#007800",
-          "hover": "#00c800",
-          "selected": "#00ff00"
-        }
-      },
       "meshVisibility": {
         "Roof": true,
         "Floor1": true
       },
       "label": "水质软化间",
       "labelMode": "always",
-      "locked": false,
+      "selectable": true,
       "gizmoVisible": true
     }
   }

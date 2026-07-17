@@ -9,6 +9,7 @@ import {
   RenderMode,
   RenderSettings,
   ThreeDimensionConfig,
+  TypeColorPreset,
 } from '../models/types';
 
 @Injectable({ providedIn: 'root' })
@@ -43,6 +44,9 @@ export class StateService {
 
   /* 配置 */
   readonly activeConfig$ = new BehaviorSubject<ThreeDimensionConfig | null>(null);
+
+  /** 按模型类型的颜色预设（来自 config.json 的 typeColorPresets） */
+  readonly typeColorPresets$ = new BehaviorSubject<Record<string, TypeColorPreset>>({});
 
   /* 状态栏消息 */
   readonly statusMessage$ = new BehaviorSubject<string>('');
@@ -91,6 +95,9 @@ export class StateService {
   }
   get activeConfig(): ThreeDimensionConfig | null {
     return this.activeConfig$.value;
+  }
+  get typeColorPresets(): Record<string, TypeColorPreset> {
+    return this.typeColorPresets$.value;
   }
 
   get selectedEntry(): ModelEntry | null {

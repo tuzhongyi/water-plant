@@ -59,8 +59,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   models = input<ModelViewerModel[]>([]);
   /** 渲染模式：solid=实体 / edges=线框 / overlay=覆盖 */
   renderMode = input<RenderMode>(RenderMode.overlay);
-  /** 变换 Gizmo 可见性，true 时对选中的模型显示位置/旋转/缩放手柄 */
-  gizmoVisible = input<boolean>(false);
+  /** 变换 Gizmo 可见性，true 时对选中的模型显示位置/旋转/缩放手柄。
+   *  未设置时回退到 config.json 的 settings.gizmoVisible */
+  gizmoVisible = input<boolean>();
   /** 摄像机视图切换：emit() 或 emit(Fit) = 45° 俯视适配，emit(Top/Left/Right) = 方向视图 */
   fitView = input<EventEmitter<FitView | void>>();
   /** 修改指定模型的 mesh 组可见性 */
@@ -135,6 +136,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   /* ---- TransformControls ---- */
   private modelTC?: TransformControls;
   private tcEditEntry?: ModelEntry;
+  /** gizmo helper 当前是否在 overlayScene 中 */
+  private gizmoHelperInScene = false;
 
   /* ---- Internal state ---- */
   private hoveredId: string | null = null;
@@ -199,14 +202,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         this.sceneService.renderer.domElement.style.cursor = '';
       }
     });
-    /** gizmoVisible 控制模型变换 Gizmo：true 时 attach，false 时 detach */
+    /** gizmoVisible：input 优先，未设置时回退 config.json settings.gizmoVisible */
     effect(() => {
-      const visible = this.gizmoVisible();
-      if (visible) {
-        if (this.tcEditEntry) this.modelTC?.attach(this.tcEditEntry.wrapper);
-      } else {
-        this.modelTC?.detach();
-      }
+      const visible = this.gizmoVisible() ?? this.state.settings.gizmoVisible;
+      this.applyGizmoVisibility(visible);
     });
     /** renderMode 有值时覆盖 config，无值时使用 config 中的值 */
     effect(() => {
@@ -243,14 +242,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     const mode = this.renderMode();
     firstValueFrom(this.apiService.models(mode))
       .then((modelFiles) => {
-        const cache = new Map<string, ModelTransformConfig>();
-        for (const f of modelFiles) {
-          if (f.config && Object.keys(f.config).length > 0) {
-            cache.set(f.name, f.config);
-          }
-        }
-
-        this.modelCtrl.setConfigCache(cache);
+        this.modelCtrl.setConfigCache(modelFiles);
       })
       .catch((err) => {
         console.warn('[ThreeDimensionComponent] models.json 预加载失败, 模型将使用默认配置:', err);
@@ -301,6 +293,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.state.editMode$.next(false);
     this.state.statusMessage$.next('');
     this.state.viewPreset$.next('medium');
+    this.state.typeColorPresets$.next({});
 
     /* 清理全部 loadedModels 及其 Three.js 资源 */
     const oldEntries = this.state.loadedModels;
@@ -991,9 +984,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.zone.runOutsideAngular(() => {
       if (!this.modelTC) this.initModelTC();
       this.modelTC!.setMode(this.state.transformMode$.value);
-      if (this.gizmoVisible()) {
-        this.modelTC!.attach(entry.wrapper);
-      }
+      const visible = this.gizmoVisible() ?? this.state.settings.gizmoVisible;
+      this.applyGizmoVisibility(visible);
     });
     this.syncEditInputs(entry);
   }
@@ -1005,7 +997,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     }
     this.tcEditEntry = undefined;
     this.state.editMode$.next(false);
-    if (this.modelTC) this.modelTC.detach();
+    this.applyGizmoVisibility(false);
   }
 
   /** 偏移 wrapper 使几何中心对齐 wrapper 原点（不改变逻辑位置 editPosition） */
@@ -1075,7 +1067,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       });
       this.modelService.updateBBox(this.tcEditEntry);
     });
-    this.sceneService.overlayScene.add(tc.getHelper());
+    /* helper 先配置，由 applyGizmoVisibility 按需加入 overlayScene */
     tc.getHelper().traverse((c: any) => {
       if (c.material) {
         c.renderOrder = Infinity;
@@ -1086,10 +1078,32 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.modelTC = tc;
   }
 
+  /** 统一控制 gizmo helper 的场景添加/移除 + attach/detach */
+  private applyGizmoVisibility(visible: boolean): void {
+    if (!this.modelTC) return;
+    const helper = this.modelTC.getHelper();
+    if (visible) {
+      if (this.tcEditEntry) this.modelTC.attach(this.tcEditEntry.wrapper);
+      if (!this.gizmoHelperInScene) {
+        this.sceneService.overlayScene.add(helper);
+        this.gizmoHelperInScene = true;
+      }
+    } else {
+      this.modelTC.detach();
+      if (this.gizmoHelperInScene) {
+        this.sceneService.overlayScene.remove(helper);
+        this.gizmoHelperInScene = false;
+      }
+    }
+  }
+
   private disposeModelTC(): void {
     if (!this.modelTC) return;
     this.modelTC.detach();
-    this.sceneService.overlayScene.remove(this.modelTC.getHelper());
+    if (this.gizmoHelperInScene) {
+      this.sceneService.overlayScene.remove(this.modelTC.getHelper());
+      this.gizmoHelperInScene = false;
+    }
     this.modelTC.dispose();
     this.modelTC = undefined;
   }
@@ -1150,38 +1164,33 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.state.statusMessage$.next(`正在加载: ${fileName}...`);
     const entry = await this.modelService.loadModel(url, fileName);
     if (entry) {
+      const transform = this.modelCtrl.getModelConfig(fileName);
+      const modelType = this.modelCtrl.getModelType(fileName);
       if (position) {
-        /* 直接使用传入的位置信息，其他属性使用默认值 */
         entry.editPosition.set(position.x, position.y, position.z);
         this.modelService.applyTransform(entry);
-      } else {
-        /* 从 modelConfigMap 中查找对应的变换配置 */
-        const transform = this.modelCtrl.getModelConfig(fileName);
-        if (transform) {
-          this.modelService.applyTransformConfig(entry, transform);
-          /* 恢复材质颜色 */
-          if (transform.materialColors) {
-            const actualNames = new Set(this.colorsService.getMaterials(entry).map((m) => m.name));
-            for (const [matName, state] of Object.entries(transform.materialColors)) {
-              if (actualNames.has(matName)) entry.materialColors.set(matName, { ...state });
-            }
-          }
-          /* 恢复 mesh 可见性 */
-          if (transform.meshVisibility) {
-            this.modelService.setNodeVisible(entry, transform.meshVisibility);
-          }
-          /* 恢复 label 设置 */
-          if (transform.label !== undefined) entry.label = transform.label;
-          if (transform.labelMode !== undefined) entry.labelMode = transform.labelMode;
-          if (transform.labelPerHeight !== undefined)
-            entry.labelPerHeight = transform.labelPerHeight;
-          if (transform.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
-          /* 恢复锁定状态 */
-          if (transform.locked !== undefined) entry.locked = transform.locked;
-          this.modelService.updateLabel(entry);
-        }
+      } else if (transform) {
+        this.modelService.applyTransformConfig(entry, transform);
       }
-      /* 应用颜色 */
+      /* mesh 可见性 */
+      if (transform?.meshVisibility) {
+        this.modelService.setNodeVisible(entry, transform.meshVisibility);
+      }
+      /* label 设置 */
+      if (transform?.label !== undefined) entry.label = transform.label;
+      if (transform?.labelMode !== undefined) entry.labelMode = transform.labelMode;
+      if (transform?.labelPerHeight !== undefined)
+        entry.labelPerHeight = transform.labelPerHeight;
+      if (transform?.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
+      if (transform?.locked !== undefined) entry.locked = transform.locked;
+      this.modelService.updateLabel(entry);
+      /* 从 typeColorPresets 应用颜色 */
+      if (modelType) {
+        this.colorsService.applyTypeColorPresets(entry, modelType);
+      } else {
+        this.colorsService.initMaterialColors(entry);
+      }
+      /* 应用颜色状态 */
       this.colorsService.applyStateColors(entry, 'normal');
       this.state.statusMessage$.next(`已加载: ${fileName}`);
     } else {

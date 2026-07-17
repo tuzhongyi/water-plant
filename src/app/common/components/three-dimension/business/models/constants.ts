@@ -21,6 +21,7 @@ export const DEFAULT_RENDER_SETTINGS: RenderSettings = {
   showAxes: false,
   showCenterDot: false,
   showBBox: false,
+  gizmoVisible: false,
   autoRotate: false,
   flatShading: false,
   sobel: false,

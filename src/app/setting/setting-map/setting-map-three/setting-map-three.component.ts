@@ -13,7 +13,6 @@ import {
 } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { CardComponent } from '../../../common/components/card/card.component';
 import {
   FitView,
   MarkerArgs,
@@ -35,7 +34,7 @@ import { SettingMapThreeConverter } from './setting-map-three.converter';
 
 @Component({
   selector: 'hw-setting-map-three',
-  imports: [CommonModule, CardComponent, ThreeDimensionComponent],
+  imports: [CommonModule, ThreeDimensionComponent],
   templateUrl: './setting-map-three.component.html',
   styleUrl: './setting-map-three.component.less',
   providers: [SettingMapBusiness, SettingMapThreeConverter],
