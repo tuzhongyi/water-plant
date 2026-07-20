@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { SystemMainThreeContainerComponent } from '../system-main-three-container/system-main-three-container.component';
 import { SystemMainThreeStateComponent } from '../system-main-three-state/system-main-three-state.component';
@@ -12,6 +12,7 @@ import { SystemMainThreeStateComponent } from '../system-main-three-state/system
   providers: [],
 })
 export class SystemMainThreeManager implements OnInit, OnDestroy {
+  @Input() alarm?: EventEmitter<string>;
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
   ngOnInit(): void {}

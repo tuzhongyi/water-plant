@@ -24,6 +24,7 @@ export class SettingMapElementBusiness {
       MapElementType.Camera,
       MapElementType.IoTSensor,
       MapElementType.Announciator,
+      MapElementType.Entrance,
     ];
     params.ParentId = parentId;
     let all = await this.service.map.element.all(params);

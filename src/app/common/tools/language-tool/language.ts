@@ -49,7 +49,7 @@ export class Language {
       case MapElementType.Camera:
         return '摄像机';
       case MapElementType.Door:
-        return '门';
+        return '门禁';
       case MapElementType.Entrance:
         return '出入口';
       case MapElementType.Floor:

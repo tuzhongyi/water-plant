@@ -1,6 +1,7 @@
 import { MapElementType } from '../../../data-core/enums/geo/map-element-type.enum';
 import { MarkerAnnounciatorPath } from './marker-announciator.path';
 import { MarkerCameraPath } from './marker-camera.path';
+import { MarkerDoorPath } from './marker-door.path';
 import { MarkerSensorPath } from './marker-sensor.path';
 
 export class MarkerPathTool {
@@ -19,6 +20,9 @@ export class MarkerPathTool {
   get sensor() {
     return new MarkerSensorPath(`${this.basic}`);
   }
+  get door() {
+    return new MarkerDoorPath(`${this.basic}`);
+  }
 
   get(type: MapElementType) {
     switch (type) {
@@ -28,6 +32,8 @@ export class MarkerPathTool {
         return this.announciator;
       case MapElementType.IoTSensor:
         return this.sensor;
+      case MapElementType.Entrance:
+        return this.door;
       default:
         throw new Error('没找到MapElementType对映的图片');
     }

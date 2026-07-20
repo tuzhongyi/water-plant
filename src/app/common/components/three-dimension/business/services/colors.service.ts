@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { StateService } from './state.service';
 import { ModelEntry, ModelColors, MaterialColorState, TypeColorPreset } from '../models/types';
 
-export type ColorState = 'normal' | 'hover' | 'selected';
+export type ColorState = 'normal' | 'hover' | 'selected' | 'alarm';
 
 interface MaterialInfo {
   name: string;
@@ -19,18 +19,21 @@ export class ColorsService {
   }
 
   updateEdgeColor(entry: ModelEntry, state: ColorState, hex: string): void {
-    entry.colors[state].edge = hex;
+    const cs = entry.colors[state];
+    if (cs) cs.edge = hex;
     this.applyEdgeColor(entry, state);
   }
 
   updateBackgroundColor(entry: ModelEntry, state: ColorState, hex: string): void {
-    entry.colors[state].background = hex;
+    const cs = entry.colors[state];
+    if (cs) cs.background = hex;
     this.applyBackgroundColor(entry, state);
   }
 
-  /** 返回模型当前应显示的颜色状态 */
+  /** 颜色状态优先级：selected > alarm > hover > normal */
   getModelState(entry: ModelEntry): ColorState {
     if (entry.id === this.state.selectedModelId) return 'selected';
+    if (entry.alarm) return 'alarm';
     if (entry.id === this.state.hoveredModelId) return 'hover';
     return 'normal';
   }
@@ -71,7 +74,11 @@ export class ColorsService {
   }
 
   private applyEdgeColor(entry: ModelEntry, state: ColorState): void {
-    const color = entry.colors[state].edge;
+    /* alarm 未配置时 fallback → selected → normal */
+    const colorState = state === 'alarm'
+      ? (entry.colors.alarm ?? entry.colors.selected ?? entry.colors.normal)
+      : entry.colors[state];
+    const color = colorState.edge;
     if (!entry.edgesGroup) return;
     entry.edgesGroup.traverse(c => {
       if ((c as any).isLineSegments2 && (c as any).material?.color) {
@@ -81,7 +88,11 @@ export class ColorsService {
   }
 
   private applyBackgroundColor(entry: ModelEntry, state: ColorState): void {
-    const hex = entry.colors[state].background;
+    /* alarm 未配置时 fallback → selected → normal */
+    const colorState = state === 'alarm'
+      ? (entry.colors.alarm ?? entry.colors.selected ?? entry.colors.normal)
+      : entry.colors[state];
+    const hex = colorState.background;
     const color = new THREE.Color(hex);
     entry.model.traverse(c => {
       const m = c as THREE.Mesh;
@@ -91,7 +102,8 @@ export class ColorsService {
           const sm = mat as THREE.MeshStandardMaterial;
           if (sm.emissive) {
             sm.emissive.copy(color);
-            sm.emissiveIntensity = state === 'normal' ? 0.15 : state === 'hover' ? 0.4 : 0.6;
+            sm.emissiveIntensity =
+              state === 'normal' ? 0.15 : state === 'hover' ? 0.4 : state === 'alarm' ? 0.8 : 0.6;
             sm.needsUpdate = true;
           }
         }
@@ -129,6 +141,7 @@ export class ColorsService {
         normal: hex,
         hover: hex,
         selected: hex,
+        alarm: undefined,
       });
     }
   }
@@ -143,11 +156,14 @@ export class ColorsService {
       return;
     }
 
-    /* 应用 edge + background 颜色 */
+    /* 应用 edge + background 颜色（含 alarm） */
     entry.colors = {
       normal: { edge: preset.normal.edge, background: preset.normal.background },
       hover: { edge: preset.hover.edge, background: preset.hover.background },
       selected: { edge: preset.selected.edge, background: preset.selected.background },
+      alarm: preset.alarm
+        ? { edge: preset.alarm.edge, background: preset.alarm.background }
+        : undefined,
     };
 
     /* 应用材质颜色：按 mat name 小写匹配 preset.materials 中的 key */
@@ -167,26 +183,39 @@ export class ColorsService {
         preset.selected.materials[matKey] ??
         preset.selected.materials['other'] ??
         normalHex;
+      const alarmHex = preset.alarm
+        ? (preset.alarm.materials[matKey] ??
+          preset.alarm.materials['other'] ??
+          undefined)
+        : undefined;
       entry.materialColors.set(name, {
         normal: normalHex,
         hover: hoverHex,
         selected: selectedHex,
+        alarm: alarmHex,
       });
     }
   }
 
   getMaterialColor(entry: ModelEntry, materialName: string, state: ColorState): string {
     const info = entry.materialColors.get(materialName);
-    return info?.[state] ?? '#cccccc';
+    if (!info) return '#cccccc';
+    /* alarm 优先用 alarm 色，fallback 到 selected → normal */
+    if (state === 'alarm') return info.alarm ?? info.selected ?? info.normal;
+    return info[state] ?? '#cccccc';
   }
 
   setMaterialColor(entry: ModelEntry, materialName: string, state: ColorState, hex: string): void {
     let info = entry.materialColors.get(materialName);
     if (!info) {
-      info = { normal: hex, hover: hex, selected: hex };
+      info = { normal: hex, hover: hex, selected: hex, alarm: undefined };
       entry.materialColors.set(materialName, info);
     }
-    info[state] = hex;
+    if (state === 'alarm') {
+      info.alarm = hex;
+    } else {
+      info[state] = hex;
+    }
   }
 
   /** 根据当前激活的颜色状态，将材质颜色应用到模型中 */

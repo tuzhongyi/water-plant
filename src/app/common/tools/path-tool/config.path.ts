@@ -1,5 +1,5 @@
 export class ConfigPath {
-  version = `/assets/config/version.json`;
-  location = `/assets/config/location.json`;
-  video = '/assets/config/video.json';
+  version = `/assets/configs/version.json`;
+  map = `/assets/configs/config-map.json`;
+  global = `/assets/configs/config.json`;
 }

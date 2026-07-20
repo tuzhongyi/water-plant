@@ -40,6 +40,7 @@ export class SystemMainRecordTableBusiness {
     params.EndTime = duration.end;
     params.PageIndex = 1;
     params.PageSize = 100;
+    params.Desc = 'EventTime';
     if (args.type) {
       params.EventTypes = await this.types(args.type);
     }
@@ -54,21 +55,43 @@ export class SystemMainRecordTableBusiness {
     if (!icon && data.DeviceId) {
       icon = await this.get.icon(data.DeviceId, data.FromDB31);
     }
+    let name = this.get.name(data);
     let item: SystemMainRecordTableItem = {
       id: data.Id,
       time: data.EventTime,
-      name: data.Resource?.ResourceName || data.DeviceName || '',
-      description: data.Description,
+      name: name,
+      description: `${name}\n${data.Description}`,
       color: this.get.color(data.EventType),
       icon: icon,
       type: await this.language.event.EventTypes(data.EventType),
-
+      playback: this.get.playback(data),
       data: data,
     };
     return item;
   }
 
   get = {
+    playback: (data: DeviceEventRecord) => {
+      switch (data.EventType) {
+        case 1:
+        case 2:
+          return true;
+
+        default:
+          return !!data.Actions && data.Actions.length > 0;
+      }
+    },
+    name: (data: DeviceEventRecord) => {
+      let name = data.DeviceName || '';
+      if (data.Resource) {
+        if (data.Resource.ResourceName) {
+          name = data.Resource.ResourceName;
+        } else if (data.DeviceName && data.Resource.ChannelNo != undefined) {
+          name = `${data.DeviceName}-${data.Resource.ChannelNo}`;
+        }
+      }
+      return name;
+    },
     color: (type: number) => {
       let color = 'yellow';
       switch (type) {
@@ -125,7 +148,12 @@ export class SystemMainRecordTableBusiness {
   }
 
   private async types(value: SystemMainRecordTableEventType) {
-    let types = (await this.capability.event.EventTypes).map((x) => x.Value);
+    let devicetypes = [1, 2];
+    let enabledtypes = [1, 2, 101, 102];
+
+    let types = (await this.capability.event.EventTypes)
+      .map((x) => x.Value)
+      .filter((x) => enabledtypes.includes(x));
 
     switch (value) {
       case SystemMainRecordTableEventType.device:
@@ -134,8 +162,6 @@ export class SystemMainRecordTableBusiness {
       default:
         break;
     }
-
-    let devicetypes = [1, 2];
 
     return types.filter((x) => {
       switch (value) {

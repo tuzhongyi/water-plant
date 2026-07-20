@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable, inject } from '@angular/core';
 import * as THREE from 'three';
 import { TransformControls } from 'three/examples/jsm/Addons.js';
-import { MarkerEntity, ModelViewerModel } from '../models/types';
+import { LabelMode, MarkerEntity, ModelViewerModel } from '../models/types';
 import { ColorsService } from '../services/colors.service';
 import { SceneService } from '../services/scene.service';
 import { StateService } from '../services/state.service';
@@ -59,7 +59,7 @@ export class MarkerController {
   hoveredId: string | null = null;
   private focusedId: string | null = null;
   private tc?: TransformControls;
-  labelMode: 'always' | 'hover' = 'hover';
+  labelMode: LabelMode = LabelMode.hover;
   private labelUpdateRegistered = false;
   private alarmRingAnimating = false;
   private alarmAnimationStartTime = 0;
@@ -91,13 +91,13 @@ export class MarkerController {
           const textures = this.loadTextureSet(cam.icon);
           const alarmTextures = cam.icon.alarm ? this.loadTextureSet(cam.icon.alarm) : undefined;
           const initialTex = this.resolveCurrentTexture(cam, textures, alarmTextures, 'normal');
-          const sprite = new THREE.Sprite(
-            new THREE.SpriteMaterial({
-              map: initialTex,
-              depthTest: false,
-              depthWrite: false,
-            }),
-          );
+          const mat = new THREE.SpriteMaterial({
+            map: initialTex,
+            depthTest: false,
+            depthWrite: false,
+          });
+          mat.toneMapped = false;
+          const sprite = new THREE.Sprite(mat);
           sprite.name = `marker_${cam.id}`;
           sprite.userData['markerId'] = cam.id;
           sprite.scale.set(5, 5, 1);
@@ -398,7 +398,7 @@ export class MarkerController {
       /* 初始比例在 updateAlarmRings 首帧计算，此处设 1 作为占位 */
       ring.scale.set(1, 1, 1);
       if (item.inScene) {
-        this.sceneService.scene.add(ring);
+        this.sceneService.overlayScene.add(ring);
       }
       rings.push({ mesh: ring, material: ringMat, phaseOffset: i / ALARM_RING_COUNT });
     }
@@ -416,7 +416,7 @@ export class MarkerController {
   private removeAlarmRings(item: MarkerCache): void {
     if (!item.alarmRings) return;
     for (const ring of item.alarmRings) {
-      this.sceneService.scene.remove(ring.mesh);
+      this.sceneService.overlayScene.remove(ring.mesh);
       ring.mesh.geometry.dispose();
       ring.material.dispose();
     }
@@ -526,6 +526,9 @@ export class MarkerController {
     let tex = this.textureCache.get(url);
     if (!tex) {
       tex = this.textureLoader.load(url);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.minFilter = THREE.LinearFilter;
+      tex.magFilter = THREE.LinearFilter;
       this.textureCache.set(url, tex);
     }
     return tex;
@@ -681,7 +684,7 @@ export class MarkerController {
     const up = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion).normalize();
     for (const [, item] of this._cache) {
       if (!item.inScene) continue;
-      this.fixSpriteScale(item.sprite);
+      this.fixSpriteScale(item.sprite, 40);
       this.fixSpriteScale(item.label);
       const dist = cam.position.distanceTo(item.sprite.position);
       const vFov = ((cam as any).fov * Math.PI) / 180;
@@ -693,23 +696,24 @@ export class MarkerController {
   };
 
   private addToScene(item: MarkerCache): void {
-    this.sceneService.scene.add(item.sprite);
-    this.sceneService.scene.add(item.label);
+    /* marker 相关全部放入 overlayScene，绕过 EffectComposer OutputPass 的二次 tone mapping */
+    this.sceneService.overlayScene.add(item.sprite);
+    this.sceneService.overlayScene.add(item.label);
     if (item.alarmRings) {
       for (const ring of item.alarmRings) {
         ring.mesh.visible = true;
-        this.sceneService.scene.add(ring.mesh);
+        this.sceneService.overlayScene.add(ring.mesh);
       }
     }
     item.inScene = true;
   }
 
   private removeFromScene(item: MarkerCache): void {
-    this.sceneService.scene.remove(item.sprite);
-    this.sceneService.scene.remove(item.label);
+    this.sceneService.overlayScene.remove(item.sprite);
+    this.sceneService.overlayScene.remove(item.label);
     if (item.alarmRings) {
       for (const ring of item.alarmRings) {
-        this.sceneService.scene.remove(ring.mesh);
+        this.sceneService.overlayScene.remove(ring.mesh);
       }
     }
     if (this.hoveredId === item.data.id) {

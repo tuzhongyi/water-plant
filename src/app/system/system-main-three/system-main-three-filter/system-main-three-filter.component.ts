@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CardStatistic1Component } from '../../../common/components/card-statistic-1/card-statistic-1.component';
+import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
 import { SystemMainThreeArgs } from '../business/system-main-three.model';
 import { SystemMainThreeSource } from '../system-main-three.source';
 
@@ -23,8 +24,15 @@ export class SystemMainThreeFilterComponent {
     ok: () => {
       this.argsChange.emit(this.args);
     },
-    cancel: () => {
+    close: () => {
       this.close.emit();
+    },
+    reset: () => {
+      let args = ObjectTool.assign(this.args, SystemMainThreeArgs);
+      args.name = undefined;
+      args.type = undefined;
+      this.args = args;
+      this.argsChange.emit(this.args);
     },
   };
 }

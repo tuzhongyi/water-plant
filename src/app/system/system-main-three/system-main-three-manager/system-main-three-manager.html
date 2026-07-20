@@ -1,6 +1,7 @@
 <div class="system-main-three-manager">
   <div class="system-main-three-container">
     <hw-system-main-three-container
+      [alarm]="alarm"
       (preview)="map.on.preview($event)"
       (video)="map.on.video($event)"
       (elementloaded)="map.on.loaded($event)"

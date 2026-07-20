@@ -137,12 +137,12 @@ export class ServiceCache<T extends IData> implements IServiceCache {
   async all(params?: IParams): Promise<T[]> {
     this.loading = true;
     let datas = this.load();
-    if (datas && datas.length > 0) {
+    if (this.loaded || (datas && datas.length > 0)) {
       try {
         if (params) {
-          return this.filter(datas, params);
+          return this.filter(datas ?? [], params);
         }
-        return datas;
+        return datas ?? [];
       } finally {
         this.loading = false;
       }

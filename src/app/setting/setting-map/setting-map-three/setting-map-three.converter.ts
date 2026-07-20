@@ -44,6 +44,8 @@ export class SettingMapThreeConverter {
         switch (type) {
           case 1:
             return MapElementType.Announciator;
+          case 2:
+            return MapElementType.Entrance;
           case 3:
             return MapElementType.IoTSensor;
           default:

@@ -24,6 +24,9 @@ export class GeographicMapElementServiceCache extends ServiceCache<GeoMapElement
     if (params.ParentId) {
       datas = datas.filter((x) => x.ParentId == params.ParentId);
     }
+    if (params.ElementId) {
+      datas = datas.filter((x) => x.ElementId == params.ElementId);
+    }
     return datas;
   }
 }

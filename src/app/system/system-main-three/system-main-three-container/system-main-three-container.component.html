@@ -2,6 +2,7 @@
   <div class="system-main-three-content" (click)="manager.on.click()">
     <hw-3d
       [models]="three.model.datas()"
+      [modelreload]="three.model.reload"
       [renderMode]="three.renderMode()"
       (inited)="three.on.inited()"
       (loaded)="three.on.loaded()"
@@ -35,7 +36,7 @@
     </button>
     <button
       class="button-map"
-      title="查找点位"
+      title="区域联动"
       [class.selected]="element.find.finding"
       (click)="manager.button.find()"
     >

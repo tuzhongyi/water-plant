@@ -7,6 +7,11 @@ export enum RenderMode {
   edges = 'edges',
   overlay = 'overlay',
 }
+export enum LabelMode {
+  always = 'always',
+  hover = 'hover',
+  never = 'never',
+}
 
 /** 摄像机视图方向 */
 export enum FitView {
@@ -52,12 +57,14 @@ export interface MaterialColorState {
   normal: string;
   hover: string;
   selected: string;
+  alarm?: string;
 }
 
 export interface ModelColors {
   normal: ModelColor;
   hover: ModelColor;
   selected: ModelColor;
+  alarm?: ModelColor;
 }
 
 export interface PerModelRenderSettings {
@@ -94,12 +101,14 @@ export interface ModelEntry {
   label: string;
   labelObject?: THREE.Object3D;
   /** Label 显示模式: 'always'=常显示, 'never'=常隐藏, 'hover'=移入显示 */
-  labelMode: 'always' | 'never' | 'hover';
+  labelMode: LabelMode;
   labelPerHeight?: number;
   labelFontSize?: number;
   locked: boolean;
   /** 是否可选中（通过鼠标点击/悬停），默认 true */
   selectable: boolean;
+  /** 是否处于报警状态，true 时使用 typeColorPresets.alarm 颜色 */
+  alarm?: boolean;
   /** 模型几何中心（wrapper 本地空间），在加载时计算 */
   geoCenter: THREE.Vector3;
 }
@@ -138,7 +147,7 @@ export interface ModelTransformConfig {
   rotation: { h: number; p: number; b: number };
   meshVisibility?: Record<string, boolean>;
   label?: string;
-  labelMode?: 'always' | 'never' | 'hover';
+  labelMode?: LabelMode;
   labelPerHeight?: number;
   labelFontSize?: number;
   locked?: boolean;
@@ -241,4 +250,5 @@ export interface ModelViewerModel {
   position?: Vec3;
   /** 可选：覆盖模型 label 的显示文本 */
   label?: string;
+  alarm?: boolean;
 }

@@ -16,9 +16,10 @@ export class ObjectModelVideoTool {
       model.endTime = duration?.end;
       model.host = location.hostname;
       model.port = location.port ? parseInt(location.port) : 80;
-
-      model.host = '192.168.21.122';
-      model.port = 10001;
+      if (location.port == '9001') {
+        model.host = '192.168.21.122';
+        model.port = 10001;
+      }
 
       model.username = 'howell';
       model.password = '123456';

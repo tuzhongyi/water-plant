@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
+import { ConfigRequestService } from '../../common/data-core/request/config/config-request.service';
 import { GlobalStorage } from '../../common/storage/global.storage';
 import { LocalStorage } from '../../common/storage/local.storage';
 import { HeaderComponent } from '../../share/header/header.component';
@@ -16,6 +17,7 @@ export class SystemComponent implements OnInit {
     private local: LocalStorage,
     private global: GlobalStorage,
     private router: Router,
+    private config: ConfigRequestService,
   ) {}
 
   keep = {
@@ -57,5 +59,12 @@ export class SystemComponent implements OnInit {
     //   this.clear();
     //   this.router.parseUrl(`/${RoutePath.login}`);
     // }
+
+    this.config.version.then((version) => {
+      if (this.global.version !== version) {
+        location.replace(window.location.href);
+        return;
+      }
+    });
   }
 }

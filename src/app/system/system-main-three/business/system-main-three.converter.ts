@@ -18,7 +18,7 @@ export class SystemMainThreeConverter {
 
   private get = {
     building: async (parentId: string): Promise<GeoMapElement | undefined> => {
-      let element = await this.business.element.get(parentId);
+      let element = await this.business.element.get.by.id(parentId);
       switch (element.ElementType) {
         case MapElementType.Building:
           return element;
@@ -57,9 +57,11 @@ export class SystemMainThreeConverter {
           modelId: modelId,
           icon: PathTool.marker.get(data.ElementType),
           offline: data.ElementState == 1,
-          alarm: data.ElementState == 2,
+          alarm: data.ElementState == 2 || this.business.element.alarm.has(data.Id),
           data: data,
         };
+
+        console.log(entity);
         return entity;
       },
       building: (data: GeoMapElement, mode: string): ModelViewerModel => {
@@ -72,6 +74,7 @@ export class SystemMainThreeConverter {
           fileName: filename,
           label: data.Name,
           url: PathTool.three.get.file(mode, filename),
+          alarm: this.business.element.alarm.has(data.Id),
         };
         return model;
       },

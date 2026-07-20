@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { AlarmComponent } from '../../common/components/alarm-control/alarm.component';
 import { CardComponent } from '../../common/components/card/card.component';
 import { PlayMode } from '../../common/components/video-player/video-player.model';
 import { WindowComponent } from '../../common/components/window-control/window.component';
@@ -15,6 +16,7 @@ import { VideoPlayerListComponent } from '../../share/video/video-player-list/vi
 import { SystemMainElementManagerComponent } from '../system-main-element/system-main-element-manager/system-main-element-manager.component';
 import { SystemMainRecordManagerComponent } from '../system-main-record/system-main-record-manager/system-main-record-manager.component';
 import { SystemMainStateDeviceComponent } from '../system-main-state/system-main-state-device/system-main-state-device.component';
+import { SystemMainThreeConfigManagerComponent } from '../system-main-three/system-main-three-config/system-main-three-config-manager/system-main-three-config-manager.component';
 import { SystemMainThreeManager } from '../system-main-three/system-main-three-manager/system-main-three-manager';
 import {
   SystemMainBusiness,
@@ -28,12 +30,14 @@ import { SystemMainWindow } from './system-main.window';
     CommonModule,
     CardComponent,
     WindowComponent,
+    AlarmComponent,
     VideoPlayerContainerComponent,
     SystemMainThreeManager,
     SystemMainStateDeviceComponent,
     SystemMainRecordManagerComponent,
     VideoPlayerListComponent,
     SystemMainElementManagerComponent,
+    SystemMainThreeConfigManagerComponent,
   ],
   templateUrl: './system-main.html',
   styleUrl: './system-main.less',
@@ -44,7 +48,9 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     private business: SystemMainBusiness,
     private mqtt: MqttRequestService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) {
+    // this.window.config.three.show = true;
+  }
 
   window = new SystemMainWindow();
   private subs = new Subscription();
@@ -79,13 +85,28 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   private regist() {
     this.subs.add(
       this.mqtt.event.subscribe((x) => {
-        this.window.video.multiple.open(x);
+        let id = x.Resource?.ResourceId || x.DeviceId;
+        switch (x.EventType) {
+          case 1:
+          case 103:
+          case 104:
+            break;
+          case 2:
+            this.map.alarm.emit(id);
+            break;
+          default:
+            this.map.alarm.emit(id);
+            this.window.alarm.open(x);
+            break;
+        }
+
         this.cdr.detectChanges();
       }),
     );
   }
 
   map = {
+    alarm: new EventEmitter<string>(),
     on: {
       preview: (data: GeoMapElement) => {
         this.video.single.preview(data);
@@ -118,14 +139,15 @@ export class SystemMainComponent implements OnInit, OnDestroy {
  "DeviceName": "222.1",
  "TriggerType": 1,
  "Resource": {
- "ResourceId": "00310101030000000000002001000011",
+ "ResourceId": "00310101030000000000002001000009",
  "ResourceType": 1,
- "ResourceName": "222 3F市场部",
- "ChannelNo": 11
+ "ResourceName": "222 3F电梯厅",
+ "ChannelNo": 9
  }
  }`;
-      let obj = JSON.parse(str);
-      this.window.video.multiple.open(obj);
+      let x = JSON.parse(str);
+      let id = x.Resource?.ResourceId || x.DeviceId;
+      this.map.alarm.emit(id);
     },
     video: {},
   };

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PathTool } from '../../../tools/path-tool/path.tool';
-import { Config } from './config.model';
+import { Config, MapConfig } from './config.model';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,22 @@ export class ConfigRequestService {
     if (location.port) {
       port = ':' + location.port;
     }
-    let url = `${protocol}//${location.hostname}${port}/assets/configs/config.json`;
+    let url = `${protocol}//${location.hostname}${port}${PathTool.config.global}`;
+    return fetch(`${url}?t=${new Date().getTime()}`).then((res) => {
+      return res.json();
+    });
+  }
+
+  get map(): Promise<MapConfig> {
+    let protocol = location.protocol;
+    if (!protocol.includes(':')) {
+      protocol += ':';
+    }
+    let port = '';
+    if (location.port) {
+      port = ':' + location.port;
+    }
+    let url = `${protocol}//${location.hostname}${port}${PathTool.config.map}`;
     return fetch(`${url}?t=${new Date().getTime()}`).then((res) => {
       return res.json();
     });

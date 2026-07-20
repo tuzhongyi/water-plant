@@ -17,4 +17,5 @@ export interface SystemMainRecordTableItem {
   name: string;
   description?: string;
   data: DeviceEventRecord;
+  playback: boolean;
 }

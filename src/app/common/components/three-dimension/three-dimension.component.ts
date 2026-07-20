@@ -20,6 +20,7 @@ import { MarkerController } from './business/controllers/marker.controller';
 import { InternalModelState, ModelController } from './business/controllers/model.controller';
 import {
   FitView,
+  LabelMode,
   MarkerArgs,
   MarkerEntity,
   ModelEntry,
@@ -57,6 +58,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   // ── Model ────────────────────────────────────────────────
   /** 要加载和显示的模型列表，外部通过此 input 控制场景中的模型 */
   models = input<ModelViewerModel[]>([]);
+  modelreload = input<EventEmitter<ModelViewerModel>>();
   /** 渲染模式：solid=实体 / edges=线框 / overlay=覆盖 */
   renderMode = input<RenderMode>(RenderMode.overlay);
   /** 变换 Gizmo 可见性，true 时对选中的模型显示位置/旋转/缩放手柄。
@@ -68,7 +70,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   meshVisibility = input<EventEmitter<{ id: string; visibility: Record<string, boolean> }>>();
   /** 将摄像机移动到指定模型（通过 modelId） */
   moveto = input<EventEmitter<string>>();
-
+  modelLabelMode = input<LabelMode>(LabelMode.hover);
   /** 模型左键单击 */
   modelClick = output<string>();
   /** 模型悬停/移出 */
@@ -86,7 +88,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   /** 是否允许拖拽移动摄像机标记 */
   markersMovable = input<boolean>(false);
   /** marker label 显示模式: 'always' 常显, 'hover' 仅悬停/聚焦时显示 */
-  markerLabelMode = input<'always' | 'hover'>('hover');
+  markerLabelMode = input<LabelMode>(LabelMode.hover);
 
   /** 摄像机标记左键单击 */
   markerClick = output<string>();
@@ -173,6 +175,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => {
       const cams = this.markers();
+      for (const cam of cams) {
+        console.log(`[Marker] id=${cam.id} name=${cam.name} normal=${cam.icon.normal}`);
+      }
       this.markerCtrl.cache.sync(cams, this.modelCtrl.sceneReady);
       this.markerCtrl.cache.visibility(this.models());
       this.markerCtrl.labelMode = this.markerLabelMode();
@@ -524,6 +529,16 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       );
     }
 
+    /** modelreload：emit(ModelViewerModel) 重新加载单个模型，不触发 loaded */
+    if (this.modelreload()) {
+      this.subs.add(
+        this.modelreload()!.subscribe((m) => {
+          if (!this.modelCtrl.sceneReady) return;
+          this.reloadSingleModel(m);
+        }),
+      );
+    }
+
     /* 外部触发 — 修改指定模型的 mesh 组可见性 */
     if (this.meshVisibility()) {
       this.subs.add(
@@ -567,9 +582,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   /** 对所有已加载模型重新应用当前颜色状态 */
   private updateAllModelColors(): void {
-    const selId = this.state.selectedModelId;
-    const hovId = this.state.hoveredModelId;
-    this.updateModelColors(selId, hovId);
+    this.updateModelColors();
   }
 
   /** 根据 labelMode 和当前状态更新所有 label 的可见性
@@ -586,12 +599,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         entry.labelObject.visible = false;
         continue;
       }
-      if (entry.labelMode === 'never') {
+      if (entry.labelMode === LabelMode.never) {
         /* never 优先：无论外部如何设置都隐藏 */
         entry.labelObject.visible = false;
       } else {
         /* 其他值跟随 markerLabelMode：always=常显, hover=仅悬停时显 */
-        entry.labelObject.visible = show && (markerMode === 'always' || entry.id === hovId);
+        entry.labelObject.visible = show && (markerMode === LabelMode.always || entry.id === hovId);
       }
     }
   }
@@ -786,9 +799,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           const found = all.find((a) => a.mesh === hits[0].object);
           if (found) {
             const entry = this.state.loadedModels.get(found.modelId);
-            const config = entry
-              ? this.modelCtrl.getModelConfig(entry.fileName)
-              : undefined;
+            const config = entry ? this.modelCtrl.getModelConfig(entry.fileName) : undefined;
             if (config?.findable !== true) return;
             modelId = found.modelId;
           }
@@ -938,14 +949,11 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   /* ---- Colors ---- */
 
-  private updateModelColors(selId: string | null, hovId: string | null): void {
+  private updateModelColors(): void {
     for (const [id] of this.modelCtrl.internalModels) {
       const e = this.state.loadedModels.get(id);
       if (!e) continue;
-      this.colorsService.applyStateColors(
-        e,
-        id === selId ? 'selected' : id === hovId ? 'hover' : 'normal',
-      );
+      this.colorsService.applyStateColors(e, this.colorsService.getModelState(e));
     }
   }
 
@@ -1159,6 +1167,65 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.modelService.removeModel(id);
   }
 
+  /** 重新加载单个模型：移除旧模型 → 重新加载 → 应用颜色，不触发 loaded */
+  private async reloadSingleModel(m: ModelViewerModel): Promise<void> {
+    if (this.modelCtrl.loadingIds.has(m.fileName)) return;
+
+    /* 移除旧模型 */
+    const oldEntry = this.state.loadedModels.get(m.fileName);
+    if (oldEntry) {
+      const s = this.modelCtrl.internalModels.get(m.fileName);
+      if (s) {
+        this.scene.remove(s.group);
+        if (s.bboxHelper) {
+          this.scene.remove(s.bboxHelper);
+          s.bboxHelper.dispose();
+        }
+        this.modelCtrl.internalModels.delete(m.fileName);
+      }
+      this.modelService.removeModel(m.fileName);
+    }
+
+    /* 重新加载 */
+    this.modelCtrl.loadingIds.add(m.fileName);
+    try {
+      const entry = await this.modelService.loadModel(m.url, m.fileName);
+      if (entry) {
+        const transform = this.modelCtrl.getModelConfig(m.fileName);
+        const modelType = this.modelCtrl.getModelType(m.fileName);
+        if (m.position) {
+          entry.editPosition.set(m.position.x, m.position.y, m.position.z);
+          this.modelService.applyTransform(entry);
+        } else if (transform) {
+          this.modelService.applyTransformConfig(entry, transform);
+        }
+        if (transform?.meshVisibility) {
+          this.modelService.setNodeVisible(entry, transform.meshVisibility);
+        }
+        if (m.label !== undefined) entry.label = m.label;
+        else if (transform?.label !== undefined) entry.label = transform.label;
+        if (transform?.labelMode !== undefined) entry.labelMode = transform.labelMode;
+        if (transform?.labelPerHeight !== undefined)
+          entry.labelPerHeight = transform.labelPerHeight;
+        if (transform?.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
+        if (transform?.locked !== undefined) entry.locked = transform.locked;
+        this.modelService.updateLabel(entry);
+
+        if (modelType) {
+          this.colorsService.applyTypeColorPresets(entry, modelType);
+        } else {
+          this.colorsService.initMaterialColors(entry);
+        }
+        if (m.alarm) entry.alarm = m.alarm;
+        this.colorsService.applyStateColors(entry, 'normal');
+
+        this.modelCtrl.addToInternal(entry);
+      }
+    } finally {
+      this.modelCtrl.loadingIds.delete(m.fileName);
+    }
+  }
+
   private async doLoadModel(url: string, fileName: string, position?: Vec3): Promise<void> {
     this.state.loading$.next(true);
     this.state.statusMessage$.next(`正在加载: ${fileName}...`);
@@ -1179,8 +1246,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       /* label 设置 */
       if (transform?.label !== undefined) entry.label = transform.label;
       if (transform?.labelMode !== undefined) entry.labelMode = transform.labelMode;
-      if (transform?.labelPerHeight !== undefined)
-        entry.labelPerHeight = transform.labelPerHeight;
+      if (transform?.labelPerHeight !== undefined) entry.labelPerHeight = transform.labelPerHeight;
       if (transform?.labelFontSize !== undefined) entry.labelFontSize = transform.labelFontSize;
       if (transform?.locked !== undefined) entry.locked = transform.locked;
       this.modelService.updateLabel(entry);

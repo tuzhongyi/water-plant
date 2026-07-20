@@ -1,0 +1,15 @@
+{
+  "find": {
+    "radius": 20
+  },
+  "model": {
+    "label": {
+      "mode": "hover"
+    }
+  },
+  "marker": {
+    "label": {
+      "mode": "hover"
+    }
+  }
+}

@@ -26,9 +26,13 @@ export class EdgesService {
     this.removeEdgesForEntry(entry);
 
     const thresholdRad = THREE.MathUtils.degToRad(this.state.thresholdAngle);
-    /* 使用当前状态（normal/hover/selected）对应的边缘颜色，而非写死 normal */
+    /* 使用当前状态对应的边缘颜色，alarm 时 fallback → selected → normal */
     const currentState = this.colorsService.getModelState(entry);
-    const edgeColor = entry.colors[currentState].edge;
+    const colorState =
+      currentState === 'alarm'
+        ? (entry.colors.alarm ?? entry.colors.selected ?? entry.colors.normal)
+        : entry.colors[currentState];
+    const edgeColor = colorState.edge;
     const lineWidth = this.state.edgeLineWidth;
 
     const positionAttr: number[] = [];

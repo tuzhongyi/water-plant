@@ -1,9 +1,9 @@
-import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GisType } from '../../../common/data-core/enums/gis-type.enum';
 import { DB31Channel } from '../../../common/data-core/models/db31/db31-channel.model';
 import { GisPoint } from '../../../common/data-core/models/geographic/gis-point.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
+import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
 import { DB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
 
 export class SettingMapElementDB31Business {
@@ -42,23 +42,12 @@ export class SettingMapElementDB31Business {
       element.UpdateTime = new Date();
 
       element.ElementId = data.Id;
-      element.ElementType = this.convert.type(data.DeviceType);
-      element.Name = `${data.DeviceName ?? ''}-${data.Name ?? ''}`;
+      element.ElementType = ObjectTool.convert.MapElementType.from.DB31DeviceType(data.DeviceType);
+      element.Name = `${data.Name ?? ''}`;
       element.MapId = mapId;
       element.ParentId = parentId;
       element.FromDB31 = true;
       return element;
-    },
-    type: (value: number) => {
-      switch (value) {
-        case 1:
-          return MapElementType.Announciator;
-        case 3:
-          return MapElementType.IoTSensor;
-
-        default:
-          throw new Error(`暂时不支持绑定类型${value}`);
-      }
     },
   };
 }

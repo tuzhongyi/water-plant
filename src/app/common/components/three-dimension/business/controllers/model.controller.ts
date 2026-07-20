@@ -111,6 +111,11 @@ export class ModelController {
       const key = model.fileName;
       const entry = this.state.loadedModels.get(key);
       if (entry) {
+        /* alarm 状态变化时重新应用颜色 */
+        if (entry.alarm !== model.alarm) {
+          entry.alarm = model.alarm;
+          this.colorsService.reapplyCurrentState(entry);
+        }
         if (!this.internalModels.has(key)) {
           this.addToInternal(entry);
         } else {
@@ -118,7 +123,7 @@ export class ModelController {
         }
       } else if (!this.loadingIds.has(key)) {
         this.loadingIds.add(key);
-        this.doLoadModel(model.url, model.fileName, model.position, model.label).finally(() => {
+        this.doLoadModel(model.url, model.fileName, model.position, model.label, model.alarm).finally(() => {
           this.loadingIds.delete(key);
           const e = this.state.loadedModels.get(key);
           if (e) this.addToInternal(e);
@@ -193,7 +198,7 @@ export class ModelController {
 
   /* ---- 异步加载 ---- */
 
-  async doLoadModel(url: string, fileName: string, position?: Vec3, label?: string): Promise<void> {
+  async doLoadModel(url: string, fileName: string, position?: Vec3, label?: string, alarm?: boolean): Promise<void> {
     this.state.loading$.next(true);
     this.state.statusMessage$.next(`正在加载: ${fileName}...`);
     const entry = await this.modelService.loadModel(url, fileName);
@@ -235,6 +240,8 @@ export class ModelController {
       } else {
         this.colorsService.initMaterialColors(entry);
       }
+      /* 应用报警状态 */
+      if (alarm) entry.alarm = alarm;
       this.colorsService.applyStateColors(entry, 'normal');
       this.state.statusMessage$.next(`已加载: ${fileName}`);
     } else {

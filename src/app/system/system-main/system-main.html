@@ -12,14 +12,17 @@
     </div>
     <div class="system-main-three">
       <howell-card>
-        <div class="system-main-container">
-          <hw-system-main-three-manager
-            (preview)="map.on.preview($event)"
-            (video)="map.on.video($event)"
-          ></hw-system-main-three-manager>
-        </div>
+        <hw-system-main-three-manager
+          [alarm]="map.alarm"
+          (preview)="map.on.preview($event)"
+          (video)="map.on.video($event)"
+        ></hw-system-main-three-manager>
       </howell-card>
     </div>
+  </div>
+
+  <div class="system-main-test">
+    <button (click)="on.test()">text</button>
   </div>
 
   @if (window.video.single.show) {
@@ -61,5 +64,24 @@
     >
       <hw-system-main-element-manager></hw-system-main-element-manager>
     </app-window>
+  }
+
+  @if (window.config.three.show) {
+    <app-window
+      [model]="window.config.three"
+      [style]="window.config.three.style"
+      [title]="window.config.three.title"
+    >
+      <hw-system-main-three-config-manager></hw-system-main-three-config-manager>
+    </app-window>
+  }
+  @if (window.alarm.show) {
+    <app-alarm [model]="window.alarm" [style]="window.alarm.style" [title]="window.alarm.title">
+      <howell-video-player-list
+        [mode]="window.alarm.screen.mode"
+        [play]="window.alarm.play"
+        [(index)]="window.alarm.screen.index"
+      ></howell-video-player-list>
+    </app-alarm>
   }
 </div>

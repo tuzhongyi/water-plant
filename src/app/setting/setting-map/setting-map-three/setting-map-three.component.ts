@@ -304,6 +304,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
           if (this.floor.model()) {
             let floor = this.floor.selected();
             if (!floor) {
+              this.toastr.warning('请先选择楼层');
               return;
             }
             parent = floor;

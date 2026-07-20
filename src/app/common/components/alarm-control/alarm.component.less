@@ -1,0 +1,329 @@
+.alarm-mask {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  z-index: 1000;
+
+  @keyframes ribbon-top {
+    from {
+      background-position: 600px 0;
+    }
+
+    to {
+      background-position: 0 0;
+    }
+  }
+
+  @keyframes ribbon-bottom {
+    from {
+      background-position: 0 0;
+    }
+
+    to {
+      background-position: 600px 0;
+    }
+  }
+
+
+  .alarm-mask-top {
+    background-image: url(/assets/images/alarm/top.png);
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    height: 37px;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  .alarm-mask-top-ribbon {
+
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    width: 90%;
+    height: 37px;
+    transform: translateX(-50%);
+
+    background: repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0) 0 1%, #f00 0 2%, rgba(0, 0, 0, 0) 0 3%, #f00 0 4%);
+    animation: ribbon-top 3s infinite linear;
+  }
+
+  .alarm-mask-bottom {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    height: 37px;
+    background-image: url(/assets/images/alarm/bottom.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+
+
+  }
+
+  .alarm-mask-top-ribbon {
+
+
+
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    width: 90%;
+    height: 50px;
+    transform: translateX(-50%);
+    background: repeating-linear-gradient(-55deg, rgba(0, 0, 0, 0) 0 1%, #f00 0 2%, rgba(0, 0, 0, 0) 0 3%, #f00 0 4%);
+    animation: ribbon-top 3s infinite linear;
+    border-radius: 5px;
+
+    // &::after,
+    // &::before {
+    //   content: "";
+    //   position: absolute;
+    //   top: 0;
+    //   bottom: 0;
+    //   width: 20px;
+
+    // }
+
+    // &::before {
+    //   left: 0;
+    //   background: rgba(0, 0, 0, 0.3);
+    // }
+
+    // &::after {
+    //   right: 0;
+    // }
+
+
+  }
+
+  .alarm-mask-bottom-ribbon {
+
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    width: 90%;
+    height: 50px;
+    transform: translateX(-50%);
+
+    background: repeating-linear-gradient(55deg, rgba(0, 0, 0, 0) 0 1%, #f00 0 2%);
+    animation: ribbon-bottom 3s infinite linear;
+    border-radius: 5px;
+
+  }
+
+}
+
+
+@top-height: 35%;
+@bottom-height: 35%;
+@left-width: 48%;
+@right-width: 48%;
+
+@margin: 22px;
+@color: #ff2e2e;
+
+
+@keyframes flicker {
+  0% {
+    filter: drop-shadow(0px 0px 0px @color);
+  }
+
+  50% {
+    filter: drop-shadow(0px 0px 20px @color);
+  }
+
+  100% {
+    filter: drop-shadow(0px 0px 0px @color);
+  }
+}
+
+
+
+
+.alarm-background {
+  position: relative;
+
+  .close-winow {
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    z-index: 9;
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 30px;
+
+    &:hover {
+      color: red;
+    }
+  }
+
+
+
+  .center {
+    background-repeat: repeat-x;
+    width: calc(100% - @left-width - @right-width);
+  }
+
+  .left {
+    background-repeat: no-repeat;
+    width: @left-width;
+  }
+
+  .right {
+    background-repeat: no-repeat;
+    width: @right-width;
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: @top-height;
+
+    &>* {
+      height: 100%;
+    }
+
+    .left {
+
+      animation-duration: 3s;
+      animation-name: flicker;
+      animation-iteration-count: infinite;
+      background-image: url(/assets/images/alarm/border/t-l.png);
+      background-position: center;
+      background-size: 100% 100%;
+
+    }
+
+    .center {
+      background-color: transparent;
+    }
+
+    .right {
+
+      animation-duration: 3s;
+      animation-name: flicker;
+      animation-iteration-count: infinite;
+      background-image: url(/assets/images/alarm/border/t-r.png);
+      background-position: center;
+      background-size: 100% 100%;
+
+    }
+  }
+
+  .middle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: calc(100% - @top-height - @bottom-height);
+
+    &>* {
+      height: 100%;
+    }
+
+
+    .left {
+      background-color: transparent;
+    }
+
+    .center {
+      background-color: transparent;
+    }
+
+    .right {
+      background-color: transparent;
+    }
+  }
+
+
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: @bottom-height;
+
+    &>* {
+      height: 100%;
+    }
+
+    .left {
+
+      animation-duration: 3s;
+      animation-name: flicker;
+      animation-iteration-count: infinite;
+      background-image: url(/assets/images/alarm/border/b-l.png);
+      background-position: center;
+      background-size: 100% 100%;
+
+    }
+
+    .center {
+      background-color: transparent;
+
+    }
+
+    .right {
+
+      animation-duration: 3s;
+      animation-name: flicker;
+      animation-iteration-count: infinite;
+      background-image: url(/assets/images/alarm/border/b-r.png);
+      background-position: center;
+      background-size: 100% 100%;
+    }
+  }
+
+
+  .alarm-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    margin: -20px 90px 52px 90px;
+
+    box-sizing: border-box;
+
+    @alarm-content-head-height: 80px;
+    @alarm-content-head-margin-bottom: 0px;
+
+    &-head {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: @alarm-content-head-margin-bottom;
+      height: @alarm-content-head-height;
+      position: relative;
+
+      &-title {
+        height: @alarm-content-head-height;
+        width: 40%;
+        font-size: 60px;
+        background-color: @color;
+        clip-path: polygon(0% 0%, 100% 0%, 95% 100%, 5% 100%, 0% 0%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+
+      }
+
+
+    }
+
+    &-body {
+
+      border: 1px solid @color;
+      height: calc(100% - @alarm-content-head-height - @alarm-content-head-margin-bottom);
+      box-sizing: border-box;
+    }
+  }
+}

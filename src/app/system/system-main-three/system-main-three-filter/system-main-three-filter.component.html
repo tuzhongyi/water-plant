@@ -1,6 +1,13 @@
 <hw-card-statistic-1>
   <div class="system-main-three-filter">
-    <div class="system-main-three-filter-head">筛选</div>
+    <div class="system-main-three-filter-head">
+      <div class="system-main-three-filter-head-title">筛选</div>
+      <div class="system-main-three-filter-head-operation">
+        <div class="button" (click)="on.close()">
+          <i class="howell-icon-Close"></i>
+        </div>
+      </div>
+    </div>
     <div class="card-statistic-line"></div>
     <div class="system-main-three-filter-body">
       <div class="forms">
@@ -29,8 +36,8 @@
       <button class="button-border full" (click)="on.ok()">
         <i class="howell-icon-Check"></i> 确定
       </button>
-      <button class="button-border green" (click)="on.cancel()">
-        <i class="howell-icon-Close"></i> 关闭
+      <button class="button-border green" (click)="on.reset()">
+        <i class="mdi mdi-restart"></i> 重置
       </button>
     </div>
   </div>

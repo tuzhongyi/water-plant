@@ -20,6 +20,17 @@ export class SystemMainWindow {
   table = {
     element: new MapElementTableWindow(),
   };
+  config = {
+    three: new ConfigThreeWiondow(),
+  };
+  alarm = new AlarmWindow();
+}
+
+class ConfigThreeWiondow extends WindowViewModel {
+  title: string = '设置';
+  style = {
+    ...SizeTool.window.large,
+  };
 }
 class VideoSingleWindow extends WindowViewModel {
   constructor() {
@@ -40,6 +51,39 @@ class VideoSingleWindow extends WindowViewModel {
   };
 
   open(data: GeoMapElement | DeviceEventRecord) {}
+}
+
+export class PictureWindow extends WindowViewModel {
+  constructor() {
+    super();
+  }
+
+  url: string = '';
+  isError: boolean = false;
+  title: string = '';
+  style = {
+    ...SizeTool.window.large,
+  };
+
+  // open(args: PictureArgs) {
+  //   this.title = args.title;
+  //   let result = await Medium.img(args.id);
+  //   this.url = result.url;
+  //   this.isError = result.error;
+
+  //   this.show = true;
+  // }
+}
+export class MapElementTableWindow extends WindowViewModel {
+  constructor() {
+    super();
+  }
+
+  title: string = '';
+  style = {
+    ...SizeTool.window.large,
+  };
+  datas: GeoMapElement[] = [];
 }
 class VideoMultipleWindow extends WindowViewModel {
   constructor() {
@@ -113,35 +157,10 @@ class VideoMultipleWindow extends WindowViewModel {
     },
   };
 }
-export class PictureWindow extends WindowViewModel {
-  constructor() {
-    super();
-  }
 
-  url: string = '';
-  isError: boolean = false;
-  title: string = '';
-  style = {
-    ...SizeTool.window.large,
+class AlarmWindow extends VideoMultipleWindow {
+  override style = {
+    width: '65%',
+    height: 'calc(65%)',
   };
-
-  // open(args: PictureArgs) {
-  //   this.title = args.title;
-  //   let result = await Medium.img(args.id);
-  //   this.url = result.url;
-  //   this.isError = result.error;
-
-  //   this.show = true;
-  // }
-}
-export class MapElementTableWindow extends WindowViewModel {
-  constructor() {
-    super();
-  }
-
-  title: string = '';
-  style = {
-    ...SizeTool.window.large,
-  };
-  datas: GeoMapElement[] = [];
 }

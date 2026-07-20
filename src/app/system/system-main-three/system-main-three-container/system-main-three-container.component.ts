@@ -12,6 +12,7 @@ import { ThreeDimensionComponent } from '../../../common/components/three-dimens
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
+import { ThreeDConfig } from '../../../common/storage/three-d-storage/three-d-store.model';
 import { wait } from '../../../common/tools/wait';
 import { MapModel } from '../../../setting/setting-map/business/setting-map.model';
 import { SystemMainThreeBusiness } from '../business/system-main-three.business';
@@ -33,6 +34,7 @@ import { SystemMainThreeFilterComponent } from '../system-main-three-filter/syst
   providers: [SystemMainThreeBusiness, SystemMainThreeConverter],
 })
 export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
+  @Input() alarm?: EventEmitter<string>;
   @Input() elementload?: EventEmitter<SystemMainThreeArgs>;
   @Output() maploaded = new EventEmitter<GeoMap>();
   @Output() buildingloaded = new EventEmitter<GeoMapElement[]>();
@@ -50,6 +52,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
 
   ngOnInit(): void {
+    this.init();
     this.map.load();
     this.building.load();
     this.element.load(this.manager.filter.args);
@@ -58,7 +61,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
-
+  private init() {
+    this.business.config.load().then((x) => {
+      this.three.config.set(x);
+    });
+  }
   private regist() {
     if (this.load) {
       this.subs.add(
@@ -77,6 +84,34 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         }),
       );
     }
+    if (this.alarm) {
+      this.subs.add(
+        this.alarm.subscribe((deviceId) => {
+          this.business.element.alarm.push(deviceId).then((elements) => {
+            let building = elements.find((x) => x.ElementType == MapElementType.Building);
+            if (building) {
+              if (building) {
+                this.building.reload(building);
+              }
+            } else {
+              this.element.load(this.manager.filter.args);
+            }
+          });
+        }),
+      );
+    }
+    this.subs.add(
+      this.business.element.alarm.discard.subscribe((element) => {
+        switch (element.ElementType) {
+          case MapElementType.Building:
+            this.building.reload(element);
+            break;
+          default:
+            this.element.load(this.manager.filter.args);
+            break;
+        }
+      }),
+    );
   }
 
   manager = {
@@ -93,7 +128,6 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.element.load(this.manager.filter.args);
       },
       close: () => {
-        this.manager.filter.clear(true);
         this.manager.filter.show = false;
       },
     },
@@ -115,10 +149,6 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.manager.filter.clear(false);
         if (this.element.find.finding) {
           this.element.find.stop.emit();
-        }
-        if (this.element.find.finding) {
-          this.element.find.stop.emit();
-          this.element.find.found = [];
         }
       },
       building: () => {
@@ -144,7 +174,6 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         }
       },
       filter: () => {
-        this.manager.button.clear();
         this.manager.filter.show = true;
       },
       view: (mode?: FitView) => {
@@ -152,13 +181,13 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.three.focus.emit(mode);
       },
       find: async () => {
-        this.manager.button.clear();
         if (this.element.find.finding) {
           this.element.find.stop.emit();
         } else {
+          this.manager.button.clear();
           this.element.find.found = [];
-          let radius = await this.business.map.radius.get();
-          this.element.find.begin.emit(radius);
+          let config = await this.three.config()!;
+          this.element.find.begin.emit(config.find.radius);
           this.element.find.finding = true;
         }
       },
@@ -179,9 +208,14 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   building = {
     datas: signal<GeoMapElement[]>([]),
     moveto: new EventEmitter<string>(),
+
     get: (modelId: string) => {
       let elements = this.building.datas();
       return elements.find((x) => x.ElementId == modelId);
+    },
+    reload: (data: GeoMapElement) => {
+      let model = this.converter.element.to.building(data, this.three.renderMode());
+      this.three.model.reload.emit(model);
     },
     load: async () => {
       let buildings = await this.business.element.building.load();
@@ -320,8 +354,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     inited: false,
     focus: new EventEmitter<FitView | void>(),
     renderMode: signal<RenderMode>(RenderMode.overlay),
+    config: signal<ThreeDConfig | undefined>(undefined),
     model: {
       datas: signal<ModelViewerModel[]>([]),
+      reload: new EventEmitter<ModelViewerModel>(),
       clear: () => {
         this.three.model.datas.set([]);
       },

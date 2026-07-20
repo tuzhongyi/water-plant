@@ -10,7 +10,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { SceneService } from './scene.service';
 import { StateService } from './state.service';
 import { EdgesService } from './edges.service';
-import { ModelEntry, ModelTransformConfig } from '../models/types';
+import { LabelMode, ModelEntry, ModelTransformConfig } from '../models/types';
 import { DEFAULT_MODEL_COLORS } from '../models/constants';
 
 @Injectable({ providedIn: 'root' })
@@ -81,7 +81,7 @@ export class ModelService {
       visible: true,
       materialColors: new Map(),
       label: fileName,
-      labelMode: 'always',
+      labelMode: LabelMode.always,
       locked: false,
       selectable: true,
       geoCenter: new THREE.Vector3(),
@@ -240,8 +240,8 @@ export class ModelService {
     );
     /* 根据 labelMode 决定是否显示 */
     sprite.visible = this.state.settings.showLabels && (
-      entry.labelMode === 'always' ||
-      (entry.labelMode === 'hover' && entry.id === this.state.hoveredModelId)
+      entry.labelMode === LabelMode.always ||
+      (entry.labelMode === LabelMode.hover && entry.id === this.state.hoveredModelId)
     );
     sprite.renderOrder = 999;
     sprite.userData['aspect'] = aspect;

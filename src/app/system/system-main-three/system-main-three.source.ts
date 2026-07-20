@@ -5,6 +5,13 @@ import { CapabilityTool } from '../../common/tools/capability-tool/capability.to
 
 @Injectable()
 export class SystemMainThreeSource {
+  static elements = [
+    MapElementType.Camera,
+    MapElementType.Announciator,
+    MapElementType.IoTSensor,
+    MapElementType.Entrance,
+  ];
+
   type = {
     all: [] as EnumNameValue<number>[],
     elements: [] as EnumNameValue<number>[],
@@ -18,13 +25,9 @@ export class SystemMainThreeSource {
     map: {
       element: async () => {
         this.type.all = await this.capability.geographic.ElementTypes;
-        let elements = [
-          MapElementType.Camera,
-          MapElementType.Announciator,
-          MapElementType.IoTSensor,
-        ];
+
         this.type.elements = this.type.all.filter((x) => {
-          return elements.includes(x.Value);
+          return SystemMainThreeSource.elements.includes(x.Value);
         });
       },
     },

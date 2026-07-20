@@ -3,7 +3,6 @@ export interface Config {
   videoUrl: string;
   user: UserConfig;
   reload: number;
-  map: MapConfig;
 }
 interface PlaybackConfig {
   begin: number;
@@ -13,10 +12,22 @@ interface UserConfig {
   username: string;
   password: string;
 }
-interface MapConfig {
+export interface MapConfig {
   find: MapFindConfig;
+  model: MapModelConfig;
+  marker: MapMarkerConfig;
 }
 
 interface MapFindConfig {
   radius: number;
+}
+interface MapModelConfig {
+  label: {
+    mode: string;
+  };
+}
+interface MapMarkerConfig {
+  label: {
+    mode: string;
+  };
 }

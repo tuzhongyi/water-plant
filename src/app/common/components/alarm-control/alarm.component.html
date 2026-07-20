@@ -1,0 +1,40 @@
+<div class="alarm-mask" *ngIf="model.show">
+  <div class="alarm-mask-top"></div>
+  <div class="alarm-mask-top-ribbon"></div>
+
+  <div class="alarm-background" [ngStyle]="style">
+    <div class="top">
+      <div class="left"></div>
+      <div class="center"></div>
+      <div class="right"></div>
+    </div>
+    <div class="middle">
+      <div class="left"></div>
+      <div class="center"></div>
+      <div class="right"></div>
+    </div>
+    <div class="bottom">
+      <div class="left"></div>
+      <div class="center"></div>
+      <div class="right"></div>
+    </div>
+
+    <a class="close-winow" (click)="closeButtonClick()" *ngIf="closeButton"
+      ><i class="howell-icon-Close alert-alarm-close-btn"></i
+    ></a>
+
+    <div class="alarm-content">
+      <div class="alarm-content-head">
+        <div class="alarm-content-head-title">
+          {{ title }}
+        </div>
+      </div>
+      <div class="alarm-content-body">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+  <div class="alarm-mask-bottom-ribbon"></div>
+  <div class="alarm-mask-bottom"></div>
+</div>
+<audio #audio src="assets/audio/alarm.mp3" autoplay></audio>

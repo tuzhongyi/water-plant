@@ -10,7 +10,7 @@ import { SobelOperatorShader } from 'three/examples/jsm/shaders/SobelOperatorSha
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { StateService } from './state.service';
-import { RenderSettings } from '../models/types';
+import { LabelMode, RenderSettings } from '../models/types';
 
 @Injectable({ providedIn: 'root' })
 export class SceneService {
@@ -209,8 +209,8 @@ export class SceneService {
     for (const [, entry] of this.state.loadedModels) {
       if (entry.labelObject) {
         entry.labelObject.visible = s.showLabels && (
-          entry.labelMode === 'always' ||
-          (entry.labelMode === 'hover' && entry.id === this.state.hoveredModelId)
+          entry.labelMode === LabelMode.always ||
+          (entry.labelMode === LabelMode.hover && entry.id === this.state.hoveredModelId)
         );
       }
     }
@@ -292,8 +292,14 @@ export class SceneService {
     this.orthoCamera.bottom = frustumSize / -2;
     this.orthoCamera.updateProjectionMatrix();
 
-    this.renderer.setSize(w, h, false);
+    /* composer.setSize 内部会调用 renderer.setSize(w,h) 设置内联 CSS 样式，
+     * 覆盖了 CSS 文件中的 width:100%; height:100%，导致全屏切换后画布尺寸异常。
+     * 因此先调用 composer.setSize 更新渲染目标，再用 setSize(w,h,false) 重置
+     * 绘制缓冲区（不触碰 CSS），最后清除内联样式让 CSS 文件的百分比规则生效。 */
     this.composer.setSize(w, h);
+    this.renderer.setSize(w, h, false);
+    this.renderer.domElement.style.width = '';
+    this.renderer.domElement.style.height = '';
   }
 
   private animate(): void {
