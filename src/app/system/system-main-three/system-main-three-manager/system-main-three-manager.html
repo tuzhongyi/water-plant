@@ -1,6 +1,13 @@
 <div class="system-main-three-manager">
-  <div class="system-main-three-container">
+  <div
+    class="system-main-three-container"
+    wheel-ctrl
+    [value]="config?.find?.radius ?? 0"
+    (valueChange)="on.change($event)"
+  >
     <hw-system-main-three-container
+      [(args)]="map.args"
+      [elementload]="map.load"
       [alarm]="alarm"
       (preview)="map.on.preview($event)"
       (video)="map.on.video($event)"

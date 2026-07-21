@@ -1,3 +1,4 @@
+import { LabelMode } from '../../components/three-dimension/business/models/types';
 import { MapElementType } from '../../data-core/enums/geo/map-element-type.enum';
 
 export class Language {
@@ -59,6 +60,19 @@ export class Language {
         return '传感器';
       case MapElementType.Announciator:
         return '报警器';
+      default:
+        return def;
+    }
+  }
+
+  static ThreeDLabelMode(value: LabelMode, def = '未知') {
+    switch (value) {
+      case LabelMode.always:
+        return '一直显示';
+      case LabelMode.hover:
+        return '鼠标悬停';
+      case LabelMode.never:
+        return '不显示';
       default:
         return def;
     }

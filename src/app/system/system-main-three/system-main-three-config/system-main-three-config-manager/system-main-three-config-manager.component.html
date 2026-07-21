@@ -1,3 +1,20 @@
 <div class="system-main-three-config-manager">
-  <hw-system-main-three-config-find></hw-system-main-three-config-find>
+  <div>
+    <hw-system-main-three-config-map-model
+      [(config)]="config"
+      (configChange)="on.change()"
+    ></hw-system-main-three-config-map-model>
+  </div>
+  <div>
+    <hw-system-main-three-config-map-marker
+      [(config)]="config"
+      (configChange)="on.change()"
+    ></hw-system-main-three-config-map-marker>
+  </div>
+  <div>
+    <hw-system-main-three-config-find
+      [(config)]="config"
+      (configChange)="on.change()"
+    ></hw-system-main-three-config-find>
+  </div>
 </div>

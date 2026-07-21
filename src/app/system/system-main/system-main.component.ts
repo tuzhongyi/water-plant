@@ -11,6 +11,7 @@ import { DeviceEventRecord } from '../../common/data-core/models/events/device-e
 import { GeoMapElement } from '../../common/data-core/models/geographic/map-element.model';
 import { MqttRequestService } from '../../common/data-core/request/services/mqtt/mqtt.service';
 import { DateTimeTool } from '../../common/tools/date-time-tool/datetime.tool';
+import { wait } from '../../common/tools/wait';
 import { VideoPlayerContainerComponent } from '../../share/video/video-player-container/video-player-container.component';
 import { VideoPlayerListComponent } from '../../share/video/video-player-list/video-player-list.component';
 import { SystemMainElementManagerComponent } from '../system-main-element/system-main-element-manager/system-main-element-manager.component';
@@ -55,6 +56,9 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   }
 
   window = new SystemMainWindow();
+  private handle = {
+    loop: undefined as any,
+  };
   private subs = new Subscription();
 
   data = {
@@ -67,20 +71,46 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
+    this.init();
     this.regist();
-    this.load();
+    this.load(true);
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
-  private load() {
-    this.business.device.load().then((x) => {
-      this.data.device.datas = x;
-      this.mqtt.load(x);
-    });
-    this.business.db31.load().then((x) => {
-      this.data.db31.datas = x;
+  private init() {
+    this.handle.loop = setInterval(() => {
+      this.load().then((x) => {
+        this.map.load.emit();
+      });
+    }, 1000);
+  }
+
+  private load(init = false) {
+    let loaded = [false, false];
+    this.business.device
+      .load()
+      .then((x) => {
+        this.data.device.datas = x;
+        if (init) {
+          this.mqtt.load(x);
+        }
+      })
+      .finally(() => {
+        loaded[0] = true;
+      });
+    this.business.db31
+      .load()
+      .then((x) => {
+        this.data.db31.datas = x;
+      })
+      .finally(() => {
+        loaded[1] = true;
+      });
+
+    return wait(() => {
+      return !loaded.some((x) => !x);
     });
   }
 
@@ -108,6 +138,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   }
 
   map = {
+    load: new EventEmitter<void>(),
     alarm: new EventEmitter<string>(),
     on: {
       preview: (data: GeoMapElement) => {
@@ -120,6 +151,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   };
 
   record = {
+    load: new EventEmitter<void>(),
     on: {
       playback: (data: DeviceEventRecord) => {
         this.video.single.playback(data);

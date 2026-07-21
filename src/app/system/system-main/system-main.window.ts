@@ -30,7 +30,7 @@ export class SystemMainWindow {
 class ConfigThreeWiondow extends WindowViewModel {
   title: string = '设置';
   style = {
-    ...SizeTool.window.large,
+    ...SizeTool.window.simple,
   };
 }
 class VideoSingleWindow extends WindowViewModel {

@@ -51,7 +51,8 @@ import { ViewService } from './business/services/view.service';
 export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
-
+  /** 外部可设定的搜索半径（米），修改时若处于查找模式会实时更新搜索圈 */
+  findRadius = input<number>(20);
   findbegin = input<EventEmitter<number>>();
   findend = output<MarkerEntity[]>();
   findstop = input<EventEmitter<void>>();
@@ -148,7 +149,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   /* find 模式：搜索范围指示圈 */
   private findCircle: THREE.Group | null = null;
   private findActive = false;
-  private findRadius = 0;
+  /** 当前生效的搜索半径（米），由 findbegin emit 或 findRadius input 驱动 */
+  private activeFindRadius = 0;
+
   /** 右键拖拽检测：区分右键点击（停止搜索）与右键拖拽（旋转/平移视角） */
   private rightButtonMoved = false;
   private rightButtonDownPos = { x: 0, y: 0 };
@@ -175,9 +178,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     });
     effect(() => {
       const cams = this.markers();
-      for (const cam of cams) {
-        console.log(`[Marker] id=${cam.id} name=${cam.name} normal=${cam.icon.normal}`);
-      }
       this.markerCtrl.cache.sync(cams, this.modelCtrl.sceneReady);
       this.markerCtrl.cache.visibility(this.models());
       this.markerCtrl.labelMode = this.markerLabelMode();
@@ -222,6 +222,14 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           this.edgesService.applyRenderMode(entry, rm);
           this.colorsService.reapplyCurrentState(entry);
         }
+      }
+    });
+    /** findRadius：外部修改时同步到 activeFindRadius，若处于查找模式则实时更新搜索圈 */
+    effect(() => {
+      const r = this.findRadius();
+      this.activeFindRadius = r;
+      if (this.findActive && r > 0) {
+        this.ensureFindCircle(r);
       }
     });
     /* BehaviorSubject 订阅在 bindCommands 中设置（effect 不追踪 RxJS Subject） */
@@ -560,7 +568,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           console.log(
             `[Find] 进入搜索模式, 半径: ${radius}m, 场景就绪: ${this.modelCtrl.sceneReady}`,
           );
-          this.findRadius = radius;
+          this.activeFindRadius = radius;
           this.findActive = true;
           this.ensureFindCircle(radius);
         }),
@@ -770,7 +778,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       e.stopPropagation(); // 阻止冒泡到父级 div，避免误触 button.clear()→findstop
       const results =
         this.findCircle?.visible && this.findCircle.position
-          ? this.markerCtrl.markersInRadius(this.findCircle.position, this.findRadius)
+          ? this.markerCtrl.markersInRadius(this.findCircle.position, this.activeFindRadius)
           : [];
       this.cleanupFindMode();
       this.findend.emit(results);
@@ -1281,6 +1289,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.findCircle = this.createFindCircle(radius);
     this.findCircle.visible = false;
     this.scene.add(this.findCircle);
+    /* 重建后立即根据当前鼠标位置定位，避免半径变化后圈消失直到鼠标移动才显示 */
+    this.updateFindCircle();
   }
 
   /** 创建搜索范围指示圈（填充圆盘 + 轮廓线） */

@@ -1,17 +1,25 @@
 <howell-card>
-  <div class="system-main-three-config-find">
-    <div class="card-head">区域联动设置</div>
-    <div class="card-line"></div>
-    <div class="system-main-three-config-find-body card-body">
-      <div class="forms">
-        <div class="form-item">
-          <div class="form-item-text">联动半径</div>
-          <div class="form-item-value unit">
-            <input type="text" />
-            <i class="text">米</i>
+  @if (config) {
+    <div class="system-main-three-config-find">
+      <div class="card-head"><div class="card-head-title">区域联动设置</div></div>
+      <div class="card-line"></div>
+      <div class="system-main-three-config-find-body card-body">
+        <div class="forms">
+          <div class="form-item">
+            <div class="form-item-text">联动半径（单位：米）</div>
+            <div class="form-item-value">
+              <input
+                type="number"
+                wheel-input-number
+                min="1"
+                step="1"
+                [(value)]="config.find.radius"
+                (valueChange)="on.change()"
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 </howell-card>

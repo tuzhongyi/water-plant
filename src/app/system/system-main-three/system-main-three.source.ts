@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+import { LabelMode } from '../../common/components/three-dimension/business/models/types';
 import { MapElementType } from '../../common/data-core/enums/geo/map-element-type.enum';
 import { EnumNameValue } from '../../common/data-core/models/capabilities/enum-name-value.model';
 import { CapabilityTool } from '../../common/tools/capability-tool/capability.tool';
+import { EnumTool } from '../../common/tools/enum-tool/enum.tool';
+import { Language } from '../../common/tools/language-tool/language';
 
 @Injectable()
 export class SystemMainThreeSource {
@@ -17,8 +20,11 @@ export class SystemMainThreeSource {
     elements: [] as EnumNameValue<number>[],
   };
 
+  labelmodes: EnumNameValue[] = [];
+
   constructor(private capability: CapabilityTool) {
     this.init.map.element();
+    this.init.labelmode();
   }
 
   private init = {
@@ -30,6 +36,13 @@ export class SystemMainThreeSource {
           return SystemMainThreeSource.elements.includes(x.Value);
         });
       },
+    },
+    labelmode: () => {
+      let values = EnumTool.values(LabelMode);
+      this.labelmodes = values.map((x) => ({
+        Value: x,
+        Name: Language.ThreeDLabelMode(x),
+      }));
     },
   };
 }

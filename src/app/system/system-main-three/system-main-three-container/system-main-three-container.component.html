@@ -14,6 +14,7 @@
       [meshVisibility]="floor.target"
       (markerDblClick)="three.on.camera.dblclick($event)"
       [moveto]="building.moveto"
+      [findRadius]="element.find.radius"
       [findbegin]="element.find.begin"
       [findstop]="element.find.stop"
       (findend)="element.find.end($event)"
@@ -96,7 +97,7 @@
   @if (manager.filter.show) {
     <div class="system-main-three-filter">
       <hw-system-main-three-filter
-        [(args)]="manager.filter.args"
+        [(args)]="args"
         (argsChange)="manager.filter.doing()"
         (close)="manager.filter.close()"
       ></hw-system-main-three-filter>

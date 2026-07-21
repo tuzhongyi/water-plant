@@ -34,6 +34,8 @@ import { SystemMainThreeFilterComponent } from '../system-main-three-filter/syst
   providers: [SystemMainThreeBusiness, SystemMainThreeConverter],
 })
 export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
+  @Input() args = new SystemMainThreeArgs();
+  @Output() argsChange = new EventEmitter<SystemMainThreeArgs>();
   @Input() alarm?: EventEmitter<string>;
   @Input() elementload?: EventEmitter<SystemMainThreeArgs>;
   @Output() maploaded = new EventEmitter<GeoMap>();
@@ -55,7 +57,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     this.init();
     this.map.load();
     this.building.load();
-    this.element.load(this.manager.filter.args);
+    this.element.load(this.args);
     this.regist();
   }
   ngOnDestroy(): void {
@@ -64,6 +66,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   private init() {
     this.business.config.load().then((x) => {
       this.three.config.set(x);
+      this.element.find.radius = x.find.radius;
     });
   }
   private regist() {
@@ -71,16 +74,17 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.load.subscribe((x) => {
           let floorId = this.floor.selected()?.Id;
-          this.manager.filter.args.floorId = floorId;
-          this.element.load(this.manager.filter.args);
+          this.args.floorId = floorId;
+          this.argsChange.emit(this.args);
+          this.element.load(this.args);
         }),
       );
     }
     if (this.elementload) {
       this.subs.add(
         this.elementload.subscribe((x) => {
-          this.manager.filter.args = x;
-          this.element.load(this.manager.filter.args);
+          this.args = x;
+          this.element.load(this.args);
         }),
       );
     }
@@ -94,7 +98,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
                 this.building.reload(building);
               }
             } else {
-              this.element.load(this.manager.filter.args);
+              this.element.load(this.args);
             }
           });
         }),
@@ -107,25 +111,31 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
             this.building.reload(element);
             break;
           default:
-            this.element.load(this.manager.filter.args);
+            this.element.load(this.args);
             break;
         }
+      }),
+    );
+    this.subs.add(
+      this.business.config.change.subscribe((x) => {
+        this.element.find.radius = x.find.radius;
+        console.log('changed');
       }),
     );
   }
 
   manager = {
     filter: {
-      args: new SystemMainThreeArgs(),
       show: false,
       clear: (reload: boolean) => {
-        this.manager.filter.args = new SystemMainThreeArgs();
+        this.args = new SystemMainThreeArgs();
+        this.argsChange.emit(this.args);
         if (reload) {
-          this.element.load(this.manager.filter.args);
+          this.element.load(this.args);
         }
       },
       doing: () => {
-        this.element.load(this.manager.filter.args);
+        this.element.load(this.args);
       },
       close: () => {
         this.manager.filter.show = false;
@@ -180,14 +190,13 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.manager.button.clear();
         this.three.focus.emit(mode);
       },
-      find: async () => {
+      find: () => {
         if (this.element.find.finding) {
           this.element.find.stop.emit();
         } else {
           this.manager.button.clear();
           this.element.find.found = [];
-          let config = await this.three.config()!;
-          this.element.find.begin.emit(config.find.radius);
+          this.element.find.begin.emit(this.element.find.radius);
           this.element.find.finding = true;
         }
       },
@@ -239,6 +248,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     find: {
       finding: false,
       found: [] as GeoMapElement[],
+      radius: 20,
       begin: new EventEmitter<number>(),
       stop: new EventEmitter<void>(),
       end: (datas: MarkerEntity[]) => {
@@ -328,9 +338,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         console.log(args);
         this.floor.target.emit(args);
 
-        this.manager.filter.args.floorId = data.Id;
-        this.manager.filter.args.buildingId = undefined;
-        this.element.load(this.manager.filter.args);
+        this.args.floorId = data.Id;
+        this.args.buildingId = undefined;
+        this.argsChange.emit(this.args);
+        this.element.load(this.args);
 
         setTimeout(() => {
           this.three.focus.emit();
@@ -341,11 +352,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.floor.clear();
         this.three.model.clear();
 
-        await Promise.all([
-          this.map.load(),
-          this.building.load(),
-          this.element.load(this.manager.filter.args),
-        ]);
+        await Promise.all([this.map.load(), this.building.load(), this.element.load(this.args)]);
       },
     },
   };
@@ -393,8 +400,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
               );
               model.position = { x: 0, y: 0, z: 0 };
               this.three.model.datas.set([model]);
-              this.manager.filter.args.buildingId = building.Id;
-              this.element.load(this.manager.filter.args);
+              this.args.buildingId = building.Id;
+              this.argsChange.emit(this.args);
+              this.element.load(this.args);
             }
           }
         },

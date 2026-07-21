@@ -61,7 +61,6 @@ export class SystemMainThreeConverter {
           data: data,
         };
 
-        console.log(entity);
         return entity;
       },
       building: (data: GeoMapElement, mode: string): ModelViewerModel => {

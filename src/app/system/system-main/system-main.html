@@ -14,6 +14,7 @@
     <div class="system-main-three">
       <howell-card>
         <hw-system-main-three-manager
+          [load]="map.load"
           [alarm]="map.alarm"
           (preview)="map.on.preview($event)"
           (video)="map.on.video($event)"

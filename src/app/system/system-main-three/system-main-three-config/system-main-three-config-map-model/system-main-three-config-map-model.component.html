@@ -1,0 +1,27 @@
+<howell-card>
+  @if (config) {
+    <div class="system-main-three-config-map-model">
+      <div class="card-head">
+        <div class="card-head-title">地图模型设置</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="system-main-three-config-map-model-body card-body">
+        <div class="forms">
+          <div class="form-item">
+            <div class="form-item-text">名称显示</div>
+            <div class="form-item-value full">
+              <!-- <hw-switch [(checked)]="label.visibility"></hw-switch> -->
+              <select [(ngModel)]="config.model.label.mode" (change)="on.change()">
+                @for (item of source.labelmodes; track $index) {
+                  <option [ngValue]="item.Value">
+                    {{ item.Name }}
+                  </option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</howell-card>
