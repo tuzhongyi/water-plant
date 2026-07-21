@@ -40,11 +40,11 @@
     <app-window
       [model]="window.table.record"
       [style]="window.table.record.style"
-      [title]="window.table.record.title"
-      [lineable]="true"
+      [headable]="false"
     >
       <hw-system-record-manager
         (playback)="video.single.playback($event)"
+        (close)="window.table.record.show = false"
       ></hw-system-record-manager>
     </app-window>
   }

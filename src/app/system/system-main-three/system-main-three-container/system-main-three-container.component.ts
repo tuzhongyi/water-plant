@@ -19,6 +19,7 @@ import { SystemMainThreeBusiness } from '../business/system-main-three.business'
 import { SystemMainThreeConverter } from '../business/system-main-three.converter';
 import { SystemMainThreeArgs } from '../business/system-main-three.model';
 import { SystemMainThreeElementManagerComponent } from '../system-main-three-element/system-main-three-element-manager/system-main-three-element-manager.component';
+import { SystemMainThreeConfigFindSliderComponent } from '../system-main-three-config/system-main-three-config-find-slider/system-main-three-config-find-slider.component';
 import { SystemMainThreeFilterComponent } from '../system-main-three-filter/system-main-three-filter.component';
 
 @Component({
@@ -26,6 +27,7 @@ import { SystemMainThreeFilterComponent } from '../system-main-three-filter/syst
   imports: [
     CommonModule,
     ThreeDimensionComponent,
+    SystemMainThreeConfigFindSliderComponent,
     SystemMainThreeFilterComponent,
     SystemMainThreeElementManagerComponent,
   ],

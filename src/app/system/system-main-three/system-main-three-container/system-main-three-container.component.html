@@ -20,29 +20,38 @@
       (findend)="element.find.end($event)"
     ></hw-3d>
   </div>
-  <div class="system-main-three-button-group button-group">
-    <button
-      class="button-map"
-      title="建筑列表"
-      (click)="manager.button.building()"
-      [class.selected]="manager.building.show || !!floor.model()"
-    >
-      <i class="howell-icon-MapVillage"></i>
-    </button>
-    <button class="button-map" title="渲染模式" (click)="manager.button.mode()">
-      <i class="howell-icon-shade"></i>
-    </button>
-    <button class="button-map" title="点位筛选" (click)="manager.button.filter()">
-      <i class="howell-icon-filter"></i>
-    </button>
-    <button
-      class="button-map"
-      title="区域联动"
-      [class.selected]="element.find.finding"
-      (click)="manager.button.find()"
-    >
-      <i class="mdi mdi-adjust"></i>
-    </button>
+  <div class="system-main-three-button-area">
+    <div class="button-group">
+      <button
+        class="button-map"
+        title="建筑列表"
+        (click)="manager.button.building()"
+        [class.selected]="manager.building.show || !!floor.model()"
+      >
+        <i class="howell-icon-MapVillage"></i>
+      </button>
+      <button class="button-map" title="渲染模式" (click)="manager.button.mode()">
+        <i class="howell-icon-shade"></i>
+      </button>
+      <button class="button-map" title="点位筛选" (click)="manager.button.filter()">
+        <i class="howell-icon-filter"></i>
+      </button>
+      <button
+        class="button-map"
+        title="区域联动"
+        [class.selected]="element.find.finding"
+        (click)="manager.button.find()"
+      >
+        <i class="mdi mdi-adjust"></i>
+      </button>
+    </div>
+    @if (element.find.finding) {
+      <hw-system-main-three-config-find-slider
+        [(value)]="element.find.radius"
+        [min]="1"
+        [max]="100"
+      ></hw-system-main-three-config-find-slider>
+    }
   </div>
   <div class="system-main-three-viewer">
     <div></div>

@@ -1,5 +1,5 @@
-<div class="system-record-table">
-  <div class="system-record-table-body table-page">
+<div class="system-record-table-entrance">
+  <div class="system-record-table-entrance-body table-page">
     <table border="0" cellpadding="0" cellspacing="0" TableSorter (sort)="on.sort($event)">
       @for (width of widths; track $index) {
         <colgroup>
@@ -9,7 +9,8 @@
       <thead>
         <tr>
           <th class="center">序号</th>
-          <th sort="DeviceName">设备名称</th>
+          <th sort="DeviceName">门禁</th>
+          <th sort="Resource.Value">进出人员</th>
           <th sort="EventType">事件类型</th>
           <th sort="EventTime">事件时间</th>
           <th sort="Description">描述</th>
@@ -37,6 +38,11 @@
             <td [title]="item?.name || ''">
               @if (item) {
                 {{ item.name || '-' }}
+              }
+            </td>
+            <td [title]="item?.value || ''">
+              @if (item) {
+                {{ item.value || '-' }}
               }
             </td>
             <td [title]="(item?.type | async) || ''" [class]="item?.color">
@@ -73,7 +79,7 @@
       </tbody>
     </table>
   </div>
-  <div class="system-record-table-foot">
+  <div class="system-record-table-entrance-foot">
     <paginator [page]="page" (change)="on.page($event)"> </paginator>
   </div>
 </div>

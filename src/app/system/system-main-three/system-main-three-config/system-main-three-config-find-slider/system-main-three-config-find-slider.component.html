@@ -1,0 +1,12 @@
+<div class="system-main-three-config-find-slider">
+  <div class="system-main-three-config-find-slider-bar">
+    <input
+      type="range"
+      [min]="min"
+      [max]="max"
+      [value]="value"
+      (input)="on.input($event)"
+    />
+  </div>
+  <span class="system-main-three-config-find-slider-value">{{ value }}{{ unit }}</span>
+</div>

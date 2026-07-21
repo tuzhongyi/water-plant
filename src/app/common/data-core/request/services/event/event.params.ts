@@ -7,6 +7,8 @@ export class GetDeviceEventRecordsParams extends PagedDurationParams {
   Name?: string;
   /**	Int32[]	事件类型	O	*/
   EventTypes?: number[];
+  /**	String	ResourceValue查询	O */
+  Value?: string;
   /**	String	升序字段	O */
   Asc?: string;
   /**	String	降序字段	O */
@@ -24,6 +26,7 @@ export class GetEventBehaviorsParams extends PagedParams {
   EventTypes?: number[];
   /**	Boolean	来自DB31设备	O	*/
   FromDB31?: boolean;
+
   /**	String	升序字段	O */
   Asc?: string;
   /**	String	降序字段	O */

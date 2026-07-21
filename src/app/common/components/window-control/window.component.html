@@ -17,7 +17,7 @@
         @if (lineable) {
           <div class="window-content-line"></div>
         }
-        <div class="window-content-body" [class.noline]="!lineable">
+        <div class="window-content-body" [class.noline]="!lineable" [class.nohead]="!headable">
           <ng-content></ng-content>
         </div>
       </div>

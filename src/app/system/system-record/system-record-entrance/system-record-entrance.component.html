@@ -1,0 +1,65 @@
+<div class="system-record-entrance">
+  <div class="system-record-head">
+    <div class="forms">
+      <div class="form-item">
+        <div class="form-item-text">开始时间</div>
+        <div class="form-item-value time">
+          <date-time-control
+            [(date)]="table.args.duration.begin"
+            [format]="Language.YearMonthDayHHmm"
+            [minView]="table.view.hour"
+            [zindex]="9000"
+          ></date-time-control>
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text">结束时间</div>
+        <div class="form-item-value time">
+          <date-time-control
+            [(date)]="table.args.duration.end"
+            [format]="Language.YearMonthDayHHmm"
+            [minView]="table.view.hour"
+            [zindex]="9000"
+          ></date-time-control>
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text">事件类型</div>
+        <div class="form-item-value">
+          <hw-select [nullable]="true" [(selected)]="table.args.type">
+            <select [(ngModel)]="table.args.type">
+              @for (item of source.entrances; track $index) {
+                <option [ngValue]="item.Value">{{ item.Name }}</option>
+              }
+            </select>
+          </hw-select>
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text">门禁名称</div>
+        <div class="form-item-value name">
+          <input type="text" [(ngModel)]="table.args.name" placeholder="名称或描述" />
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text">出入人员</div>
+        <div class="form-item-value name">
+          <input type="text" [(ngModel)]="table.args.value" placeholder="出入人员姓名" />
+        </div>
+      </div>
+      <div class="form-item submit">
+        <button class="button-border full" (click)="table.on.search()">
+          <i class="howell-icon-search2"></i>查询
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="system-record-body">
+    <hw-system-record-table-entrance
+      [args]="table.args"
+      [load]="table.load"
+      (loaded)="table.on.loaded($event)"
+      (playback)="table.on.playback($event)"
+    ></hw-system-record-table-entrance>
+  </div>
+</div>

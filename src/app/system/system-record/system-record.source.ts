@@ -5,6 +5,7 @@ import { CapabilityTool } from '../../common/tools/capability-tool/capability.to
 @Injectable()
 export class SystemRecordSource {
   types: EnumNameValue<number>[] = [];
+  entrances: EnumNameValue<number>[] = [];
 
   constructor(private capability: CapabilityTool) {
     this.init.types();
@@ -13,9 +14,10 @@ export class SystemRecordSource {
   private init = {
     types: async () => {
       let enabledtypes = [1, 2, 101, 102];
-      this.types = (await this.capability.event.EventTypes).filter((x) =>
-        enabledtypes.includes(x.Value),
-      );
+      let types = await this.capability.event.EventTypes;
+      this.types = types.filter((x) => enabledtypes.includes(x.Value));
+      let entrances = [103, 104];
+      this.entrances = types.filter((x) => entrances.includes(x.Value));
     },
   };
 }
