@@ -33,7 +33,7 @@ export class SystemMainRecordTableComponent implements OnInit, OnDestroy {
   Icon = IconTool;
   Language = Language;
   datas: SystemMainRecordTableItem[] = [];
-  width = ['10%', '25%', '25%', '160px', '7%'];
+  width = ['10%', '10%', '25%', '25%', '160px', '7%'];
   private subs = new Subscription();
 
   ngOnInit(): void {

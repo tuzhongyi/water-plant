@@ -1,0 +1,85 @@
+<div class="system-record-table">
+  <div class="system-record-table-body table-page">
+    <table border="0" cellpadding="0" cellspacing="0" TableSorter (sort)="on.sort($event)">
+      @for (width of widths; track $index) {
+        <colgroup>
+          <col [ngStyle]="{ width: width, 'min-width': minwidth[$index] }" />
+        </colgroup>
+      }
+      <thead>
+        <tr>
+          <th class="center">序号</th>
+          <th sort="DeviceName">设备名称</th>
+          <th sort="Resource.Value">触发源</th>
+          <th sort="EventType">事件类型</th>
+          <th sort="EventTime">事件时间</th>
+          <th sort="Description">描述</th>
+          <th class="center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of datas(); track $index) {
+          <tr
+            (click)="on.select(item)"
+            [ngClass]="{
+              nohover: !item,
+              nodata: !item,
+              selected: item === selected,
+            }"
+          >
+            <td class="center">
+              @if (item) {
+                {{ page.PageSize * (page.PageIndex - 1) + $index + 1 }}
+              }
+              @if (!item) {
+                &nbsp;
+              }
+            </td>
+            <td [title]="item?.name || ''">
+              @if (item) {
+                {{ item.name || '-' }}
+              }
+            </td>
+            <td [title]="item?.value || ''">
+              @if (item) {
+                {{ item.value || '-' }}
+              }
+            </td>
+            <td [title]="(item?.type | async) || ''" [class]="item?.color">
+              @if (item) {
+                {{ (item.type | async) || '-' }}
+              }
+            </td>
+            <td [title]="item?.time || ''">
+              @if (item) {
+                {{ item.time || '-' }}
+              }
+            </td>
+            <td [title]="item?.description || ''">
+              @if (item) {
+                {{ item.description || '-' }}
+              }
+            </td>
+
+            <td class="center">
+              @if (item) {
+                <div class="operation">
+                  <button
+                    title="视频回放"
+                    (click)="on.playback($event, item)"
+                    [disabled]="!item.playback"
+                  >
+                    <i class="howell-icon-video-play"></i>
+                  </button>
+                </div>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="system-record-table-foot">
+    <paginator [page]="page" (change)="on.page($event)"> </paginator>
+  </div>
+</div>

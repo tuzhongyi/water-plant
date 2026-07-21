@@ -19,6 +19,7 @@ export class SystemMainWindow {
   };
   table = {
     element: new MapElementTableWindow(),
+    record: new RecordTableWindow(),
   };
   config = {
     three: new ConfigThreeWiondow(),
@@ -84,6 +85,18 @@ export class MapElementTableWindow extends WindowViewModel {
     ...SizeTool.window.large,
   };
   datas: GeoMapElement[] = [];
+}
+export class RecordTableWindow extends WindowViewModel {
+  constructor() {
+    super();
+  }
+
+  title: string = '报警记录';
+  style = {
+    ...SizeTool.window.large,
+
+    width: '80%',
+  };
 }
 class VideoMultipleWindow extends WindowViewModel {
   constructor() {

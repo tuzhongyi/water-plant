@@ -18,6 +18,7 @@ import { SystemMainRecordManagerComponent } from '../system-main-record/system-m
 import { SystemMainStateDeviceComponent } from '../system-main-state/system-main-state-device/system-main-state-device.component';
 import { SystemMainThreeConfigManagerComponent } from '../system-main-three/system-main-three-config/system-main-three-config-manager/system-main-three-config-manager.component';
 import { SystemMainThreeManager } from '../system-main-three/system-main-three-manager/system-main-three-manager';
+import { SystemRecordManagerComponent } from '../system-record/system-record-manager/system-record-manager.component';
 import {
   SystemMainBusiness,
   SystemMainDeviceBusinessProviders,
@@ -38,6 +39,7 @@ import { SystemMainWindow } from './system-main.window';
     VideoPlayerListComponent,
     SystemMainElementManagerComponent,
     SystemMainThreeConfigManagerComponent,
+    SystemRecordManagerComponent,
   ],
   templateUrl: './system-main.html',
   styleUrl: './system-main.less',

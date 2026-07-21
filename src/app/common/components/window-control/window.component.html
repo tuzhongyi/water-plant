@@ -14,7 +14,10 @@
             </div>
           </div>
         }
-        <div class="window-content-body">
+        @if (lineable) {
+          <div class="window-content-line"></div>
+        }
+        <div class="window-content-body" [class.noline]="!lineable">
           <ng-content></ng-content>
         </div>
       </div>

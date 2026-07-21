@@ -6,7 +6,7 @@ import { PromiseValue } from '../tools/value-tool/value.promise';
   providedIn: 'root',
 })
 export class GlobalStorage {
-  version = '0.0.0.1';
+  version = '0.0.0.2';
 
   user = new PromiseValue<User>();
 

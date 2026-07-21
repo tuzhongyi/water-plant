@@ -31,6 +31,7 @@ export class Language {
   static MonthDay = `${this.Month}${this.Day}`;
 
   static YearMonthDayHHmmss = `${this.YearMonthDay} ${this.HHmmss}`;
+  static YearMonthDayHHmm = `${this.YearMonthDay} ${this.HHmm}`;
   static MonthDayHHmmss = `${this.MonthDay} ${this.HHmmss}`;
 
   static Week(day: number, format: string = '周') {

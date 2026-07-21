@@ -21,6 +21,8 @@ export class WindowComponent implements OnInit {
   @Input()
   title: string = '';
 
+  @Input() lineable = false;
+
   @Input()
   closeButton = true;
 

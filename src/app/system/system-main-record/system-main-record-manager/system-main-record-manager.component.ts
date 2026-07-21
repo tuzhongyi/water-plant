@@ -16,6 +16,7 @@ import {
 })
 export class SystemMainRecordManagerComponent {
   @Output() playback = new EventEmitter<DeviceEventRecord>();
+  @Output() all = new EventEmitter<void>();
   Type = SystemMainRecordTableEventType;
   table = {
     args: new SystemMainRecordTableArgs(),
@@ -32,6 +33,12 @@ export class SystemMainRecordManagerComponent {
       playback: (data: DeviceEventRecord) => {
         this.playback.emit(data);
       },
+    },
+  };
+
+  on = {
+    all: () => {
+      this.all.emit();
     },
   };
 }

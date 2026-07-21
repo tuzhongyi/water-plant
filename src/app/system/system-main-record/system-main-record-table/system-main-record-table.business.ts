@@ -34,7 +34,7 @@ export class SystemMainRecordTableBusiness {
   };
 
   async load(args: SystemMainRecordTableArgs) {
-    let duration = DateTimeTool.last.year(new Date());
+    let duration = DateTimeTool.last.month(new Date());
     let params = new GetDeviceEventRecordsParams();
     params.BeginTime = duration.begin;
     params.EndTime = duration.end;

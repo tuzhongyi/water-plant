@@ -1,0 +1,51 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+@import url(../../../../assets/styles/colors/color-table.less);
+
+
+.system-record-table {
+  height: 100%;
+  width: 100%;
+  transition: all 0.5s;
+
+  @foot-height: 60px;
+
+  &-body {
+    height: calc(100% - @foot-height);
+
+    table {
+
+      thead {
+        tr {
+          th {
+            white-space: nowrap;
+          }
+        }
+      }
+
+      tbody {
+
+        tr {
+          height: 10%;
+
+          td {
+            height: 10%;
+            vertical-align: middle;
+            line-height: 0;
+            color: var(--color);
+
+          }
+        }
+      }
+    }
+  }
+
+  &-foot {
+    height: @foot-height;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border: 1px solid @border;
+    border-top: none;
+    padding: 0 20px;
+  }
+}

@@ -1,9 +1,19 @@
 <howell-card>
   <div class="system-main-record-manager">
     <div class="card-head">
-      <div>报警列表</div>
-      <div>
-        共 <span class="count">{{ table.datas.length }}</span> 条
+      <div class="card-head-title system-main-record-head-title">
+        <div class="system-main-record-head-title-content">报警列表</div>
+        <div class="system-main-record-head-title-button left button" (click)="on.all()">
+          查看全部报警
+        </div>
+      </div>
+      <div class="system-main-record-head-title">
+        <div class="system-main-record-head-title-content">
+          共 <span class="count">{{ table.datas.length }}</span> 条
+        </div>
+        <div class="system-main-record-head-title-button right button" (click)="on.all()">
+          查看全部报警
+        </div>
       </div>
     </div>
     <div class="card-line"></div>

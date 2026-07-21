@@ -2,18 +2,21 @@
   @for (item of datas; track $index) {
     <div class="system-main-record-table-tr" [class]="item.color" [title]="item.description ?? ''">
       <div class="system-main-record-table-td" [style.width]="width[0]">
-        <i [class]="item.icon"></i>
+        {{ $index + 1 }}
       </div>
       <div class="system-main-record-table-td" [style.width]="width[1]">
-        {{ item.name }}
+        <i [class]="item.icon"></i>
       </div>
       <div class="system-main-record-table-td" [style.width]="width[2]">
+        {{ item.name }}
+      </div>
+      <div class="system-main-record-table-td" [style.width]="width[3]">
         {{ item.type }}
       </div>
-      <div class="system-main-record-table-td time" [style.width]="width[3]">
+      <div class="system-main-record-table-td time" [style.width]="width[4]">
         {{ item.time | date: Language.yyyyMMddHHmmss }}
       </div>
-      <div class="system-main-record-table-td" [style.width]="width[4]">
+      <div class="system-main-record-table-td" [style.width]="width[5]">
         <div class="button-group">
           <button (click)="on.playback($event, item)" title="视频回放" [disabled]="!item.playback">
             <i class="howell-icon-video-play"></i>
