@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { RoutePath } from '../app.path';
 import { AuthorizationService } from '../common/data-core/request/auth/authorization.service';
 import { HowellSM4 } from '../common/data-core/request/auth/howell-sm4';
+import { ConfigRequestService } from '../common/data-core/request/config/config-request.service';
 import { GlobalStorage } from '../common/storage/global.storage';
 import { LocalStorage } from '../common/storage/local.storage';
 
@@ -14,7 +15,15 @@ export class LoginBusiness {
     private router: Router,
     private local: LocalStorage,
     private global: GlobalStorage,
+    private config: ConfigRequestService,
   ) {}
+
+  get title() {
+    return this.config.get().then((x) => {
+      return x.title;
+    });
+  }
+
   init() {
     this.local.clean();
     this.global.destroy();

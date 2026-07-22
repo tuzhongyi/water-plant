@@ -177,7 +177,7 @@ export class EdgesService {
     const isOverlay = mode === 'overlay';
     const solidSeeThrough = isOverlay && this.state.settings.solidSeeThrough;
     const edgeSeeThrough = isOverlay && this.state.settings.edgeSeeThrough;
-    const opacity = mode === 'edges' ? 0 : mode === 'solid' ? 0.5 : this.state.solidOpacity;
+    const opacity = mode === 'edges' ? 0 : this.state.solidOpacity;
     const showColor = mode !== 'edges' && opacity > 0;
 
     for (const mesh of meshes) {

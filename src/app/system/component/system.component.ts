@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
+import { CommonModule } from '@angular/common';
 import { ConfigRequestService } from '../../common/data-core/request/config/config-request.service';
 import { GlobalStorage } from '../../common/storage/global.storage';
 import { LocalStorage } from '../../common/storage/local.storage';
@@ -8,7 +9,7 @@ import { HeaderComponent } from '../../share/header/header.component';
 
 @Component({
   selector: 'hw-system',
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [RouterOutlet, CommonModule, HeaderComponent],
   templateUrl: './system.html',
   styleUrl: './system.less',
 })
@@ -20,6 +21,7 @@ export class SystemComponent implements OnInit {
     private config: ConfigRequestService,
   ) {}
 
+  title = '';
   keep = {
     key: 'keep',
     get: () => {
@@ -65,6 +67,9 @@ export class SystemComponent implements OnInit {
         location.replace(window.location.href);
         return;
       }
+    });
+    this.config.get().then((x) => {
+      this.title = x.title;
     });
   }
 }

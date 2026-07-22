@@ -307,24 +307,25 @@ export class SceneService {
     for (const cb of this.beforeRenderCallbacks) cb();
     this.controls.update();
 
-    /* label 恒定屏幕大小 */
+    /* label 恒定屏幕大小（与 marker label 一致，labelFontSize = 目标像素高度） */
     const cam = this.camera;
-    const globalFontSize = this.state.settings.labelFontSize || 25;
+    const globalFontSize = this.state.settings.labelFontSize || 32;
+    const rendererH = this.renderer.domElement.clientHeight || 600;
     if (cam instanceof THREE.PerspectiveCamera) {
       const halfFovTan = Math.tan(THREE.MathUtils.degToRad(cam.fov * 0.5));
       for (const [sprite, aspect] of this.labelSprites) {
         const fs = sprite.userData['labelFontSize'] ?? globalFontSize;
-        const screenRatio = fs / 1000;
         const dist = cam.position.distanceTo(sprite.position);
-        const h = dist * halfFovTan * 2 * screenRatio;
+        const viewH = dist * halfFovTan * 2;
+        const h = fs * viewH / rendererH;
         sprite.scale.set(h * aspect, h, 1);
       }
     } else {
       const baseFrustum = 20;
       for (const [sprite, aspect] of this.labelSprites) {
         const fs = sprite.userData['labelFontSize'] ?? globalFontSize;
-        const screenRatio = fs / 1000;
-        const h = baseFrustum / (cam as THREE.OrthographicCamera).zoom * screenRatio;
+        const viewH = baseFrustum / (cam as THREE.OrthographicCamera).zoom;
+        const h = fs * viewH / rendererH;
         sprite.scale.set(h * aspect, h, 1);
       }
     }

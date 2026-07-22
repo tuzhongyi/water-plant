@@ -1,4 +1,5 @@
 export interface Config {
+  title: string;
   playback: PlaybackConfig;
   videoUrl: string;
   user: UserConfig;

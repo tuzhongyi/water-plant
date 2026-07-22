@@ -36,7 +36,7 @@ export const DEFAULT_RENDER_SETTINGS: RenderSettings = {
   cameraFar: 7500,
   cameraType: 'perspective',
   showLabels: true,
-  labelFontSize: 25,
+  labelFontSize: 32,
   labelHeight: 0.6,
   viewPreset: 'medium',
   camPos: { x: 0, y: 20, z: 55 },

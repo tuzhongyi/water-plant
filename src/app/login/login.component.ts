@@ -19,7 +19,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private business: LoginBusiness,
   ) {
-    title.setTitle('惠南水厂智慧平台');
+    this.business.title.then((x) => {
+      title.setTitle(x);
+    });
   }
 
   model = this.init();

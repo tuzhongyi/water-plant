@@ -1,15 +1,15 @@
 {
   "settings": {
-    "renderMode": "overlay",
+    "renderMode": "solid",
     "edgeLineWidth": 1,
     "thresholdAngle": 1,
-    "solidOpacity": 0.05,
+    "solidOpacity": 1,
     "wfOpacity": 0.9,
-    "bgColor": "#20383c",
-    "ambientIntensity": 2.5,
-    "keyIntensity": 3,
-    "fillIntensity": 1,
-    "hemiIntensity": 1.2,
+    "bgColor": "#000000",
+    "ambientIntensity": 3,
+    "keyIntensity": 4,
+    "fillIntensity": 2,
+    "hemiIntensity": 2,
     "showGrid": false,
     "showAxes": false,
     "showCenterDot": false,
@@ -20,25 +20,166 @@
     "bloom": false,
     "fxaa": false,
     "edgeSeeThrough": false,
-    "solidSeeThrough": true,
+    "solidSeeThrough": false,
     "bloomThreshold": 0.6,
     "bloomStrength": 1.5,
     "bloomRadius": 0.4,
+    "showCameraHelpers": true,
     "cameraNear": 0.1,
     "cameraFar": 7500,
     "cameraType": "perspective",
     "viewPreset": "medium",
     "camPos": {
-      "x": 103.66488967013251,
-      "y": 477.32496635685555,
-      "z": 339.11105570695827
+      "x": 0,
+      "y": 445.25,
+      "z": 446.69
     },
     "camTgt": {
-      "x": 86.54461322337065,
-      "y": -53.43371521491479,
-      "z": 13.578313141726676
+      "x": 0,
+      "y": 10.06,
+      "z": 11.5
     },
     "gizmoPivot": "origin",
-    "gizmoVisible": true
+    "gizmoVisible": false,
+    "emissiveIntensity": 0.15,
+    "orthoZoom": 0.027583690436775207
+  },
+  "sceneCameras": [],
+  "typeColorPresets": {
+    "building": {
+      "normal": {
+        "edge": "#007bff",
+        "background": "#000000",
+        "materials": {
+          "wall": "#888888",
+          "roof": "#888888",
+          "other": "#888888",
+          "door": "#888888",
+          "window": "#888888",
+          "ground": "#888888",
+          "wall2": "#888888"
+        }
+      },
+      "hover": {
+        "edge": "#3399ff",
+        "background": "#000000",
+        "materials": {
+          "wall": "#888888",
+          "roof": "#888888",
+          "other": "#888888",
+          "door": "#888888"
+        },
+        "defaultMaterial": "#bfbfbf"
+      },
+      "selected": {
+        "edge": "#ffbb00",
+        "background": "#000000",
+        "materials": {
+          "wall": "#888888",
+          "roof": "#888888",
+          "other": "#888888",
+          "door": "#888888"
+        },
+        "defaultMaterial": "#dbdbdb"
+      },
+      "alarm": {
+        "edge": "#ff2222",
+        "background": "#000000",
+        "materials": {
+          "wall": "#940000",
+          "roof": "#a80000",
+          "other": "#000000",
+          "door": "#550000",
+          "window": "#888888"
+        }
+      }
+    },
+    "floors": {
+      "normal": {
+        "edge": "#888888",
+        "background": "#000000",
+        "materials": {
+          "wall": "#888888",
+          "roof": "#888888",
+          "other": "#888888",
+          "door": "#888888",
+          "Roof": "#888888",
+          "window": "#888888",
+          "ground": "#4d4d4d"
+        }
+      },
+      "hover": {
+        "edge": "#5fffe0",
+        "background": "#000000",
+        "materials": {
+          "wall": "#008866",
+          "roof": "#5fffe0",
+          "other": "#888888",
+          "door": "#00c800"
+        }
+      },
+      "selected": {
+        "edge": "#ffbb00",
+        "background": "#000000",
+        "materials": {
+          "wall": "#785a00",
+          "roof": "#ffbb00",
+          "other": "#999999",
+          "door": "#00ff00"
+        }
+      },
+      "alarm": {
+        "edge": "#ff2222",
+        "background": "#000000",
+        "materials": {
+          "wall": "#440000",
+          "roof": "#660000",
+          "other": "#333333",
+          "door": "#550000"
+        }
+      }
+    },
+    "village": {
+      "normal": {
+        "edge": "#ffbb00",
+        "background": "#000000",
+        "materials": {
+          "wall": "#664400",
+          "roof": "#ffbb00",
+          "other": "#666666",
+          "door": "#007800"
+        }
+      },
+      "hover": {
+        "edge": "#ffcc33",
+        "background": "#000000",
+        "materials": {
+          "wall": "#996600",
+          "roof": "#ffcc33",
+          "other": "#888888",
+          "door": "#00c800"
+        }
+      },
+      "selected": {
+        "edge": "#ff8800",
+        "background": "#000000",
+        "materials": {
+          "wall": "#994400",
+          "roof": "#ff8800",
+          "other": "#999999",
+          "door": "#00ff00"
+        }
+      },
+      "alarm": {
+        "edge": "#ff2222",
+        "background": "#000000",
+        "materials": {
+          "wall": "#440000",
+          "roof": "#660000",
+          "other": "#333333",
+          "door": "#550000"
+        }
+      }
+    }
   }
 }

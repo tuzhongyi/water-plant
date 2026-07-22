@@ -11,11 +11,13 @@ import {
   NgZone,
   OnDestroy,
   output,
+  untracked,
   ViewChild,
 } from '@angular/core';
 import { firstValueFrom, Subscription } from 'rxjs';
 import * as THREE from 'three';
 import { TransformControls } from 'three/examples/jsm/Addons.js';
+import { PathTool } from '../../../common/tools/path-tool/path.tool';
 import { MarkerController } from './business/controllers/marker.controller';
 import { InternalModelState, ModelController } from './business/controllers/model.controller';
 import {
@@ -158,6 +160,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   /** 左键拖拽检测：区分左键单击（触发搜索）与左键拖拽（旋转视角） */
   private leftButtonMoved = false;
   private leftButtonDownPos = { x: 0, y: 0 };
+  /** 记录上一次 renderMode，用于检测模式是否真正变化 */
+  private previousRenderMode?: RenderMode;
+  /** 防止 renderMode effect 重复触发导致并发重载 */
+  private isReloading = false;
   /** 自追踪按钮按下状态，避免 e.buttons 在指针离开画布后归零导致拖拽误判为点击 */
   private leftButtonPressed = false;
   private rightButtonPressed = false;
@@ -212,15 +218,31 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       const visible = this.gizmoVisible() ?? this.state.settings.gizmoVisible;
       this.applyGizmoVisibility(visible);
     });
-    /** renderMode 有值时覆盖 config，无值时使用 config 中的值 */
+    /** renderMode 改变时：更新渲染风格 + 重新加载配置缓存与模型（不同模式对应不同的模型文件路径） */
     effect(() => {
       const rm = this.renderMode();
       if (!rm) return;
+
+      const prev = this.previousRenderMode;
+      this.previousRenderMode = rm;
+
       this.state.updateSettings({ renderMode: rm });
-      for (const [, entry] of this.state.loadedModels) {
-        if (this.modelCtrl.internalModels.has(entry.id)) {
-          this.edgesService.applyRenderMode(entry, rm);
-          this.colorsService.reapplyCurrentState(entry);
+
+      /* 场景未就绪（首次构造期间）仅更新设置，ngAfterViewInit 会用新模式完成初始加载 */
+      if (!this.modelCtrl.sceneReady) return;
+
+      /* 模式确实改变且没有正在进行的重载：重新加载全部模型 */
+      if (prev && rm !== prev && !this.isReloading) {
+        this.reloadAllModelsForMode(rm);
+      } else if (prev && rm !== prev && this.isReloading) {
+        /* 上一轮重载尚未完成，跳过 */
+      } else {
+        /* 模式未变（或首次运行），仅对已加载模型刷新渲染风格 */
+        for (const [, entry] of this.state.loadedModels) {
+          if (this.modelCtrl.internalModels.has(entry.id)) {
+            this.edgesService.applyRenderMode(entry, rm);
+            this.colorsService.reapplyCurrentState(entry);
+          }
         }
       }
     });
@@ -1231,6 +1253,40 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       }
     } finally {
       this.modelCtrl.loadingIds.delete(m.fileName);
+    }
+  }
+
+  /** renderMode 改变时重新加载所有模型：更新 models.json 缓存 → config.json 设置 → 每个模型按新路径重建 */
+  private async reloadAllModelsForMode(mode: RenderMode): Promise<void> {
+    this.isReloading = true;
+    try {
+      /* 1️⃣ 重新加载 models.json 缓存 */
+      try {
+        const modelFiles = await firstValueFrom(this.apiService.models(mode));
+        this.modelCtrl.setConfigCache(modelFiles);
+      } catch (err) {
+        console.warn(`[ThreeDimensionComponent] models.json('${mode}') 加载失败:`, err);
+      }
+
+      /* 2️⃣ 重新加载 config.json，完成后注入用户选择的 renderMode */
+      const config = await this.configService.loadConfig(mode);
+      if (config) {
+        this.state.updateSettings({ renderMode: mode });
+      }
+
+      /* 3️⃣ 对每个模型用新模式路径重建 URL 并重新加载 */
+      const currentModels = untracked(() => this.models());
+      for (const m of currentModels) {
+        const newUrl = PathTool.three.get.file(mode, m.fileName);
+        await this.reloadSingleModel({ ...m, url: newUrl });
+      }
+
+      /* 4️⃣ 重新适配视角 + 更新 marker 可见性 */
+      this.fitAllModelsInView(currentModels, true);
+      this.markerCtrl.cache.visibility(currentModels);
+      this.updateLabelVisibility();
+    } finally {
+      this.isReloading = false;
     }
   }
 

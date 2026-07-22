@@ -358,6 +358,11 @@ export class ModelController {
         this.cameraAnimId = requestAnimationFrame(animate);
       } else {
         this.cameraAnimId = 0;
+        /* 动画结束后打印最终相机位置，方便复制到 config.json */
+        console.log('[fitAllModelsInView] 相机就位:', JSON.stringify({
+          camPos: { x: +cam.position.x.toFixed(2), y: +cam.position.y.toFixed(2), z: +cam.position.z.toFixed(2) },
+          camTgt: { x: +ctrl.target.x.toFixed(2), y: +ctrl.target.y.toFixed(2), z: +ctrl.target.z.toFixed(2) },
+        }));
       }
     };
     this.zone.runOutsideAngular(() => {

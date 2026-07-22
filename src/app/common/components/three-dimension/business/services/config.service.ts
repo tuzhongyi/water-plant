@@ -33,7 +33,8 @@ export class ConfigService {
       this.restoreCameraFromSettings(res.settings);
 
       return config;
-    } catch {
+    } catch (err) {
+      console.error(`[ConfigService] loadConfig('${mode}') 失败:`, err);
       return null;
     }
   }

@@ -659,12 +659,17 @@ export class MarkerController {
     const fontSize = 20;
     ctx.font = `bold ${fontSize}px sans-serif`;
     const tw = ctx.measureText(cam.name).width;
-    const pad = 8;
+    const strokeWidth = 3;
+    const pad = 8 + strokeWidth;
     canvas.width = tw + pad * 2;
     canvas.height = fontSize + pad * 2;
     ctx.font = `bold ${fontSize}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    /* 暗色描边 + 白色填充：深浅背景均能辨认 */
+    ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeText(cam.name, canvas.width / 2, canvas.height / 2);
     ctx.fillStyle = '#ffffff';
     ctx.fillText(cam.name, canvas.width / 2, canvas.height / 2);
     const tex = new THREE.CanvasTexture(canvas);

@@ -204,16 +204,20 @@ export class ModelService {
     const fontSize = 48;
     ctx.font = `bold ${fontSize}px sans-serif`;
     const textWidth = ctx.measureText(entry.label).width;
-    const padding = 16;
+    /* 描边需要额外空间避免截断 */
+    const strokeWidth = 5;
+    const padding = 16 + strokeWidth;
     canvas.width = textWidth + padding * 2;
     canvas.height = fontSize + padding * 2;
 
     ctx.font = `bold ${fontSize}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    /* 暗色描边（solid 模式浅色背景下可辨）+ 白色填充（overlay 暗色背景下可辨） */
+    ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+    ctx.lineWidth = strokeWidth;
+    ctx.strokeText(entry.label, canvas.width / 2, canvas.height / 2);
     ctx.fillStyle = '#ffffff';
-    ctx.shadowColor = 'rgba(0,0,0,0.7)';
-    ctx.shadowBlur = 4;
     ctx.fillText(entry.label, canvas.width / 2, canvas.height / 2);
 
     const texture = new THREE.CanvasTexture(canvas);
