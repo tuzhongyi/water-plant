@@ -3,7 +3,7 @@
     "begin": -15,
     "end": 15
   },
-  "videoUrl": "http://127.0.0.1:8800/video/wsplayer/wsplayer.html",
+  "videoUrl": "http://127.0.0.1/video/wsplayer/wsplayer.html",
   "user": {
     "username": "admin",
     "password": "howell.net.cn"

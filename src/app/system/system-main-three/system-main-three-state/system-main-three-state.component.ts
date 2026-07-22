@@ -10,6 +10,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { CardStatistic1Component } from '../../../common/components/card-statistic-1/card-statistic-1.component';
+import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
@@ -26,6 +27,7 @@ export class SystemMainThreeStateComponent implements OnChanges {
   @Input() title = '';
   @Input('datas') source: GeoMapElement[] = [];
   @Output() hide = new EventEmitter<void>();
+  @Output() details = new EventEmitter<MapElementType | undefined>();
 
   constructor(
     private language: LanguageTool,
@@ -76,6 +78,13 @@ export class SystemMainThreeStateComponent implements OnChanges {
   on = {
     hide: () => {
       this.hide.emit();
+    },
+    details: (item?: SystemMainThreeState) => {
+      if (item) {
+        this.details.emit(item.type);
+      } else {
+        this.details.emit();
+      }
     },
   };
 }

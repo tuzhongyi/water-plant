@@ -32,7 +32,7 @@ export class SystemRecordTableFilter implements ISystemRecordTableArgs {
   type?: number;
   duration = DateTimeTool.all.day(new Date());
   asc?: string;
-  desc: string = 'EventTime';
+  desc?: string = 'EventTime';
 
   static from(args: SystemRecordTableArgs): SystemRecordTableFilter {
     let filter = ObjectTool.assign(args, SystemRecordTableFilter);

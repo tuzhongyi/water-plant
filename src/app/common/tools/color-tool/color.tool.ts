@@ -17,10 +17,14 @@ export class ColorTool {
             hex: this.yellow,
           };
         case 0:
-        default:
           return {
             name: 'green',
             hex: this.green,
+          };
+        default:
+          return {
+            name: '',
+            hex: '',
           };
       }
     },

@@ -5,6 +5,7 @@ import { PaginatorComponent } from '../../../common/components/paginator/paginat
 import { DeviceEventRecord } from '../../../common/data-core/models/events/device-event-record.model';
 import { Page } from '../../../common/data-core/models/interface/page-list.model';
 import { TableSorterDirective } from '../../../common/directives/table-sorter/table-soater.directive';
+import { Sort } from '../../../common/directives/table-sorter/table-sorter.model';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { Language } from '../../../common/tools/language-tool/language';
 import { SystemRecordEntranceTableBusiness } from './system-record-table-entrance.business';
@@ -85,7 +86,14 @@ export class SystemRecordEntranceTableComponent implements OnInit, OnDestroy {
     page: (index: number) => {
       this.load(index, this.page.PageSize, this.filter);
     },
-    sort: (_sort: any) => {
+    sort: (_sort: Sort) => {
+      this.filter.asc = undefined;
+      this.filter.desc = undefined;
+      if (_sort.direction == 'asc') {
+        this.filter.asc = _sort.active;
+      } else {
+        this.filter.desc = _sort.active;
+      }
       this.load(this.page.PageIndex, this.page.PageSize, this.filter);
     },
     playback: (e: Event, item: SystemRecordEntranceTableItem) => {

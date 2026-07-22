@@ -1,0 +1,48 @@
+<div class="system-element-manager">
+  <div class="system-element-head">
+    <div class="forms">
+      <div class="form-item">
+        <div class="form-item-text">类型</div>
+        <div class="form-item-value">
+          <hw-select [nullable]="true" [(selected)]="table.args.type">
+            <select [(ngModel)]="table.args.type">
+              @for (item of source.type.elements; track $index) {
+                <option [ngValue]="item.Value">{{ item.Name }}</option>
+              }
+            </select>
+          </hw-select>
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text">楼栋</div>
+        <div class="form-item-value">
+          <hw-select [nullable]="true" [(selected)]="table.args.buildingId">
+            <select [(ngModel)]="table.args.buildingId">
+              @for (item of source.buildings; track $index) {
+                <option [ngValue]="item.Id">{{ item.Name }}</option>
+              }
+            </select>
+          </hw-select>
+        </div>
+      </div>
+      <div class="form-item">
+        <div class="form-item-text">名称</div>
+        <div class="form-item-value">
+          <input type="text" [(ngModel)]="table.args.name" placeholder="搜索名称或描述" />
+        </div>
+      </div>
+      <div class="form-item submit">
+        <button class="button-border full" (click)="table.on.search()">
+          <i class="howell-icon-search2"></i>查询
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="system-element-body">
+    <hw-system-element-table
+      [args]="table.args"
+      [load]="table.load"
+      (preview)="table.on.preview($event)"
+    ></hw-system-element-table>
+  </div>
+</div>

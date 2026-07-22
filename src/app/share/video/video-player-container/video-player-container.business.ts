@@ -23,18 +23,21 @@ export class VideoPlayerContainerBusiness {
     return model;
   }
 
-  private convert(data: VideoUrl) {
-    let model = new VideoModel(data.Url);
+  private convert(url: VideoUrl) {
+    let str = url.Url;
+    let _url = new URL(str);
+    _url.hostname = location.hostname;
     if (location.port == '9001') {
-      if (model.host == 'localhost' || model.host == '127.0.0.1') {
-        model.host = '192.168.21.122';
-      }
+      _url.hostname = '192.168.21.122';
     }
-    if (data.Username) {
-      model.username = data.Username;
+    str = _url.toString();
+
+    let model = VideoModel.fromUrl(str);
+    if (url.Username) {
+      model.username = url.Username;
     }
-    if (data.Password) {
-      model.password = data.Password;
+    if (url.Password) {
+      model.password = url.Password;
     }
     return model;
   }

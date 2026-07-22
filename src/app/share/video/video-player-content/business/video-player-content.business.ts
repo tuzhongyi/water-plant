@@ -62,11 +62,13 @@ export class VideoPlayerContentBusiness {
 
   private convert(url: VideoUrl) {
     let str = url.Url;
+    let _url = new URL(str);
+    _url.hostname = location.hostname;
     if (location.port == '9001') {
-      let _url = new URL(str);
       _url.hostname = '192.168.21.122';
-      str = _url.toString();
     }
+    str = _url.toString();
+
     let model = VideoModel.fromUrl(str);
     if (url.Username) {
       model.username = url.Username;

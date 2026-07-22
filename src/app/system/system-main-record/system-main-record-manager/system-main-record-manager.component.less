@@ -23,12 +23,16 @@
   }
 
   &-head {
-    &-title {
+    &-action {
       position: relative;
+      display: flex;
+      align-items: center;
 
       &:hover {
-        .system-main-record-head-title {
-          &-content {
+        .system-main-record-head-action {
+
+          &-content,
+          &-_ {
             opacity: 0;
           }
 
@@ -38,7 +42,8 @@
         }
       }
 
-      &-content {
+      &-content,
+      &-_ {
         transition: all 0.5s;
         opacity: 1;
       }

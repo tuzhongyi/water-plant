@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { WheelCtrlDirective } from '../../../common/directives/wheel-ctrl/wheel-ctrl.directive';
 import { ThreeDConfig } from '../../../common/storage/three-d-storage/three-d-store.model';
@@ -26,6 +27,7 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   @Input() alarm?: EventEmitter<string>;
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
+  @Output() elementtype = new EventEmitter<MapElementType | undefined>();
 
   constructor(private business: SystemMainThreeBusiness) {}
 
@@ -79,6 +81,9 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
         this.config.find.radius = value;
         this.business.config.save(this.config);
       }
+    },
+    elementtype: (type?: MapElementType) => {
+      this.elementtype.emit(type);
     },
   };
 }

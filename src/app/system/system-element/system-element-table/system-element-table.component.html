@@ -1,0 +1,80 @@
+<div class="system-element-table">
+  <div class="system-element-table-body table-page">
+    <table border="0" cellpadding="0" cellspacing="0">
+      @for (width of widths; track $index) {
+        <colgroup>
+          <col [ngStyle]="{ width: width, 'min-width': minwidth[$index] }" />
+        </colgroup>
+      }
+      <thead>
+        <tr>
+          <th class="center">序号</th>
+          <th>名称</th>
+          <th>元素类型</th>
+          <th>所在位置</th>
+          <th>状态</th>
+          <th class="center">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of datas(); track $index) {
+          <tr
+            (click)="onselect(item)"
+            [ngClass]="{
+              nohover: !item,
+              nodata: !item,
+              selected: item === selected,
+            }"
+          >
+            <td class="center">
+              @if (item) {
+                {{ page.PageSize * (page.PageIndex - 1) + $index + 1 }}
+              }
+              @if (!item) {
+                &nbsp;
+              }
+            </td>
+
+            <td [title]="item?.name || ''">
+              @if (item) {
+                {{ item?.name || '-' }}
+              }
+            </td>
+            <td [title]="(item?.type | async) || ''">
+              @if (item) {
+                {{ (item?.type | async) || '-' }}
+              }
+            </td>
+            <td [title]="(item?.parent | async) || ''">
+              @if (item) {
+                {{ (item?.parent | async) || '-' }}
+              }
+            </td>
+            <td [title]="item?.statename || ''" [class]="item?.statecolor">
+              @if (item) {
+                {{ (item?.statename | async) || '-' }}
+              }
+            </td>
+
+            <td class="center">
+              @if (item) {
+                <div class="operation">
+                  <button
+                    title="视频预览"
+                    [disabled]="!item.canplay"
+                    (click)="on.preview($event, item)"
+                  >
+                    <i class="howell-icon-video-play"></i>
+                  </button>
+                </div>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="system-element-table-foot">
+    <paginator [page]="page" (change)="on.page($event)"> </paginator>
+  </div>
+</div>

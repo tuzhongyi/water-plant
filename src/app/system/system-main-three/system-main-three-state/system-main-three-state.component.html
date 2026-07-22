@@ -1,15 +1,25 @@
 <hw-card-statistic-1>
   <div class="system-main-three-state">
     <div class="system-main-three-state-head">
-      <div class="system-main-three-state-head-icon button" (click)="on.hide()">
-        <i class="mdi mdi-chevron-right"></i>
+      <div class="system-main-three-state-head-title">
+        <div class="system-main-three-state-head-title-icon button" (click)="on.hide()">
+          <i class="mdi mdi-chevron-right"></i>
+        </div>
+        <div class="system-main-three-state-head-title-content">{{ title }}</div>
       </div>
-      <div class="system-main-three-state-head-title">{{ title }}</div>
+      <div class="system-main-three-state-head-action">
+        <div class="system-main-three-state-head-action-_">
+          <i class="mdi mdi-dots-vertical"></i>
+        </div>
+        <div class="system-main-three-state-head-action-button">
+          <button (click)="on.details()">查看全部</button>
+        </div>
+      </div>
     </div>
     <div class="card-statistic-line system-main-three-state-line"></div>
     <div class="system-main-three-state-body">
       @for (item of datas; track $index) {
-        <div class="system-main-three-state-item">
+        <div class="system-main-three-state-item" (click)="on.details(item)">
           <div class="system-main-three-state-item-head">
             <div class="system-main-three-state-item-head-icon">
               <i [class]="item.icon"></i>

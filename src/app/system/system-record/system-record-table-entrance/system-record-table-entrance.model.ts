@@ -34,7 +34,7 @@ export class SystemRecordEntranceTableFilter implements ISystemRecordEntranceTab
   duration = DateTimeTool.all.day(new Date());
   value?: string;
   asc?: string;
-  desc: string = 'EventTime';
+  desc?: string = 'EventTime';
 
   static from(args: SystemRecordEntranceTableArgs): SystemRecordEntranceTableFilter {
     let filter = ObjectTool.assign(args, SystemRecordEntranceTableFilter);

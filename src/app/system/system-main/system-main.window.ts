@@ -1,6 +1,7 @@
 import { EventEmitter } from '@angular/core';
 import { PlayMode } from '../../common/components/video-player/video-player.model';
 import { WindowViewModel } from '../../common/components/window-control/window.model';
+import { MapElementType } from '../../common/data-core/enums/geo/map-element-type.enum';
 import { DeviceEventRecord } from '../../common/data-core/models/events/device-event-record.model';
 import { DeviceEventResource } from '../../common/data-core/models/events/device-event-resource.model';
 import { EventBehaviorAction } from '../../common/data-core/models/events/event-behavior-action.model';
@@ -76,15 +77,11 @@ export class PictureWindow extends WindowViewModel {
   // }
 }
 export class MapElementTableWindow extends WindowViewModel {
-  constructor() {
-    super();
-  }
-
-  title: string = '';
+  title: string = '地图点位信息列表';
+  type?: MapElementType;
   style = {
     ...SizeTool.window.large,
   };
-  datas: GeoMapElement[] = [];
 }
 export class RecordTableWindow extends WindowViewModel {
   constructor() {

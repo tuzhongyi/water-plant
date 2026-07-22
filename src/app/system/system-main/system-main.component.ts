@@ -5,6 +5,7 @@ import { AlarmComponent } from '../../common/components/alarm-control/alarm.comp
 import { CardComponent } from '../../common/components/card/card.component';
 import { PlayMode } from '../../common/components/video-player/video-player.model';
 import { WindowComponent } from '../../common/components/window-control/window.component';
+import { MapElementType } from '../../common/data-core/enums/geo/map-element-type.enum';
 import { DB31Device } from '../../common/data-core/models/db31/db31-device.model';
 import { Device } from '../../common/data-core/models/devices/device.model';
 import { DeviceEventRecord } from '../../common/data-core/models/events/device-event-record.model';
@@ -14,7 +15,7 @@ import { DateTimeTool } from '../../common/tools/date-time-tool/datetime.tool';
 import { wait } from '../../common/tools/wait';
 import { VideoPlayerContainerComponent } from '../../share/video/video-player-container/video-player-container.component';
 import { VideoPlayerListComponent } from '../../share/video/video-player-list/video-player-list.component';
-import { SystemMainElementManagerComponent } from '../system-main-element/system-main-element-manager/system-main-element-manager.component';
+import { SystemElementManagerComponent } from '../system-element/system-element-manager/system-element-manager.component';
 import { SystemMainRecordManagerComponent } from '../system-main-record/system-main-record-manager/system-main-record-manager.component';
 import { SystemMainStateDeviceComponent } from '../system-main-state/system-main-state-device/system-main-state-device.component';
 import { SystemMainThreeConfigManagerComponent } from '../system-main-three/system-main-three-config/system-main-three-config-manager/system-main-three-config-manager.component';
@@ -38,7 +39,7 @@ import { SystemMainWindow } from './system-main.window';
     SystemMainStateDeviceComponent,
     SystemMainRecordManagerComponent,
     VideoPlayerListComponent,
-    SystemMainElementManagerComponent,
+    SystemElementManagerComponent,
     SystemMainThreeConfigManagerComponent,
     SystemRecordManagerComponent,
   ],
@@ -51,9 +52,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     private business: SystemMainBusiness,
     private mqtt: MqttRequestService,
     private cdr: ChangeDetectorRef,
-  ) {
-    // this.window.config.three.show = true;
-  }
+  ) {}
 
   window = new SystemMainWindow();
   private handle = {
@@ -77,6 +76,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    clearInterval(this.handle.loop);
   }
 
   private init() {
@@ -84,7 +84,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       this.load().then((x) => {
         this.map.load.emit();
       });
-    }, 1000);
+    }, 60_1000);
   }
 
   private load(init = false) {
@@ -125,9 +125,11 @@ export class SystemMainComponent implements OnInit, OnDestroy {
             break;
           case 2:
             this.map.alarm.emit(id);
+            this.map.load.emit();
             break;
           default:
             this.map.alarm.emit(id);
+            this.map.load.emit();
             this.window.alarm.open(x);
             break;
         }
@@ -146,6 +148,12 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       },
       video: (datas: GeoMapElement[]) => {
         this.video.multple.preview(datas);
+      },
+      element: {
+        type: (type?: MapElementType) => {
+          this.window.table.element.type = type;
+          this.window.table.element.show = true;
+        },
       },
     },
   };

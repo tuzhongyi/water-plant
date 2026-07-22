@@ -16,7 +16,7 @@ export class GeographicMapElementServiceCache extends ServiceCache<GeoMapElement
       datas = datas.filter((x) => x.Name.includes(params.Name!));
     }
     if (params.ElementTypes && params.ElementTypes.length > 0) {
-      datas = datas.filter((x) => params.ElementTypes!.includes(x.ElementType));
+      datas = datas.filter((x) => params.ElementTypes?.includes(x.ElementType));
     }
     if (params.MapId) {
       datas = datas.filter((x) => x.MapId == params.MapId);
@@ -24,8 +24,8 @@ export class GeographicMapElementServiceCache extends ServiceCache<GeoMapElement
     if (params.ParentId) {
       datas = datas.filter((x) => x.ParentId == params.ParentId);
     }
-    if (params.ElementId) {
-      datas = datas.filter((x) => x.ElementId == params.ElementId);
+    if (params.ElementIds) {
+      datas = datas.filter((x) => x.ElementId && params.ElementIds?.includes(x.ElementId));
     }
     return datas;
   }

@@ -18,22 +18,27 @@
           [alarm]="map.alarm"
           (preview)="map.on.preview($event)"
           (video)="map.on.video($event)"
+          (elementtype)="map.on.element.type($event)"
         ></hw-system-main-three-manager>
       </howell-card>
     </div>
   </div>
 
-  <div class="system-main-test">
+  <!-- <div class="system-main-test">
     <button (click)="on.test()">text</button>
-  </div>
+  </div> -->
 
   @if (window.table.element.show) {
     <app-window
       [model]="window.table.element"
       [style]="window.table.element.style"
       [title]="window.table.element.title"
+      [lineable]="true"
     >
-      <hw-system-main-element-manager></hw-system-main-element-manager>
+      <hw-system-element-manager
+        [type]="window.table.element.type"
+        (preview)="video.single.preview($event)"
+      ></hw-system-element-manager>
     </app-window>
   }
   @if (window.table.record.show) {

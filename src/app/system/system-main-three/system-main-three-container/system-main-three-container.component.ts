@@ -18,8 +18,8 @@ import { MapModel } from '../../../setting/setting-map/business/setting-map.mode
 import { SystemMainThreeBusiness } from '../business/system-main-three.business';
 import { SystemMainThreeConverter } from '../business/system-main-three.converter';
 import { SystemMainThreeArgs } from '../business/system-main-three.model';
-import { SystemMainThreeElementManagerComponent } from '../system-main-three-element/system-main-three-element-manager/system-main-three-element-manager.component';
 import { SystemMainThreeConfigFindSliderComponent } from '../system-main-three-config/system-main-three-config-find-slider/system-main-three-config-find-slider.component';
+import { SystemMainThreeElementManagerComponent } from '../system-main-three-element/system-main-three-element-manager/system-main-three-element-manager.component';
 import { SystemMainThreeFilterComponent } from '../system-main-three-filter/system-main-three-filter.component';
 
 @Component({
@@ -59,7 +59,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     this.init();
     this.map.load();
     this.building.load();
-    this.element.load(this.args);
+    this.element.load(this.args, false);
     this.regist();
   }
   ngOnDestroy(): void {
@@ -78,7 +78,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
           let floorId = this.floor.selected()?.Id;
           this.args.floorId = floorId;
           this.argsChange.emit(this.args);
-          this.element.load(this.args);
+          this.element.load(this.args, false);
         }),
       );
     }
@@ -86,7 +86,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.elementload.subscribe((x) => {
           this.args = x;
-          this.element.load(this.args);
+          this.element.load(this.args, false);
         }),
       );
     }
@@ -100,7 +100,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
                 this.building.reload(building);
               }
             } else {
-              this.element.load(this.args);
+              this.element.load(this.args, false);
             }
           });
         }),
@@ -113,7 +113,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
             this.building.reload(element);
             break;
           default:
-            this.element.load(this.args);
+            this.element.load(this.args, false);
             break;
         }
       }),
@@ -133,11 +133,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.args = new SystemMainThreeArgs();
         this.argsChange.emit(this.args);
         if (reload) {
-          this.element.load(this.args);
+          this.element.load(this.args, true);
         }
       },
       doing: () => {
-        this.element.load(this.args);
+        this.element.load(this.args, true);
       },
       close: () => {
         this.manager.filter.show = false;
@@ -262,8 +262,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       let elements = this.element.datas();
       return elements.find((x) => x.ElementId == modelId);
     },
-    load: async (args: SystemMainThreeArgs) => {
-      let cameras = await this.business.element.load(args);
+    load: async (args: SystemMainThreeArgs, usecache: boolean) => {
+      let cameras = await this.business.element.load(args, usecache);
 
       this.element.datas.set(cameras);
 
@@ -343,7 +343,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.args.floorId = data.Id;
         this.args.buildingId = undefined;
         this.argsChange.emit(this.args);
-        this.element.load(this.args);
+        this.element.load(this.args, true);
 
         setTimeout(() => {
           this.three.focus.emit();
@@ -354,7 +354,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.floor.clear();
         this.three.model.clear();
 
-        await Promise.all([this.map.load(), this.building.load(), this.element.load(this.args)]);
+        await Promise.all([
+          this.map.load(),
+          this.building.load(),
+          this.element.load(this.args, true),
+        ]);
       },
     },
   };
@@ -404,7 +408,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
               this.three.model.datas.set([model]);
               this.args.buildingId = building.Id;
               this.argsChange.emit(this.args);
-              this.element.load(this.args);
+              this.element.load(this.args, true);
             }
           }
         },
