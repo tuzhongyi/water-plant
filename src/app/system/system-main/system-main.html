@@ -6,6 +6,7 @@
       </div>
       <div class="system-main-record">
         <hw-system-main-record-manager
+          [load]="record.load"
           (playback)="record.on.playback($event)"
           (all)="window.table.record.show = true"
         ></hw-system-main-record-manager>
@@ -18,7 +19,7 @@
           [alarm]="map.alarm"
           (preview)="map.on.preview($event)"
           (video)="map.on.video($event)"
-          (elementtype)="map.on.element.type($event)"
+          (element)="map.on.element($event)"
         ></hw-system-main-three-manager>
       </howell-card>
     </div>
@@ -37,6 +38,7 @@
     >
       <hw-system-element-manager
         [type]="window.table.element.type"
+        [buildingId]="window.table.element.buildingId"
         (preview)="video.single.preview($event)"
       ></hw-system-element-manager>
     </app-window>

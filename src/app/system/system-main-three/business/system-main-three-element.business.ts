@@ -55,10 +55,8 @@ export class SystemMainThreeElementBusiness {
     }
     let all: GeoMapElement[];
     if (usecache) {
-      console.log('element load cache');
       all = await this.service.map.element.cache.all(params);
     } else {
-      console.log('element load');
       all = await this.service.map.element.all(params);
     }
     if (!args.floorId) {

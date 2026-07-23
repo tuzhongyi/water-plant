@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ConfigRequestService } from '../../common/data-core/request/config/config-request.service';
 import { HeaderComponent } from '../../share/header/header.component';
@@ -13,9 +13,9 @@ import { HeaderComponent } from '../../share/header/header.component';
 export class SettingComponent {
   constructor(private config: ConfigRequestService) {
     this.config.get().then((x) => {
-      this.title = x.title;
+      this.title.set(x.title);
     });
   }
 
-  title = '';
+  title = signal<string>('');
 }

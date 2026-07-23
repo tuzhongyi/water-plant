@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { DeviceEventRecord } from '../../../common/data-core/models/events/device-event-record.model';
 import { PagedList } from '../../../common/data-core/models/interface/page-list.model';
+import { ConfigRequestService } from '../../../common/data-core/request/config/config-request.service';
 import { GetDeviceEventRecordsParams } from '../../../common/data-core/request/services/event/event.params';
 import { EventRequestService } from '../../../common/data-core/request/services/event/event.service';
 import { Language } from '../../../common/tools/language-tool/language';
@@ -16,6 +17,7 @@ export class SystemRecordEntranceTableBusiness {
   constructor(
     private event: EventRequestService,
     private language: LanguageTool,
+    private config: ConfigRequestService,
   ) {}
 
   async load(index: number, size: number, filter: SystemRecordEntranceTableFilter) {
@@ -74,7 +76,7 @@ export class SystemRecordEntranceTableBusiness {
   };
 
   private data = {
-    load: (index: number, size: number, filter: SystemRecordEntranceTableFilter) => {
+    load: async (index: number, size: number, filter: SystemRecordEntranceTableFilter) => {
       let params = new GetDeviceEventRecordsParams();
       params.PageIndex = index;
       params.PageSize = size;
@@ -87,7 +89,8 @@ export class SystemRecordEntranceTableBusiness {
       if (filter.type != undefined) {
         params.EventTypes = [filter.type];
       } else {
-        params.EventTypes = [103, 104];
+        let config = await this.config.get();
+        params.EventTypes = config.event.entrance;
       }
 
       if (filter.value) {

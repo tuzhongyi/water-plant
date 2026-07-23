@@ -47,21 +47,30 @@
     .form {
       &s {
 
+        margin-top: 6%;
         height: 65%;
-        margin: 2% 0;
         display: flex;
         flex-direction: column;
         gap: 35px;
-        padding: 20px 15% 35px 15%;
+        padding: 0 15%;
       }
 
       &-item {
         width: 100%;
-        height: 40px;
-        border: 2px solid #5e6ebf;
+
         display: flex;
         align-items: center;
         justify-content: space-between;
+
+        &.username,
+        &.password {
+          height: 40px;
+          border: 2px solid #5e6ebf;
+        }
+
+
+
+
 
 
         &-text {
@@ -100,6 +109,16 @@
     padding: 0 15%;
     height: 55px;
     min-height: 55px;
+
+    &.remember {
+      min-height: auto;
+      height: auto;
+      margin: 20px 0;
+
+      &>label>input[type=checkbox] {
+        border: 2px solid #5e6ebf;
+      }
+    }
   }
 
   &-button {

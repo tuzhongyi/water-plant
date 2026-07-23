@@ -9,5 +9,11 @@
     "username": "admin",
     "password": "howell.net.cn"
   },
-  "reload": 240
+  "reload": 240,
+  "event":{
+	"device":[1,2],
+	"alarm":[102],
+	"entrance":[103,104],
+	"other":[101]
+  }
 }

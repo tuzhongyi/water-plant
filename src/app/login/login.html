@@ -32,6 +32,12 @@
         </div>
       </div>
     </div>
+    <div class="login-foot remember">
+      <label for="login_remember">
+        <input type="checkbox" id="login_remember" [(ngModel)]="remember" />
+        记住密码
+      </label>
+    </div>
     <div class="login-foot">
       <button class="login-button" (click)="on.login()">登录</button>
     </div>

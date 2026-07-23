@@ -12,14 +12,16 @@
       (preview)="map.on.preview($event)"
       (video)="map.on.video($event)"
       (elementloaded)="map.on.loaded($event)"
+      (maploaded)="map.on.maploaded($event)"
+      (buildingselect)="map.building.selected = $event"
     ></hw-system-main-three-container>
   </div>
 
   <div class="system-main-three-state" [class.none]="map.datas.length == 0 && !state.show">
     <hw-system-main-three-state
-      [title]="'惠南水厂'"
+      [title]="map.data?.Name || ''"
       [datas]="map.datas"
-      (details)="on.elementtype($event)"
+      (details)="on.element($event)"
     ></hw-system-main-three-state>
   </div>
 </div>

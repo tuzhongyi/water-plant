@@ -5,7 +5,7 @@
     "thresholdAngle": 1,
     "solidOpacity": 0.1,
     "wfOpacity": 0.9,
-    "bgColor": "#20383c",
+    "bgColor": "#092821",
     "ambientIntensity": 2.5,
     "keyIntensity": 3,
     "fillIntensity": 1,
@@ -135,7 +135,7 @@
         "background": "#000000",
         "materials": {
           "wall": "#12385e",
-          "roof": "#ffbb00",
+          "roof": "#007bff",
           "other": "#666666",
           "door": "#007800"
         }
@@ -145,7 +145,7 @@
         "background": "#332200",
         "materials": {
           "wall": "#184d81",
-          "roof": "#ffcc33",
+          "roof": "#2491ff",
           "other": "#888888",
           "door": "#00c800"
         }
@@ -155,7 +155,7 @@
         "background": "#331a00",
         "materials": {
           "wall": "#473600",
-          "roof": "#ff8800",
+          "roof": "#ffbb00",
           "other": "#999999",
           "door": "#00ff00"
         }

@@ -30,8 +30,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private init() {
     let model = new LoginModel();
-    // model.username = 'admin';
-    // model.password = 'Howell.net.cn';
     return model;
   }
 
@@ -40,6 +38,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     window.addEventListener('keypress', this.handle);
 
     this.business.init();
+    let model = this.business.load();
+    if (model) {
+      this.model = model;
+      if (this.model.save) {
+        this.remember = this.model.save;
+      }
+    }
   }
 
   ngOnDestroy(): void {

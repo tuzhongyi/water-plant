@@ -373,6 +373,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       reload: new EventEmitter<ModelViewerModel>(),
       clear: () => {
         this.three.model.datas.set([]);
+        this.buildingselect.emit();
       },
     },
     camera: {
@@ -392,6 +393,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       building: {
         select: (modelId: string) => {
           let building = this.building.get(modelId);
+          this.buildingselect.emit(building);
         },
         expand: async (modelId: string) => {
           let building = this.building.get(modelId);

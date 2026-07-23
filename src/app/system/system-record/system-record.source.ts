@@ -1,23 +1,35 @@
 import { Injectable } from '@angular/core';
 import { EnumNameValue } from '../../common/data-core/models/capabilities/enum-name-value.model';
+import { ConfigRequestService } from '../../common/data-core/request/config/config-request.service';
 import { CapabilityTool } from '../../common/tools/capability-tool/capability.tool';
 
 @Injectable()
 export class SystemRecordSource {
   types: EnumNameValue<number>[] = [];
   entrances: EnumNameValue<number>[] = [];
+  loaded = false;
 
-  constructor(private capability: CapabilityTool) {
+  constructor(
+    private capability: CapabilityTool,
+    private config: ConfigRequestService,
+  ) {
     this.init.types();
   }
 
   private init = {
     types: async () => {
-      let enabledtypes = [1, 2, 101, 102];
+      let config = await this.config.get();
+
+      let enabledtypes = [...config.event.device, ...config.event.alarm, ...config.event.other];
+      let entrances = [...config.event.entrance];
+
       let types = await this.capability.event.EventTypes;
+
       this.types = types.filter((x) => enabledtypes.includes(x.Value));
-      let entrances = [103, 104];
+
       this.entrances = types.filter((x) => entrances.includes(x.Value));
+
+      this.loaded = true;
     },
   };
 }

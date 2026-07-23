@@ -1,9 +1,9 @@
 import { EventEmitter } from '@angular/core';
 import { VideoModel } from '../../../common/components/video-player/video-player.model';
 import {
+  IVideoPlayerArgs,
   PlaybackArgs,
   PreviewArgs,
-  VideoPlayerArgs,
 } from '../video-player-content/video-player-content.model';
 
 export enum ScreenMode {
@@ -36,7 +36,7 @@ export class VideoPlayerListItem {
 
   playing = false;
 
-  private args?: VideoPlayerArgs;
+  private args?: IVideoPlayerArgs;
 
   resume() {
     if (this.args) {

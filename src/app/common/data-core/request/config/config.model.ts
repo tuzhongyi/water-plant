@@ -4,6 +4,7 @@ export interface Config {
   videoUrl: string;
   user: UserConfig;
   reload: number;
+  event: EventConfig;
 }
 interface PlaybackConfig {
   begin: number;
@@ -12,6 +13,12 @@ interface PlaybackConfig {
 interface UserConfig {
   username: string;
   password: string;
+}
+interface EventConfig {
+  device: number[];
+  alarm: number[];
+  entrance: number[];
+  other: number[];
 }
 export interface MapConfig {
   find: MapFindConfig;

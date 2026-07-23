@@ -25,5 +25,8 @@ export class SystemRecordManagerComponent {
     close: () => {
       this.close.emit();
     },
+    playback: (data: DeviceEventRecord) => {
+      this.playback.emit(data);
+    },
   };
 }

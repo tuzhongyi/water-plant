@@ -41,7 +41,7 @@ export class ColorsService {
   /** 应用指定状态的完整外观（边缘 + 背景 + 材质颜色） */
   applyStateColors(entry: ModelEntry, state: ColorState): void {
     if (this.state.renderMode === 'solid') {
-      this.applySolidColors(entry);
+      this.applySolidColors(entry, state);
       return;
     }
     this.applyEdgeColor(entry, state);
@@ -49,8 +49,8 @@ export class ColorsService {
     this.applyMaterialState(entry, state);
   }
 
-  /** solid 模式：去除所有颜色效果和透明度，还原模型原始颜色 */
-  private applySolidColors(entry: ModelEntry): void {
+  /** solid 模式：去除 emissive 效果，按当前状态应用漫反射颜色 */
+  private applySolidColors(entry: ModelEntry, state: ColorState): void {
     entry.model.traverse((c) => {
       const m = c as THREE.Mesh;
       if (m.isMesh) {
@@ -65,7 +65,7 @@ export class ColorsService {
         }
       }
     });
-    this.applyMaterialState(entry, 'normal');
+    this.applyMaterialState(entry, state);
   }
 
   /** 根据模型当前 hover/selected 状态重新应用对应颜色 */
@@ -166,25 +166,31 @@ export class ColorsService {
         : undefined,
     };
 
-    /* 应用材质颜色：按 mat name 小写匹配 preset.materials 中的 key */
+    /* 应用材质颜色：按 mat name 小写匹配 preset.materials 中的 key，
+     * 未匹配时 fallback: diffuse → materials['other'] → '#cccccc'
+     * （diffuse 优先级高于 other，因为 diffuse 是用户显式配置的状态级颜色） */
     const materials = this.getMaterials(entry);
     entry.materialColors.clear();
     for (const { name } of materials) {
       const matKey = name.toLowerCase();
       const normalHex =
         preset.normal.materials[matKey] ??
+        preset.normal.diffuse ??
         preset.normal.materials['other'] ??
         '#cccccc';
       const hoverHex =
         preset.hover.materials[matKey] ??
+        preset.hover.diffuse ??
         preset.hover.materials['other'] ??
         normalHex;
       const selectedHex =
         preset.selected.materials[matKey] ??
+        preset.selected.diffuse ??
         preset.selected.materials['other'] ??
         normalHex;
       const alarmHex = preset.alarm
         ? (preset.alarm.materials[matKey] ??
+          preset.alarm.diffuse ??
           preset.alarm.materials['other'] ??
           undefined)
         : undefined;

@@ -41,6 +41,7 @@ export class SettingMapElementVideoBusiness {
       element.Name = data.Name;
       element.MapId = mapId;
       element.ParentId = parentId;
+      element.Tags = [JSON.stringify({ DeviceId: data.DeviceId })];
       return element;
     },
   };

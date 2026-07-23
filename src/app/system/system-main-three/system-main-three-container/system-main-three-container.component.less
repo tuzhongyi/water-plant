@@ -76,15 +76,18 @@
     gap: 5px;
     width: calc(40px * 3 + 5px * 2);
 
-    &>* {
-      width: 40px;
+    &>button {
+      backdrop-filter: blur(8px);
       color: #17f1c6;
 
       &:hover,
       &.selected {
         color: white;
       }
+    }
 
+    &>* {
+      width: 40px;
     }
 
   }

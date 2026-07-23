@@ -11,6 +11,7 @@
           <th class="center">序号</th>
           <th sort="DeviceName">设备名称</th>
           <th sort="EventType">事件类型</th>
+          <th sort="EventType">触发类型</th>
           <th sort="EventTime">事件时间</th>
           <th sort="Description">描述</th>
           <th class="center">操作</th>
@@ -39,9 +40,14 @@
                 {{ item.name || '-' }}
               }
             </td>
-            <td [title]="(item?.type | async) || ''" [class]="item?.color">
+            <td [title]="(item?.type | async) || ''" [class]="item?.typecolor">
               @if (item) {
                 {{ (item.type | async) || '-' }}
+              }
+            </td>
+            <td [title]="(item?.trigger | async) || ''" [class]="item?.triggercolor">
+              @if (item) {
+                {{ (item.trigger | async) || '-' }}
               }
             </td>
             <td [title]="item?.time || ''">

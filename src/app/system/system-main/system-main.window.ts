@@ -8,8 +8,9 @@ import { EventBehaviorAction } from '../../common/data-core/models/events/event-
 import { GeoMapElement } from '../../common/data-core/models/geographic/map-element.model';
 import { SizeTool } from '../../common/tools/size-tool/size.tool';
 import {
+  IVideoPlayerArgs,
+  PlaybackArgs,
   PreviewArgs,
-  VideoPlayerArgs,
 } from '../../share/video/video-player-content/video-player-content.model';
 import { ScreenMode } from '../../share/video/video-player-list/video-player-list.model';
 
@@ -79,6 +80,7 @@ export class PictureWindow extends WindowViewModel {
 export class MapElementTableWindow extends WindowViewModel {
   title: string = '地图点位信息列表';
   type?: MapElementType;
+  buildingId?: string;
   style = {
     ...SizeTool.window.large,
   };
@@ -107,19 +109,18 @@ class VideoMultipleWindow extends WindowViewModel {
     index: 0,
   };
 
-  play = new EventEmitter<VideoPlayerArgs[]>();
+  play = new EventEmitter<IVideoPlayerArgs[]>();
 
   style = {
     ...SizeTool.window.large,
   };
 
-  open(data: DeviceEventRecord | GeoMapElement[]) {
+  open(data: DeviceEventRecord | GeoMapElement[], alarm = false) {
     if (data instanceof DeviceEventRecord) {
-      this.from.record(data);
+      this.show = this.from.record(data, alarm);
     } else {
-      this.from.map.element(data);
+      this.show = this.from.map.element(data);
     }
-    this.show = true;
   }
 
   private from = {
@@ -131,6 +132,7 @@ class VideoMultipleWindow extends WindowViewModel {
         setTimeout(() => {
           this.play.emit(args);
         }, 0);
+        return true;
       },
       item: (data: GeoMapElement) => {
         let args = new PreviewArgs();
@@ -138,31 +140,55 @@ class VideoMultipleWindow extends WindowViewModel {
         return args;
       },
     },
-    record: (data: DeviceEventRecord) => {
+    record: (data: DeviceEventRecord, alarm = false) => {
       this.title = data.Resource?.ResourceName ?? data.DeviceName ?? '';
-      let args: VideoPlayerArgs[] = [];
-      if (data.Actions) {
-        args = data.Actions.map((x) => this.from.action(x));
+
+      let args: IVideoPlayerArgs[] = [];
+      let show = false;
+      if (data.Actions && data.Actions.length > 0) {
+        args = data.Actions.map((x) => this.from.action(x, alarm ? undefined : data.EventTime));
+        show = true;
       } else if (data.Resource) {
-        args = this.from.resource(data.Resource);
+        args = this.from.resource(data.Resource, alarm ? undefined : data.EventTime);
+        show = data.Resource.ResourceType == 1;
       } else {
         let item = new PreviewArgs();
         item.cameraId = data.DeviceId ?? '';
         args = [item];
+        return false;
       }
 
       setTimeout(() => {
         this.play.emit(args);
       }, 0);
+      return show;
     },
-    action: (data: EventBehaviorAction) => {
-      let args = new PreviewArgs();
-      args.cameraId = data.ResourceId ?? data.DeviceId ?? '';
+    action: (data: EventBehaviorAction, time?: Date) => {
+      let args: IVideoPlayerArgs;
+      if (time) {
+        let playback = new PlaybackArgs();
+        playback.cameraId = data.ResourceId ?? data.DeviceId ?? '';
+        playback.time = time;
+        args = playback;
+      } else {
+        args = new PreviewArgs();
+        args.cameraId = data.ResourceId ?? data.DeviceId ?? '';
+      }
+
       return args;
     },
-    resource: (data: DeviceEventResource) => {
-      let args = new PreviewArgs();
-      args.cameraId = data.ResourceId;
+    resource: (data: DeviceEventResource, time?: Date) => {
+      let args: IVideoPlayerArgs;
+      if (time) {
+        let playback = new PlaybackArgs();
+        playback.cameraId = data.ResourceId;
+        playback.time = time;
+        args = playback;
+      } else {
+        args = new PreviewArgs();
+        args.cameraId = data.ResourceId;
+      }
+
       return [args];
     },
   };

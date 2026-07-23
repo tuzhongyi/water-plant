@@ -15,7 +15,9 @@ export interface SystemRecordTableItem<T = any> {
   description: string;
   name: string;
   value: string;
-  color: string;
+  typecolor: string;
+  trigger: Promise<string>;
+  triggercolor: string;
   playback: boolean;
   data: T;
 }

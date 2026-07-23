@@ -46,22 +46,37 @@ export class MqttRequestService {
     });
   }
 
-  async load(devices: Device[]) {
+  async load(devices: Device[] = []) {
     let config = await this.config;
     let client = new MqttClient(config.host, config.port, config.username, config.password);
     console.log(`mqtt connect to ${config.host}:${config.port}`);
 
-    let urls: string[] = [];
-    devices.forEach((x) => {
-      if (config.trigger) {
-        let _urls = this.subscrib.do(client, x, config.trigger.eventtypes);
-        urls.push(..._urls);
-      }
-    });
-    console.log('mqtt subscrib:', urls);
+    if (devices.length == 0) {
+      this.subscrib.type(client);
+    } else {
+      let urls: string[] = [];
+      devices.forEach((x) => {
+        if (config.trigger) {
+          let _urls = this.subscrib.do(client, x, config.trigger.eventtypes);
+          urls.push(..._urls);
+        }
+      });
+      console.log('mqtt subscrib:', urls);
+    }
   }
 
   private subscrib = {
+    type: (client: MqttClient, type?: number) => {
+      let url = `Devices/+/+/Events/${type ?? '+'}`;
+      client.subscribe(
+        url,
+        async (data: DeviceEventRecord) => {
+          this.event.emit(data);
+        },
+        DeviceEventRecord,
+      );
+      return url;
+    },
     do: (client: MqttClient, device: Device, types: number[]) => {
       let urls: string[] = [];
       if (types.length == 0) {

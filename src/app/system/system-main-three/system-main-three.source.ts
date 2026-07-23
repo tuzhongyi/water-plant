@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { LabelMode } from '../../common/components/three-dimension/business/models/types';
 import { MapElementType } from '../../common/data-core/enums/geo/map-element-type.enum';
 import { EnumNameValue } from '../../common/data-core/models/capabilities/enum-name-value.model';
@@ -29,7 +29,7 @@ export class SystemMainThreeSource {
 
   labelmodes: EnumNameValue[] = [];
 
-  buildings: IIdNameModel[] = [];
+  buildings = signal<IIdNameModel[]>([]);
 
   constructor(
     private capability: CapabilityTool,
@@ -56,10 +56,12 @@ export class SystemMainThreeSource {
       let params = new GetMapElementsParams();
       params.ElementTypes = [MapElementType.Building];
       params.Ids = ArrayTool.unique(buildingIds);
-      this.buildings = await this.service.map.element.cache.all(params);
-      this.buildings = this.buildings.sort((a, b) => {
-        return LocaleCompare.compare(a.Name, b.Name);
-      });
+      let buildings = await this.service.map.element.cache.all(params);
+      this.buildings.set(
+        buildings.sort((a, b) => {
+          return LocaleCompare.compare(a.Name, b.Name);
+        }),
+      );
     },
     map: {
       element: async () => {

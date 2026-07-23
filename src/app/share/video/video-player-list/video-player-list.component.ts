@@ -14,9 +14,9 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { VideoPlayerContentComponent } from '../video-player-content/video-player-content.component';
 import {
+  IVideoPlayerArgs,
   PlaybackArgs,
   PreviewArgs,
-  VideoPlayerArgs,
 } from '../video-player-content/video-player-content.model';
 import { ScreenMode, VideoPlayerListItem } from './video-player-list.model';
 
@@ -28,7 +28,7 @@ import { ScreenMode, VideoPlayerListItem } from './video-player-list.model';
 })
 export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode = ScreenMode.one;
-  @Input() play?: EventEmitter<VideoPlayerArgs[]>;
+  @Input() play?: EventEmitter<IVideoPlayerArgs[]>;
   @Input() seek?: EventEmitter<number>;
   @Input() index: number = 0;
   @Output() indexChange = new EventEmitter<number>();

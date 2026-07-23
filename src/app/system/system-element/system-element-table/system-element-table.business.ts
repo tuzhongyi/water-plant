@@ -55,7 +55,7 @@ export class SystemElementTableBusiness {
       id: data.Id,
       name: data.Name,
       type: this.language.geo.ElementType(data.ElementType),
-      binding: this.get.name(data.ElementId, data.FromDB31),
+      // binding: this.get.name(data),
       parent: this.get.parent(data.ParentId),
       statename: this.language.geo.ElementStates(data.ElementState),
       statecolor: ColorTool.from.MapElementState(data.ElementState).name,
@@ -85,21 +85,41 @@ export class SystemElementTableBusiness {
       }
       return parts.join(' - ');
     },
-    name: async (id?: string, fromdb31?: boolean) => {
-      if (!id) return '';
+    name: async (data: GeoMapElement) => {
+      if (!data.ElementId) return '';
       let device: IIdNameModel<string, string | undefined>;
-      if (fromdb31) {
-        device = await this.get.db31(id);
+      if (data.FromDB31) {
+        try {
+          device = await this.get.db31channel(data.ElementId);
+        } catch (e) {
+          device = await this.get.db31(data.ElementId);
+        }
       } else {
-        device = await this.get.device(id);
+        if (data.Tags && data.Tags.length > 0) {
+          try {
+            let obj = JSON.parse(data.Tags[0]);
+            device = await this.get.videochannel(obj.DeviceId, data.ElementId);
+          } catch (error) {
+            device = await this.get.device(data.ElementId);
+          }
+        } else {
+          device = await this.get.device(data.ElementId);
+        }
       }
       return device.Name ?? '';
     },
+
     device: (id: string) => {
       return this.service.device.cache.get(id);
     },
+    videochannel: (deviceId: string, channelId: string) => {
+      return this.service.device.video.channel.get(deviceId, channelId);
+    },
     db31: (id: string) => {
       return this.service.db31.device.cache.get(id);
+    },
+    db31channel: (id: string) => {
+      return this.service.db31.channel.get(id);
     },
     datas: async (index: number, size: number, filter: SystemElementTableFilter) => {
       let params = new GetMapElementsParams();

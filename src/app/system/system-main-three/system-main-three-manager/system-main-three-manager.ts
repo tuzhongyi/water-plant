@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { Subscription } from 'rxjs';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
+import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { WheelCtrlDirective } from '../../../common/directives/wheel-ctrl/wheel-ctrl.directive';
 import { ThreeDConfig } from '../../../common/storage/three-d-storage/three-d-store.model';
 import { SystemMainThreeBusiness } from '../business/system-main-three.business';
@@ -27,7 +28,7 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   @Input() alarm?: EventEmitter<string>;
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
-  @Output() elementtype = new EventEmitter<MapElementType | undefined>();
+  @Output() element = new EventEmitter<{ type?: MapElementType; buildingId?: string }>();
 
   constructor(private business: SystemMainThreeBusiness) {}
 
@@ -55,10 +56,17 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   }
 
   map = {
+    building: {
+      selected: undefined as GeoMapElement | undefined,
+    },
+    data: undefined as GeoMap | undefined,
     args: new SystemMainThreeArgs(),
     load: new EventEmitter<SystemMainThreeArgs>(),
     datas: [] as GeoMapElement[],
     on: {
+      maploaded: (data: GeoMap) => {
+        this.map.data = data;
+      },
       loaded: (datas: GeoMapElement[]) => {
         this.map.datas = datas;
       },
@@ -82,8 +90,11 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
         this.business.config.save(this.config);
       }
     },
-    elementtype: (type?: MapElementType) => {
-      this.elementtype.emit(type);
+    element: (type?: MapElementType) => {
+      this.element.emit({
+        type: type,
+        buildingId: this.map.building.selected?.Id,
+      });
     },
   };
 }

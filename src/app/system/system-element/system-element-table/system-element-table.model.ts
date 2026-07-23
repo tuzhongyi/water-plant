@@ -28,7 +28,6 @@ export interface SystemElementTableItem<T = any> {
   id: string;
   name: string;
   type: Promise<string>;
-  binding: Promise<string>;
   parent: Promise<string>;
   statename: Promise<string>;
   statecolor: string;

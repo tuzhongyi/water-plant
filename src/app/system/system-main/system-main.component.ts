@@ -20,6 +20,7 @@ import { SystemMainRecordManagerComponent } from '../system-main-record/system-m
 import { SystemMainStateDeviceComponent } from '../system-main-state/system-main-state-device/system-main-state-device.component';
 import { SystemMainThreeConfigManagerComponent } from '../system-main-three/system-main-three-config/system-main-three-config-manager/system-main-three-config-manager.component';
 import { SystemMainThreeManager } from '../system-main-three/system-main-three-manager/system-main-three-manager';
+import { SystemMainThreeSource } from '../system-main-three/system-main-three.source';
 import { SystemRecordManagerComponent } from '../system-record/system-record-manager/system-record-manager.component';
 import {
   SystemMainBusiness,
@@ -45,7 +46,7 @@ import { SystemMainWindow } from './system-main.window';
   ],
   templateUrl: './system-main.html',
   styleUrl: './system-main.less',
-  providers: SystemMainDeviceBusinessProviders,
+  providers: [...SystemMainDeviceBusinessProviders, SystemMainThreeSource],
 })
 export class SystemMainComponent implements OnInit, OnDestroy {
   constructor(
@@ -80,6 +81,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   }
 
   private init() {
+    this.mqtt.load();
     this.handle.loop = setInterval(() => {
       this.load().then((x) => {
         this.map.load.emit();
@@ -94,7 +96,6 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       .then((x) => {
         this.data.device.datas = x;
         if (init) {
-          this.mqtt.load(x);
         }
       })
       .finally(() => {
@@ -122,15 +123,29 @@ export class SystemMainComponent implements OnInit, OnDestroy {
           case 1:
           case 103:
           case 104:
+            this.map.load.emit();
+            this.record.load.emit();
             break;
           case 2:
             this.map.alarm.emit(id);
             this.map.load.emit();
+            this.record.load.emit();
             break;
           default:
-            this.map.alarm.emit(id);
-            this.map.load.emit();
-            this.window.alarm.open(x);
+            switch (x.TriggerType) {
+              case 3:
+                this.map.load.emit();
+                this.record.load.emit();
+                break;
+
+              default:
+                this.map.alarm.emit(id);
+                this.window.alarm.open(x, true);
+                this.map.load.emit();
+                this.record.load.emit();
+                break;
+            }
+
             break;
         }
 
@@ -149,11 +164,10 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       video: (datas: GeoMapElement[]) => {
         this.video.multple.preview(datas);
       },
-      element: {
-        type: (type?: MapElementType) => {
-          this.window.table.element.type = type;
-          this.window.table.element.show = true;
-        },
+      element: (args: { type?: MapElementType; buildingId?: string }) => {
+        this.window.table.element.type = args.type;
+        this.window.table.element.buildingId = args.buildingId;
+        this.window.table.element.show = true;
       },
     },
   };

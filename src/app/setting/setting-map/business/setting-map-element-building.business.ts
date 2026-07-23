@@ -44,7 +44,7 @@ export class SettingMapElementBuildingBusiness {
     element.Name = args.name;
     element.MapId = args.mapId;
     element.ElementId = args.modelId;
-    element.Tags = args.expansion ? [args.expansion] : [];
+    element.Tags = args.expansion ? [JSON.stringify({ ExpansionName: args.expansion })] : [];
 
     if (args.location) {
       element.Location = new GisPoint();
@@ -87,7 +87,7 @@ export class SettingMapElementBuildingBusiness {
       element.MapId = args.mapId;
       element.ElementId = args.meshname;
       element.ParentId = args.buildingId;
-      element.Tags = [args.modelId];
+      element.Tags = [JSON.stringify({ ModelName: args.modelId })];
 
       if (args.location) {
         element.Location = new GisPoint();

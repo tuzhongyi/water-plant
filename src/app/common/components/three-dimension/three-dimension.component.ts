@@ -203,7 +203,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       const s = this.standby();
       if (s) {
-        console.log(s);
         this.ensureStandbySprite();
       } else if (this.standbySprite) {
         this.sceneService.overlayScene.remove(this.standbySprite);
@@ -280,7 +279,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         this.modelCtrl.setConfigCache(modelFiles);
       })
       .catch((err) => {
-        console.warn('[ThreeDimensionComponent] models.json 预加载失败, 模型将使用默认配置:', err);
+        console.warn('[ThreeDimensionComponent] models.json 预加载失败:', err);
       })
       .finally(() => {
         /* 加载 config.json（settings），完成后才允许处理模型 */
@@ -587,9 +586,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     if (this.findbegin()) {
       this.subs.add(
         this.findbegin()!.subscribe((radius) => {
-          console.log(
-            `[Find] 进入搜索模式, 半径: ${radius}m, 场景就绪: ${this.modelCtrl.sceneReady}`,
-          );
           this.activeFindRadius = radius;
           this.findActive = true;
           this.ensureFindCircle(radius);
@@ -985,6 +981,32 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       if (!e) continue;
       this.colorsService.applyStateColors(e, this.colorsService.getModelState(e));
     }
+    /* solid 模式：为选中模型渲染边框 */
+    this.applySolidSelectionOutline();
+  }
+
+  /** solid 模式下为选中模型显示 edges 边框，颜色取自 typeColorPresets.selected.edge */
+  private applySolidSelectionOutline(): void {
+    if (this.state.renderMode !== 'solid') return;
+    const selId = this.state.selectedModelId;
+    for (const [id] of this.modelCtrl.internalModels) {
+      const entry = this.state.loadedModels.get(id);
+      if (!entry?.edgesGroup) continue;
+      if (id === selId) {
+        entry.edgesGroup.visible = true;
+        const color = entry.colors.selected?.edge ?? '#ff8800';
+        entry.edgesGroup.traverse((c) => {
+          if ((c as any).isLineSegments2 && (c as any).material?.color) {
+            (c as any).material.color.set(color);
+            (c as any).material.transparent = false;
+            (c as any).material.depthTest = true;
+            (c as any).material.needsUpdate = true;
+          }
+        });
+      } else {
+        entry.edgesGroup.visible = false;
+      }
+    }
   }
 
   /* ---- Selection → Edit ---- */
@@ -1264,9 +1286,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       try {
         const modelFiles = await firstValueFrom(this.apiService.models(mode));
         this.modelCtrl.setConfigCache(modelFiles);
-      } catch (err) {
-        console.warn(`[ThreeDimensionComponent] models.json('${mode}') 加载失败:`, err);
-      }
+      } catch {}
 
       /* 2️⃣ 重新加载 config.json，完成后注入用户选择的 renderMode */
       const config = await this.configService.loadConfig(mode);
@@ -1281,10 +1301,11 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         await this.reloadSingleModel({ ...m, url: newUrl });
       }
 
-      /* 4️⃣ 重新适配视角 + 更新 marker 可见性 */
+      /* 4️⃣ 重新适配视角 + 更新 marker 可见性 + 刷新选中边框 */
       this.fitAllModelsInView(currentModels, true);
       this.markerCtrl.cache.visibility(currentModels);
       this.updateLabelVisibility();
+      this.updateAllModelColors();
     } finally {
       this.isReloading = false;
     }

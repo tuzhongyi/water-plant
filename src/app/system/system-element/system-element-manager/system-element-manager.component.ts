@@ -22,21 +22,27 @@ import { SystemElementTableArgs } from '../system-element-table/system-element-t
   imports: [CommonModule, FormsModule, HowellSelectComponent, SystemElementTableComponent],
   templateUrl: './system-element-manager.component.html',
   styleUrl: './system-element-manager.component.less',
-  providers: [SystemMainThreeSource],
 })
 export class SystemElementManagerComponent implements OnChanges {
   @Input() type?: MapElementType;
+  @Input() buildingId?: string;
   @Output() preview = new EventEmitter<GeoMapElement>();
   constructor(public source: SystemMainThreeSource) {}
   Language = Language;
   ngOnChanges(changes: SimpleChanges): void {
     this.change.type(changes['type']);
+    this.change.building(changes['buildingId']);
   }
 
   private change = {
     type: (change: SimpleChange) => {
       if (change) {
         this.table.args.type = this.type;
+      }
+    },
+    building: (change: SimpleChange) => {
+      if (change) {
+        this.table.args.buildingId = this.buildingId;
       }
     },
   };

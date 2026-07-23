@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
@@ -21,7 +21,7 @@ export class SystemComponent implements OnInit {
     private config: ConfigRequestService,
   ) {}
 
-  title = '';
+  title = signal<string>('');
   keep = {
     key: 'keep',
     get: () => {
@@ -69,7 +69,7 @@ export class SystemComponent implements OnInit {
       }
     });
     this.config.get().then((x) => {
-      this.title = x.title;
+      this.title.set(x.title);
     });
   }
 }

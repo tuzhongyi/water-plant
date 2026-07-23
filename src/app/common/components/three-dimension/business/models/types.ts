@@ -130,6 +130,7 @@ export interface TypeColorState {
   edge: string;
   background: string;
   materials: Record<string, string>;
+  diffuse?: string;
 }
 
 /** 一个模型类型的完整颜色预设（按交互状态分） */

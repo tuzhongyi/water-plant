@@ -18,7 +18,7 @@
         <div class="form-item-value">
           <hw-select [nullable]="true" [(selected)]="table.args.buildingId">
             <select [(ngModel)]="table.args.buildingId">
-              @for (item of source.buildings; track $index) {
+              @for (item of source.buildings(); track $index) {
                 <option [ngValue]="item.Id">{{ item.Name }}</option>
               }
             </select>

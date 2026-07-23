@@ -6,6 +6,8 @@ import { GetDeviceEventRecordsParams } from '../../../common/data-core/request/s
 import { EventRequestService } from '../../../common/data-core/request/services/event/event.service';
 import { Language } from '../../../common/tools/language-tool/language';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
+import { wait } from '../../../common/tools/wait';
+import { SystemRecordSource } from '../system-record.source';
 import { SystemRecordTableFilter, SystemRecordTableItem } from './system-record-table.model';
 
 @Injectable()
@@ -13,6 +15,7 @@ export class SystemRecordTableBusiness {
   constructor(
     private event: EventRequestService,
     private language: LanguageTool,
+    private source: SystemRecordSource,
   ) {}
 
   async load(index: number, size: number, filter: SystemRecordTableFilter) {
@@ -36,7 +39,9 @@ export class SystemRecordTableBusiness {
       description: data.Description ?? '',
       name: data.Resource?.ResourceName ?? data.DeviceName ?? '',
       value: data.Resource?.Value ?? '',
-      color: this.get.color(data.EventType),
+      typecolor: this.get.typecolor(data.EventType),
+      trigger: this.language.event.TriggerTypes(data.TriggerType),
+      triggercolor: this.get.triggercolor(data.TriggerType),
       playback: this.get.playback(data),
       data: data,
     };
@@ -44,7 +49,7 @@ export class SystemRecordTableBusiness {
   }
 
   private get = {
-    color: (type: number) => {
+    typecolor: (type: number) => {
       let color = 'yellow';
       switch (type) {
         case 1:
@@ -52,6 +57,24 @@ export class SystemRecordTableBusiness {
           break;
         case 2:
           color = 'red';
+          break;
+        default:
+          break;
+      }
+      return color;
+    },
+    triggercolor: (type: number) => {
+      let color = 'normal';
+      switch (type) {
+        case 1:
+          color = 'normal';
+          break;
+        case 2:
+        case 4:
+          color = 'red';
+          break;
+        case 3:
+          color = 'green';
           break;
         default:
           break;
@@ -71,7 +94,7 @@ export class SystemRecordTableBusiness {
   };
 
   private data = {
-    load: (index: number, size: number, filter: SystemRecordTableFilter) => {
+    load: async (index: number, size: number, filter: SystemRecordTableFilter) => {
       let params = new GetDeviceEventRecordsParams();
       params.PageIndex = index;
       params.PageSize = size;
@@ -83,6 +106,11 @@ export class SystemRecordTableBusiness {
       }
       if (filter.type != undefined) {
         params.EventTypes = [filter.type];
+      } else {
+        await wait(() => {
+          return this.source.loaded;
+        });
+        params.EventTypes = this.source.types.map((x) => x.Value);
       }
 
       params.Asc = filter.asc;

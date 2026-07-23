@@ -1,7 +1,7 @@
 [
   {
     "name": "35kV_Substation_expansion.glb",
-    "size": 295920,
+    "size": 490088,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -26,12 +26,13 @@
       },
       "label": "35kV_Substation_expansion.glb",
       "labelMode": "always",
+      "gizmoVisible": true,
       "selectable": false
     }
   },
   {
     "name": "35kV_Substation.glb",
-    "size": 2724152,
+    "size": 573432,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -62,16 +63,47 @@
     }
   },
   {
+    "name": "35kV_Switching_Station.glb",
+    "size": 19256,
+    "ext": ".glb",
+    "type": "building",
+    "config": {
+      "name": "35kV_Switching_Station.glb",
+      "position": {
+        "x": 225.36935435563407,
+        "y": 3.5314797796597723,
+        "z": 118.66253285606683
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "35kV开关站",
+      "labelMode": "always",
+      "selectable": true,
+      "gizmoVisible": true
+    }
+  },
+  {
     "name": "A_Filter.glb",
-    "size": 65112,
+    "size": 122048,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "A_Filter.glb",
       "position": {
-        "x": 84.22514243202473,
+        "x": 92.68127608343242,
         "y": 5.186465831985742,
-        "z": 66.24990088434399
+        "z": 62.15062677703479
       },
       "scale": {
         "x": 1,
@@ -94,7 +126,7 @@
   },
   {
     "name": "A1A2_Sedimentation_Tanks.glb",
-    "size": 62524,
+    "size": 90352,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -125,15 +157,15 @@
   },
   {
     "name": "Activated_Carbon_Filter_expansion.glb",
-    "size": 166904,
+    "size": 868472,
     "ext": ".glb",
     "type": "floors",
     "config": {
       "name": "Activated_Carbon_Filter_expansion.glb",
       "position": {
-        "x": -280.2750498709418,
+        "x": 317.839131772915,
         "y": 0,
-        "z": 266.87136100230697
+        "z": -179.044610027616
       },
       "scale": {
         "x": 1,
@@ -156,7 +188,7 @@
   },
   {
     "name": "Activated_Carbon_Filter.glb",
-    "size": 170132,
+    "size": 952652,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -188,7 +220,7 @@
   },
   {
     "name": "Administration_Complex_expansion.glb",
-    "size": 1023716,
+    "size": 1697728,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -221,15 +253,15 @@
   },
   {
     "name": "Administration_Complex.glb",
-    "size": 1025464,
+    "size": 1703888,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Administration_Complex.glb",
       "position": {
-        "x": -239.1188014179796,
-        "y": 7.3516668348138445,
-        "z": 86.9628689526387
+        "x": -235.89162068989447,
+        "y": 8.836103563129502,
+        "z": 81.31751052284797
       },
       "scale": {
         "x": 1,
@@ -252,15 +284,15 @@
   },
   {
     "name": "B_Filter.glb",
-    "size": 13220,
+    "size": 122048,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "B_Filter.glb",
       "position": {
-        "x": 84.18525036533644,
+        "x": 86.93312783277922,
         "y": 4.269683150313806,
-        "z": 8.701109943972375
+        "z": 4.3151519419663895
       },
       "scale": {
         "x": 1,
@@ -283,7 +315,7 @@
   },
   {
     "name": "B1B2_Sedimentation_Tanks.glb",
-    "size": 62524,
+    "size": 90352,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -314,15 +346,15 @@
   },
   {
     "name": "Backwash_Pump_House_expansion.glb",
-    "size": 149204,
+    "size": 574532,
     "ext": ".glb",
     "type": "floors",
     "config": {
       "name": "Backwash_Pump_House_expansion.glb",
       "position": {
-        "x": -368.18765482918076,
+        "x": 89.50413117862541,
         "y": 0,
-        "z": 56.32563772265115
+        "z": 198.79487676579683
       },
       "scale": {
         "x": 1,
@@ -345,15 +377,15 @@
   },
   {
     "name": "Backwash_Pump_House.glb",
-    "size": 156952,
+    "size": 659324,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Backwash_Pump_House.glb",
       "position": {
-        "x": 197.0326763795961,
-        "y": 6.111093858990721,
-        "z": -82.35045442821531
+        "x": 69.94391211436296,
+        "y": 4.487713840263595,
+        "z": 66.03203373270911
       },
       "scale": {
         "x": 1,
@@ -377,7 +409,7 @@
   },
   {
     "name": "C_Filter_expansion.glb",
-    "size": 132104,
+    "size": 800720,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -408,7 +440,7 @@
   },
   {
     "name": "C_Filter.glb",
-    "size": 138128,
+    "size": 888392,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -440,7 +472,7 @@
   },
   {
     "name": "C1C2_Sedimentation_Tanks.glb",
-    "size": 10456,
+    "size": 38144,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -471,7 +503,7 @@
   },
   {
     "name": "C3C4_Sedimentation_Tanks.glb",
-    "size": 10456,
+    "size": 38144,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -595,15 +627,15 @@
   },
   {
     "name": "Chlorination_Room.glb",
-    "size": 201660,
+    "size": 863012,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Chlorination_Room.glb",
       "position": {
-        "x": -90.96825818156982,
+        "x": -90.48679241972643,
         "y": 6.994597917332619,
-        "z": 106.0069049491393
+        "z": 102.64803312744492
       },
       "scale": {
         "x": 1,
@@ -627,15 +659,15 @@
   },
   {
     "name": "Dewatering_Building_expansion.glb",
-    "size": 342420,
+    "size": 948448,
     "ext": ".glb",
     "type": "floors",
     "config": {
       "name": "Dewatering_Building_expansion.glb",
       "position": {
-        "x": 101.9534772831305,
+        "x": 127.9860297075803,
         "y": 0,
-        "z": 252.26976649851088
+        "z": 186.60769342854206
       },
       "scale": {
         "x": 1,
@@ -660,15 +692,15 @@
   },
   {
     "name": "Dewatering_Building.glb",
-    "size": 344976,
+    "size": 951124,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Dewatering_Building.glb",
       "position": {
-        "x": -170.51776273581083,
-        "y": 11.608016883988526,
-        "z": -73.27091499489832
+        "x": -171.81079512818468,
+        "y": 10.46638664626093,
+        "z": -76.51798093658263
       },
       "scale": {
         "x": 1,
@@ -694,7 +726,7 @@
   },
   {
     "name": "Dosing_Building_expansion.glb",
-    "size": 212520,
+    "size": 807208,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -726,15 +758,15 @@
   },
   {
     "name": "Dosing_Building.glb",
-    "size": 190288,
+    "size": 865412,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Dosing_Building.glb",
       "position": {
-        "x": -160.58468290915079,
-        "y": 5.85857994183209,
-        "z": -37.68207788876337
+        "x": -158.713721772271,
+        "y": 4.8146531857534285,
+        "z": -41.470406504616015
       },
       "scale": {
         "x": 1,
@@ -789,7 +821,7 @@
   },
   {
     "name": "Maintenance_Workshop_expansion.glb",
-    "size": 178240,
+    "size": 758576,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -820,7 +852,7 @@
   },
   {
     "name": "Maintenance_Workshop.glb",
-    "size": 181488,
+    "size": 842780,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -845,6 +877,38 @@
         "Floor1": true
       },
       "label": "机修车间",
+      "labelMode": "always",
+      "selectable": true,
+      "gizmoVisible": true
+    }
+  },
+  {
+    "name": "Ozone_Generator_Room.glb",
+    "size": 939632,
+    "ext": ".glb",
+    "type": "building",
+    "config": {
+      "name": "Ozone_Generator_Room.glb",
+      "position": {
+        "x": 197.09249493346937,
+        "y": 6.003524761334589,
+        "z": -82.36521217842116
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "meshVisibility": {
+        "Floor1": true,
+        "Roof": true
+      },
+      "label": "臭氧发生器间",
       "labelMode": "always",
       "selectable": true,
       "gizmoVisible": true
@@ -883,7 +947,7 @@
   },
   {
     "name": "Pre_ozonation_Contact_Tank.glb",
-    "size": 5776,
+    "size": 37016,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -914,7 +978,7 @@
   },
   {
     "name": "pump_house_expansion.glb",
-    "size": 143504,
+    "size": 873832,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -945,7 +1009,7 @@
   },
   {
     "name": "pump_house.glb",
-    "size": 146752,
+    "size": 958868,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -977,15 +1041,15 @@
   },
   {
     "name": "Pump_Station_1_expansion.glb",
-    "size": 62584,
+    "size": 609232,
     "ext": ".glb",
     "type": "floors",
     "config": {
       "name": "Pump_Station_1_expansion.glb",
       "position": {
-        "x": 277.87924711047026,
+        "x": 26.106158237328202,
         "y": 0,
-        "z": -240.97073124443216
+        "z": 194.07004407312388
       },
       "scale": {
         "x": 1,
@@ -1008,7 +1072,7 @@
   },
   {
     "name": "Pump_Station_1.glb",
-    "size": 68988,
+    "size": 697856,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -1040,7 +1104,7 @@
   },
   {
     "name": "Pump_Station_2_expansion.glb",
-    "size": 235300,
+    "size": 1023032,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -1062,7 +1126,7 @@
       },
       "meshVisibility": {
         "Floor1": true,
-        "Basement‌1": true
+        "Basement1": true
       },
       "label": "Pump_Station_2_expansion.glb",
       "labelMode": "always",
@@ -1072,7 +1136,7 @@
   },
   {
     "name": "Pump_Station_2.glb",
-    "size": 240256,
+    "size": 1018580,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -1095,7 +1159,7 @@
       "meshVisibility": {
         "Floor1": true,
         "Roof": true,
-        "Basement‌1": true
+        "Basement1": true
       },
       "label": "2号泵房",
       "labelMode": "always",
@@ -1105,7 +1169,7 @@
   },
   {
     "name": "Raw_Water_Pump_House_expansion.glb",
-    "size": 42624,
+    "size": 622544,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -1136,7 +1200,7 @@
   },
   {
     "name": "Raw_Water_Pump_House.glb",
-    "size": 45352,
+    "size": 705840,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -1168,7 +1232,7 @@
   },
   {
     "name": "Residential_Building_expansion.glb",
-    "size": 444296,
+    "size": 1294692,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -1200,15 +1264,15 @@
   },
   {
     "name": "Residential_Building.glb",
-    "size": 449856,
+    "size": 1300240,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Residential_Building.glb",
       "position": {
-        "x": -249.41643121158427,
-        "y": 7.301260076184684,
-        "z": 49.72036210230323
+        "x": -250.64413124525345,
+        "y": 5.997790208326269,
+        "z": 46.14210184108846
       },
       "scale": {
         "x": 1,
@@ -1233,15 +1297,15 @@
   },
   {
     "name": "Sludge_Thickener.glb",
-    "size": 3840,
+    "size": 34936,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Sludge_Thickener.glb",
       "position": {
-        "x": -130.6991722057005,
-        "y": 5.188225038563233,
-        "z": -73.35258282692219
+        "x": -131.11843200278432,
+        "y": 4.407079192439377,
+        "z": -76.22810813152464
       },
       "scale": {
         "x": 1,
@@ -1264,7 +1328,7 @@
   },
   {
     "name": "Sodium_Hypochlorite_Storage_Tank.glb",
-    "size": 3700,
+    "size": 19748,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -1272,7 +1336,7 @@
       "position": {
         "x": -86.06108395054257,
         "y": 0,
-        "z": 116.85071549088904
+        "z": 113.77228184385963
       },
       "scale": {
         "x": 1,
@@ -1295,7 +1359,7 @@
   },
   {
     "name": "Solar_Power.glb",
-    "size": 223924,
+    "size": 251784,
     "ext": ".glb",
     "type": "building",
     "config": {
@@ -1326,7 +1390,7 @@
   },
   {
     "name": "VIL.glb",
-    "size": 67940,
+    "size": 2400748,
     "ext": ".glb",
     "type": "village",
     "config": {
@@ -1347,13 +1411,7 @@
         "b": 0
       },
       "meshVisibility": {
-        "Platform": true,
-        "Landscaping": true,
-        "Security_Booth": true,
-        "wall": true,
-        "Gate2": true,
-        "Gate1": true,
-        "Road": true
+        "Floor1": true
       },
       "label": "VIL.glb",
       "labelMode": "never",
@@ -1364,7 +1422,7 @@
   },
   {
     "name": "Warehouse_expansion.glb",
-    "size": 41632,
+    "size": 559836,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -1395,15 +1453,15 @@
   },
   {
     "name": "Warehouse.glb",
-    "size": 43344,
+    "size": 646148,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Warehouse.glb",
       "position": {
-        "x": -132.76974251925088,
+        "x": -133.37877524869458,
         "y": 6.69718672264173,
-        "z": 105.92676194051431
+        "z": 103.60352827185608
       },
       "scale": {
         "x": 1,
@@ -1427,15 +1485,15 @@
   },
   {
     "name": "Water_Intake.glb",
-    "size": 21224,
+    "size": 2142364,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Water_Intake.glb",
       "position": {
-        "x": -26.57488813394349,
-        "y": 1.9470816847256671,
-        "z": 155.22577936558932
+        "x": -27.832489836441965,
+        "y": 1.5178798286234985,
+        "z": 151.7790254779485
       },
       "scale": {
         "x": 1,
@@ -1458,7 +1516,7 @@
   },
   {
     "name": "Water_Quality_Building_expansion.glb",
-    "size": 656480,
+    "size": 1328816,
     "ext": ".glb",
     "type": "floors",
     "config": {
@@ -1484,22 +1542,21 @@
       },
       "label": "Water_Quality_Building_expansion.glb",
       "labelMode": "always",
-      "selectable": true,
       "gizmoVisible": true,
       "selectable": false
     }
   },
   {
     "name": "Water_Quality_Building.glb",
-    "size": 663748,
+    "size": 1417036,
     "ext": ".glb",
     "type": "building",
     "config": {
       "name": "Water_Quality_Building.glb",
       "position": {
-        "x": -247.64013072234317,
-        "y": 7.5303366912008896,
-        "z": -1.2838200197838248
+        "x": -245.89916116273707,
+        "y": 6.3687883682959745,
+        "z": -3.3576301397020885
       },
       "scale": {
         "x": 1,
@@ -1524,15 +1581,15 @@
   },
   {
     "name": "Water_Softening_Room_expansion.glb",
-    "size": 126644,
+    "size": 648948,
     "ext": ".glb",
     "type": "floors",
     "config": {
       "name": "Water_Softening_Room_expansion.glb",
       "position": {
-        "x": 411.43040286318063,
+        "x": -123.22010979187482,
         "y": 0,
-        "z": 231.59850565883892
+        "z": 177.39856969611392
       },
       "scale": {
         "x": 1,
@@ -1555,7 +1612,7 @@
   },
   {
     "name": "Water_Softening_Room.glb",
-    "size": 130032,
+    "size": 733368,
     "ext": ".glb",
     "type": "building",
     "config": {

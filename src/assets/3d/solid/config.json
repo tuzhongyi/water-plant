@@ -5,7 +5,7 @@
     "thresholdAngle": 1,
     "solidOpacity": 1,
     "wfOpacity": 0.9,
-    "bgColor": "#000000",
+    "bgColor": "#092821",
     "ambientIntensity": 3,
     "keyIntensity": 4,
     "fillIntensity": 2,
@@ -58,7 +58,8 @@
           "window": "#888888",
           "ground": "#888888",
           "wall2": "#888888"
-        }
+        },
+        "diffuse": "#888888"
       },
       "hover": {
         "edge": "#3399ff",
@@ -69,7 +70,7 @@
           "other": "#888888",
           "door": "#888888"
         },
-        "defaultMaterial": "#bfbfbf"
+        "diffuse": "#bfbfbf"
       },
       "selected": {
         "edge": "#ffbb00",
@@ -80,18 +81,19 @@
           "other": "#888888",
           "door": "#888888"
         },
-        "defaultMaterial": "#dbdbdb"
+        "diffuse": "#dbdbdb"
       },
       "alarm": {
         "edge": "#ff2222",
         "background": "#000000",
         "materials": {
-          "wall": "#940000",
-          "roof": "#a80000",
-          "other": "#000000",
-          "door": "#550000",
-          "window": "#888888"
-        }
+          "wall": "#ff0000",
+          "roof": "#ff0000",
+          "other": "#ff0000",
+          "door": "#ff0000",
+          "window": "#ff0000"
+        },
+        "diffuse": "#ff0000"
       }
     },
     "floors": {
@@ -105,37 +107,37 @@
           "door": "#888888",
           "Roof": "#888888",
           "window": "#888888",
-          "ground": "#4d4d4d"
+          "ground": "#888888"
         }
       },
       "hover": {
         "edge": "#5fffe0",
         "background": "#000000",
         "materials": {
-          "wall": "#008866",
-          "roof": "#5fffe0",
+          "wall": "#888888",
+          "roof": "#888888",
           "other": "#888888",
-          "door": "#00c800"
+          "door": "#888888"
         }
       },
       "selected": {
         "edge": "#ffbb00",
         "background": "#000000",
         "materials": {
-          "wall": "#785a00",
-          "roof": "#ffbb00",
-          "other": "#999999",
-          "door": "#00ff00"
+          "wall": "#888888",
+          "roof": "#888888",
+          "other": "#888888",
+          "door": "#888888"
         }
       },
       "alarm": {
         "edge": "#ff2222",
         "background": "#000000",
         "materials": {
-          "wall": "#440000",
-          "roof": "#660000",
-          "other": "#333333",
-          "door": "#550000"
+          "wall": "#888888",
+          "roof": "#888888",
+          "other": "#888888",
+          "door": "#888888"
         }
       }
     },
@@ -145,7 +147,7 @@
         "background": "#000000",
         "materials": {
           "wall": "#664400",
-          "roof": "#ffbb00",
+          "roof": "#888888",
           "other": "#666666",
           "door": "#007800"
         }
@@ -155,7 +157,7 @@
         "background": "#000000",
         "materials": {
           "wall": "#996600",
-          "roof": "#ffcc33",
+          "roof": "#888888",
           "other": "#888888",
           "door": "#00c800"
         }
@@ -165,7 +167,7 @@
         "background": "#000000",
         "materials": {
           "wall": "#994400",
-          "roof": "#ff8800",
+          "roof": "#888888",
           "other": "#999999",
           "door": "#00ff00"
         }
@@ -175,7 +177,7 @@
         "background": "#000000",
         "materials": {
           "wall": "#440000",
-          "roof": "#660000",
+          "roof": "#888888",
           "other": "#333333",
           "door": "#550000"
         }

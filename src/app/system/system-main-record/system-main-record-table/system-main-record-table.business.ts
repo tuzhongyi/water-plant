@@ -1,6 +1,8 @@
+import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { DeviceEventRecord } from '../../../common/data-core/models/events/device-event-record.model';
 import { DeviceEventResource } from '../../../common/data-core/models/events/device-event-resource.model';
+import { ConfigRequestService } from '../../../common/data-core/request/config/config-request.service';
 import { DB31RequestService } from '../../../common/data-core/request/services/db31/db31.service';
 import { DeviceRequestService } from '../../../common/data-core/request/services/device/device.service';
 import { GetDeviceEventRecordsParams } from '../../../common/data-core/request/services/event/event.params';
@@ -8,6 +10,7 @@ import { EventRequestService } from '../../../common/data-core/request/services/
 import { CapabilityTool } from '../../../common/tools/capability-tool/capability.tool';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
+import { Language } from '../../../common/tools/language-tool/language';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
 import {
   SystemMainRecordTableArgs,
@@ -21,6 +24,7 @@ export class SystemMainRecordTableBusiness {
     event: EventRequestService,
     device: DeviceRequestService,
     db31: DB31RequestService,
+    private config: ConfigRequestService,
     private capability: CapabilityTool,
     private language: LanguageTool,
   ) {
@@ -43,6 +47,8 @@ export class SystemMainRecordTableBusiness {
     params.Desc = 'EventTime';
     if (args.type) {
       params.EventTypes = await this.types(args.type);
+    } else {
+      params.EventTypes = await this.types();
     }
 
     let paged = await this.service.event.record.list(params);
@@ -55,18 +61,19 @@ export class SystemMainRecordTableBusiness {
     if (!icon && data.DeviceId) {
       icon = await this.get.icon(data.DeviceId, data.FromDB31);
     }
-    let name = this.get.name(data);
+
     let item: SystemMainRecordTableItem = {
       id: data.Id,
-      time: data.EventTime,
-      name: name,
-      description: `${name}\n${data.Description}`,
-      color: this.get.color(data.EventType),
+      time: formatDate(data.EventTime, Language.yyyyMMddHHmmss, 'en'),
+      name: this.get.name(data),
+      description: data.Description,
+      color: this.get.color(data.EventType, data.TriggerType),
       icon: icon,
       type: await this.language.event.EventTypes(data.EventType),
       playback: this.get.playback(data),
       data: data,
     };
+    item.description = `${item.name}\n${item.type}\n${item.time}\n${data.Description}`;
     return item;
   }
 
@@ -92,7 +99,7 @@ export class SystemMainRecordTableBusiness {
       }
       return name;
     },
-    color: (type: number) => {
+    color: (type: number, target: number) => {
       let color = 'yellow';
       switch (type) {
         case 1:
@@ -102,6 +109,17 @@ export class SystemMainRecordTableBusiness {
           color = 'red';
           break;
         default:
+          switch (target) {
+            case 2:
+              color = 'yellow';
+              break;
+            case 3:
+              color = 'green';
+              break;
+
+            default:
+              break;
+          }
           break;
       }
       return color;
@@ -147,9 +165,11 @@ export class SystemMainRecordTableBusiness {
     return Promise.all(all);
   }
 
-  private async types(value: SystemMainRecordTableEventType) {
-    let devicetypes = [1, 2];
-    let enabledtypes = [1, 2, 101, 102];
+  private async types(value?: SystemMainRecordTableEventType) {
+    let config = await this.config.get();
+    let devicetypes = [...config.event.device];
+    let alarmtypes = [...config.event.alarm, ...config.event.other];
+    let enabledtypes = [...devicetypes, ...alarmtypes];
 
     let types = (await this.capability.event.EventTypes)
       .map((x) => x.Value)
@@ -167,8 +187,10 @@ export class SystemMainRecordTableBusiness {
       switch (value) {
         case SystemMainRecordTableEventType.device:
           return devicetypes.includes(x);
+        case SystemMainRecordTableEventType.alarm:
+          return alarmtypes.includes(x);
         default:
-          return !devicetypes.includes(x);
+          return enabledtypes.includes(x);
       }
     });
   }

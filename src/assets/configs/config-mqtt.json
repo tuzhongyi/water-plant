@@ -4,8 +4,6 @@
   "username": "admin",
   "password": "howell.net.cn",
   "trigger": {
-    "duration": 60,
-    "eventtypes": [
-    ]
+    "duration": 60
   }
 }

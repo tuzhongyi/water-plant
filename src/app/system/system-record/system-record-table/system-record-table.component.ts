@@ -8,6 +8,7 @@ import { TableSorterDirective } from '../../../common/directives/table-sorter/ta
 import { Sort } from '../../../common/directives/table-sorter/table-sorter.model';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { Language } from '../../../common/tools/language-tool/language';
+import { SystemRecordSource } from '../system-record.source';
 import { SystemRecordTableBusiness } from './system-record-table.business';
 import {
   SystemRecordTableArgs,
@@ -21,7 +22,7 @@ import {
   imports: [CommonModule, PaginatorComponent, TableSorterDirective],
   templateUrl: './system-record-table.component.html',
   styleUrl: './system-record-table.component.less',
-  providers: [SystemRecordTableBusiness],
+  providers: [SystemRecordTableBusiness, SystemRecordSource],
 })
 export class SystemRecordTableComponent implements OnInit, OnDestroy {
   @Input() args = new SystemRecordTableArgs();
@@ -31,7 +32,7 @@ export class SystemRecordTableComponent implements OnInit, OnDestroy {
 
   constructor(private business: SystemRecordTableBusiness) {}
 
-  widths = ['5%', 'auto', '10%', '20%', 'auto', '8%'];
+  widths = ['5%', 'auto', '10%', '10%', '20%', 'auto', '8%'];
   minwidth = ['50px', '150px', '120px', '100px', '120px', '70px'];
   datas = signal<(SystemRecordTableItem | undefined)[]>([]);
   page = Page.create(1, 10);

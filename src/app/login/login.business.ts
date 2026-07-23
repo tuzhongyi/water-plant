@@ -25,8 +25,12 @@ export class LoginBusiness {
   }
 
   init() {
-    this.local.clean();
     this.global.destroy();
+    let model = this.load();
+    if (model && model.save) {
+      return;
+    }
+    this.local.clean();
   }
 
   login(username: string, password: string) {
@@ -36,7 +40,7 @@ export class LoginBusiness {
     });
   }
   remember(username: string, password: string) {
-    let info = { username, password };
+    let info = { username, password, save: true };
     info.password = HowellSM4.encrypt(password);
     this.local.login.set(info);
   }

@@ -6,7 +6,6 @@ import { MapElementType } from '../../../common/data-core/enums/geo/map-element-
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { Page } from '../../../common/data-core/models/interface/page-list.model';
 import { Language } from '../../../common/tools/language-tool/language';
-import { SystemMainThreeSource } from '../../system-main-three/system-main-three.source';
 import { SystemElementTableBusiness } from './system-element-table.business';
 import {
   SystemElementTableArgs,
@@ -19,7 +18,7 @@ import {
   imports: [CommonModule, PaginatorComponent],
   templateUrl: './system-element-table.component.html',
   styleUrl: './system-element-table.component.less',
-  providers: [SystemElementTableBusiness, SystemMainThreeSource],
+  providers: [SystemElementTableBusiness],
 })
 export class SystemElementTableComponent implements OnInit, OnDestroy {
   @Input() args = new SystemElementTableArgs();

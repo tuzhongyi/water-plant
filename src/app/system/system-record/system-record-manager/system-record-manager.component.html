@@ -12,9 +12,9 @@
 
   <div class="system-record-body">
     @if (entrance) {
-      <hw-system-record-entrance></hw-system-record-entrance>
+      <hw-system-record-entrance (playback)="on.playback($event)"></hw-system-record-entrance>
     } @else {
-      <hw-system-record-container></hw-system-record-container>
+      <hw-system-record-container (playback)="on.playback($event)"></hw-system-record-container>
     }
   </div>
 </div>

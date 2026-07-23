@@ -253,7 +253,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
               .map((item) => [item.ElementId, this.floor.selected()?.Id === item.Id]),
           ) as Record<string, boolean>,
         };
-        console.log(args);
+
         this.floor.target.emit(args);
 
         this.element.load(data.Id);
@@ -293,7 +293,6 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
         this.three.inited = true;
       },
       loaded: (datas: ModelTransformConfig[]) => {
-        console.log(datas);
         setTimeout(() => {
           this.three.focus.emit();
         }, 10);
