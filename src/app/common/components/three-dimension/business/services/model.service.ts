@@ -192,6 +192,7 @@ export class ModelService {
 
   updateLabel(entry: ModelEntry): void {
     if (entry.labelObject) {
+      this.sceneService.unregisterLabel(entry.labelObject as THREE.Sprite);
       entry.labelObject.removeFromParent();
       (entry.labelObject as THREE.Sprite).material?.dispose();
       ((entry.labelObject as THREE.Sprite).material as THREE.SpriteMaterial)?.map?.dispose();
@@ -286,7 +287,7 @@ export class ModelService {
     if (entry.labelObject) {
       const sprite = entry.labelObject as THREE.Sprite;
       this.sceneService.unregisterLabel(sprite);
-      /* label 已 parent 到 wrapper，随 wrapper 自动移除 */
+      sprite.removeFromParent();
       sprite.material?.dispose();
       (sprite.material as THREE.SpriteMaterial)?.map?.dispose();
       entry.labelObject = undefined;

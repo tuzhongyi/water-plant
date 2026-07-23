@@ -46,6 +46,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   @Output() buildingselect = new EventEmitter<GeoMapElement>();
   @Output() elementloaded = new EventEmitter<GeoMapElement[]>();
   @Input() load?: EventEmitter<void>;
+  @Input() renderPaused = false;
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() found = new EventEmitter<GeoMapElement[]>();

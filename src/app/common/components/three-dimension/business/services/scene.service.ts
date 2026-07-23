@@ -45,6 +45,7 @@ export class SceneService {
   private centerDot?: THREE.Mesh;
 
   private animationId = 0;
+  private renderPaused = false;
   private canvas!: HTMLCanvasElement;
   private containerEl!: HTMLElement;
   private resizeObserver?: ResizeObserver;
@@ -300,6 +301,16 @@ export class SceneService {
     this.renderer.setSize(w, h, false);
     this.renderer.domElement.style.width = '';
     this.renderer.domElement.style.height = '';
+  }
+
+  setRenderPaused(paused: boolean): void {
+    if (paused === this.renderPaused) return;
+    this.renderPaused = paused;
+    if (paused) {
+      cancelAnimationFrame(this.animationId);
+    } else {
+      this.zone.runOutsideAngular(() => this.animate());
+    }
   }
 
   private animate(): void {

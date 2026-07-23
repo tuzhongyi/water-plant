@@ -112,6 +112,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   standbyCancel = output<void>();
 
   // ── Scene ────────────────────────────────────────────────
+  /** 视频播放时暂停 3D 渲染，释放 GPU/CPU 资源 */
+  renderPaused = input<boolean>(false);
   /** 垂直旋转角度限制（度），负值允许摄像机低于水平面 */
   polarLimit = input<number>(-5);
 
@@ -256,6 +258,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       if (this.findActive && r > 0) {
         this.ensureFindCircle(r);
       }
+    });
+    effect(() => {
+      this.sceneService.setRenderPaused(this.renderPaused());
     });
     /* BehaviorSubject 订阅在 bindCommands 中设置（effect 不追踪 RxJS Subject） */
   }

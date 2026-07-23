@@ -26,6 +26,7 @@ import { SystemMainThreeStateComponent } from '../system-main-three-state/system
 export class SystemMainThreeManager implements OnInit, OnDestroy {
   @Input() load?: EventEmitter<void>;
   @Input() alarm?: EventEmitter<string>;
+  @Input() renderPaused = false;
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() element = new EventEmitter<{ type?: MapElementType; buildingId?: string }>();

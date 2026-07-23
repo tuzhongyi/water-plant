@@ -17,6 +17,7 @@
         <hw-system-main-three-manager
           [load]="map.load"
           [alarm]="map.alarm"
+          [renderPaused]="window.opened"
           (preview)="map.on.preview($event)"
           (video)="map.on.video($event)"
           (element)="map.on.element($event)"

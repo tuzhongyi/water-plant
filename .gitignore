@@ -24,6 +24,7 @@ yarn-error.log
 *.spec.ts
 *副本
 *copy.ts
+/private
 
 # Visual Studio Code
 .vscode/*

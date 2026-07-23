@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AlarmComponent } from '../../common/components/alarm-control/alarm.component';
 import { CardComponent } from '../../common/components/card/card.component';

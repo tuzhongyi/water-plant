@@ -27,6 +27,10 @@ export class SystemMainWindow {
     three: new ConfigThreeWiondow(),
   };
   alarm = new AlarmWindow();
+
+  get opened() {
+    return this.alarm.show || this.video.single.show || this.video.multiple.show;
+  }
 }
 
 class ConfigThreeWiondow extends WindowViewModel {
