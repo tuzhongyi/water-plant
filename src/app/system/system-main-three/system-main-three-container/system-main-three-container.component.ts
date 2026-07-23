@@ -6,6 +6,7 @@ import {
   MarkerEntity,
   ModelFile,
   ModelViewerModel,
+  MoveToArgs,
   RenderMode,
 } from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionComponent } from '../../../common/components/three-dimension/three-dimension.component';
@@ -206,7 +207,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     building: {
       show: false,
       select: (data: GeoMapElement) => {
-        this.building.moveto.emit(data.ElementId);
+        this.three.moveto.emit({ modelId: data.ElementId });
       },
       expand: (data: GeoMapElement) => {
         if (data.ElementId) {
@@ -218,8 +219,6 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
   building = {
     datas: signal<GeoMapElement[]>([]),
-    moveto: new EventEmitter<string>(),
-
     get: (modelId: string) => {
       let elements = this.building.datas();
       return elements.find((x) => x.ElementId == modelId);
@@ -345,8 +344,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.argsChange.emit(this.args);
         this.element.load(this.args, true);
 
+        console.log(data);
         setTimeout(() => {
           this.three.focus.emit();
+          // this.three.moveto.emit({ modelId: model.name, meshId: data.ElementId });
         }, 10);
       },
       back: async () => {
@@ -366,6 +367,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   three = {
     inited: false,
     focus: new EventEmitter<FitView | void>(),
+    moveto: new EventEmitter<MoveToArgs>(),
     renderMode: signal<RenderMode>(RenderMode.overlay),
     config: signal<ThreeDConfig | undefined>(undefined),
     model: {
@@ -385,6 +387,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.three.inited = true;
       },
       loaded: () => {
+        console.log('3d model loaded');
         setTimeout(() => {
           this.three.focus.emit();
         }, 10);

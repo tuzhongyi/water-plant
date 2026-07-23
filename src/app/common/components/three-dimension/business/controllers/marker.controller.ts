@@ -357,6 +357,13 @@ export class MarkerController {
     },
   };
 
+  /** 查询 marker 当前世界位置（考虑 TransformControls 拖拽后的实时位置） */
+  getPosition(id: string): THREE.Vector3 | null {
+    const item = this._cache.get(id);
+    if (!item || !item.inScene) return null;
+    return item.sprite.position.clone();
+  }
+
   /** 查询指定位置半径内的所有 marker（XZ 平面距离，水平方向搜索） */
   markersInRadius(center: THREE.Vector3, radius: number): MarkerEntity[] {
     const results: MarkerEntity[] = [];

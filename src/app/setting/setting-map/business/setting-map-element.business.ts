@@ -57,4 +57,24 @@ export class SettingMapElementBusiness {
   all() {
     return this.service.map.element.all();
   }
+
+  async find(bindId: string) {
+    let params = new GetMapElementsParams();
+    params.ElementTypes = [
+      MapElementType.Camera,
+      MapElementType.IoTSensor,
+      MapElementType.Announciator,
+      MapElementType.Entrance,
+    ];
+    params.ElementIds = [bindId];
+    let all = await this.service.map.element.all(params);
+
+    if (all.length == 1) {
+      return all[0];
+    } else if (all.length == 0) {
+      return undefined;
+    } else {
+      throw new Error(`找到多个相同绑定，${JSON.stringify(all)}`);
+    }
+  }
 }

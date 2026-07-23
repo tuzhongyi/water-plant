@@ -20,6 +20,7 @@ import {
   ModelFile,
   ModelTransformConfig,
   ModelViewerModel,
+  MoveToArgs,
   RenderMode,
   StandbyClickArgs,
 } from '../../../common/components/three-dimension/business/models/types';
@@ -61,6 +62,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
   outputable = true;
   ngOnChanges(changes: SimpleChanges): void {
     this.change.standby(changes['standby']);
+    this.change.focus.camera(changes['focusCameraId']);
   }
   ngOnInit(): void {
     this.map.load();
@@ -82,6 +84,46 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
           this.element.standby.set(undefined);
         }
       }
+    },
+    focus: {
+      camera: async (change: SimpleChange) => {
+        if (change) {
+          if (this.focusCameraId) {
+            let elementId = this.focusCameraId.Id;
+            let element = this.element.datas().find((x) => x.Id == elementId);
+            if (element) {
+              this.element.select.emit(elementId);
+              return;
+            }
+
+            element = await this.business.element.get(elementId);
+            if (element.ParentId) {
+              let floor = await this.business.element.get(element.ParentId);
+              if (floor.ParentId) {
+                let building = await this.business.element.get(floor.ParentId);
+                if (building.ElementId) {
+                  await this.three.on.building.expand(building.ElementId);
+                  await this.floor.on.select(floor);
+
+                  wait(() => {
+                    return this.three.loading == false && this.element.loading == false;
+                  }).then((x) => {
+                    this.element.select.emit(elementId);
+                  });
+                }
+              }
+            } else {
+              this.floor.on.back().then((x) => {
+                wait(() => {
+                  return this.three.loading == false && this.element.loading == false;
+                }).then((x) => {
+                  this.element.select.emit(elementId);
+                });
+              });
+            }
+          }
+        }
+      },
     },
   };
 
@@ -167,19 +209,27 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
       let models = buildings.map((x) => {
         return this.converter.element.to.building(x, this.three.mode);
       });
+      this.three.loading = true;
       this.three.model.datas.set([...datas, ...models]);
     },
   };
   element = {
+    loading: false,
+    select: new EventEmitter<string>(),
     standby: signal<MarkerArgs | undefined>(undefined),
     datas: signal<GeoMapElement[]>([]),
+    on: {
+      loaded: () => {
+        this.element.loading = false;
+      },
+    },
     get: (modelId: string) => {
       let elements = this.element.datas();
       return elements.find((x) => x.ElementId == modelId);
     },
     load: async (floorId?: string) => {
       let cameras = await this.business.element.load(floorId);
-
+      this.element.loading = true;
       this.element.datas.set(cameras);
       if (this.outputable) {
         this.elementloaded.emit(cameras);
@@ -214,7 +264,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
         await this.init(map);
         let datas = this.three.model.datas();
         let village = this.converter.map.to.village(map, this.three.mode);
-
+        this.three.loading = true;
         this.three.model.datas.set([...datas, village]);
       }
     },
@@ -241,7 +291,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
     },
 
     on: {
-      select: (data: GeoMapElement) => {
+      select: async (data: GeoMapElement) => {
         let model = this.floor.model();
         if (!model) return;
         this.floor.selected.set(data);
@@ -256,7 +306,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
 
         this.floor.target.emit(args);
 
-        this.element.load(data.Id);
+        await this.element.load(data.Id);
 
         setTimeout(() => {
           this.three.focus.emit();
@@ -276,11 +326,14 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
 
   three = {
     inited: false,
+    loading: false,
     mode: RenderMode.overlay,
     focus: new EventEmitter<FitView | void>(),
+    moveto: new EventEmitter<MoveToArgs>(),
     model: {
       datas: signal<ModelViewerModel[]>([]),
       clear: () => {
+        this.three.loading = true;
         this.three.model.datas.set([]);
       },
     },
@@ -293,6 +346,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
         this.three.inited = true;
       },
       loaded: (datas: ModelTransformConfig[]) => {
+        this.three.loading = false;
         setTimeout(() => {
           this.three.focus.emit();
         }, 10);
@@ -334,6 +388,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
               this.floor.load(building, expansion);
               let model = this.converter.model.from.file(expansion, building, this.three.mode);
               model.position = { x: 0, y: 0, z: 0 };
+              this.three.loading = true;
               this.three.model.datas.set([model]);
             }
           }

@@ -28,6 +28,7 @@ import {
   ModelEntry,
   ModelTransformConfig,
   ModelViewerModel,
+  MoveToArgs,
   RenderMode,
   RenderSettings,
   StandbyClickArgs,
@@ -72,7 +73,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   /** 修改指定模型的 mesh 组可见性 */
   meshVisibility = input<EventEmitter<{ id: string; visibility: Record<string, boolean> }>>();
   /** 将摄像机移动到指定模型（通过 modelId） */
-  moveto = input<EventEmitter<string>>();
+  moveto = input<EventEmitter<MoveToArgs>>();
   modelLabelMode = input<LabelMode>(LabelMode.hover);
   /** 模型左键单击 */
   modelClick = output<string>();
@@ -86,8 +87,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   // ── Marker ───────────────────────────────────────────────
   /** 场景摄像机标记列表 */
   markers = input<MarkerEntity[]>([]);
-  /** 外部选中摄像机 ID */
-  selectedMarkerId = input<string>();
+  markerLoaded = output<MarkerEntity[]>();
+  /** 外部触发选中 marker，emit(id) 将场景摄像机聚焦到指定 marker */
+  markerSelect = input<EventEmitter<string>>();
   /** 是否允许拖拽移动摄像机标记 */
   markersMovable = input<boolean>(false);
   /** marker label 显示模式: 'always' 常显, 'hover' 仅悬停/聚焦时显示 */
@@ -146,6 +148,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   /* ---- Internal state ---- */
   private hoveredId: string | null = null;
+  private _selectedMarkerId?: string;
   private pressedKeys = new Set<string>();
 
   /* find 模式：搜索范围指示圈 */
@@ -187,12 +190,13 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.markerCtrl.cache.sync(cams, this.modelCtrl.sceneReady);
       this.markerCtrl.cache.visibility(this.models());
       this.markerCtrl.labelMode = this.markerLabelMode();
+      untracked(() => this.markerLoaded.emit(cams));
     });
     effect(() =>
       this.markerCtrl.select.apply(
         this.markersMovable(),
         this.modelCtrl.sceneReady,
-        this.selectedMarkerId(),
+        this._selectedMarkerId,
       ),
     );
     effect(() => {
@@ -547,13 +551,24 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       );
     }
 
-    /** moveto：emit(modelId) 将场景摄像机聚焦到指定模型并选中 */
+    /** moveto：emit({modelId?, markerId?, meshId?}) 将场景摄像机聚焦到目标位置 */
     if (this.moveto()) {
       this.subs.add(
-        this.moveto()!.subscribe((modelId) => {
+        this.moveto()!.subscribe((args) => {
           if (!this.modelCtrl.sceneReady) return;
-          this.state.selectedModelId$.next(modelId);
-          this.doFocusModel(modelId);
+          this.doMoveTo(args);
+        }),
+      );
+    }
+
+    /** markerSelect：emit(id) 外部触发选中指定 marker */
+    if (this.markerSelect()) {
+      this.subs.add(
+        this.markerSelect()!.subscribe((id) => {
+          this._selectedMarkerId = id;
+          if (this.modelCtrl.sceneReady) {
+            this.markerCtrl.select.apply(this.markersMovable(), this.modelCtrl.sceneReady, id);
+          }
         }),
       );
     }
@@ -1203,6 +1218,54 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       .clone()
       .addScaledVector(new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(), d);
     this.viewService.animateCamera(pos, ctr, 600);
+  }
+
+  /** 处理 moveto 事件：按优先级 markerId > modelId（含 meshId） */
+  private doMoveTo(args: MoveToArgs): void {
+    if (args.markerId) {
+      this.doFocusMarker(args.markerId);
+      return;
+    }
+    if (args.modelId) {
+      this.state.selectedModelId$.next(args.modelId);
+      if (args.meshId) {
+        this.doFocusMesh(args.modelId, args.meshId);
+      } else {
+        this.doFocusModel(args.modelId);
+      }
+    }
+  }
+
+  /** 移动摄像机到 marker 所在位置 */
+  private doFocusMarker(id: string): void {
+    const pos = this.markerCtrl.getPosition(id);
+    if (!pos) return;
+    const cam = this.sceneService.camera;
+    const ctrl = this.sceneService.controls;
+    const targetPos = cam.position.clone().add(pos.clone().sub(ctrl.target));
+    this.viewService.animateCamera(targetPos, pos.clone(), 300);
+  }
+
+  /** 移动摄像机到模型内指定 mesh 的世界位置 */
+  private doFocusMesh(modelId: string, meshId: string): void {
+    const entry = this.state.loadedModels.get(modelId);
+    if (!entry) return;
+    const found = this.findNodeInModel(entry.model, meshId);
+    if (!found) return;
+    const worldPos = new THREE.Vector3();
+    found.getWorldPosition(worldPos);
+    const cam = this.sceneService.camera;
+    const ctrl = this.sceneService.controls;
+    const targetPos = cam.position.clone().add(worldPos.clone().sub(ctrl.target));
+    this.viewService.animateCamera(targetPos, worldPos, 600);
+  }
+
+  private findNodeInModel(root: THREE.Object3D, name: string): THREE.Object3D | null {
+    let result: THREE.Object3D | null = null;
+    root.traverse((c) => {
+      if (c.name === name && !result) result = c;
+    });
+    return result;
   }
 
   private doRemoveModel(id: string): void {

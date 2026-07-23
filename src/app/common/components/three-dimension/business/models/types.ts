@@ -253,3 +253,8 @@ export interface ModelViewerModel {
   label?: string;
   alarm?: boolean;
 }
+export interface MoveToArgs {
+  modelId?: string;
+  markerId?: string;
+  meshId?: string;
+}
