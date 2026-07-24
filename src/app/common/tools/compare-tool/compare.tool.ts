@@ -7,6 +7,11 @@ export class LocaleCompare {
     if (b === null) return -1
 
     if (typeof a == 'string' && typeof b == 'string') {
+      const groupA = this._getSortGroup(a)
+      const groupB = this._getSortGroup(b)
+      if (groupA !== groupB) {
+        return (groupA - groupB) * (isAsc ? 1 : -1)
+      }
       if (this._localeCompareSupportsLocales()) {
         let collator = new Intl.Collator('zh-CN', {
           caseFirst: 'upper',
@@ -32,6 +37,13 @@ export class LocaleCompare {
     return (
       (aString == bString ? 0 : aString < bString ? -1 : 1) * (isAsc ? 1 : -1)
     )
+  }
+  private static _getSortGroup(s: string): number {
+    if (!s || s.length === 0) return 2
+    const code = s.charCodeAt(0)
+    if (code < 0x80) return 0
+    if (code >= 0x4e00 && code <= 0x9fff) return 1
+    return 2
   }
   private static _localeCompareSupportsLocales() {
     try {

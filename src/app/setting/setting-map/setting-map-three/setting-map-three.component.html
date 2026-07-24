@@ -19,6 +19,22 @@
     ></hw-3d>
   </div>
 
+  @if (manager.building.show) {
+    <div class="setting-map-three-building">
+      <div class="button-group">
+        @for (item of building.datas(); track $index) {
+          <button
+            class="button-border green"
+            (click)="manager.building.select(item)"
+            (dblclick)="manager.building.expand(item)"
+          >
+            {{ item.Name }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
   @if (floor.datas().length > 0) {
     <div class="setting-map-three-floor">
       <div class="button-group">
@@ -35,4 +51,17 @@
       </div>
     </div>
   }
+
+  <div class="setting-map-three-button-area">
+    <div class="button-group">
+      <button
+        class="button-map"
+        title="建筑列表"
+        (click)="manager.button.building()"
+        [class.selected]="manager.building.show || !!floor.model()"
+      >
+        <i class="howell-icon-MapVillage"></i>
+      </button>
+    </div>
+  </div>
 </div>

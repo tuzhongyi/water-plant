@@ -15,7 +15,9 @@ export class SettingMapElementBuildingBusiness {
   async load(): Promise<MapElementModel[]> {
     let datas = await this.all();
     datas = datas.filter((x) => x.ElementType === MapElementType.Building);
-    return datas;
+    return datas.sort((a, b) => {
+      return LocaleCompare.compare(b.Name, a.Name);
+    });
   }
 
   private async all(): Promise<GeoMapElement[]> {

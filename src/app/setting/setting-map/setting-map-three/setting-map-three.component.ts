@@ -25,6 +25,7 @@ import {
   StandbyClickArgs,
 } from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionComponent } from '../../../common/components/three-dimension/three-dimension.component';
+import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
@@ -196,6 +197,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
     },
     load: async () => {
       let buildings = await this.business.element.building.load();
+      buildings = buildings.filter((x) => x.ElementType === MapElementType.Building);
       this.building.datas.set(buildings);
       if (this.outputable) {
         this.buildingloaded.emit(buildings);
@@ -385,6 +387,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
           if (building) {
             let expansion = await this.business.model.get.expansion(modelId);
             if (expansion) {
+              this.manager.building.show = false;
               this.floor.load(building, expansion);
               let model = this.converter.model.from.file(expansion, building, this.three.mode);
               model.position = { x: 0, y: 0, z: 0 };
@@ -393,6 +396,30 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
             }
           }
         },
+      },
+    },
+  };
+
+  manager = {
+    building: {
+      show: false,
+      select: (data: GeoMapElement) => {
+        this.three.moveto.emit({ modelId: data.ElementId });
+      },
+      expand: (data: GeoMapElement) => {
+        if (data.ElementId) {
+          this.manager.building.show = false;
+          this.three.on.building.expand(data.ElementId);
+        }
+      },
+    },
+    button: {
+      building: () => {
+        if (this.floor.model()) {
+          this.floor.on.back();
+        } else {
+          this.manager.building.show = !this.manager.building.show;
+        }
       },
     },
   };
