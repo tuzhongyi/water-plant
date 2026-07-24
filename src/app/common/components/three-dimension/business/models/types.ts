@@ -257,4 +257,5 @@ export interface MoveToArgs {
   modelId?: string;
   markerId?: string;
   meshId?: string;
+  zoomIn?: boolean;
 }

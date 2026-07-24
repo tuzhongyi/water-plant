@@ -31,7 +31,12 @@
       >
         <i class="howell-icon-MapVillage"></i>
       </button>
-      <button class="button-map" title="渲染模式" (click)="manager.button.mode()">
+      <button
+        class="button-map"
+        title="渲染模式"
+        (click)="manager.button.mode()"
+        [disabled]="floor.datas().length > 0"
+      >
         <i class="howell-icon-shade"></i>
       </button>
       <button class="button-map" title="点位筛选" (click)="manager.button.filter()">

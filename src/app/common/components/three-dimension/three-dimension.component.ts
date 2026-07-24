@@ -153,6 +153,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private _selectedMarkerId?: string;
   private pressedKeys = new Set<string>();
 
+  /** 模型加载期间的 meshVisibility 缓存：模型就绪后重新应用 */
+  private pendingMeshVisibility?: { id: string; visibility: Record<string, boolean> };
+
   /* find 模式：搜索范围指示圈 */
   private findCircle: THREE.Group | null = null;
   private findActive = false;
@@ -481,9 +484,16 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.subs.add(this.modelCtrl.loaded.subscribe((configs) => this.loaded.emit(configs)));
     this.subs.add(
       this.modelCtrl.asyncLoadDone.subscribe(() => {
-        this.fitAllModelsInView(this.models());
         this.markerCtrl.cache.visibility(this.models());
         this.updateLabelVisibility();
+        if (this.pendingMeshVisibility) {
+          const entry = this.state.loadedModels.get(this.pendingMeshVisibility.id);
+          if (entry) {
+            this.modelService.setNodeVisible(entry, this.pendingMeshVisibility.visibility);
+            this.markerCtrl.cache.visibility(this.models());
+          }
+          this.pendingMeshVisibility = undefined;
+        }
         if (this.modelCtrl.loadingIds.size === 0) this.modelCtrl.emitLoaded(this.models());
       }),
     );
@@ -596,7 +606,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           if (entry) {
             this.modelService.setNodeVisible(entry, visibility);
             this.markerCtrl.cache.visibility(this.models());
-            this.fitAllModelsInView(this.models(), true);
+          } else {
+            this.pendingMeshVisibility = { id, visibility };
           }
         }),
       );
@@ -734,7 +745,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   private syncModels(targets: ModelViewerModel[]): void {
     this.modelCtrl.syncModels(targets);
-    this.fitAllModelsInView(targets);
     if (this.modelCtrl.loadingIds.size === 0) {
       this.modelCtrl.emitLoaded(this.models());
     }
@@ -1005,27 +1015,13 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.applySolidSelectionOutline();
   }
 
-  /** solid 模式下为选中模型显示 edges 边框，颜色取自 typeColorPresets.selected.edge */
+  /** solid 模式下隐藏所有 edges 边框，只保留漫反射高亮 */
   private applySolidSelectionOutline(): void {
     if (this.state.renderMode !== 'solid') return;
-    const selId = this.state.selectedModelId;
     for (const [id] of this.modelCtrl.internalModels) {
       const entry = this.state.loadedModels.get(id);
       if (!entry?.edgesGroup) continue;
-      if (id === selId) {
-        entry.edgesGroup.visible = true;
-        const color = entry.colors.selected?.edge ?? '#ff8800';
-        entry.edgesGroup.traverse((c) => {
-          if ((c as any).isLineSegments2 && (c as any).material?.color) {
-            (c as any).material.color.set(color);
-            (c as any).material.transparent = false;
-            (c as any).material.depthTest = true;
-            (c as any).material.needsUpdate = true;
-          }
-        });
-      } else {
-        entry.edgesGroup.visible = false;
-      }
+      entry.edgesGroup.visible = false;
     }
   }
 
@@ -1208,21 +1204,29 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
   /* ---- Command handlers ---- */
 
-  private doFocusModel(id: string): void {
+  private doFocusModel(id: string, zoomIn?: boolean): void {
     const e = this.state.loadedModels.get(id);
     if (!e) return;
     const bb = new THREE.Box3().setFromObject(e.wrapper);
     const ctr = new THREE.Vector3();
     bb.getCenter(ctr);
-    const sz = new THREE.Vector3();
-    bb.getSize(sz);
-    const d = Math.max(sz.x, sz.y, sz.z, 0.1) * 2.5;
     const cam = this.sceneService.camera;
     const ctrl = this.sceneService.controls;
-    const pos = ctr
-      .clone()
-      .addScaledVector(new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(), d);
-    this.viewService.animateCamera(pos, ctr, 600);
+    if (zoomIn) {
+      const sz = new THREE.Vector3();
+      bb.getSize(sz);
+      const d = Math.max(sz.x, sz.y, sz.z, 0.1) * 2.5;
+      const pos = ctr
+        .clone()
+        .addScaledVector(
+          new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(),
+          d,
+        );
+      this.viewService.animateCamera(pos, ctr, 600);
+    } else {
+      const targetPos = cam.position.clone().add(ctr.clone().sub(ctrl.target));
+      this.viewService.animateCamera(targetPos, ctr, 300);
+    }
   }
 
   /** 处理 moveto 事件：按优先级 markerId > modelId（含 meshId） */
@@ -1236,7 +1240,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       if (args.meshId) {
         this.doFocusMesh(args.modelId, args.meshId);
       } else {
-        this.doFocusModel(args.modelId);
+        this.doFocusModel(args.modelId, args.zoomIn);
       }
     }
   }
@@ -1340,6 +1344,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         this.colorsService.applyStateColors(entry, 'normal');
 
         this.modelCtrl.addToInternal(entry);
+        // addToInternal 会在 loading 期间隐藏模型，reload 不走 emitLoaded，手动恢复可见
+        entry.wrapper.visible = true;
       }
     } finally {
       this.modelCtrl.loadingIds.delete(m.fileName);

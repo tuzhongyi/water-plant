@@ -30,10 +30,10 @@ export class ColorsService {
     this.applyBackgroundColor(entry, state);
   }
 
-  /** 颜色状态优先级：selected > alarm > hover > normal */
+  /** 颜色状态优先级：alarm > selected > hover > normal */
   getModelState(entry: ModelEntry): ColorState {
-    if (entry.id === this.state.selectedModelId) return 'selected';
     if (entry.alarm) return 'alarm';
+    if (entry.id === this.state.selectedModelId) return 'selected';
     if (entry.id === this.state.hoveredModelId) return 'hover';
     return 'normal';
   }

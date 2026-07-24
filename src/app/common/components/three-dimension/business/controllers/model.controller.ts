@@ -173,7 +173,13 @@ export class ModelController {
       meshes,
       locked: entry.locked,
     };
-    if (!entry.wrapper.parent) this.sceneService.scene.add(entry.wrapper);
+    if (!entry.wrapper.parent) {
+      this.sceneService.scene.add(entry.wrapper);
+      // 加载期间隐藏模型，emitLoaded 时再显示，避免半成品渲染
+      if (this.loadingIds.size > 0) {
+        entry.wrapper.visible = false;
+      }
+    }
     this.internalModels.set(entry.id, s);
 
     if (this.state.showBBox) this.createModelBBox(s);
@@ -344,10 +350,12 @@ export class ModelController {
     const ctrl = this.sceneService.controls;
     const startLookAt = targetLookAt.clone();
     if (this.cameraAnimId) cancelAnimationFrame(this.cameraAnimId);
+    // 同步设置到起始位置，消除首帧闪烁
+    cam.position.copy(startPos);
+    ctrl.target.copy(startLookAt);
+    ctrl.update();
     const duration = 1000;
-    const startTime = performance.now();
-
-    const animate = (now: number) => {
+    const animate = (startTime: number, now: number) => {
       let t = (now - startTime) / duration;
       if (t > 1) t = 1;
       const ease = 1 - Math.pow(1 - t, 3);
@@ -355,13 +363,17 @@ export class ModelController {
       ctrl.target.lerpVectors(startLookAt, targetLookAt, ease);
       ctrl.update();
       if (t < 1) {
-        this.cameraAnimId = requestAnimationFrame(animate);
+        this.cameraAnimId = requestAnimationFrame(animate.bind(null, startTime));
       } else {
         this.cameraAnimId = 0;
       }
     };
     this.zone.runOutsideAngular(() => {
-      this.cameraAnimId = requestAnimationFrame(animate);
+      // 预热一帧：让 GPU 完成新模型的 shader 编译和 buffer 上传
+      this.cameraAnimId = requestAnimationFrame(() => {
+        const startTime = performance.now();
+        this.cameraAnimId = requestAnimationFrame(animate.bind(null, startTime));
+      });
     });
   }
 
@@ -413,6 +425,12 @@ export class ModelController {
 
   emitLoaded(models: ModelViewerModel[]): void {
     const targetKeys = new Set(models.map((m) => m.fileName));
+    // 先显示模型，再发 loaded 事件，确保 focus 时模型已可见
+    for (const [id, entry] of this.state.loadedModels) {
+      if (targetKeys.has(id) && !entry.wrapper.visible) {
+        entry.wrapper.visible = true;
+      }
+    }
     const configs = Array.from(this.state.loadedModels.values())
       .filter((e) => targetKeys.has(e.fileName))
       .map((e) => this.entryToTransformConfig(e));

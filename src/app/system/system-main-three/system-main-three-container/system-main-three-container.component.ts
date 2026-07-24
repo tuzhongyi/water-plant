@@ -123,7 +123,6 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.business.config.change.subscribe((x) => {
         this.element.find.radius = x.find.radius;
-        console.log('changed');
       }),
     );
   }
@@ -208,7 +207,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     building: {
       show: false,
       select: (data: GeoMapElement) => {
-        this.three.moveto.emit({ modelId: data.ElementId });
+        this.three.moveto.emit({ modelId: data.ElementId, zoomIn: true });
       },
       expand: (data: GeoMapElement) => {
         if (data.ElementId) {
@@ -325,7 +324,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     },
 
     on: {
-      select: (data: GeoMapElement) => {
+      select: async (data: GeoMapElement) => {
         let model = this.floor.model();
         if (!model) return;
         this.floor.selected.set(data);
@@ -337,19 +336,18 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
               .map((item) => [item.ElementId, this.floor.selected()?.Id === item.Id]),
           ) as Record<string, boolean>,
         };
-        console.log(args);
+
         this.floor.target.emit(args);
 
         this.args.floorId = data.Id;
         this.args.buildingId = undefined;
         this.argsChange.emit(this.args);
-        this.element.load(this.args, true);
+        await this.element.load(this.args, true);
+        this.three.moveto.emit({ modelId: model.name, meshId: data.ElementId });
+        // setTimeout(() => {
+        //   // this.three.focus.emit();
 
-        console.log(data);
-        setTimeout(() => {
-          this.three.focus.emit();
-          // this.three.moveto.emit({ modelId: model.name, meshId: data.ElementId });
-        }, 10);
+        // }, 10);
       },
       back: async () => {
         this.manager.filter.clear(false);
@@ -388,10 +386,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.three.inited = true;
       },
       loaded: () => {
-        console.log('3d model loaded');
-        setTimeout(() => {
-          this.three.focus.emit();
-        }, 10);
+        this.three.focus.emit();
       },
 
       building: {
@@ -405,6 +400,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
             let expansion = await this.business.model.expansion(this.three.renderMode(), modelId);
             if (expansion) {
               this.floor.load(building, expansion);
+              this.args.buildingId = building.Id;
+              this.argsChange.emit(this.args);
+              // 先加载元素（标记），确保标记就绪后再加载模型
+              await this.element.load(this.args, true);
               let model = this.converter.model.from.file(
                 expansion,
                 building,
@@ -412,16 +411,12 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
               );
               model.position = { x: 0, y: 0, z: 0 };
               this.three.model.datas.set([model]);
-              this.args.buildingId = building.Id;
-              this.argsChange.emit(this.args);
-              this.element.load(this.args, true);
             }
           }
         },
       },
       camera: {
         dblclick: (id: string) => {
-          console.log(id);
           let camera = this.element.datas().find((x) => x.Id == id);
           if (camera && camera.ElementType == MapElementType.Camera) {
             this.preview.emit(camera);
