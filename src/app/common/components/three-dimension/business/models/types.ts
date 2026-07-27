@@ -85,6 +85,8 @@ export interface PerModelRenderSettings {
 export interface ModelEntry {
   id: string;
   fileName: string;
+  /** 加载时使用的 URL，用于检测跨模式缓存命中 */
+  loadedUrl?: string;
   wrapper: THREE.Group;
   model: THREE.Group;
   allMeshes: THREE.Mesh[];

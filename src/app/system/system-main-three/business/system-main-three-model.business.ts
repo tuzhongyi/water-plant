@@ -8,12 +8,13 @@ import { ThreeDimensionApiService } from '../../../common/components/three-dimen
 export class SystemMainThreeModelBusiness {
   constructor(private service: ThreeDimensionApiService) {}
 
-  private cache: ModelFile[] = [];
+  private cache = new Map<string, ModelFile[]>();
 
   async load(mode: RenderMode): Promise<ModelFile[]> {
-    if (this.cache.length > 0) return this.cache;
-    this.cache = await firstValueFrom(this.service.models(mode));
-    return this.cache;
+    if (this.cache.has(mode)) return this.cache.get(mode)!;
+    const data = await firstValueFrom(this.service.models(mode));
+    this.cache.set(mode, data);
+    return data;
   }
   async item(mode: RenderMode, modelId: string) {
     let all = await this.load(mode);

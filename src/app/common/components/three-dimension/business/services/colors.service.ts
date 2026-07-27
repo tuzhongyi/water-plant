@@ -38,6 +38,24 @@ export class ColorsService {
     return 'normal';
   }
 
+  /** alarm 状态下选中/悬停时提亮系数：selected 比 hover 更亮 */
+  private alarmBrighten(entry: ModelEntry): number {
+    if (!entry.alarm) return 0;
+    if (entry.id === this.state.selectedModelId) return 0.4;
+    if (entry.id === this.state.hoveredModelId) return 0.2;
+    return 0;
+  }
+
+  /** 将 hex 颜色提亮 amount（0~1），amount=0 不变 */
+  private lighten(hex: string, amount: number): string {
+    if (amount <= 0) return hex;
+    const c = new THREE.Color(hex);
+    c.r = Math.min(1, c.r + (1 - c.r) * amount);
+    c.g = Math.min(1, c.g + (1 - c.g) * amount);
+    c.b = Math.min(1, c.b + (1 - c.b) * amount);
+    return '#' + c.getHexString();
+  }
+
   /** 应用指定状态的完整外观（边缘 + 背景 + 材质颜色） */
   applyStateColors(entry: ModelEntry, state: ColorState): void {
     if (this.state.renderMode === 'solid') {
@@ -78,7 +96,11 @@ export class ColorsService {
     const colorState = state === 'alarm'
       ? (entry.colors.alarm ?? entry.colors.selected ?? entry.colors.normal)
       : entry.colors[state];
-    const color = colorState.edge;
+    let color = colorState.edge;
+    /* alarm 状态下选中/悬停时提亮 */
+    if (state === 'alarm') {
+      color = this.lighten(color, this.alarmBrighten(entry));
+    }
     if (!entry.edgesGroup) return;
     entry.edgesGroup.traverse(c => {
       if ((c as any).isLineSegments2 && (c as any).material?.color) {
@@ -229,7 +251,11 @@ export class ColorsService {
     const materials = this.getMaterials(entry);
     for (const { name, material } of materials) {
       const m = material as THREE.MeshStandardMaterial;
-      const hex = this.getMaterialColor(entry, name, state);
+      let hex = this.getMaterialColor(entry, name, state);
+      /* alarm 状态下选中/悬停时提亮 */
+      if (state === 'alarm') {
+        hex = this.lighten(hex, this.alarmBrighten(entry));
+      }
       if (m.color) {
         m.color.set(hex);
         m.needsUpdate = true;

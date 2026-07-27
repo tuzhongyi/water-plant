@@ -70,6 +70,7 @@ export class ModelService {
     const entry: ModelEntry = {
       id,
       fileName,
+      loadedUrl: url,
       wrapper,
       model: group,
       allMeshes,

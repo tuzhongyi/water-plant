@@ -111,6 +111,23 @@ export class ModelController {
       const key = model.fileName;
       const entry = this.state.loadedModels.get(key);
       if (entry) {
+        /* URL 变化时（如跨模式切换）重新加载 */
+        if (entry.loadedUrl && entry.loadedUrl !== model.url) {
+          const s = this.internalModels.get(key);
+          if (s) {
+            this.sceneService.scene.remove(s.group);
+            this.internalModels.delete(key);
+          }
+          this.state.loadedModels.delete(key);
+          this.loadingIds.add(key);
+          this.doLoadModel(model.url, model.fileName, model.position, model.label, model.alarm).finally(() => {
+            this.loadingIds.delete(key);
+            const e = this.state.loadedModels.get(key);
+            if (e) this.addToInternal(e);
+            this.asyncLoadDone.next();
+          });
+          continue;
+        }
         /* alarm 状态变化时重新应用颜色 */
         if (entry.alarm !== model.alarm) {
           entry.alarm = model.alarm;
