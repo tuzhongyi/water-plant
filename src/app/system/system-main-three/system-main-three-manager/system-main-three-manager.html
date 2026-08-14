@@ -9,12 +9,14 @@
       [(args)]="map.args"
       [elementload]="map.load"
       [alarm]="alarm"
+      [unalarm]="unalarm"
       [renderPaused]="renderPaused"
       (preview)="map.on.preview($event)"
       (video)="map.on.video($event)"
       (elementloaded)="map.on.loaded($event)"
       (maploaded)="map.on.maploaded($event)"
       (buildingselect)="map.building.selected = $event"
+      (resetstate)="map.on.resetstate($event)"
     ></hw-system-main-three-container>
   </div>
 

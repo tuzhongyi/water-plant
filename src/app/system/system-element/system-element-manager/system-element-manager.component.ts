@@ -4,11 +4,13 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChange,
   SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { HowellSelectComponent } from '../../../common/components/hw-select/select-control.component';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
@@ -23,15 +25,29 @@ import { SystemElementTableArgs } from '../system-element-table/system-element-t
   templateUrl: './system-element-manager.component.html',
   styleUrl: './system-element-manager.component.less',
 })
-export class SystemElementManagerComponent implements OnChanges {
+export class SystemElementManagerComponent implements OnChanges, OnInit {
   @Input() type?: MapElementType;
   @Input() buildingId?: string;
   @Output() preview = new EventEmitter<GeoMapElement>();
+  @Output() resetstate = new EventEmitter<GeoMapElement>();
+  @Input() reload?: EventEmitter<void>;
   constructor(public source: SystemMainThreeSource) {}
+
   Language = Language;
+  private subs = new Subscription();
   ngOnChanges(changes: SimpleChanges): void {
     this.change.type(changes['type']);
     this.change.building(changes['buildingId']);
+  }
+  ngOnInit(): void {
+    if (this.reload) {
+      this.subs.add(
+        this.reload.subscribe((x) => {
+          this.table.args.first = false;
+          this.table.load.emit(this.table.args);
+        }),
+      );
+    }
   }
 
   private change = {
@@ -57,6 +73,9 @@ export class SystemElementManagerComponent implements OnChanges {
       },
       preview: (data: GeoMapElement) => {
         this.preview.emit(data);
+      },
+      resetstate: (data: GeoMapElement) => {
+        this.resetstate.emit(data);
       },
     },
   };

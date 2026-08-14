@@ -50,7 +50,7 @@
                 {{ (item?.parent | async) || '-' }}
               }
             </td>
-            <td [title]="item?.statename || ''" [class]="item?.statecolor">
+            <td [title]="(item?.statename | async) || ''" [class]="item?.statecolor">
               @if (item) {
                 {{ (item?.statename | async) || '-' }}
               }
@@ -65,6 +65,9 @@
                     (click)="on.preview($event, item)"
                   >
                     <i class="howell-icon-video-play"></i>
+                  </button>
+                  <button title="重置状态" (click)="on.resetstate($event, item)">
+                    <i class="mdi mdi-replay"></i>
                   </button>
                 </div>
               }

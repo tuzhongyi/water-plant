@@ -17,10 +17,12 @@
         <hw-system-main-three-manager
           [load]="map.load"
           [alarm]="map.alarm"
+          [unalarm]="map.unalarm"
           [renderPaused]="window.opened"
           (preview)="map.on.preview($event)"
           (video)="map.on.video($event)"
           (element)="map.on.element($event)"
+          (resetstate)="map.on.resetstate($event)"
         ></hw-system-main-three-manager>
       </howell-card>
     </div>
@@ -40,7 +42,9 @@
       <hw-system-element-manager
         [type]="window.table.element.type"
         [buildingId]="window.table.element.buildingId"
+        [reload]="window.table.element.reload"
         (preview)="video.single.preview($event)"
+        (resetstate)="map.on.resetstate($event)"
       ></hw-system-element-manager>
     </app-window>
   }

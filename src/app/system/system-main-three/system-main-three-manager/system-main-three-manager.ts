@@ -26,11 +26,12 @@ import { SystemMainThreeStateComponent } from '../system-main-three-state/system
 export class SystemMainThreeManager implements OnInit, OnDestroy {
   @Input() load?: EventEmitter<void>;
   @Input() alarm?: EventEmitter<string>;
+  @Input() unalarm?: EventEmitter<GeoMapElement>;
   @Input() renderPaused = false;
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() element = new EventEmitter<{ type?: MapElementType; buildingId?: string }>();
-
+  @Output() resetstate = new EventEmitter<GeoMapElement>();
   constructor(private business: SystemMainThreeBusiness) {}
 
   config?: ThreeDConfig;
@@ -50,6 +51,7 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
     if (this.load) {
       this.subs.add(
         this.load.subscribe((x) => {
+          this.map.args.usecache = false;
           this.map.load.emit(this.map.args);
         }),
       );
@@ -76,6 +78,9 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
       },
       video: (datas: GeoMapElement[]) => {
         this.video.emit(datas);
+      },
+      resetstate: (data: GeoMapElement) => {
+        this.resetstate.emit(data);
       },
     },
   };

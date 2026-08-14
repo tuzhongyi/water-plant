@@ -40,6 +40,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   @Input() args = new SystemMainThreeArgs();
   @Output() argsChange = new EventEmitter<SystemMainThreeArgs>();
   @Input('alarm') _alarm?: EventEmitter<string>;
+  @Input() unalarm?: EventEmitter<GeoMapElement>;
   @Input() elementload?: EventEmitter<SystemMainThreeArgs>;
   @Output() maploaded = new EventEmitter<GeoMap>();
   @Output() buildingloaded = new EventEmitter<GeoMapElement[]>();
@@ -50,6 +51,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() found = new EventEmitter<GeoMapElement[]>();
+  @Output() resetstate = new EventEmitter<GeoMapElement>();
   constructor(
     private business: SystemMainThreeBusiness,
     private converter: SystemMainThreeConverter,
@@ -95,7 +97,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.elementload.subscribe((x) => {
           this.args = x;
-          this.element.load(this.args, false);
+
+          this.element.load(this.args, x.usecache);
         }),
       );
     }
@@ -103,6 +106,27 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       this.subs.add(
         this._alarm.subscribe((deviceId) => {
           this.alarm.to(deviceId);
+        }),
+      );
+    }
+    if (this.unalarm) {
+      this.subs.add(
+        this.unalarm.subscribe((element) => {
+          this.business.element.alarm.unalarm(element.Id).then((building) => {
+            if (building) {
+              this.building.reload(building);
+
+              let floors = this.floor.datas();
+              if (floors.length > 0) {
+                this.args.buildingId = building.Id;
+                let floor = this.floor.selected();
+                if (floor) {
+                  this.args.floorId = floor.Id;
+                }
+              }
+            }
+            this.element.load(this.args, false);
+          });
         }),
       );
     }
@@ -232,6 +256,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
   building = {
     datas: signal<GeoMapElement[]>([]),
+    selected: signal<GeoMapElement | undefined>(undefined),
     get: (modelId: string) => {
       let elements = this.building.datas();
       return elements.find((x) => x.ElementId == modelId);
@@ -405,6 +430,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       building: {
         select: (modelId: string) => {
           let building = this.building.get(modelId);
+          this.building.selected.set(building);
           this.buildingselect.emit(building);
         },
         expand: async (modelId: string) => {
@@ -430,9 +456,21 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       },
       camera: {
         dblclick: (id: string) => {
-          let camera = this.element.datas().find((x) => x.Id == id);
-          if (camera && camera.ElementType == MapElementType.Camera) {
-            this.preview.emit(camera);
+          let element = this.element.datas().find((x) => x.Id == id);
+          if (element) {
+            switch (element.ElementType) {
+              case MapElementType.Camera:
+                this.preview.emit(element);
+                break;
+              case MapElementType.Announciator:
+              case MapElementType.Entrance:
+              case MapElementType.IoTSensor:
+              case MapElementType.Door:
+                this.resetstate.emit(element);
+                break;
+              default:
+                break;
+            }
           }
         },
       },

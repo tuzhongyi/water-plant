@@ -52,7 +52,7 @@ export class SystemMainThreeElementBusiness {
   }
   async load(args: SystemMainThreeArgs, usecache: boolean): Promise<MapElementModel[]> {
     if (args.buildingId) {
-      return this.from.building(args.buildingId, args);
+      return this.from.building(args.buildingId, args, usecache);
     }
     let params = new GetMapElementsParams();
     params.ElementTypes = SystemMainThreeSource.elements;
@@ -82,7 +82,7 @@ export class SystemMainThreeElementBusiness {
     device: (deviceId: string): GeoMapElement | undefined => {
       return this.cache.find((el) => el.ElementId === deviceId);
     },
-    building: async (buildingId: string, args?: SystemMainThreeArgs) => {
+    building: async (buildingId: string, args?: SystemMainThreeArgs, usecache = true) => {
       let floors = await this.building.floor.load(buildingId);
       let elements: GeoMapElement[] = [];
       for (let i = 0; i < floors.length; i++) {
@@ -93,7 +93,7 @@ export class SystemMainThreeElementBusiness {
           _args.buildingId = undefined;
         }
         _args.floorId = floor.Id;
-        let datas = await this.load(_args, true);
+        let datas = await this.load(_args, usecache);
         elements.push(...datas);
       }
       return elements;

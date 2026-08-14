@@ -5,7 +5,7 @@ export enum SystemMainRecordTableEventType {
   alarm = 2,
 }
 export class SystemMainRecordTableArgs {
-  type?: SystemMainRecordTableEventType;
+  type?: SystemMainRecordTableEventType = SystemMainRecordTableEventType.alarm;
 }
 export interface SystemMainRecordTableItem {
   id: string;

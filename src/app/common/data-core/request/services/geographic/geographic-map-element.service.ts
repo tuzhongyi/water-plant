@@ -63,4 +63,15 @@ export class GeographicMapElementRequestService extends AbstractService<GeoMapEl
       return this.list(p);
     }, params);
   }
+
+  reset = {
+    state: (id: string) => {
+      let url = GeographicUrl.map.element.reset.state(id);
+      return this.http.post<HowellResponse<GeoMapElement>>(url).then((x) => {
+        /* 重置状态成功后清空元素缓存，否则表格/地图会继续读取到旧的 ElementState */
+        this.cache.clear();
+        return HowellResponseProcess.item(x, GeoMapElement);
+      });
+    },
+  };
 }

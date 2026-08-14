@@ -60,6 +60,7 @@ export class SystemElementTableBusiness {
       statename: this.language.geo.ElementStates(data.ElementState),
       statecolor: ColorTool.from.MapElementState(data.ElementState).name,
       canplay: data.ElementType == MapElementType.Camera,
+      alarm: true,
       data: data,
     };
     return item;
@@ -168,7 +169,7 @@ export class SystemElementTableBusiness {
         }
 
         // 3. 获取所有符合条件的元素，过滤出父级为楼层的数据
-        const allElements = await this.service.geo.map.element.cache.array(params);
+        const allElements = await this.service.geo.map.element.all(params);
         return allElements.filter((x) => x.ParentId && floorIds.has(x.ParentId));
       },
       building: async (

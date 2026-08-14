@@ -72,6 +72,32 @@ export class SystemMainThreeAlarmBusiness {
     }
   }
 
+  /** 移除报警缓存并清除其定时器 */
+  private remove(elementId: string) {
+    const timer = this.timers.get(elementId);
+    if (timer) {
+      clearTimeout(timer);
+      this.timers.delete(elementId);
+    }
+    this.elements.delete(elementId);
+  }
+
+  /** 消警：移除指定元素的报警缓存，若所在建筑也处于报警则一并移除，返回被移除的建筑（用于恢复建筑颜色） */
+  async unalarm(elementId: string): Promise<GeoMapElement | undefined> {
+    const el = this.elements.get(elementId);
+    if (!el) return undefined;
+
+    this.remove(elementId);
+
+    /* 所在建筑若也处于报警，一并清除并返回，供上层恢复建筑颜色 */
+    const building = await this.element.building.find(el);
+    if (building && this.elements.has(building.Id)) {
+      this.remove(building.Id);
+      return building;
+    }
+    return undefined;
+  }
+
   /** 添加报警元素，30s 后自动消警 */
   private add(element: GeoMapElement) {
     const elementId = element.Id;

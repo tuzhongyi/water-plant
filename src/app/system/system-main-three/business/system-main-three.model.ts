@@ -3,4 +3,5 @@ export class SystemMainThreeArgs {
   type?: number;
   floorId?: string;
   buildingId?: string;
+  usecache: boolean = true;
 }

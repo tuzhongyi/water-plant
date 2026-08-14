@@ -85,6 +85,7 @@ export class MapElementTableWindow extends WindowViewModel {
   title: string = '地图点位信息列表';
   type?: MapElementType;
   buildingId?: string;
+  reload = new EventEmitter<void>();
   style = {
     ...SizeTool.window.large,
   };

@@ -24,6 +24,7 @@ export class SystemElementTableComponent implements OnInit, OnDestroy {
   @Input() args = new SystemElementTableArgs();
   @Input('load') input_load?: EventEmitter<SystemElementTableArgs>;
   @Output() preview = new EventEmitter<GeoMapElement>();
+  @Output() resetstate = new EventEmitter<GeoMapElement>();
 
   constructor(private business: SystemElementTableBusiness) {}
 
@@ -84,6 +85,12 @@ export class SystemElementTableComponent implements OnInit, OnDestroy {
     },
     preview: (e: Event, item: SystemElementTableItem) => {
       this.preview.emit(item.data);
+      if (this.selected === item) {
+        e.stopImmediatePropagation();
+      }
+    },
+    resetstate: (e: Event, item: SystemElementTableItem) => {
+      this.resetstate.emit(item.data);
       if (this.selected === item) {
         e.stopImmediatePropagation();
       }

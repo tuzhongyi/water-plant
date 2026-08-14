@@ -32,5 +32,6 @@ export interface SystemElementTableItem<T = any> {
   statename: Promise<string>;
   statecolor: string;
   canplay: boolean;
+  alarm: boolean;
   data: T;
 }

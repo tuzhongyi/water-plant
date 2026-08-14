@@ -142,6 +142,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
               case 3:
                 this.map.load.emit();
                 this.record.load.emit();
+                this.window.table.element.reload.emit();
                 break;
 
               default:
@@ -149,6 +150,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
                 this.window.alarm.open(x, true);
                 this.map.load.emit();
                 this.record.load.emit();
+                this.window.table.element.reload.emit();
                 break;
             }
 
@@ -163,6 +165,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   map = {
     load: new EventEmitter<void>(),
     alarm: new EventEmitter<string>(),
+    unalarm: new EventEmitter<GeoMapElement>(),
     on: {
       preview: (data: GeoMapElement) => {
         this.video.single.preview(data);
@@ -174,6 +177,12 @@ export class SystemMainComponent implements OnInit, OnDestroy {
         this.window.table.element.type = args.type;
         this.window.table.element.buildingId = args.buildingId;
         this.window.table.element.show = true;
+      },
+      resetstate: (data: GeoMapElement) => {
+        this.business.element.reset(data.Id).then((x) => {
+          this.map.unalarm.emit(data);
+          this.window.table.element.reload.emit();
+        });
       },
     },
   };
@@ -230,12 +239,27 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       },
       playback: (data: DeviceEventRecord) => {
         this.window.video.single.mode = PlayMode.vod;
-        let name = data.Resource?.ResourceName || data.DeviceName || '';
-        this.window.video.single.title = name;
+
+        let title = '';
+        let cameraId = '';
+        if (data.Actions && data.Actions.length > 0) {
+          let names = data.Actions.map((x) => x.ResourceName ?? x.DeviceName ?? '').filter(
+            (x) => !!x,
+          );
+          title = names.join(' | ');
+          cameraId = data.Actions[0].ResourceId ?? data.Actions[0].DeviceId ?? '';
+        }
+        if (!title) {
+          title = data.Resource?.ResourceName || data.DeviceName || '';
+        }
+        if (!cameraId) {
+          data.Resource?.ResourceId || data.DeviceId;
+        }
+        this.window.video.single.title = title;
         let duration = DateTimeTool.before(data.EventTime);
         this.window.video.single.begin = duration.begin;
         this.window.video.single.end = duration.end;
-        this.window.video.single.cameraId = data.Resource?.ResourceId || data.DeviceId;
+        this.window.video.single.cameraId = cameraId;
         this.window.video.single.autoplay = true;
         this.window.video.single.show = true;
       },
