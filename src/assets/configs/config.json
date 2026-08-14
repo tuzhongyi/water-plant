@@ -15,5 +15,8 @@
 	"alarm":[102],
 	"entrance":[103,104],
 	"other":[101]
+  },
+  "alarm":{
+	"autoclear":true
   }
 }

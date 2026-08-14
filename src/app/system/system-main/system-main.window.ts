@@ -1,4 +1,4 @@
-import { EventEmitter } from '@angular/core';
+import { EventEmitter, signal } from '@angular/core';
 import { PlayMode } from '../../common/components/video-player/video-player.model';
 import { WindowViewModel } from '../../common/components/window-control/window.model';
 import { MapElementType } from '../../common/data-core/enums/geo/map-element-type.enum';
@@ -203,4 +203,52 @@ class AlarmWindow extends VideoMultipleWindow {
     width: '65%',
     height: 'calc(65%)',
   };
+
+  private readonly autoCloseSeconds = 30;
+  countdown = signal<number>(this.autoCloseSeconds);
+
+  private _autoClose = true;
+  get autoClose(): boolean {
+    return this._autoClose;
+  }
+  set autoClose(value: boolean) {
+    this._autoClose = value;
+    if (value) {
+      this.startAutoClose();
+    } else {
+      this.stopAutoClose();
+    }
+  }
+
+  private timer?: ReturnType<typeof setInterval>;
+
+  override open(data: DeviceEventRecord | GeoMapElement[], alarm = true) {
+    super.open(data, alarm);
+    if (this.show) {
+      this.startAutoClose();
+    }
+  }
+
+  private startAutoClose() {
+    this.stopAutoClose();
+    this.countdown.set(this.autoCloseSeconds);
+    if (!this.autoClose) {
+      return;
+    }
+    this.timer = setInterval(() => {
+      this.countdown.set(this.countdown() - 1);
+      if (this.countdown() <= 0) {
+        this.stopAutoClose();
+        this.show = false;
+      }
+    }, 1000);
+  }
+
+  private stopAutoClose() {
+    this.countdown.set(this.autoCloseSeconds);
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = undefined;
+    }
+  }
 }

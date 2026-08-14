@@ -34,6 +34,7 @@ import {
   StandbyClickArgs,
   Vec3,
 } from './business/models/types';
+import { AlarmEffectService } from './business/services/alarm-effect.service';
 import { ColorsService } from './business/services/colors.service';
 import { ConfigService } from './business/services/config.service';
 import { EdgesService } from './business/services/edges.service';
@@ -136,6 +137,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private modelCtrl = inject(ModelController);
   private markerCtrl = inject(MarkerController);
   private viewService = inject(ViewService);
+  /** 报警勾边扩散动画（注入即激活，见 AlarmEffectService 构造器注册 beforeRender） */
+  private alarmEffect = inject(AlarmEffectService);
 
   /* ---- Three.js core ---- */
   private scene!: THREE.Scene;

@@ -1,5 +1,6 @@
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
+import { ConfigRequestService } from '../../../common/data-core/request/config/config-request.service';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
 import { LocaleCompare } from '../../../common/tools/compare-tool/compare.tool';
@@ -11,14 +12,21 @@ import { SystemMainThreeArgs } from './system-main-three.model';
 
 export class SystemMainThreeElementBusiness {
   alarm: SystemMainThreeAlarmBusiness;
-  constructor(private service: GeographicRequestService) {
-    this.alarm = new SystemMainThreeAlarmBusiness(this);
+  constructor(
+    private service: GeographicRequestService,
+    config: ConfigRequestService,
+  ) {
+    this.alarm = new SystemMainThreeAlarmBusiness(this, config);
   }
 
   /** 元素缓存，load 后自动填充 */
   private cache: GeoMapElement[] = [];
 
   get = {
+    alarms: async () => {
+      let all = await this.service.map.element.cache.all();
+      return all.filter((x) => x.ElementState == 2);
+    },
     by: {
       id: (id: string) => {
         return this.service.map.element.cache.get(id);

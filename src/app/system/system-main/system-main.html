@@ -98,11 +98,24 @@
   }
   @if (window.alarm.show) {
     <app-alarm [model]="window.alarm" [style]="window.alarm.style" [title]="window.alarm.title">
-      <howell-video-player-list
-        [mode]="window.alarm.screen.mode"
-        [play]="window.alarm.play"
-        [(index)]="window.alarm.screen.index"
-      ></howell-video-player-list>
+      <div class="system-main-window-alarm">
+        <div class="system-main-window-alarm-body">
+          <howell-video-player-list
+            [mode]="window.alarm.screen.mode"
+            [play]="window.alarm.play"
+            [(index)]="window.alarm.screen.index"
+          ></howell-video-player-list>
+        </div>
+        <div class="system-main-window-alarm-foot">
+          <label for="alarm_autoclose">
+            <input
+              type="checkbox"
+              id="alarm_autoclose"
+              [(ngModel)]="window.alarm.autoClose"
+            />自动关闭（{{ window.alarm.countdown() }}）
+          </label>
+        </div>
+      </div>
     </app-alarm>
   }
 </div>

@@ -39,7 +39,7 @@ import { SystemMainThreeFilterComponent } from '../system-main-three-filter/syst
 export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   @Input() args = new SystemMainThreeArgs();
   @Output() argsChange = new EventEmitter<SystemMainThreeArgs>();
-  @Input() alarm?: EventEmitter<string>;
+  @Input('alarm') _alarm?: EventEmitter<string>;
   @Input() elementload?: EventEmitter<SystemMainThreeArgs>;
   @Output() maploaded = new EventEmitter<GeoMap>();
   @Output() buildingloaded = new EventEmitter<GeoMapElement[]>();
@@ -58,11 +58,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
 
   ngOnInit(): void {
+    this.regist();
     this.init();
     this.map.load();
     this.building.load();
     this.element.load(this.args, false);
-    this.regist();
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -71,6 +71,13 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     this.business.config.load().then((x) => {
       this.three.config.set(x);
       this.element.find.radius = x.find.radius;
+    });
+    this.business.element.get.alarms().then((elements) => {
+      elements.forEach((x) => {
+        if (x.ElementId) {
+          this.alarm.to(x.ElementId);
+        }
+      });
     });
   }
   private regist() {
@@ -92,19 +99,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         }),
       );
     }
-    if (this.alarm) {
+    if (this._alarm) {
       this.subs.add(
-        this.alarm.subscribe((deviceId) => {
-          this.business.element.alarm.push(deviceId).then((elements) => {
-            let building = elements.find((x) => x.ElementType == MapElementType.Building);
-            if (building) {
-              if (building) {
-                this.building.reload(building);
-              }
-            } else {
-              this.element.load(this.args, false);
-            }
-          });
+        this._alarm.subscribe((deviceId) => {
+          this.alarm.to(deviceId);
         }),
       );
     }
@@ -126,6 +124,21 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       }),
     );
   }
+
+  alarm = {
+    to: (deviceId: string) => {
+      this.business.element.alarm.push(deviceId).then((elements) => {
+        let building = elements.find((x) => x.ElementType == MapElementType.Building);
+        if (building) {
+          if (building) {
+            this.building.reload(building);
+          }
+        } else {
+          this.element.load(this.args, false);
+        }
+      });
+    },
+  };
 
   manager = {
     filter: {
@@ -262,17 +275,17 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       return elements.find((x) => x.ElementId == modelId);
     },
     load: async (args: SystemMainThreeArgs, usecache: boolean) => {
-      let cameras = await this.business.element.load(args, usecache);
+      let elements = await this.business.element.load(args, usecache);
 
-      this.element.datas.set(cameras);
+      this.element.datas.set(elements);
 
-      this.elementloaded.emit(cameras);
+      this.elementloaded.emit(elements);
 
       await wait(() => {
         return this.three.inited;
       });
 
-      let all = cameras.map((x) => this.converter.element.to.marker(x));
+      let all = elements.map((x) => this.converter.element.to.marker(x));
       let datas = await Promise.all(all);
       this.three.camera.datas.set(datas);
     },

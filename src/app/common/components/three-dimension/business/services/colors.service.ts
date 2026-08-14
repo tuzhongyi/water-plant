@@ -233,6 +233,13 @@ export class ColorsService {
     return info[state] ?? '#cccccc';
   }
 
+  /** 获取 alarm 状态下的最终漫反射颜色（含选中/悬停提亮），供报警动画做颜色脉冲 */
+  getAlarmMaterialColor(entry: ModelEntry, materialName: string): THREE.Color {
+    let hex = this.getMaterialColor(entry, materialName, 'alarm');
+    hex = this.lighten(hex, this.alarmBrighten(entry));
+    return new THREE.Color(hex);
+  }
+
   setMaterialColor(entry: ModelEntry, materialName: string, state: ColorState, hex: string): void {
     let info = entry.materialColors.get(materialName);
     if (!info) {

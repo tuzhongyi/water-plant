@@ -17,15 +17,13 @@ export class SystemMainThreeBusiness {
     local: LocalStorage,
   ) {
     this.map = new SystemMainThreeMapBusiness(service);
-    this.element = new SystemMainThreeElementBusiness(service);
+    this.element = new SystemMainThreeElementBusiness(service, config);
     this.model = new SystemMainThreeModelBusiness(api);
     this.config = new SystemMainThreeConfigBusiness(config, local);
   }
 
   map: SystemMainThreeMapBusiness;
-
   element: SystemMainThreeElementBusiness;
-
   model: SystemMainThreeModelBusiness;
   config: SystemMainThreeConfigBusiness;
 }

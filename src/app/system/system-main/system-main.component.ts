@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AlarmComponent } from '../../common/components/alarm-control/alarm.component';
 import { CardComponent } from '../../common/components/card/card.component';
@@ -38,6 +33,7 @@ import { SystemMainWindow } from './system-main.window';
   selector: 'hw-system-main',
   imports: [
     CommonModule,
+    FormsModule,
     CardComponent,
     WindowComponent,
     AlarmComponent,
@@ -127,11 +123,15 @@ export class SystemMainComponent implements OnInit, OnDestroy {
         let id = x.Resource?.ResourceId || x.DeviceId;
         switch (x.EventType) {
           case 1:
-          case 103:
-          case 104:
             this.map.load.emit();
             this.record.load.emit();
             break;
+          // case 103:
+          // case 104:
+          //   this.map.load.emit();
+          //   this.record.load.emit();
+          //   this.map.alarm.emit(id);
+          // break;
           case 2:
             this.map.alarm.emit(id);
             this.map.load.emit();

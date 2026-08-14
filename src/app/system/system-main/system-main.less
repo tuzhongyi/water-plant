@@ -35,4 +35,25 @@
     width: calc((100% - @gap) * 0.75);
   }
 
+  ::ng-deep {
+    .system-main-window-alarm {
+      height: 100%;
+      width: 100%;
+      overflow: visible;
+      position: relative;
+
+      &-body {
+        height: 100%;
+        width: 100%;
+      }
+
+      &-foot {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -90px;
+      }
+
+    }
+  }
 }

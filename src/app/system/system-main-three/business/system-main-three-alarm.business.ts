@@ -1,16 +1,29 @@
 import { EventEmitter } from '@angular/core';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
+import { ConfigRequestService } from '../../../common/data-core/request/config/config-request.service';
+import { PromiseValue } from '../../../common/tools/value-tool/value.promise';
 import { SystemMainThreeElementBusiness } from './system-main-three-element.business';
 export class SystemMainThreeAlarmBusiness {
-  constructor(private element: SystemMainThreeElementBusiness) {}
+  constructor(
+    private element: SystemMainThreeElementBusiness,
+    config: ConfigRequestService,
+  ) {
+    config.get().then((x) => {
+      let types = [MapElementType.Camera, MapElementType.Entrance, MapElementType.IoTSensor];
+      if (x.alarm.autoclear) {
+        types.push(MapElementType.Announciator);
+      }
+      this.types.set(types);
+    });
+  }
 
   discard = new EventEmitter<GeoMapElement>();
 
   private timers = new Map<string, ReturnType<typeof setTimeout>>();
   /** 报警元素缓存，同时用于 has 查询和 discard 时获取完整数据 */
   private elements = new Map<string, GeoMapElement>();
-
+  private types = new PromiseValue<MapElementType[]>();
   has(elementId: string): boolean {
     return this.elements.has(elementId);
   }
@@ -26,7 +39,7 @@ export class SystemMainThreeAlarmBusiness {
     /* 先在场景缓存中查找 */
     const cached = this.element.from.device(deviceId);
     if (cached) {
-      if (cached.ElementType === MapElementType.Camera) {
+      if ((await this.types.get()).includes(cached.ElementType)) {
         this.add(cached);
         return [cached];
       }
@@ -40,7 +53,7 @@ export class SystemMainThreeAlarmBusiness {
     const building = await this.element.building.find(device);
     if (!building) return [];
 
-    if (device.ElementType === MapElementType.Camera) {
+    if ((await this.types.get()).includes(device.ElementType)) {
       /* 摄像机：设备和建筑都报警，30s 后消警 */
       this.add(device);
       this.add(building);

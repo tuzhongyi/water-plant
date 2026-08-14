@@ -91,6 +91,8 @@ export class VideoPlayerComponent implements OnDestroy, OnInit, AfterViewInit, O
   subtitleopened = false;
   private _ruleState: boolean = false;
   private _player?: WSPlayerProxy;
+  /** iframe 重载计数：同一视频再次联动时 src 相同，浏览器不会重新加载，追加递增参数强制刷新 */
+  private reload = 0;
   private get player(): Promise<WSPlayerProxy> {
     return new Promise<WSPlayerProxy>((resolve) => {
       if (this._player) {
@@ -261,6 +263,7 @@ export class VideoPlayerComponent implements OnDestroy, OnInit, AfterViewInit, O
 
           if (this.url) {
             let src = this.getSrc(this.webUrl, this.url, this.name);
+            src += '&reload=' + ++this.reload;
             this.src = this.sanitizer.bypassSecurityTrustResourceUrl(src);
             this.isloaded = true;
             this.loaded.emit();

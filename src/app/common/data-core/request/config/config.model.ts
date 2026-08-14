@@ -5,6 +5,7 @@ export interface Config {
   user: UserConfig;
   reload: number;
   event: EventConfig;
+  alarm: AlarmConfig;
 }
 interface PlaybackConfig {
   begin: number;
@@ -38,4 +39,7 @@ interface MapMarkerConfig {
   label: {
     mode: string;
   };
+}
+interface AlarmConfig {
+  autoclear: boolean;
 }
