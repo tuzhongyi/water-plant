@@ -12,7 +12,7 @@ export class SystemMainThreeModelBusiness {
 
   async load(mode: RenderMode): Promise<ModelFile[]> {
     if (this.cache.has(mode)) return this.cache.get(mode)!;
-    const data = await firstValueFrom(this.service.models(mode));
+    const data = await firstValueFrom(this.service.models());
     this.cache.set(mode, data);
     return data;
   }

@@ -17,8 +17,8 @@ export class ThreeDimensionApiService {
     );
   }
 
-  models(mode: RenderMode): Observable<ModelFile[]> {
-    let url = `${PathTool.three.json.models(mode)}?t=${Date.now()}`;
+  models(): Observable<ModelFile[]> {
+    let url = `${PathTool.three.json.models()}?t=${Date.now()}`;
     return from(
       fetch(url)
         .then((r) => r.json())
@@ -30,8 +30,8 @@ export class ThreeDimensionApiService {
   }
 
   model = {
-    all: (mode: RenderMode) => {
-      let url = `${PathTool.three.json.models(mode)}?t=${Date.now()}`;
+    all: () => {
+      let url = `${PathTool.three.json.models()}?t=${Date.now()}`;
       return from(fetch(url).then((r) => r.json()));
     },
     file: (mode: RenderMode, filename: string) => {

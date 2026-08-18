@@ -120,7 +120,13 @@ export class ModelService {
   }
 
   applyTransformConfig(entry: ModelEntry, cfg: ModelTransformConfig): void {
-    entry.editPosition.set(cfg.position.x, cfg.position.y, cfg.position.z);
+    /* position 基础上叠加 offset（可空，无则不偏移） */
+    const o = cfg.offset;
+    entry.editPosition.set(
+      cfg.position.x + (o?.x ?? 0),
+      cfg.position.y + (o?.y ?? 0),
+      cfg.position.z + (o?.z ?? 0),
+    );
     entry.editScale.set(cfg.scale.x, cfg.scale.y, cfg.scale.z);
     entry.editRotation.set(
       THREE.MathUtils.degToRad(cfg.rotation.h),

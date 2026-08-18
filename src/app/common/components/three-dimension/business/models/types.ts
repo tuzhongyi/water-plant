@@ -146,6 +146,7 @@ export interface TypeColorPreset {
 export interface ModelTransformConfig {
   name?: string;
   position: Vec3;
+  offset?: Vec3;
   scale: Vec3;
   rotation: { h: number; p: number; b: number };
   meshVisibility?: Record<string, boolean>;

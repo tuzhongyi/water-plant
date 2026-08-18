@@ -289,7 +289,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     /* 预加载 models.json → 构建 config 缓存 → 再加载 config.json */
     const mode = this.renderMode();
-    firstValueFrom(this.apiService.models(mode))
+    firstValueFrom(this.apiService.models())
       .then((modelFiles) => {
         this.modelCtrl.setConfigCache(modelFiles);
       })
@@ -1221,10 +1221,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       const d = Math.max(sz.x, sz.y, sz.z, 0.1) * 2.5;
       const pos = ctr
         .clone()
-        .addScaledVector(
-          new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(),
-          d,
-        );
+        .addScaledVector(new THREE.Vector3().subVectors(cam.position, ctrl.target).normalize(), d);
       this.viewService.animateCamera(pos, ctr, 600);
     } else {
       const targetPos = cam.position.clone().add(ctr.clone().sub(ctrl.target));
@@ -1361,7 +1358,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     try {
       /* 1️⃣ 重新加载 models.json 缓存 */
       try {
-        const modelFiles = await firstValueFrom(this.apiService.models(mode));
+        const modelFiles = await firstValueFrom(this.apiService.models());
         this.modelCtrl.setConfigCache(modelFiles);
       } catch {}
 

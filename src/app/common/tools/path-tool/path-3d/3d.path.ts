@@ -3,8 +3,8 @@ export class ThreePathTool {
 
   get json() {
     return {
-      models: (mode: string) => {
-        return `${this.folder}/${mode}/models.json`;
+      models: () => {
+        return `${this.folder}/models.json`;
       },
       config: (mode: string) => {
         return `${this.folder}/${mode}/config.json`;
