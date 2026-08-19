@@ -11,5 +11,9 @@
     "label": {
       "mode": "hover"
     }
+  },
+  "viewfield": {
+    "radius": 50,
+    "angle": 90
   }
 }

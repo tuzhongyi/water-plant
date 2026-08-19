@@ -8,6 +8,7 @@ import {
   ModelViewerModel,
   MoveToArgs,
   RenderMode,
+  ViewfieldMode,
 } from '../../../common/components/three-dimension/business/models/types';
 import { ThreeDimensionComponent } from '../../../common/components/three-dimension/three-dimension.component';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
@@ -240,6 +241,13 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
           this.element.find.finding = true;
         }
       },
+      viewfield: () => {
+        if (this.element.viewfield == ViewfieldMode.hide) {
+          this.element.viewfield = ViewfieldMode.show;
+        } else {
+          this.element.viewfield = ViewfieldMode.hide;
+        }
+      },
     },
     building: {
       show: false,
@@ -284,6 +292,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
   element = {
     datas: signal<GeoMapElement[]>([]),
+    viewfield: ViewfieldMode.hide,
+    ViewfieldMode: ViewfieldMode,
     find: {
       finding: false,
       found: [] as GeoMapElement[],

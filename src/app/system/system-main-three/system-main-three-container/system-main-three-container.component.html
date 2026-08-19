@@ -19,6 +19,7 @@
       [findbegin]="element.find.begin"
       [findstop]="element.find.stop"
       (findend)="element.find.end($event)"
+      [viewfield]="element.viewfield"
     ></hw-3d>
   </div>
   <div class="system-main-three-button-area">
@@ -38,6 +39,14 @@
         [disabled]="floor.datas().length > 0"
       >
         <i class="howell-icon-shade"></i>
+      </button>
+      <button
+        class="button-map"
+        title="摄像机视野"
+        [class.selected]="element.viewfield == 'show'"
+        (click)="manager.button.viewfield()"
+      >
+        <i class="mdi mdi-looks"></i>
       </button>
       <button class="button-map" title="点位筛选" (click)="manager.button.filter()">
         <i class="howell-icon-filter"></i>

@@ -13,6 +13,16 @@ export enum LabelMode {
   never = 'never',
 }
 
+/** marker 视野扇形显示模式 */
+export enum ViewfieldMode {
+  /** 不显示 */
+  hide = 'hide',
+  /** 显示 */
+  show = 'show',
+  /** 仅选中的 marker 显示 */
+  selected = 'selected',
+}
+
 /** 摄像机视图方向 */
 export enum FitView {
   /** 45° 俯视适配全部模型 */
@@ -184,7 +194,37 @@ export interface MarkerEntity<T = any> extends MarkerArgs<T> {
   offline?: boolean;
   alarm?: boolean;
   icon: AlarmEntityState;
+
+  viewfield?: {
+    /** 是否显示视野扇形：true 显示，false/缺省 不显示 */
+    enabled?: boolean;
+    /** 视野扇形半径（米），缺省 50 */
+    radius?: number;
+    /** 视野扇形张角（度），缺省 90 */
+    angle?: number;
+    /** 摄像机水平朝向（度，XZ 平面内与 +X 轴的夹角，逆时针为正），用于扇形视野方向，缺省 0 */
+    course?: number;
+  };
+
   [key: string]: any; // 可扩展
+}
+
+/** marker 视野扇形各维度是否允许拖拽修改（缺省均不允许，仅显式传 true 的维度可修改） */
+export interface ViewfieldEditFlags {
+  /** 半径是否可修改 */
+  radius?: boolean;
+  /** 张角是否可修改 */
+  angle?: boolean;
+  /** 方向是否可修改 */
+  course?: boolean;
+}
+
+/** marker 视野扇形参数（鼠标拖拽调整后通过 viewfieldChange 输出，供外部保存） */
+export interface MarkerViewfieldArgs {
+  id: string;
+  radius: number;
+  angle: number;
+  course: number;
 }
 
 export interface ThreeDimensionConfig {

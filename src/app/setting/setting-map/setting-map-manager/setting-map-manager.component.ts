@@ -1,7 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CardComponent } from '../../../common/components/card/card.component';
+import { MarkerViewfieldArgs } from '../../../common/components/three-dimension/business/models/types';
 import { WindowConfirmComponent } from '../../../common/components/window-confirm/window-confirm.component';
 import { WindowComponent } from '../../../common/components/window-control/window.component';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
@@ -70,6 +78,7 @@ export class SettingMapManagerComponent implements OnInit {
     },
     element: {
       datas: signal<GeoMapElement[]>([]),
+      on: {},
     },
   };
 
@@ -115,6 +124,15 @@ export class SettingMapManagerComponent implements OnInit {
           this.business.element.bind(standby, args.location, mapId, args.parent?.Id).then(() => {
             this.toastr.success('绑定成功');
             this.three.standby.set(undefined);
+            this.three.load.emit();
+          });
+        }
+      },
+      viewfield: (args: MarkerViewfieldArgs) => {
+        let element = this.geo.element.datas().find((x) => x.Id == args.id);
+        if (element && element.Location) {
+          element.Location.Course = args.course;
+          this.business.element.update(element).then((x) => {
             this.three.load.emit();
           });
         }

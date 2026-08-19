@@ -12,4 +12,6 @@ export class GisPoint implements IModel {
   Floor?: number;
   /**	Int32	坐标系类型	O	*/
   GisType?: number;
+  /**	Double	偏北角方向，0-360	O */
+  Course?: number;
 }

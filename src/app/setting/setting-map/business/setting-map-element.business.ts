@@ -1,5 +1,6 @@
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
+import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
 import { DB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
@@ -46,6 +47,10 @@ export class SettingMapElementBusiness {
       return this.db31.bind(data, location, mapId, parentId);
     }
     return undefined;
+  }
+
+  update(data: GeoMapElement) {
+    return this.service.map.element.update(data);
   }
 
   unbind(id: string) {

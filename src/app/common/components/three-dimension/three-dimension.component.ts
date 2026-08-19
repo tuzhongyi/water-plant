@@ -25,6 +25,7 @@ import {
   LabelMode,
   MarkerArgs,
   MarkerEntity,
+  MarkerViewfieldArgs,
   ModelEntry,
   ModelTransformConfig,
   ModelViewerModel,
@@ -33,6 +34,8 @@ import {
   RenderSettings,
   StandbyClickArgs,
   Vec3,
+  ViewfieldEditFlags,
+  ViewfieldMode,
 } from './business/models/types';
 import { AlarmEffectService } from './business/services/alarm-effect.service';
 import { ColorsService } from './business/services/colors.service';
@@ -56,6 +59,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
   /** 外部可设定的搜索半径（米），修改时若处于查找模式会实时更新搜索圈 */
+
+  /** 视野扇形显示模式：hide=不显示 / show=显示 / selected=仅选中 marker 显示 */
+  viewfield = input<ViewfieldMode>(ViewfieldMode.hide);
+  /** 视野扇形各维度（半径/张角/方向）是否允许拖拽修改；仅显式传 true 的维度允许，缺省均不允许 */
+  viewfieldEdit = input<ViewfieldEditFlags>({});
+
   findRadius = input<number>(20);
   findbegin = input<EventEmitter<number>>();
   findend = output<MarkerEntity[]>();
@@ -100,8 +109,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   markerClick = output<string>();
   /** 摄像机标记双击 */
   markerDblClick = output<string>();
+  /** 摄像机标记选中（点击后触发，携带选中的 marker 实体） */
+  markerSelected = output<MarkerEntity>();
   /** 摄像机标记位置变化 */
   markerPositionChange = output<MarkerEntity>();
+  /** 视野扇形参数变化（鼠标拖拽调整后触发，供外部保存） */
+  viewfieldChange = output<MarkerViewfieldArgs>();
 
   // ── Standby ──────────────────────────────────────────────
   /** standby 模式：传入 MarkerArgs 后进入放置模式，光标跟随半透明图标 */
@@ -199,6 +212,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.markerCtrl.cache.visibility(this.models());
       this.markerCtrl.labelMode = this.markerLabelMode();
       untracked(() => this.markerLoaded.emit(cams));
+    });
+    /* 视野扇形：显示模式与各维度可修改性同步到 marker controller */
+    effect(() => {
+      this.markerCtrl.setViewfield(this.viewfield(), this.viewfieldEdit());
     });
     effect(() =>
       this.markerCtrl.select.apply(
@@ -503,7 +520,13 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.subs.add(this.markerCtrl.markerClick.subscribe((id) => this.markerClick.emit(id)));
     this.subs.add(this.markerCtrl.markerDblClick.subscribe((id) => this.markerDblClick.emit(id)));
     this.subs.add(
+      this.markerCtrl.markerSelected.subscribe((marker) => this.markerSelected.emit(marker)),
+    );
+    this.subs.add(
       this.markerCtrl.markerPositionChange.subscribe((cam) => this.markerPositionChange.emit(cam)),
+    );
+    this.subs.add(
+      this.markerCtrl.viewfieldChange.subscribe((args) => this.viewfieldChange.emit(args)),
     );
 
     this.subs.add(
@@ -683,11 +706,14 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     const c = this.sceneService.renderer.domElement;
     /* 记录按下位置，用于区分点击与拖拽视角（左键/右键） */
     c.addEventListener('pointerdown', (e: PointerEvent) => {
+      this.updateMouse(e);
       if (e.button === 0) {
         this.leftButtonPressed = true;
         this.leftButtonMoved = false;
         this.leftButtonDownPos.x = e.clientX;
         this.leftButtonDownPos.y = e.clientY;
+        /* 视野扇形手柄拖拽优先：命中则进入扇形编辑，禁用相机旋转 */
+        this.markerCtrl.viewfieldDown(this.raycaster, this.mouse);
       } else if (e.button === 2) {
         this.rightButtonPressed = true;
         this.rightButtonMoved = false;
@@ -697,12 +723,17 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     });
     /* 记录松开，配合 pointerleave 确保按钮状态不依赖 e.buttons（离开画布后可能归零） */
     c.addEventListener('pointerup', (e: PointerEvent) => {
-      if (e.button === 0) this.leftButtonPressed = false;
+      if (e.button === 0) {
+        this.leftButtonPressed = false;
+        this.markerCtrl.viewfieldUp();
+      }
       if (e.button === 2) this.rightButtonPressed = false;
     });
     c.addEventListener('pointerleave', () => {
       this.leftButtonPressed = false;
       this.rightButtonPressed = false;
+      this.markerCtrl.viewfieldUp();
+      this.markerCtrl.viewfieldHoverClear();
     });
     /* 按住拖动 ≥4px 视为移动视角，不触发 click/contextmenu 的业务逻辑 */
     c.addEventListener('pointermove', (e: PointerEvent) => {
@@ -784,6 +815,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private onPointerMove(e: PointerEvent): void {
     this.updateMouse(e);
 
+    /* 视野扇形编辑拖拽 */
+    if (this.markerCtrl.viewfieldDragging()) {
+      this.markerCtrl.viewfieldMove(this.raycaster, this.mouse);
+      return;
+    }
+
     /* find 模式：鼠标移动时更新搜索圈位置 */
     if (this.findActive) {
       this.updateFindCircle();
@@ -796,6 +833,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.sceneService.renderer.domElement.style.cursor = 'grab';
       return;
     }
+
+    /* 视野扇形手柄悬停高亮（改色/半透明） */
+    this.markerCtrl.viewfieldHover(this.raycaster, this.mouse);
 
     /* 优先检测 marker hover */
     this.markerCtrl.handle.hover(this.raycaster, this.mouse);

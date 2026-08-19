@@ -29,6 +29,7 @@
           [focusCameraId]="three.selected()"
           (binding)="three.on.bind($event)"
           (standbyCancel)="three.standby.set(undefined)"
+          (viewfield)="three.on.viewfield($event)"
         ></hw-setting-map-three>
       </howell-card>
     </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PathTool } from '../../../tools/path-tool/path.tool';
-import { Config, MapConfig } from './config.model';
+import { Config } from './config.model';
+import { MapConfig } from './map/config-map.model';
 
 @Injectable({
   providedIn: 'root',

@@ -11,12 +11,16 @@ import { VideoChannel } from '../../../common/data-core/models/devices/video-cha
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
+import { ConfigRequestService } from '../../../common/data-core/request/config/config-request.service';
 import { PathTool } from '../../../common/tools/path-tool/path.tool';
 import { SettingMapBusiness } from '../business/setting-map.business';
 
 @Injectable()
 export class SettingMapThreeConverter {
-  constructor(private business: SettingMapBusiness) {}
+  constructor(
+    private business: SettingMapBusiness,
+    private config: ConfigRequestService,
+  ) {}
 
   default = 'VIL.glb';
 
@@ -55,6 +59,7 @@ export class SettingMapThreeConverter {
       camera: async (data: GeoMapElement): Promise<MarkerEntity> => {
         let building: GeoMapElement | undefined = undefined;
         let modelId = this.default;
+        let config = await this.config.map;
         if (data.ParentId) {
           building = await this.get.building(data.ParentId);
           if (building && building?.ElementId) {
@@ -73,6 +78,11 @@ export class SettingMapThreeConverter {
           modelId: modelId,
           icon: PathTool.marker.get(data.ElementType),
           data: data,
+          viewfield: {
+            ...config.viewfield,
+            enabled: data.ElementType == MapElementType.Camera,
+            course: data.Location?.Course ?? 0,
+          },
         };
         return entity;
       },

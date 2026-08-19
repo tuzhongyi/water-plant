@@ -16,6 +16,9 @@
       (modelDoubleClick)="three.on.building.expand($event)"
       [fitView]="three.focus"
       [meshVisibility]="floor.target"
+      [viewfield]="three.camera.viewfield"
+      [viewfieldEdit]="{ course: true }"
+      (viewfieldChange)="element.on.camera.viewfield($event)"
     ></hw-3d>
   </div>
 
@@ -61,6 +64,14 @@
         [class.selected]="manager.building.show || !!floor.model()"
       >
         <i class="howell-icon-MapVillage"></i>
+      </button>
+      <button
+        class="button-map"
+        title="摄像机视野"
+        (click)="manager.button.viewfield()"
+        [class.selected]="three.camera.viewfield == ViewfieldMode.show"
+      >
+        <i class="mdi mdi-looks"></i>
       </button>
     </div>
   </div>

@@ -7,12 +7,16 @@ import {
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
+import { ConfigRequestService } from '../../../common/data-core/request/config/config-request.service';
 import { PathTool } from '../../../common/tools/path-tool/path.tool';
 import { SystemMainThreeBusiness } from './system-main-three.business';
 
 @Injectable()
 export class SystemMainThreeConverter {
-  constructor(private business: SystemMainThreeBusiness) {}
+  constructor(
+    private business: SystemMainThreeBusiness,
+    private config: ConfigRequestService,
+  ) {}
 
   default = 'VIL.glb';
 
@@ -39,6 +43,7 @@ export class SystemMainThreeConverter {
       marker: async (data: GeoMapElement): Promise<MarkerEntity> => {
         let building: GeoMapElement | undefined = undefined;
         let modelId = this.default;
+        let config = await this.config.map;
         if (data.ParentId) {
           building = await this.get.building(data.ParentId);
           if (building && building?.ElementId) {
@@ -59,6 +64,11 @@ export class SystemMainThreeConverter {
           offline: data.ElementState == 1,
           alarm: data.ElementState == 2 || this.business.element.alarm.has(data.Id),
           data: data,
+          viewfield: {
+            ...config.viewfield,
+            enabled: data.ElementType == MapElementType.Camera,
+            course: data.Location?.Course,
+          },
         };
 
         return entity;
