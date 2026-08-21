@@ -7,8 +7,8 @@ import { HeaderComponent } from '../../share/header/header.component';
 @Component({
   selector: 'hw-setting',
   imports: [RouterOutlet, CommonModule, HeaderComponent],
-  templateUrl: './setting.html',
-  styleUrl: './setting.less',
+  templateUrl: './setting.component.html',
+  styleUrl: './setting.component.less',
 })
 export class SettingComponent {
   constructor(private config: ConfigRequestService) {

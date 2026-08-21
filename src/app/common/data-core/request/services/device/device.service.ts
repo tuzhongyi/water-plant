@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { instanceToPlain } from 'class-transformer';
 import { ObjectTool } from '../../../../tools/object-tool/object.tool';
 import { ServiceTool } from '../../../../tools/service-tool/service.tool';
+import { DeviceStatistic } from '../../../models/devices/device-statistic.model';
 import { DeviceCapability } from '../../../models/devices/device.capability';
 import { Device } from '../../../models/devices/device.model';
 import { VideoUrl } from '../../../models/devices/video-url.model';
@@ -13,9 +14,11 @@ import { AbstractService } from '../../cache/cache.interface';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
 import { DeviceFaceRequestService } from './device-face-snap.service';
+import { DeviceVideoChannelViewGroupRequestService } from './device-video-channel-view-group.service';
 import { DeviceVideoRequestService } from './device-video-channel.service';
 import {
   DeviceSearchingParams,
+  DeviceVideoDownloadParams,
   GetDevicesParams,
   GetPreviewUrlParams,
   GetVodUrlParams,
@@ -103,6 +106,18 @@ export class DeviceRequestService extends AbstractService<Device> {
     });
   }
 
+  statistics() {
+    let url = DeviceUrl.statistics();
+    return this.http.get<HowellResponse<DeviceStatistic>>(url).then((x) => {
+      return HowellResponseProcess.item(x, DeviceStatistic);
+    });
+  }
+
+  download(params: DeviceVideoDownloadParams) {
+    let url = DeviceUrl.download(params.VideoChannelId, params.TimeRange, params.FileName);
+    return this.http.blob(url, 'video/mp4');
+  }
+
   private _video?: DeviceVideoRequestService;
   public get video(): DeviceVideoRequestService {
     if (!this._video) {
@@ -117,5 +132,13 @@ export class DeviceRequestService extends AbstractService<Device> {
       this._face = new DeviceFaceRequestService(this.http);
     }
     return this._face;
+  }
+
+  private _viewGroup?: DeviceVideoChannelViewGroupRequestService;
+  public get viewGroup(): DeviceVideoChannelViewGroupRequestService {
+    if (!this._viewGroup) {
+      this._viewGroup = new DeviceVideoChannelViewGroupRequestService(this.http);
+    }
+    return this._viewGroup;
   }
 }

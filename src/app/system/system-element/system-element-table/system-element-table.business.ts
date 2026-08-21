@@ -10,7 +10,7 @@ import { GeographicRequestService } from '../../../common/data-core/request/serv
 import { ColorTool } from '../../../common/tools/color-tool/color.tool';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
 import { wait } from '../../../common/tools/wait';
-import { SystemMainThreeSource } from '../../system-main-three/system-main-three.source';
+import { SystemMainThreeSource } from '../../system-main/system-main-three/system-main-three.source';
 import { SystemElementTableFilter, SystemElementTableItem } from './system-element-table.model';
 
 @Injectable()

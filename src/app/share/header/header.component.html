@@ -8,7 +8,26 @@
   }"
 >
   <div class="header-content">
-    <div class="header-content-info"></div>
+    <div class="header-content-info navigation">
+      <div class="button-group">
+        <button
+          class="button-clip-green"
+          [routerLink]="Navigation.map"
+          routerLinkActive="selected"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          地图
+        </button>
+        <button
+          class="button-clip-green"
+          [routerLink]="Navigation.download"
+          routerLinkActive="selected"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          下载
+        </button>
+      </div>
+    </div>
     <div class="header-content-title">{{ title }}</div>
     <div class="header-content-info">
       <howell-header-information [date]="date"></howell-header-information>

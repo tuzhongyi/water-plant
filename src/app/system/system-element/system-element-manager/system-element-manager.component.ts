@@ -15,7 +15,7 @@ import { HowellSelectComponent } from '../../../common/components/hw-select/sele
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { Language } from '../../../common/tools/language-tool/language';
-import { SystemMainThreeSource } from '../../system-main-three/system-main-three.source';
+import { SystemMainThreeSource } from '../../system-main/system-main-three/system-main-three.source';
 import { SystemElementTableComponent } from '../system-element-table/system-element-table.component';
 import { SystemElementTableArgs } from '../system-element-table/system-element-table.model';
 

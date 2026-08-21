@@ -1,9 +1,11 @@
+@import url(../colors/color-input.less);
+
 textarea,
 input[type="text"],
 input[type="number"],
 input[type="password"] {
-  background-color: #06999c4d;
-  border: 1px solid #07a990;
+  background-color: @background-color;
+  border: 1px solid @border-color;
   outline: none;
   width: 100%;
   font-size: 16px;
@@ -23,12 +25,12 @@ input[type="password"] {
   }
 
   &::-webkit-input-placeholder {
-    color: #ddf4ff;
+    color: @placeholder;
     font-size: 16px;
   }
 
   &::placeholder {
-    color: #999;
+    color: @placeholder;
   }
 
   &:read-only {
@@ -38,9 +40,9 @@ input[type="password"] {
   }
 
   &:disabled {
-    color: #999;
+    color: @disabled-color;
     cursor: not-allowed;
-    border-color: #2A5497;
+    border-color: @disabled-border-color;
   }
 
   &.input-login {

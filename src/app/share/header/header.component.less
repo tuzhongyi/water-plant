@@ -30,6 +30,7 @@
     justify-content: space-between;
 
 
+
     @info-width: 30%;
 
     &-title {
@@ -47,12 +48,26 @@
 
     &-info {
       width: @info-width;
-      padding: 0 20px;
-      padding-right: 30px;
+      padding: 5px 30px 0 20px;
+
       box-sizing: border-box;
       display: flex;
       justify-content: flex-end;
       align-items: center;
+      height: 100%;
+
+      &.navigation {
+        justify-content: flex-start;
+
+        button {
+          // backdrop-filter: blur(8px);
+
+          // height: 34px;
+          // font-size: 20px;
+          // color: #17f1c6;
+          // min-width: 126px;
+        }
+      }
     }
   }
 

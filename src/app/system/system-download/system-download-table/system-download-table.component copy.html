@@ -1,0 +1,65 @@
+<div class="system-download-table table-sticky">
+  <table border="0" cellpadding="0" cellspacing="0">
+    <colgroup>
+      <col style="width: 26%" />
+      <col />
+      <col style="width: 11%" />
+      <col style="width: 24%" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>文件</th>
+        <th>进度</th>
+        <th class="center">状态</th>
+        <th class="center">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (task of tasks; track task.id) {
+        <tr [class.completed]="task.state === 'completed'" [class.failed]="task.state === 'failed'">
+          <td>
+            <div class="cell-file">
+              <div class="cell-name" [title]="task.name">{{ task.name }}</div>
+              <div class="cell-meta">{{ task.videoChannelId }} · {{ task.timeRange }}</div>
+            </div>
+          </td>
+          <td>
+            <div class="cell-progress">
+              <div class="bar">
+                <div class="bar-fill" [style.width.%]="percent(task)"></div>
+              </div>
+              <div class="progress-meta">
+                <span>{{ bytes(task.loaded) }} / {{ bytes(task.total) }}</span>
+                @if (task.state === 'downloading') {
+                  <span>{{ speedText(task.speed) }}</span>
+                }
+              </div>
+            </div>
+          </td>
+          <td class="center">
+            <span class="status" [class]="task.state">{{ stateText(task) }}</span>
+          </td>
+          <td class="center">
+            <div class="operation">
+              @if (task.state === 'downloading') {
+                <button (click)="emit('pause', task)">暂停</button>
+                <button (click)="emit('cancel', task)">取消</button>
+              }
+              @if (task.state === 'paused') {
+                <button (click)="emit('resume', task)">开始</button>
+                <button (click)="emit('cancel', task)">取消</button>
+              }
+              @if (task.state === 'completed') {
+                <button (click)="emit('remove', task)">删除</button>
+              }
+              @if (task.state === 'failed') {
+                <button (click)="emit('retry', task)">重试</button>
+                <button (click)="emit('remove', task)">删除</button>
+              }
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

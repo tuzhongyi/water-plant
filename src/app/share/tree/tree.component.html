@@ -3,23 +3,22 @@
     <div
       class="hw-tree-node"
       [class.selected]="node.id === selectedId"
+      [attr.data-node-id]="node.id"
       [style.padding-left.px]="node.level * 20 + 8"
     >
       <i
         class="hw-tree-toggle mdi"
         [class.mdi-menu-down]="node.expandable && node.expanded"
         [class.mdi-menu-right]="node.expandable && !node.expanded"
-        (click)="onToggle(node)"
+        (click)="onToggle(node); $event.stopPropagation()"
       ></i>
-      <span
+      <div
         class="hw-tree-content"
-        [attr.data-node-id]="node.id"
         [innerHTML]="node.html || node.label"
-      ></span>
+      ></div>
       @if (node.actionsHtml) {
         <span
           class="hw-tree-actions"
-          [attr.data-node-id]="node.id"
           [innerHTML]="node.actionsHtml"
         ></span>
       }

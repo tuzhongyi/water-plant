@@ -67,11 +67,13 @@ export class TreeComponent implements OnChanges {
     if (cls.includes('hw-tree-action-bind')) actionName = 'bind';
     else if (cls.includes('hw-tree-action-unbind')) actionName = 'unbind';
     else if (cls.includes('hw-tree-action-position')) actionName = 'position';
+    else if (cls.includes('hw-tree-action-download')) actionName = 'download';
+    else if (cls.includes('hw-tree-action-play')) actionName = 'play';
 
     if (actionName) {
       e.stopPropagation();
       const nodeEl = target.closest('.hw-tree-node') as HTMLElement;
-      const nodeId = nodeEl?.querySelector('[data-node-id]')?.getAttribute('data-node-id');
+      const nodeId = nodeEl?.getAttribute('data-node-id');
       const node = this.nodes.find((n) => n.id === nodeId);
       if (node) {
         this.action.emit({ action: actionName, node });

@@ -2,6 +2,7 @@ import { AbstractUrl } from '../abstract.url';
 import { BaseUrl } from '../base.url';
 import { DeviceFaceUrl } from './device-face-snap.url';
 import { DeviceVideoChannelUrl } from './device-video-channel.url';
+import { DeviceVideoChannelViewGroupUrl } from './device-video-channel-view-group.url';
 
 export class DeviceBaseUrl extends AbstractUrl {
   constructor(base: string) {
@@ -50,5 +51,17 @@ export class DeviceUrl extends AbstractUrl {
 
   static capability() {
     return `${this.basic()}/Capability`;
+  }
+
+  static statistics() {
+    return `${this.basic()}/Statistics`;
+  }
+
+  static get viewGroup() {
+    return new DeviceVideoChannelViewGroupUrl(`${this.basic()}/VideoChannels`);
+  }
+
+  static download(videoChannelId: string, timeRange: string, fileName: string) {
+    return `${this.basic()}/Downloads/${videoChannelId}/${timeRange}/${fileName}`;
   }
 }

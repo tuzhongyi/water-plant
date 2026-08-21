@@ -151,3 +151,55 @@
 .button-clip-blue-3 {
   color: inherit;
 }
+
+.button-clip-green {
+  height: 36px;
+  min-width: 100px;
+  width: max-content;
+  padding: 0 15px;
+  position: relative;
+  /* 外框颜色 */
+  background: #17f1c6;
+  /* 进行裁剪 */
+  clip-path: @button-path-1;
+  cursor: pointer;
+  transition: all 0.5s;
+
+  &::after {
+    content: "";
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    position: absolute;
+    /* 水平垂直居中 */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* 置于底层 */
+    z-index: -1;
+    /* 设置背景色 */
+    background: #0D515A;
+
+    /* 设置裁剪 */
+    clip-path: @button-path-1;
+  }
+
+  &:hover {
+    /* 外框颜色，模拟 .button-border.green:hover 的 border-color */
+    background: #f46855;
+
+    &::after {
+      /* 背景色，模拟 .button-border.green:hover 的 background-color */
+      background: #7d4237;
+    }
+  }
+
+  &.selected {
+    /* 外框颜色，模拟 .button-border.green:hover 的 border-color */
+    background: #f46855;
+
+    &::after {
+      /* 背景色，模拟 .button-border.green:hover 的 background-color */
+      background: #7d4237;
+    }
+  }
+}

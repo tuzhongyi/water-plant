@@ -10,8 +10,8 @@ import { HeaderComponent } from '../../share/header/header.component';
 @Component({
   selector: 'hw-system',
   imports: [RouterOutlet, CommonModule, HeaderComponent],
-  templateUrl: './system.html',
-  styleUrl: './system.less',
+  templateUrl: './system.component.html',
+  styleUrl: './system.component.less',
 })
 export class SystemComponent implements OnInit {
   constructor(

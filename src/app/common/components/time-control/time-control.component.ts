@@ -24,14 +24,14 @@ declare let $: any;
   styleUrls: ['./time-control.component.less'],
 })
 export class TimeControlComponent implements OnChanges, OnInit, AfterViewInit {
-  @Input() time: TimeModel = new TimeModel();
-  @Output() timeChange: EventEmitter<TimeModel> = new EventEmitter();
-  @Input() beginTime?: TimeModel;
+  @Input() model: TimeModel = new TimeModel();
+  @Output() modelChange: EventEmitter<TimeModel> = new EventEmitter();
+  @Input() beginModel?: TimeModel;
 
-  @Input() endTime?: TimeModel;
+  @Input() endModel?: TimeModel;
 
-  @Input() date: Date = new Date();
-  @Output() dateChange: EventEmitter<Date> = new EventEmitter();
+  @Input() time: Date = new Date();
+  @Output() timeChange: EventEmitter<Date> = new EventEmitter();
   @Input() begin?: Date;
   @Input() end?: Date;
   @Input() disabled?: boolean = false;
@@ -48,14 +48,14 @@ export class TimeControlComponent implements OnChanges, OnInit, AfterViewInit {
   second?: ElementRef;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['date']) {
-      this.time = new TimeModel(changes['date'].currentValue);
+    if (changes['time']) {
+      this.model = new TimeModel(changes['time'].currentValue);
     }
     if (changes['begin']) {
-      this.beginTime = new TimeModel(changes['begin'].currentValue);
+      this.beginModel = new TimeModel(changes['begin'].currentValue);
     }
     if (changes['end']) {
-      this.endTime = new TimeModel(changes['end'].currentValue);
+      this.endModel = new TimeModel(changes['end'].currentValue);
     }
   }
 
@@ -64,55 +64,46 @@ export class TimeControlComponent implements OnChanges, OnInit, AfterViewInit {
       return !!this.hour;
     }).then(() => {
       this.wheel(this.hour!.nativeElement);
-      (this.hour!.nativeElement as HTMLInputElement).addEventListener(
-        'input',
-        (e: any) => {
-          let value = this.oninput(e);
-          if (value !== undefined) {
-            this.time.hour.value = value;
-            this.time.hour.view = value.toString().padStart(2, '0');
-            this.timeChange.emit(this.time);
-            this.date.setHours(value);
-            this.dateChange.emit(this.date);
-          }
+      (this.hour!.nativeElement as HTMLInputElement).addEventListener('input', (e: any) => {
+        let value = this.oninput(e);
+        if (value !== undefined) {
+          this.model.hour.value = value;
+          this.model.hour.view = value.toString().padStart(2, '0');
+          this.modelChange.emit(this.model);
+          this.time.setHours(value);
+          this.timeChange.emit(this.time);
         }
-      );
+      });
     });
     wait(() => {
       return !!this.minute;
     }).then(() => {
       this.wheel(this.minute!.nativeElement);
-      (this.minute!.nativeElement as HTMLInputElement).addEventListener(
-        'input',
-        (e: any) => {
-          let value = this.oninput(e);
-          if (value !== undefined) {
-            this.time.minute.value = value;
-            this.time.minute.view = value.toString().padStart(2, '0');
-            this.timeChange.emit(this.time);
-            this.date.setMinutes(value);
-            this.dateChange.emit(this.date);
-          }
+      (this.minute!.nativeElement as HTMLInputElement).addEventListener('input', (e: any) => {
+        let value = this.oninput(e);
+        if (value !== undefined) {
+          this.model.minute.value = value;
+          this.model.minute.view = value.toString().padStart(2, '0');
+          this.modelChange.emit(this.model);
+          this.time.setMinutes(value);
+          this.timeChange.emit(this.time);
         }
-      );
+      });
     });
     wait(() => {
       return !!this.second;
     }).then(() => {
       this.wheel(this.second!.nativeElement);
-      (this.second!.nativeElement as HTMLInputElement).addEventListener(
-        'input',
-        (e: any) => {
-          let value = this.oninput(e);
-          if (value !== undefined) {
-            this.time.second.value = value;
-            this.time.second.view = value.toString().padStart(2, '0');
-            this.timeChange.emit(this.time);
-            this.date.setSeconds(value);
-            this.dateChange.emit(this.date);
-          }
+      (this.second!.nativeElement as HTMLInputElement).addEventListener('input', (e: any) => {
+        let value = this.oninput(e);
+        if (value !== undefined) {
+          this.model.second.value = value;
+          this.model.second.view = value.toString().padStart(2, '0');
+          this.modelChange.emit(this.model);
+          this.time.setSeconds(value);
+          this.timeChange.emit(this.time);
         }
-      );
+      });
     });
   }
 
@@ -129,43 +120,43 @@ export class TimeControlComponent implements OnChanges, OnInit, AfterViewInit {
           let $max = parseFloat($this.attr('max'));
           let $min = parseFloat($this.attr('min'));
           let $currVal = parseFloat($this.val());
-          let { hour, minute, second } = this.time;
+          let { hour, minute, second } = this.model;
 
-          if (this.endTime) {
+          if (this.endModel) {
             // 如果是开始时间组件,max不能超过结束时间
             if (Array.from(input.classList).includes('hour')) {
-              $max = this.endTime.hour.value;
+              $max = this.endModel.hour.value;
             }
             if (
               Array.from(input.classList).includes('minute') &&
-              hour.value == this.endTime.hour.value
+              hour.value == this.endModel.hour.value
             ) {
-              $max = this.endTime.minute.value;
+              $max = this.endModel.minute.value;
             }
             if (
               Array.from(input.classList).includes('second') &&
-              hour.value == this.endTime.hour.value &&
-              minute.value == this.endTime.minute.value
+              hour.value == this.endModel.hour.value &&
+              minute.value == this.endModel.minute.value
             ) {
-              $max = this.endTime.second.value;
+              $max = this.endModel.second.value;
             }
-          } else if (this.beginTime) {
+          } else if (this.beginModel) {
             // 如果是结束时间组件,min不能小于开始时间
             if (Array.from(input.classList).includes('hour')) {
-              $min = this.beginTime.hour.value;
+              $min = this.beginModel.hour.value;
             }
             if (
               Array.from(input.classList).includes('minute') &&
-              hour.value == this.beginTime.hour.value
+              hour.value == this.beginModel.hour.value
             ) {
-              $min = this.beginTime.minute.value;
+              $min = this.beginModel.minute.value;
             }
             if (
               Array.from(input.classList).includes('second') &&
-              hour.value == this.beginTime.hour.value &&
-              minute.value == this.beginTime.minute.value
+              hour.value == this.beginModel.hour.value &&
+              minute.value == this.beginModel.minute.value
             ) {
-              $min = this.beginTime.second.value;
+              $min = this.beginModel.second.value;
             }
           }
 
@@ -196,31 +187,31 @@ export class TimeControlComponent implements OnChanges, OnInit, AfterViewInit {
           for (let i = 0; i < array.length; i++) {
             const element = array[i];
             if (input.classList.contains(array[i])) {
-              this.time[array[i]].value = value;
-              this.time[array[i]].view = view;
-              this.timeChange.emit(this.time);
-              let date = new Date(this.date.getTime());
+              this.model[array[i]].value = value;
+              this.model[array[i]].view = view;
+              this.modelChange.emit(this.model);
+              let date = new Date(this.time.getTime());
               date.setHours(
-                this.time.hour.value,
-                this.time.minute.value,
-                this.time.second.value
+                this.model.hour.value,
+                this.model.minute.value,
+                this.model.second.value,
               );
-              this.dateChange.emit(date);
+              this.timeChange.emit(date);
               break;
             }
           }
 
-          if (this.endTime) {
+          if (this.endModel) {
             if (Array.from(input.classList).includes('hour')) {
               //当前hour的值小于结束时间时，分钟和秒是无限制的，但等于结束时间时需要校准，不得超过结束时间
-              if (value == this.endTime.hour.value) {
+              if (value == this.endModel.hour.value) {
                 minute.value =
-                  minute.value > this.endTime.minute.value
-                    ? this.endTime.minute.value
+                  minute.value > this.endModel.minute.value
+                    ? this.endModel.minute.value
                     : minute.value;
                 second.value =
-                  second.value > this.endTime.second.value
-                    ? this.endTime.second.value
+                  second.value > this.endModel.second.value
+                    ? this.endModel.second.value
                     : second.value;
                 let mview = TimeControlComponent.format(minute.value);
                 let sview = TimeControlComponent.format(second.value);
@@ -230,28 +221,28 @@ export class TimeControlComponent implements OnChanges, OnInit, AfterViewInit {
             }
             if (
               Array.from(input.classList).includes('minute') &&
-              hour.value == this.endTime.hour.value
+              hour.value == this.endModel.hour.value
             ) {
-              if (value == this.endTime.minute.value) {
+              if (value == this.endModel.minute.value) {
                 second.value =
-                  second.value > this.endTime.second.value
-                    ? this.endTime.second.value
+                  second.value > this.endModel.second.value
+                    ? this.endModel.second.value
                     : second.value;
                 let sview = TimeControlComponent.format(second.value);
                 second.view = sview;
               }
             }
-          } else if (this.beginTime) {
+          } else if (this.beginModel) {
             if (Array.from(input.classList).includes('hour')) {
               //当前hour的值大于开始时间时，分钟和秒是无限制的，但等于开始时间时需要校准，不得小于开始时间
-              if (value == this.beginTime.hour.value) {
+              if (value == this.beginModel.hour.value) {
                 minute.value =
-                  minute.value < this.beginTime.minute.value
-                    ? this.beginTime.minute.value
+                  minute.value < this.beginModel.minute.value
+                    ? this.beginModel.minute.value
                     : minute.value;
                 second.value =
-                  second.value < this.beginTime.second.value
-                    ? this.beginTime.second.value
+                  second.value < this.beginModel.second.value
+                    ? this.beginModel.second.value
                     : second.value;
                 let mview = TimeControlComponent.format(minute.value);
                 let sview = TimeControlComponent.format(second.value);
@@ -261,12 +252,12 @@ export class TimeControlComponent implements OnChanges, OnInit, AfterViewInit {
             }
             if (
               Array.from(input.classList).includes('minute') &&
-              hour.value == this.beginTime.hour.value
+              hour.value == this.beginModel.hour.value
             ) {
-              if (value == this.beginTime.minute.value) {
+              if (value == this.beginModel.minute.value) {
                 second.value =
-                  second.value < this.beginTime.second.value
-                    ? this.beginTime.second.value
+                  second.value < this.beginModel.second.value
+                    ? this.beginModel.second.value
                     : second.value;
                 let sview = TimeControlComponent.format(second.value);
                 second.view = sview;

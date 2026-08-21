@@ -1,0 +1,75 @@
+<div class="region-explorer">
+  <div class="region-explorer-head">
+    <div class="head-operation left">
+      <div class="button" title="向上" (click)="on.up()" [class.disabled]="root">
+        <i class="mdi mdi-arrow-up"></i>
+      </div>
+    </div>
+
+    <div class="head-path">
+      <div class="button" (click)="on.root()">root</div>
+      @for (item of path; track item.Id; let i = $index) {
+        <span class="separator">/</span>
+        <div class="button" (click)="on.path(i)">{{ item.Name || item.Id }}</div>
+      }
+    </div>
+
+    <div class="head-operation right">
+      <span class="count">共 {{ datas.length }} 项</span>
+    </div>
+  </div>
+
+  <div class="region-explorer-body table-split">
+    <div class="table-split-head">
+      <table border="0" cellpadding="0" cellspacing="0">
+        <colgroup>
+          @for (width of widths; track width) {
+            <col [style.width]="width" />
+          }
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="center">序号</th>
+            <th>名称</th>
+            <th>类型</th>
+            <th>描述</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="table-split-body">
+      @if (datas.length > 0) {
+        <table border="0" cellpadding="0" cellspacing="0">
+          <colgroup>
+            @for (width of widths; track width) {
+              <col [style.width]="width" />
+            }
+          </colgroup>
+          <tbody>
+            @for (node of datas; track node.Id; let index = $index) {
+              <tr
+                (click)="on.select(node)"
+                (dblclick)="on.dblclick(node)"
+                [class.selected]="selected === node"
+              >
+                <td class="center">
+                  <div>{{ index + 1 }}</div>
+                </td>
+                <td [title]="node.Name || node.Id">
+                  <div class="name">
+                    <i class="name-icon {{ icon(node) }}"></i>
+                    <span>{{ node.Name || node.Id }}</span>
+                  </div>
+                </td>
+                <td>{{ typeText(node) }}</td>
+                <td [title]="node.Description">{{ node.Description }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <div class="empty">暂无内容</div>
+      }
+    </div>
+  </div>
+</div>

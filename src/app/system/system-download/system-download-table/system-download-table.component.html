@@ -1,0 +1,98 @@
+<div class="system-download-table">
+  <div class="system-download-table-body table-split">
+    <div class="table-split-head">
+      <table border="0" cellpadding="0" cellspacing="0" TableSorter (sort)="on.sort($event)">
+        <colgroup>
+          <col [ngStyle]="{ width: width }" *ngFor="let width of widths" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="center">序号</th>
+            <th sort="name">文件</th>
+            <th sort="date">日期</th>
+            <th sort="begin">开始时间</th>
+            <th sort="end">结束时间</th>
+            <th sort="progress">进度</th>
+            <th sort="state" class="center">状态</th>
+            <th class="center">操作</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="table-split-body">
+      <table border="0" cellpadding="0" cellspacing="0">
+        <colgroup>
+          <col [ngStyle]="{ width: width }" *ngFor="let width of widths" />
+        </colgroup>
+        <tbody>
+          @for (task of view; track task.id) {
+            <tr
+              [class.completed]="task.state === 'completed'"
+              [class.failed]="task.state === 'failed'"
+            >
+              <td class="center">{{ $index + 1 }}</td>
+              <td>
+                <div [title]="task.name">{{ task.name }}</div>
+              </td>
+              <td>{{ task.duration.begin | date: 'yyyy-MM-dd' }}</td>
+              <td>{{ task.duration.begin | date: 'HH:mm:ss' }}</td>
+              <td>{{ task.duration.end | date: 'HH:mm:ss' }}</td>
+              <td>
+                <div class="cell-progress">
+                  <div class="bar">
+                    <div class="bar-fill" [style.width.%]="percent(task)"></div>
+                  </div>
+                  <div class="progress-meta">
+                    <span>{{ bytes(task.loaded) }} / {{ bytes(task.total) }}</span>
+                    @if (task.state === 'downloading') {
+                      <span>{{ speedText(task.speed) }}</span>
+                    }
+                  </div>
+                </div>
+              </td>
+              <td class="center">
+                <span class="status" [class]="task.state">{{ stateText(task) }}</span>
+              </td>
+              <td class="center">
+                <div class="operation">
+                  @if (task.state === 'downloading') {
+                    <button (click)="pause.emit(task)" title="暂停">
+                      <i class="howell-icon-playpause"></i>
+                    </button>
+                    <button (click)="cancel.emit(task)" title="取消">
+                      <i class="howell-icon-Close"></i>
+                    </button>
+                  }
+                  @if (task.state === 'paused') {
+                    <button (click)="resume.emit(task)" title="开始">
+                      <i class="howell-icon-play"></i>
+                    </button>
+                    <button (click)="cancel.emit(task)" title="取消">
+                      <i class="howell-icon-Close"></i>
+                    </button>
+                  }
+                  @if (task.state === 'completed') {
+                    <button (click)="redownload.emit(task)" title="重新下载">
+                      <i class="howell-icon-download"></i>
+                    </button>
+                    <button (click)="remove.emit(task)" title="删除">
+                      <i class="howell-icon-delete2"></i>
+                    </button>
+                  }
+                  @if (task.state === 'failed') {
+                    <button (click)="retry.emit(task)" title="重试">
+                      <i class="howell-icon-refresh"></i>
+                    </button>
+                    <button (click)="remove.emit(task)" title="删除">
+                      <i class="howell-icon-delete2"></i>
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

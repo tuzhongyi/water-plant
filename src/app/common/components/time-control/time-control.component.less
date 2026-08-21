@@ -1,19 +1,21 @@
+@import url(../../../../assets/styles/colors/color-input.less);
+
 .time-control {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 100%;
 
-  border: 1px solid #07a990;
+  border: 1px solid @border-color;
   font-size: 18px;
   border-radius: unset;
-  background-color: #06999c4d;
+  background-color: @background-color;
   box-sizing: border-box;
 
   &.disabled {
     color: #999;
     cursor: not-allowed;
-    border-color: #2A5497;
+    border-color: @disabled-border-color;
   }
 
   input {

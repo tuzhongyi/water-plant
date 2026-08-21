@@ -24,10 +24,10 @@
     <div class="video-player-container-head-item">
       <div class="video-player-container-head-item-title">时间：</div>
 
-      <app-time-control [time]="duration.begin" [endTime]="duration.end"></app-time-control>
+      <app-time-control [model]="duration.begin" [endModel]="duration.end"></app-time-control>
 
       <div class="_">-</div>
-      <app-time-control [time]="duration.end" [beginTime]="duration.begin"></app-time-control>
+      <app-time-control [model]="duration.end" [beginModel]="duration.begin"></app-time-control>
     </div>
     <div class="video-player-container-head-item">
       <button class="button-border green" (click)="playback()">开始回放</button>

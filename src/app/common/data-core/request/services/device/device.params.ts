@@ -35,6 +35,12 @@ export class DeviceSearchingParams implements IParams {
   /**	Int32	超时时长，单位：毫秒，默认：15000	O	*/
   Timeout?: number;
 }
+export class GetVideoChannelViewGroupsParams extends PagedParams {
+  /**	String[]	通道ID	O	*/
+  Ids?: string[];
+  /**	String	视频预览分组名称，支持LIKE	O	*/
+  Name?: string;
+}
 export class GetPreviewUrlParams implements IParams {
   /**	String	监控点ID	M	*/
   CameraId!: string;
@@ -60,4 +66,17 @@ export class GetVodUrlParams extends DurationParams {
    * M
    **/
   Protocol: string = 'ws-ps';
+}
+export class DeviceVideoDownloadParams {
+  /**	String	视频通道Id	M */
+  VideoChannelId!: string;
+  /**	String	文件名称，自定义后缀建议.mp4/.ps	M */
+  FileName!: string;
+  /**
+   *  TimeRange: 20260814121155_20260814122206
+   *  对应：2026年8月14日12点11分55秒开始，2026年8月14日12点22分06秒结束的录像文件。
+   *  注意：录像文件下载时间跨度不能超过30分钟。超过30分钟需要自动分割成多个任务。
+   *  返回：二进制视频文件流Chunk。
+   **/
+  TimeRange!: string;
 }

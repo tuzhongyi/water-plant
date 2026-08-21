@@ -66,10 +66,19 @@
 
           }
 
-          .operation {
+          &.operation {
             display: flex;
             align-items: center;
             gap: 10px;
+
+            &>button,
+            &>.button {
+              color: @table-button-color;
+
+              &:hover {
+                color: @table-button-color-hover;
+              }
+            }
           }
 
 

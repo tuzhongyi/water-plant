@@ -1,0 +1,112 @@
+.region-explorer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &-head {
+    height: 36px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    border: 1px solid #07a990;
+    border-bottom: none;
+    background: linear-gradient(to top,
+        rgba(23, 241, 198, 0.2) 0%,
+        rgba(23, 241, 198, 0) 100%);
+    display: flex;
+    align-items: center;
+
+    .button {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      font-size: 16px;
+      color: #ddf4ff;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+
+      &:hover {
+        color: #fff;
+        background: rgba(23, 241, 198, 0.15);
+      }
+
+      &.disabled {
+        color: rgba(221, 244, 255, 0.35);
+        cursor: default;
+        pointer-events: none;
+      }
+    }
+
+    .separator {
+      color: rgba(221, 244, 255, 0.4);
+      user-select: none;
+    }
+
+    .head-operation {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &.left {
+        border-right: 1px solid #07a990;
+        aspect-ratio: 1;
+      }
+
+      &.right {
+        border-left: 1px solid #07a990;
+        padding: 0 12px;
+        width: max-content;
+
+        .count {
+          font-size: 13px;
+          color: #ddf4ff;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .head-path {
+      height: 100%;
+      flex-grow: 1;
+      min-width: 0;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+  }
+
+  &-body {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .name {
+    gap: 8px;
+
+    &-icon {
+      flex-shrink: 0;
+      font-size: 20px;
+      color: #17f1c6;
+    }
+
+    span {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(221, 244, 255, 0.5);
+    font-size: 15px;
+  }
+}

@@ -1,0 +1,56 @@
+<howell-card>
+  <div class="download-container">
+    <div class="card-head">
+      <div class="forms" [class.disabled]="disabled">
+        <div class="form-item datetime">
+          <div class="form-item-text">选择日期:</div>
+          <div class="form-item-value">
+            <date-time-control
+              [disabled]="disabled"
+              [(date)]="manager.date"
+              (dateChange)="manager.on.date()"
+            ></date-time-control>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-item-text">开始时间:</div>
+          <div class="form-item-value fill time">
+            <app-time-control
+              [(time)]="manager.time.begin"
+              [end]="manager.time.end"
+              [disabled]="disabled"
+            ></app-time-control>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-item-text">结束时间:</div>
+          <div class="form-item-value fill time">
+            <app-time-control
+              [(time)]="manager.time.end"
+              [begin]="manager.time.begin"
+              [disabled]="disabled"
+            ></app-time-control>
+          </div>
+        </div>
+        <div class="form-item">
+          <button class="button-border green" [disabled]="disabled" (click)="manager.on.download()">
+            下载
+          </button>
+        </div>
+      </div>
+      <div class="button-group"></div>
+    </div>
+
+    <div class="card-body">
+      <hw-system-download-table
+        [datas]="table.datas()"
+        (pause)="table.on.pause($event)"
+        (resume)="table.on.resume($event)"
+        (cancel)="table.on.cancel($event)"
+        (retry)="table.on.retry($event)"
+        (redownload)="table.on.redownload($event)"
+        (remove)="table.on.remove($event)"
+      ></hw-system-download-table>
+    </div>
+  </div>
+</howell-card>
