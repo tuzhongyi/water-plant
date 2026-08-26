@@ -119,6 +119,10 @@ export class SystemDownloadBusiness {
   /**	真实下载单个任务：请求二进制视频流 → 保存到本地 → 更新状态，完成后继续调度 */
   private async start(task: DownloadTask): Promise<void> {
     this.patch(task.id, { state: 'downloading' });
+    // 实时进度：已下载字节与速度（节流更新，避免频繁触发界面刷新）
+    const startTime = Date.now();
+    let lastLoaded = 0;
+    let lastTime = startTime;
     try {
       const timeRange = this.timeRange(task.duration);
       const fileName = `${task.name}_${timeRange}.mp4`;
@@ -126,11 +130,27 @@ export class SystemDownloadBusiness {
       params.TimeRange = timeRange;
       params.VideoChannelId = task.videoChannelId;
       params.FileName = fileName;
-      const blob = await this.service.download(params);
+      const blob = await this.service.download(params, (loaded, total) => {
+        if (!this.active(task.id)) return;
+        const now = Date.now();
+        const elapsed = now - lastTime;
+        if (elapsed < 200) return;
+        const patch: Partial<DownloadTask> = {
+          loaded,
+          speed: (loaded - lastLoaded) / (elapsed / 1000),
+        };
+        if (total > 0) patch.total = total;
+        lastLoaded = loaded;
+        lastTime = now;
+        this.patch(task.id, patch);
+      });
       // 下载期间若被暂停/取消/删除，则不再保存或标记完成
       if (!this.active(task.id)) return;
       this.save(blob, fileName);
-      this.patch(task.id, { state: 'completed', total: blob.size, loaded: blob.size });
+      // 完成后的平均下载速度 = 总字节 / 总耗时
+      const elapsed = (Date.now() - startTime) / 1000;
+      const speed = elapsed > 0 ? blob.size / elapsed : 0;
+      this.patch(task.id, { state: 'completed', total: blob.size, loaded: blob.size, speed });
     } catch {
       if (this.active(task.id)) {
         this.patch(task.id, { state: 'failed', message: '下载失败' });

@@ -68,7 +68,16 @@
       ></hw-system-main-three-config-find-slider>
     }
   </div>
-  <div class="system-main-three-viewer">
+  <div class="system-main-three-full">
+    <button class="button-border green-dark" (click)="manager.button.full()">
+      @if (manager.fulled) {
+        <i class="mdi mdi-fullscreen-exit"></i>
+      } @else {
+        <i class="mdi mdi-fullscreen"></i>
+      }
+    </button>
+  </div>
+  <!-- <div class="system-main-three-viewer">
     <div></div>
     <button class="button-border green-dark" (click)="manager.button.view(FitView.Top)">
       <i class="howell-icon-top_view"></i>
@@ -83,7 +92,7 @@
     <button class="button-border green-dark" (click)="manager.button.view(FitView.Right)">
       <i class="howell-icon-right_view"></i>
     </button>
-  </div>
+  </div> -->
 
   @if (manager.building.show) {
     <div class="system-main-three-building">

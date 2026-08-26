@@ -2,13 +2,20 @@
   <div class="system-download-region">
     <div class="card-head"><div class="card-head-title">资源列表</div></div>
     <div class="card-line"></div>
-    <div class="system-download-region-content card-body">
-      <hw-tree-region
-        [selected]="selected"
-        (selectedChange)="on.selected($event)"
-        (loaded)="on.loaded($event)"
-        (download)="on.download($event)"
-      ></hw-tree-region>
+    <div class="system-download-region-body card-body no-foot">
+      <div class="system-download-region-filter">
+        <input-icon [(value)]="tree.args.name" (clear)="on.search()">
+          <button (click)="on.search()"><i class="howell-icon-search"></i></button>
+        </input-icon>
+      </div>
+      <div class="system-download-region-content">
+        <hw-tree-region
+          [load]="tree.load"
+          [selected]="selected"
+          (selectedChange)="on.selected($event)"
+          (loaded)="on.loaded($event)"
+        ></hw-tree-region>
+      </div>
     </div>
   </div>
 </howell-card>

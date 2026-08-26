@@ -33,6 +33,34 @@ export class HowellHttpClient {
     return new Blob([response], { type: mime });
   }
 
+  /**	带进度的二进制下载：process 实时回调已下载/总字节（总字节未知时为 0），完成后返回 Blob */
+  download(
+    path: string,
+    mime: string,
+    event?: { process?: (progress: { loaded: number; total: number }) => void },
+  ) {
+    let options = this.getAuth();
+    return new Promise<Blob>((resolve, reject) => {
+      this.http
+        .get(path, {
+          ...options,
+          responseType: 'blob',
+          reportProgress: true,
+          observe: 'events',
+        })
+        .subscribe({
+          next: (e) => {
+            if (e.type === HttpEventType.DownloadProgress) {
+              event?.process?.({ loaded: e.loaded, total: e.total ?? 0 });
+            } else if (e.type === HttpEventType.Response && e.body) {
+              resolve(new Blob([e.body], { type: mime }));
+            }
+          },
+          error: (err) => reject(err),
+        });
+    });
+  }
+
   buffer(path: string) {
     return new Promise<ArrayBuffer>((resolve, reject) => {
       fetch(path, {

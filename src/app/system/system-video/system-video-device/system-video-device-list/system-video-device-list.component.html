@@ -1,0 +1,43 @@
+<div class="system-video-device-list">
+  <div class="system-video-device-list-table">
+    @for (item of datas(); track $index) {
+      <div
+        class="system-video-device-list-table-tr"
+        [class.selected]="selected == item"
+        (click)="on.select($event, item)"
+        (dblclick)="on.dblclick($event, item)"
+      >
+        <!-- <div class="system-video-device-list-table-td" [style.width]="width[0]">
+        {{ $index + 1 }}
+      </div> -->
+
+        <div class="system-video-device-list-table-td" [style.width]="'100%'">
+          {{ item.Name }}
+        </div>
+
+        <div class="system-video-device-list-table-td">
+          <div class="button-group">
+            <!-- <button (click)="on.playback($event, item)" title="视频回放" [disabled]="!item.playback">
+            <i class="howell-icon-video-play"></i>
+          </button> -->
+            <!-- <button (click)="on.details($event, item)" title="详细信息">
+            <i class="howell-icon-details"></i>
+          </button> -->
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="system-video-device-list-page">
+    <paginator
+      [page]="page()"
+      [jump]="false"
+      [total]="false"
+      [gapable]="false"
+      [first]="false"
+      [last]="false"
+      (change)="on.page($event)"
+    >
+    </paginator>
+  </div>
+</div>

@@ -23,4 +23,12 @@ export const routes: Routes = [
     loadChildren: () => import('./setting/setting.module').then((mod) => mod.SettingModule),
     canActivate: [AuthorizationActivate],
   },
+  {
+    path: RoutePath.download,
+    loadComponent: () =>
+      import('./system/system-download/system-download-manager/system-download-manager.component').then(
+        (mod) => mod.SystemDownloadManagerComponent,
+      ),
+    canActivate: [AuthorizationActivate],
+  },
 ];

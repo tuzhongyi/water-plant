@@ -6,9 +6,22 @@ import { FaceSnapSettings } from '../../../models/xinneng/face-snap-settings.mod
 import { DeviceUrl } from '../../../urls/device/device.url';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
+import { registerDevicePlugin } from './device.plugin';
+import type { DeviceRequestService } from './device.service';
+
+declare module './device.service' {
+  interface DeviceRequestService {
+    face: DeviceFaceRequestService;
+  }
+}
 
 export class DeviceFaceRequestService {
-  constructor(private http: HowellHttpClient) {}
+  constructor(
+    private http: HowellHttpClient,
+    device: DeviceRequestService,
+  ) {
+    device.face = this;
+  }
 
   private _snap?: DeviceFaceSnapRequestService;
   public get snap(): DeviceFaceSnapRequestService {
@@ -39,3 +52,5 @@ class DeviceFaceSnapRequestService {
     },
   };
 }
+
+registerDevicePlugin(DeviceFaceRequestService);

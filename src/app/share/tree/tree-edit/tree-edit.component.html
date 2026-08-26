@@ -1,0 +1,101 @@
+<div class="hw-tree tree-edit">
+  <div class="tree-edit-body">
+    @for (node of visibleNodes; track node.id) {
+      <div
+        class="hw-tree-node"
+        [class.selected]="node.id === selectedId"
+        [attr.data-node-id]="node.id"
+        [style.padding-left.px]="node.level * 20 + 8"
+        (click)="onSelect(node)"
+      >
+        <i
+          class="hw-tree-toggle mdi"
+          [class.mdi-menu-down]="node.expandable && node.expanded"
+          [class.mdi-menu-right]="node.expandable && !node.expanded"
+          (click)="onToggle(node); $event.stopPropagation()"
+        ></i>
+
+        @if (editingId === node.id) {
+          <div class="hw-tree-content" (click)="$event.stopPropagation()">
+            @if (node.icon) {
+              <i class="hw-tree-icon {{ node.icon }}"></i>
+            }
+            <input-icon class="hw-tree-input" [(value)]="editingValue" [canclear]="false">
+              <button class="hw-tree-input-btn ok" title="保存" (click)="saveEdit(node)">
+                <i class="mdi mdi-check"></i>
+              </button>
+              <button class="hw-tree-input-btn cancel" title="取消" (click)="cancelEdit()">
+                <i class="mdi mdi-close"></i>
+              </button>
+            </input-icon>
+          </div>
+        } @else {
+          <div class="hw-tree-content" [innerHTML]="node.html || node.label"></div>
+        }
+
+        <span class="hw-tree-actions" (click)="$event.stopPropagation()">
+          @if (node.editable && editingId !== node.id) {
+            <button
+              class="button hw-tree-action-btn hw-tree-action-edit green"
+              title="修改"
+              (click)="onEdit(node)"
+            >
+              <i class="mdi mdi-pencil"></i>
+            </button>
+          }
+          @if (node.addable && addingParentId !== node.id) {
+            <button
+              class="button hw-tree-action-btn hw-tree-action-add green"
+              title="添加"
+              (click)="onAdd(node)"
+            >
+              <i class="mdi mdi-plus"></i>
+            </button>
+          }
+          @if (node.deletable) {
+            <button
+              class="button hw-tree-action-btn hw-tree-action-delete green"
+              title="删除"
+              (click)="onDelete(node)"
+            >
+              <i class="howell-icon-delete2"></i>
+            </button>
+          }
+        </span>
+      </div>
+
+      @if (addingParentId === node.id) {
+        <div class="hw-tree-node hw-tree-add-row" [style.padding-left.px]="(node.level + 1) * 20 + 8">
+          <i class="hw-tree-toggle mdi"></i>
+          <div class="hw-tree-content">
+            <input-icon class="hw-tree-input" [(value)]="addingValue" [canclear]="false">
+              <button class="hw-tree-input-btn ok" title="保存" (click)="saveAdd(node)">
+                <i class="mdi mdi-check"></i>
+              </button>
+              <button class="hw-tree-input-btn cancel" title="取消" (click)="cancelAdd()">
+                <i class="mdi mdi-close"></i>
+              </button>
+            </input-icon>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- 根节点输入框：外部通知后显示在树的最下方 -->
+    @if (addingRoot) {
+      <div class="hw-tree-node hw-tree-add-row" [style.padding-left.px]="8">
+        <i class="hw-tree-toggle mdi"></i>
+        <div class="hw-tree-content">
+          <input-icon class="hw-tree-input" [(value)]="addingValue" [canclear]="false">
+            <button class="hw-tree-input-btn ok" title="保存" (click)="saveAddRoot()">
+              <i class="mdi mdi-check"></i>
+            </button>
+            <button class="hw-tree-input-btn cancel" title="取消" (click)="cancelAddRoot()">
+              <i class="mdi mdi-close"></i>
+            </button>
+          </input-icon>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<hw-card-statistic-2>
+  <div class="system-video-player">
+    <div class="card-head system-video-player-head">
+      <div class="card-head-title">视频预览</div>
+      <div class="button-group">
+        <button class="button-border green" title="单画面" (click)="player.on.mode(1)">
+          <i class="mdi mdi-stop"></i>
+        </button>
+        <button class="button-border green" title="四画面" (click)="player.on.mode(4)">
+          <i class="mdi mdi-view-grid"></i>
+        </button>
+        <button class="button-border green" title="九画面" (click)="player.on.mode(9)">
+          <i class="mdi mdi-apps"></i>
+        </button>
+        <button class="button-border green" title="十六画面" (click)="player.on.mode(16)">
+          <i class="howell-icon-screen-16"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-line"></div>
+    <div class="system-video-player-body">
+      <howell-video-player-list
+        [mode]="player.mode"
+        [play]="player.preview"
+        [(index)]="player.index"
+      ></howell-video-player-list>
+    </div>
+  </div>
+</hw-card-statistic-2>

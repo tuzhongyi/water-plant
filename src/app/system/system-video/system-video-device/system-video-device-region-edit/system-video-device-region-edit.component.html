@@ -1,0 +1,24 @@
+<div class="system-video-device-region-edit">
+  <div class="system-video-device-region-edit-body">
+    <hw-tree-region-edit
+      [selected]="selected"
+      (selectedChange)="on.select($event)"
+      [reload]="reload"
+      [addRoot]="addRoot"
+      [collapse]="collapse"
+      (loaded)="loaded.emit($event)"
+      (create)="create.emit($event)"
+      (update)="update.emit($event)"
+      (delete)="delete.emit($event)"
+    ></hw-tree-region-edit>
+  </div>
+  <div class="system-video-device-region-edit-foot">
+    <button class="button" title="全部折叠" (click)="on.collapse()">
+      <i class="mdi mdi-minus-box-outline"></i>
+    </button>
+    <button class="button" (click)="on.addRoot()">
+      <i class="mdi mdi-plus"></i>
+      <span>新增根节点</span>
+    </button>
+  </div>
+</div>

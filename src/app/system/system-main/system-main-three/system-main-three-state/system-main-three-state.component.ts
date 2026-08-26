@@ -26,7 +26,6 @@ import { SystemMainThreeState } from './system-main-three-state.model';
 export class SystemMainThreeStateComponent implements OnChanges {
   @Input() title = '';
   @Input('datas') source: GeoMapElement[] = [];
-  @Output() hide = new EventEmitter<void>();
   @Output() details = new EventEmitter<MapElementType | undefined>();
 
   constructor(
@@ -35,6 +34,8 @@ export class SystemMainThreeStateComponent implements OnChanges {
   ) {}
 
   datas: SystemMainThreeState[] = [];
+  /** 面板是否展开（true 展开显示，false 折叠只留切换按钮） */
+  show = true;
 
   ngOnChanges(changes: SimpleChanges): void {
     this.change.source(changes['source']);
@@ -76,8 +77,8 @@ export class SystemMainThreeStateComponent implements OnChanges {
   }
 
   on = {
-    hide: () => {
-      this.hide.emit();
+    toggle: () => {
+      this.show = !this.show;
     },
     details: (item?: SystemMainThreeState) => {
       if (item) {

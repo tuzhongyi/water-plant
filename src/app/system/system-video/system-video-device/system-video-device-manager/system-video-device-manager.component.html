@@ -1,0 +1,43 @@
+<hw-card-statistic-1>
+  <div class="system-video-device-manager">
+    <div class="card-head system-video-device-head">
+      <div class="card-head-title">摄像机</div>
+      <div class="button-group">
+        <button (click)="manager.on.mode()">
+          @if (device.show) {
+            <i class="mdi mdi-file-tree"></i>
+          }
+          @if (region.show) {
+            <i class="mdi mdi-format-list-bulleted"></i>
+          }
+        </button>
+      </div>
+    </div>
+    <div class="card-line"></div>
+    <div class="card-body no-foot system-video-device-body">
+      <div class="system-video-device-filter">
+        <!-- <input type="text" [(ngModel)]="list.args.name" /> -->
+        <input-icon [(value)]="manager.args.name" (clear)="manager.on.search()">
+          <button (click)="manager.on.search()"><i class="howell-icon-search"></i></button>
+        </input-icon>
+      </div>
+      <div class="system-video-device-list">
+        @if (device.show) {
+          <hw-system-video-device-list
+            [args]="manager.args"
+            [load]="device.load"
+            (itemdblclick)="device.on.preview($event)"
+          ></hw-system-video-device-list>
+        }
+        @if (region.show) {
+          <hw-system-video-device-region
+            [load]="region.load"
+            [reload]="reload"
+            (config)="region.on.config()"
+            (nodedblclick)="region.on.preview($event)"
+          ></hw-system-video-device-region>
+        }
+      </div>
+    </div>
+  </div>
+</hw-card-statistic-1>

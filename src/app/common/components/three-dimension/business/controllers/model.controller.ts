@@ -335,11 +335,38 @@ export class ModelController {
 
     const center = new THREE.Vector3();
     combined.getCenter(center);
-    const size = new THREE.Vector3();
-    combined.getSize(size);
-    const radius = Math.max(size.x, size.y, size.z) * 0.5;
+
     const cam = this.sceneService.camera as THREE.PerspectiveCamera;
-    const dist = radius / Math.tan((cam.fov * Math.PI) / 360);
+    const tanH = Math.tan((cam.fov * Math.PI) / 360);
+    const aspect = cam.aspect || 1;
+
+    /* 固定 45° 俯视方向（方位角 0°）：相机位于 center 的 +Y/+Z 侧看向 center，世界 up = +Y */
+    const sq = Math.SQRT2 / 2;
+    const forward = new THREE.Vector3(0, -sq, -sq); // 相机指向目标
+    const right = new THREE.Vector3(1, 0, 0); // 屏幕右
+    const up = new THREE.Vector3(0, sq, -sq); // 屏幕上
+
+    /* 逐角点反推最小相机距离：包围盒投影同时满足水平/垂直视口（取更紧者） */
+    let dist = 0;
+    const min = combined.min;
+    const max = combined.max;
+    const u = new THREE.Vector3();
+    for (let i = 0; i < 8; i++) {
+      u.set(
+        i & 1 ? max.x : min.x,
+        i & 2 ? max.y : min.y,
+        i & 4 ? max.z : min.z,
+      ).sub(center);
+      const depthOffset = u.dot(forward); // 沿视线的前后偏移
+      const needV = Math.abs(u.dot(up)) / tanH;
+      const needH = Math.abs(u.dot(right)) / (tanH * aspect);
+      const need = Math.max(needV, needH) - depthOffset;
+      if (need > dist) dist = need;
+    }
+
+    /* 留少量边距（≈5% 每边），避免模型贴边 */
+    dist = Math.max(dist, 0.1) * 1.1;
+
     const angle = Math.PI / 4;
     const hDist = dist * Math.cos(angle);
     const vDist = dist * Math.sin(angle);

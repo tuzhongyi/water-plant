@@ -8,9 +8,12 @@ import {
   signal,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { RegionResource } from '../../../common/data-core/models/regions/region-resource.model';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
-import { FlatTreeNode, TreeComponent } from '../tree.component';
+import { Region } from '../../../common/data-core/models/regions/region.model';
+import { FlatTreeNode, TreeComponent } from '../component/tree.component';
 import { TreeRegionBusiness } from './tree-region.business';
+import { TreeRegionArgs } from './tree-region.model';
 
 @Component({
   selector: 'hw-tree-region',
@@ -20,156 +23,102 @@ import { TreeRegionBusiness } from './tree-region.business';
   providers: [TreeRegionBusiness],
 })
 export class TreeRegionComponent implements AfterViewInit, OnDestroy {
-  @Input() selected?: RegionTreeNode;
-  @Output() selectedChange = new EventEmitter<RegionTreeNode>();
+  @Input() load?: EventEmitter<TreeRegionArgs>;
+  @Input() collapse?: EventEmitter<void>;
+  @Input() selected?: RegionTreeNode | Region | RegionResource;
+  @Output() selectedChange = new EventEmitter<RegionTreeNode | Region | RegionResource>();
 
-  @Input('load') reload?: EventEmitter<void>;
-  @Output() loaded = new EventEmitter<RegionTreeNode[]>();
+  @Input() reload?: EventEmitter<void>;
+  @Output() loaded = new EventEmitter<(RegionTreeNode | Region | RegionResource)[]>();
+
+  @Output() nodedblclick = new EventEmitter<RegionTreeNode | RegionResource>();
 
   /** 节点后的操作按钮是否可见，默认不可见 */
   @Input() actionable = false;
 
-  @Output() download = new EventEmitter<RegionTreeNode>();
-  @Output() video = new EventEmitter<RegionTreeNode>();
-
   nodes = signal<FlatTreeNode[]>([]);
   selectedId?: string;
+
+  args: TreeRegionArgs = {};
+  /** 用户手动展开/闭合的节点（id → 展开状态），load 后据此恢复 */
+  private overrides = new Map<string, boolean>();
 
   constructor(private business: TreeRegionBusiness) {}
 
   private subs = new Subscription();
 
   ngAfterViewInit(): void {
+    this.regist();
     this.loadTree();
-    if (this.reload) {
-      this.subs.add(this.reload.subscribe(() => this.loadTree()));
-    }
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
+  /** 订阅外部 load 事件：父级触发筛选时以新 args 重新加载 */
+  private regist(): void {
+    if (this.load) {
+      this.subs.add(
+        this.load.subscribe((args) => {
+          this.args = { ...args };
+          this.loadTree();
+        }),
+      );
+    }
+    if (this.reload) {
+      this.subs.add(this.reload.subscribe(() => this.loadTree()));
+    }
+    if (this.collapse) {
+      this.subs.add(this.collapse.subscribe(() => this.collapseAll()));
+    }
+  }
+
   private async loadTree(): Promise<void> {
     try {
-      const nodes = await this.business.load();
-      this.loaded.emit(nodes);
-      if (!nodes || nodes.length === 0) return;
-      this.buildTree(nodes);
+      const nodes = await this.business.load(this.args);
+      this.applyExpanded(nodes);
+      this.nodes.set(nodes);
+      this.loaded.emit(this.roots(nodes));
     } catch {
+      this.nodes.set([]);
       this.loaded.emit([]);
     }
   }
 
-  /* ---- 树构建 ---- */
-
-  private nodeIndex = 0;
-
-  private buildTree(nodes: RegionTreeNode[]): void {
-    this.nodes.set([]);
-    this.nodeIndex = 0;
+  /** 恢复展开状态：用户手动设置优先，否则按默认深度 */
+  private applyExpanded(nodes: FlatTreeNode[]): void {
     for (const node of nodes) {
-      this.addNode(node, undefined, 0);
+      node.expanded = this.overrides.has(node.id)
+        ? this.overrides.get(node.id)!
+        : this.expandDefault(node);
     }
   }
 
-  private addNode(node: RegionTreeNode, parentId: string | undefined, level: number): void {
-    const id = `region_${node.Id}_${this.nodeIndex++}`;
-    const children = this.sortChildren(node.Children ?? []);
-    const expandable = children.length > 0;
-    const icon = this.icon(node);
-    let nodes = this.nodes();
+  /** 默认展开：筛选时全部展开，否则仅根节点 */
+  private expandDefault(node: FlatTreeNode): boolean {
+    return !!this.args.name || node.level < 1;
+  }
 
-    nodes.push({
-      id,
-      label: node.Name || node.Id,
-      level,
-      parentId,
-      expandable,
-      expanded: true,
-      html: `<i class="hw-tree-icon ${icon}"></i><span class="hw-tree-label">${node.Name || node.Id}</span>`,
-      actionsHtml:
-        this.actionable && node.RegionNodeType === 2 ? this.resourceActions() : undefined,
-      data: node,
-    });
-    this.nodes.set(nodes);
+  /** 由扁平结点还原根区域树（loaded 对外输出） */
+  private roots(nodes: FlatTreeNode[]): RegionTreeNode[] {
+    return nodes.filter((n) => !n.parentId).map((n) => n.data as RegionTreeNode);
+  }
 
-    for (const child of children) {
-      this.addNode(child, id, level + 1);
+  onToggle(node: FlatTreeNode): void {
+    this.overrides.set(node.id, !!node.expanded);
+  }
+
+  /** 收缩所有节点 */
+  collapseAll(): void {
+    const nodes = this.nodes();
+    for (const node of nodes) {
+      if (node.expandable) {
+        node.expanded = false;
+        this.overrides.set(node.id, false);
+      }
     }
-  }
-
-  /**
-   * 根据 RegionNodeType 判定 NodeType 的含义并映射图标：
-   * Region（区域）→ NodeType 为 RegionType；Resource（资源）→ NodeType 为 DeviceResourceType
-   */
-  private icon(node: RegionTreeNode): string {
-    if (node.RegionNodeType === 2) {
-      return this.resourceIcon(node.NodeType);
-    }
-    return this.regionIcon(node.NodeType);
-  }
-
-  /** RegionType：0-普通区域，1-楼栋，2-房屋单元 */
-  private regionIcon(nodeType: number): string {
-    switch (nodeType) {
-      case 1:
-        return 'howell-icon-view';
-      case 2:
-        return 'mdi mdi-vector-union';
-      default:
-        return 'mdi mdi-grid';
-    }
-  }
-
-  /** DeviceResourceType：1-摄像机，2-报警器，3-门禁控制器，4-传感器 */
-  private resourceIcon(nodeType: number): string {
-    switch (nodeType) {
-      case 2:
-        return 'howell-icon-alarm_line';
-      case 3:
-        return 'howell-icon-access_door';
-      case 4:
-        return 'howell-icon-sensor_line';
-      case 1:
-        return 'howell-icon-camera_line';
-
-      default:
-        return 'howell-icon-device_line';
-    }
-  }
-
-  /** 资源节点操作按钮：下载、播放 */
-  private resourceActions(): string {
-    return `<div class="button hw-tree-action-btn hw-tree-action-download green" title="下载">
-              <i class="mdi mdi-download"></i>
-            </div>
-            <div class="button hw-tree-action-btn hw-tree-action-play green" title="播放">
-              <i class="howell-icon-video"></i>
-            </div>`;
-  }
-
-  /** 子节点排序：Sort 编号 → 类型（资源在前）→ 有无子节点（无子节点在前）→ 名称 */
-  private sortChildren(children: RegionTreeNode[]): RegionTreeNode[] {
-    return [...children].sort((a, b) => {
-      // const sort = (a.Sort ?? 0) - (b.Sort ?? 0);
-      // if (sort !== 0) return sort;
-      const type = this.order(a) - this.order(b);
-      if (type !== 0) return type;
-      const leaf = this.leaf(a) - this.leaf(b);
-      if (leaf !== 0) return leaf;
-      return (a.Name || a.Id).localeCompare(b.Name || b.Id);
-    });
-  }
-
-  /** RegionNodeType：1-区域，2-资源（资源在前） */
-  private order(node: RegionTreeNode): number {
-    return node.RegionNodeType === 2 ? 0 : 1;
-  }
-
-  /** 无子节点（叶子）在前 */
-  private leaf(node: RegionTreeNode): number {
-    return node.Children && node.Children.length > 0 ? 1 : 0;
+    this.nodes.set([...nodes]);
   }
 
   onNodeClick(node: FlatTreeNode): void {
@@ -177,9 +126,18 @@ export class TreeRegionComponent implements AfterViewInit, OnDestroy {
     this.selectedChange.emit(node.data);
   }
 
+  onNodeDblclick(node: FlatTreeNode): void {
+    if (
+      node.data instanceof Region ||
+      (node.data instanceof RegionTreeNode && node.data.RegionNodeType == 1)
+    ) {
+      node.expanded = !node.expanded;
+    } else {
+      this.nodedblclick.emit(node.data);
+    }
+  }
+
   onAction(e: { action: string; node: FlatTreeNode }): void {
     if (!e.node.data) return;
-    if (e.action === 'download') this.download.emit(e.node.data);
-    else if (e.action === 'play') this.video.emit(e.node.data);
   }
 }

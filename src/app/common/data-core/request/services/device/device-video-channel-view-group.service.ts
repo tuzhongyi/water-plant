@@ -9,9 +9,22 @@ import { DeviceUrl } from '../../../urls/device/device.url';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
 import { GetVideoChannelViewGroupsParams } from './device.params';
+import type { DeviceRequestService } from './device.service';
+import { registerDevicePlugin } from './device.plugin';
+
+declare module './device.service' {
+  interface DeviceRequestService {
+    viewGroup: DeviceVideoChannelViewGroupRequestService;
+  }
+}
 
 export class DeviceVideoChannelViewGroupRequestService {
-  constructor(private http: HowellHttpClient) {}
+  constructor(
+    private http: HowellHttpClient,
+    device: DeviceRequestService,
+  ) {
+    device.viewGroup = this;
+  }
 
   async create(data: VideoChannelViewGroup) {
     let url = DeviceUrl.viewGroup.basic();
@@ -56,3 +69,5 @@ export class DeviceVideoChannelViewGroupRequestService {
     }, params);
   }
 }
+
+registerDevicePlugin(DeviceVideoChannelViewGroupRequestService);

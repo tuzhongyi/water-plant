@@ -17,10 +17,11 @@
       (maploaded)="map.on.maploaded($event)"
       (buildingselect)="map.building.selected = $event"
       (resetstate)="map.on.resetstate($event)"
+      (full)="map.on.full($event)"
     ></hw-system-main-three-container>
   </div>
 
-  <div class="system-main-three-state" [class.none]="map.datas.length == 0 && !state.show">
+  <div class="system-main-three-state">
     <hw-system-main-three-state
       [title]="map.data?.Name || ''"
       [datas]="map.datas"

@@ -60,5 +60,12 @@ export class AccountOperationComponent implements OnInit {
     main: () => {
       this.router.navigateByUrl(RoutePath.system);
     },
+
+    download: () => {
+      window.open(RoutePath.download, '_blank');
+    },
+    video: () => {
+      this.router.navigateByUrl(`${RoutePath.system}/${RoutePath.video}`);
+    },
   };
 }

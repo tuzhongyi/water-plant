@@ -1,4 +1,13 @@
 <div class="app-account-operation">
+  <div class="operation-item" title="地图" (click)="on.main()">
+    <i class="mdi mdi-home"></i>
+  </div>
+  <div class="operation-item" title="视频" (click)="on.video()">
+    <i class="mdi mdi-video"></i>
+  </div>
+  <div class="operation-item" title="下载" (click)="on.download()">
+    <i class="mdi mdi-cloud-download"></i>
+  </div>
   @if (display.setting) {
     <div class="operation-item" title="设置" (click)="on.setting()">
       <i class="mdi mdi-settings"></i>

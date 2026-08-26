@@ -2,7 +2,10 @@
   <hw-tree
     [nodes]="nodes()"
     [selectedId]="selectedId"
+    [autoExpand]="false"
+    (toggle)="onToggle($event)"
     (nodeClick)="onNodeClick($event)"
+    (nodeDblclick)="onNodeDblclick($event)"
     (action)="onAction($event)"
   ></hw-tree>
 </div>

@@ -21,7 +21,7 @@ export class SystemDownloadTableComponent implements OnChanges {
 
   constructor() {}
 
-  widths = ['6%', 'auto', '11%', '11%', '11%', '18%', '8%', '12%'];
+  widths = ['6%', 'auto', '11%', '11%', '11%', '15%', '10%', '8%', '12%'];
 
   /**	排序后的展示列表 */
   view: DownloadTask[] = [];
@@ -113,6 +113,9 @@ export class SystemDownloadTableComponent implements OnChanges {
         break;
       case 'progress':
         result = this.percent(a) - this.percent(b);
+        break;
+      case 'speed':
+        result = a.speed - b.speed;
         break;
       case 'state':
         result = a.state.localeCompare(b.state);

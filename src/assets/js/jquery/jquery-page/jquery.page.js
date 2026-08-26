@@ -182,15 +182,14 @@
       var me = this;
       var pageNum = me.options.pageNum;
       var totalNum = me.options.totalNum;
-      if (pageNum === 1) {
-        me.element.children('#firstPage, #prePage').prop('disabled', true);
-      }
+      // 首页 / 上一页：第一页时禁用
+      me.element.children('#firstPage, #prePage').prop('disabled', pageNum === 1);
+      // 尾页 / 下一页：总页数不超过 1 或已到末页时禁用
+      me.element.children('#lastPage, #nextPage').prop('disabled', totalNum <= 1 || pageNum >= totalNum);
       if (totalNum <= 1) {
-        me.element.children('#lastPage, #nextPage').prop('disabled', true);
         me.element.children("[name='jump']").css('display', "none");
-      }
-      if (pageNum >= totalNum) {
-        me.element.children('#lastPage, #nextPage').prop('disabled', true);
+      } else {
+        me.element.children("[name='jump']").css('display', "");
       }
     }
   };

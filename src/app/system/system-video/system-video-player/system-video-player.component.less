@@ -1,0 +1,54 @@
+.system-video-player {
+  @head-height: 34px;
+
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+
+
+  &-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: @head-height;
+
+    button {
+      height: @head-height;
+      aspect-ratio: 1;
+      padding: 0;
+
+      i {
+
+        &.mdi {
+          &-stop {
+            font-size: 28px;
+            margin-top: -3px;
+          }
+
+          &-view-grid {
+            margin-top: -2px;
+          }
+
+          &-apps {
+            font-size: 20px;
+            margin-top: -2px;
+          }
+        }
+
+        &.howell-icon-screen-16 {
+          font-size: 20px;
+          margin-top: 2px;
+        }
+
+      }
+
+    }
+  }
+
+  &-body {
+    height: calc(100% - 21px - @head-height);
+  }
+}

@@ -1,0 +1,25 @@
+<howell-card>
+  <div class="system-video-manager">
+    <div class="system-video-device">
+      <hw-system-video-device-manager
+        [reload]="device.reload"
+        (config)="window.config.show = true"
+        (preview)="device.on.preview($event)"
+      ></hw-system-video-device-manager>
+    </div>
+    <div class="system-video-player">
+      <hw-system-video-player [preview]="player.preview"></hw-system-video-player>
+    </div>
+  </div>
+
+  <app-window
+    [model]="window.config"
+    [style]="window.config.style"
+    [title]="window.config.title"
+    (OnClosing)="window.config.on.close()"
+  >
+    <hw-system-video-device-region-config
+      (change)="window.config.changed = true"
+    ></hw-system-video-device-region-config>
+  </app-window>
+</howell-card>

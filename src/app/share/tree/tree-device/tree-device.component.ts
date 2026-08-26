@@ -17,7 +17,7 @@ import { VideoChannel } from '../../../common/data-core/models/devices/video-cha
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
-import { FlatTreeNode, TreeComponent } from '../tree.component';
+import { FlatTreeNode, TreeComponent } from '../component/tree.component';
 import { TreeDeviceBusiness } from './tree-device.business';
 import { IDevice, KeyNameValue } from './tree-device.model';
 

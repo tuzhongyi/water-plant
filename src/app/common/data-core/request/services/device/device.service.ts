@@ -13,9 +13,8 @@ import { Cache } from '../../cache/cache';
 import { AbstractService } from '../../cache/cache.interface';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
-import { DeviceFaceRequestService } from './device-face-snap.service';
-import { DeviceVideoChannelViewGroupRequestService } from './device-video-channel-view-group.service';
-import { DeviceVideoRequestService } from './device-video-channel.service';
+import { devicePlugins } from './device.plugin';
+import './device.plugins';
 import {
   DeviceSearchingParams,
   DeviceVideoDownloadParams,
@@ -31,6 +30,15 @@ import {
 export class DeviceRequestService extends AbstractService<Device> {
   constructor(private http: HowellHttpClient) {
     super();
+    // 实例化已注册的子服务插件（插件构造时自注册到本服务）
+    for (const plugin of devicePlugins()) {
+      this.plugin(plugin);
+    }
+  }
+
+  /** 注册子服务插件：实例化插件（插件构造时会自注册到本服务） */
+  plugin<T>(Plugin: new (http: HowellHttpClient, device: DeviceRequestService) => T): T {
+    return new Plugin(this.http, this);
   }
 
   async create(data: Device, channel: boolean) {
@@ -113,32 +121,13 @@ export class DeviceRequestService extends AbstractService<Device> {
     });
   }
 
-  download(params: DeviceVideoDownloadParams) {
+  download(
+    params: DeviceVideoDownloadParams,
+    onProgress?: (loaded: number, total: number) => void,
+  ) {
     let url = DeviceUrl.download(params.VideoChannelId, params.TimeRange, params.FileName);
-    return this.http.blob(url, 'video/mp4');
-  }
-
-  private _video?: DeviceVideoRequestService;
-  public get video(): DeviceVideoRequestService {
-    if (!this._video) {
-      this._video = new DeviceVideoRequestService(this.http);
-    }
-    return this._video;
-  }
-
-  private _face?: DeviceFaceRequestService;
-  public get face(): DeviceFaceRequestService {
-    if (!this._face) {
-      this._face = new DeviceFaceRequestService(this.http);
-    }
-    return this._face;
-  }
-
-  private _viewGroup?: DeviceVideoChannelViewGroupRequestService;
-  public get viewGroup(): DeviceVideoChannelViewGroupRequestService {
-    if (!this._viewGroup) {
-      this._viewGroup = new DeviceVideoChannelViewGroupRequestService(this.http);
-    }
-    return this._viewGroup;
+    return this.http.download(url, 'video/mp4', {
+      process: (progress) => onProgress?.(progress.loaded, progress.total),
+    });
   }
 }

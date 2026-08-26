@@ -1,12 +1,16 @@
 <div class="system-download-manager">
-  <div class="system-download-tree">
-    <hw-system-download-region
-      [(selected)]="selected"
-      (loaded)="on.loaded($event)"
-      (download)="on.download($event)"
-    ></hw-system-download-region>
+  <div class="system-download-head">
+    <hw-system-download-header></hw-system-download-header>
   </div>
-  <div class="system-download-content">
-    <hw-system-download-container [data]="selected"></hw-system-download-container>
+  <div class="system-download-body">
+    <div class="system-download-tree">
+      <hw-system-download-region
+        [(selected)]="selected"
+        (loaded)="on.loaded($event)"
+      ></hw-system-download-region>
+    </div>
+    <div class="system-download-content">
+      <hw-system-download-container [data]="selected"></hw-system-download-container>
+    </div>
   </div>
 </div>

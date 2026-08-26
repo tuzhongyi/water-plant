@@ -9,9 +9,22 @@ import { DeviceUrl } from '../../../urls/device/device.url';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
 import { GetVideoChannelsParams } from './device.params';
+import type { DeviceRequestService } from './device.service';
+import { registerDevicePlugin } from './device.plugin';
+
+declare module './device.service' {
+  interface DeviceRequestService {
+    video: DeviceVideoRequestService;
+  }
+}
 
 export class DeviceVideoRequestService {
-  constructor(private http: HowellHttpClient) {}
+  constructor(
+    private http: HowellHttpClient,
+    device: DeviceRequestService,
+  ) {
+    device.video = this;
+  }
 
   private _channel?: DeviceVideoChannelRequestService;
   public get channel(): DeviceVideoChannelRequestService {
@@ -76,3 +89,5 @@ class DeviceVideoChannelRequestService {
     return this.http.post<void>(url);
   }
 }
+
+registerDevicePlugin(DeviceVideoRequestService);

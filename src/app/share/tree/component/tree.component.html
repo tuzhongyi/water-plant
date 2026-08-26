@@ -1,4 +1,4 @@
-<div class="hw-tree" (click)="onTreeClick($event)">
+<div class="hw-tree" (click)="onTreeClick($event)" (dblclick)="onTreeDblclick($event)">
   @for (node of visibleNodes; track node.id) {
     <div
       class="hw-tree-node"

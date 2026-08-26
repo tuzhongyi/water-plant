@@ -94,6 +94,28 @@
 
   }
 
+  &-full {
+    position: absolute;
+    bottom: calc(@padding-bottom + 6px);
+    right: @padding-left;
+    display: flex;
+
+    width: calc(40px);
+
+    &>button {
+      backdrop-filter: blur(8px);
+      color: #17f1c6;
+
+      &:hover,
+      &.selected {
+        color: white;
+      }
+    }
+
+
+
+  }
+
   &-filter {
     position: absolute;
     bottom: calc(@padding-bottom + @button-height + @gap);

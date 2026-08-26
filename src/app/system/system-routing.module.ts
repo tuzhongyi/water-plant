@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SystemComponent } from './component/system.component';
 import { SystemDownloadManagerComponent } from './system-download/system-download-manager/system-download-manager.component';
 import { SystemMainComponent } from './system-main/system-main-manager/system-main.component';
+import { SystemVideoManagerComponent } from './system-video/system-video-manager/system-video-manager.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
       {
         path: 'download',
         component: SystemDownloadManagerComponent,
+      },
+      {
+        path: 'video',
+        component: SystemVideoManagerComponent,
       },
     ],
   },

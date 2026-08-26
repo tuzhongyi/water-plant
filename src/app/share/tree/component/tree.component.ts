@@ -13,13 +13,16 @@ export class TreeComponent implements OnChanges {
   @Input() selectedId?: string;
   /** 默认展开深度（level < displaydeep 的节点自动展开），默认 1 = 仅根展开 */
   @Input() displaydeep = 1;
+  /** 节点变化时是否自动应用默认展开深度；false 时由外部维护展开状态 */
+  @Input() autoExpand = true;
   @Output() selectedIdChange = new EventEmitter<string>();
   @Output() nodeClick = new EventEmitter<FlatTreeNode>();
+  @Output() nodeDblclick = new EventEmitter<FlatTreeNode>();
   @Output() toggle = new EventEmitter<FlatTreeNode>();
   @Output() action = new EventEmitter<{ action: string; node: FlatTreeNode }>();
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['nodes'] || changes['displaydeep']) {
+    if (this.autoExpand && (changes['nodes'] || changes['displaydeep'])) {
       this.applyExpandDeep();
     }
   }
@@ -93,6 +96,16 @@ export class TreeComponent implements OnChanges {
     this.selectedId = node.id;
     this.selectedIdChange.emit(node.id);
     this.nodeClick.emit(node);
+  }
+
+  onTreeDblclick(e: MouseEvent): void {
+    const target = e.target as HTMLElement;
+    // 双击展开箭头或操作按钮时不视为双击节点
+    if (target.closest('.hw-tree-toggle') || target.closest('[class*="hw-tree-action-"]')) return;
+    const nodeId = target.closest('[data-node-id]')?.getAttribute('data-node-id');
+    if (!nodeId) return;
+    const node = this.nodes.find((n) => n.id === nodeId);
+    if (node) this.nodeDblclick.emit(node);
   }
 
   onToggle(node: FlatTreeNode): void {

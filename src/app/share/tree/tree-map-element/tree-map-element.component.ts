@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { EnumNameValue } from '../../../common/data-core/models/capabilities/enum-name-value.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
-import { FlatTreeNode, TreeComponent } from '../tree.component';
+import { FlatTreeNode, TreeComponent } from '../component/tree.component';
 import { TreeMapElementBusiness } from './tree-map-element.business';
 
 @Component({
@@ -102,10 +102,7 @@ export class TreeMapElementComponent implements AfterViewInit, OnInit, OnDestroy
 
   /* ---- 节点添加 ---- */
 
-  private async addCategoryNode(
-    type: EnumNameValue<number>,
-    count: number,
-  ): Promise<void> {
+  private async addCategoryNode(type: EnumNameValue<number>, count: number): Promise<void> {
     const name = type.Name;
     const icon = IconTool.MapElementType(type.Value) || 'howell-icon-map-pin';
     const countHtml = `<span class="hw-tree-count">${count}</span>`;

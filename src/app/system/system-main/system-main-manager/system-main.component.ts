@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AlarmComponent } from '../../../common/components/alarm-control/alarm.component';
@@ -166,6 +173,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     load: new EventEmitter<void>(),
     alarm: new EventEmitter<string>(),
     unalarm: new EventEmitter<GeoMapElement>(),
+    full: signal<boolean>(false),
     on: {
       preview: (data: GeoMapElement) => {
         this.video.single.preview(data);
@@ -183,6 +191,9 @@ export class SystemMainComponent implements OnInit, OnDestroy {
           this.map.unalarm.emit(data);
           this.window.table.element.reload.emit();
         });
+      },
+      full: (value: boolean) => {
+        this.map.full.set(value);
       },
     },
   };

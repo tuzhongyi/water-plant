@@ -1,0 +1,30 @@
+.system-video-device {
+  @gap: 10px;
+  @head-height: 34px;
+  @filter-height: 36px;
+
+  &-manager {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  &-head {
+    height: @head-height;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: @gap
+  }
+
+  &-list {
+    height: calc(100% - @filter-height - @gap);
+  }
+}

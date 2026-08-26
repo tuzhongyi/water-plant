@@ -1,21 +1,74 @@
 @import url(../../../../../assets/styles/colors/color-@.less);
 
+:host {
+  display: block;
+}
+
 .system-main-three-state {
   width: 100%;
   height: auto;
-
-
-  // box-shadow: 0 0 10px rgba(23, 241, 198, 0.8);
-
-
+  position: relative;
   font-size: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 
+  /* 折叠切换按钮：常驻，显示态位于卡片左上角，隐藏态滑到右上角并切换图标 */
+  &-toggle {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: @green;
+    border: 1px solid @green;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: left 0.4s ease, color 0.4s ease;
+
+    &:hover {
+      color: white;
+      text-shadow: #fff 0 0 10px;
+    }
+  }
+
+  /* 卡片容器：折叠时淡出 */
+  &-card {
+    transform-origin: calc(100% - 10px) 30px; // 缩向 toggle 中心（右上角）
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0.5s ease, opacity 0.3s ease;
+  }
+
+  /* 折叠态：外框与内容隐藏，切换按钮滑到最右侧 */
+  &.none {
+    pointer-events: none;
+
+    .system-main-three-state-toggle {
+      left: calc(100% - 20px);
+      pointer-events: auto;
+    }
+
+    .system-main-three-state-card {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    .system-main-three-state-inner {
+      opacity: 0;
+    }
+  }
+
+  &-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
 
   &-head {
-
     height: 20px;
     display: flex;
     justify-content: space-between;
@@ -25,28 +78,12 @@
       color: white;
       display: flex;
       align-items: center;
-      gap: 10px;
-
-      &-icon {
-        height: 100%;
-        max-height: 100%;
-        aspect-ratio: 1;
-        border-radius: 50%;
-        color: @green;
-        border: 1px solid @green;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &:hover {
-          color: white;
-        }
-      }
 
       &-content {
         height: 100%;
         max-height: 100%;
         flex-shrink: 0;
+        margin-left: 30px; // 为左侧绝对定位的切换按钮留出空间
       }
     }
 
@@ -78,7 +115,6 @@
         top: 50%;
         transform: translateY(-50%);
         white-space: nowrap;
-
       }
     }
   }
@@ -125,13 +161,12 @@
       gap: 10px;
 
       &-value {
-
         font-weight: bold;
         font-size: 20px;
         color: var(--color);
 
         &.online {
-          color: @greenlight
+          color: @greenlight;
         }
       }
 
@@ -141,8 +176,4 @@
       }
     }
   }
-
-
-
-
 }

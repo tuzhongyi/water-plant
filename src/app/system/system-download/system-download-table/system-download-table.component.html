@@ -13,6 +13,7 @@
             <th sort="begin">开始时间</th>
             <th sort="end">结束时间</th>
             <th sort="progress">进度</th>
+            <th sort="speed" class="center">速度</th>
             <th sort="state" class="center">状态</th>
             <th class="center">操作</th>
           </tr>
@@ -38,17 +39,16 @@
               <td>{{ task.duration.begin | date: 'HH:mm:ss' }}</td>
               <td>{{ task.duration.end | date: 'HH:mm:ss' }}</td>
               <td>
-                <div class="cell-progress">
-                  <div class="bar">
-                    <div class="bar-fill" [style.width.%]="percent(task)"></div>
-                  </div>
-                  <div class="progress-meta">
-                    <span>{{ bytes(task.loaded) }} / {{ bytes(task.total) }}</span>
-                    @if (task.state === 'downloading') {
-                      <span>{{ speedText(task.speed) }}</span>
-                    }
-                  </div>
-                </div>
+                @if (task.total > 0) {
+                  {{ bytes(task.loaded) }} / {{ bytes(task.total) }}
+                } @else {
+                  {{ bytes(task.loaded) }}
+                }
+              </td>
+              <td class="center">
+                @if (task.state === 'downloading' || task.state === 'completed') {
+                  {{ speedText(task.speed) }}
+                }
               </td>
               <td class="center">
                 <span class="status" [class]="task.state">{{ stateText(task) }}</span>

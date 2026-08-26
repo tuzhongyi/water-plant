@@ -1,0 +1,48 @@
+<div class="system-video-device-region-config">
+  <hw-card-statistic-1>
+    <div class="system-video-device-region-config-tree">
+      <div class="card-head">
+        <div class="card-head-title">区域资源</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-body">
+        <!-- <hw-system-video-device-region
+          [configable]="false"
+          [actionable]="true"
+        ></hw-system-video-device-region> -->
+        <hw-system-video-device-region-edit
+          [(selected)]="region.selected"
+          (selectedChange)="region.on.select($event)"
+          (loaded)="region.on.loaded($event)"
+          [reload]="reload"
+          (create)="region.on.create($event)"
+          (update)="region.on.update($event)"
+          (delete)="region.on.delete($event)"
+        ></hw-system-video-device-region-edit>
+      </div>
+    </div>
+  </hw-card-statistic-1>
+  <div class="system-video-device-region-config-operation">
+    <button class="button-border green" [disabled]="disabled.input()" (click)="region.on.input()">
+      <i class="mdi mdi-arrow-left-bold"></i>
+    </button>
+    <button class="button-border green" [disabled]="disabled.output()" (click)="region.on.output()">
+      <i class="mdi mdi-arrow-right-bold"></i>
+    </button>
+  </div>
+  <hw-card-statistic-1>
+    <div class="system-video-device-region-config-tree">
+      <div class="card-head">
+        <div class="card-head-title">摄像机</div>
+      </div>
+      <div class="card-line"></div>
+      <div class="card-body">
+        <hw-system-video-device-list-multiple
+          [inverse]="device.inverse"
+          [(selected)]="device.selected"
+          (selectedChange)="device.on.select($event)"
+        ></hw-system-video-device-list-multiple>
+      </div>
+    </div>
+  </hw-card-statistic-1>
+</div>

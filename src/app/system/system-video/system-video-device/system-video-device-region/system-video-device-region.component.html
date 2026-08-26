@@ -1,0 +1,25 @@
+<div class="system-video-device-region">
+  <div class="system-video-device-region-body">
+    <hw-tree-region
+      [load]="load"
+      [reload]="reload"
+      [collapse]="collapse"
+      [actionable]="actionable"
+      (nodedblclick)="on.dblclick($event)"
+    ></hw-tree-region>
+  </div>
+  <div class="system-video-device-region-foot">
+    <div class="button-groups">
+      <button title="全部收缩" (click)="on.collapse()">
+        <i class="mdi mdi-minus-box-outline"></i>
+      </button>
+    </div>
+    <div class="button-groups">
+      @if (configable) {
+        <button title="配置区域资源" (click)="on.config()">
+          <i class="mdi mdi-settings"></i>
+        </button>
+      }
+    </div>
+  </div>
+</div>

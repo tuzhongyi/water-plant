@@ -53,6 +53,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() found = new EventEmitter<GeoMapElement[]>();
   @Output() resetstate = new EventEmitter<GeoMapElement>();
+  @Output() full = new EventEmitter<boolean>();
+
   constructor(
     private business: SystemMainThreeBusiness,
     private converter: SystemMainThreeConverter,
@@ -166,6 +168,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
 
   manager = {
+    fulled: false,
     filter: {
       show: false,
       clear: (reload: boolean) => {
@@ -201,6 +204,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         if (this.element.find.finding) {
           this.element.find.stop.emit();
         }
+      },
+      full: () => {
+        this.manager.fulled = !this.manager.fulled;
+        this.full.emit(this.manager.fulled);
       },
       building: () => {
         this.manager.button.clear();

@@ -1,0 +1,12 @@
+<div class="tree-region-edit">
+  <hw-tree-edit
+    [nodes]="nodes()"
+    [selectedId]="selectedId"
+    [addRoot]="addRoot"
+    (nodeClick)="onNodeClick($event)"
+    (toggle)="onToggle($event)"
+    (create)="onCreate($event)"
+    (update)="onUpdate($event)"
+    (delete)="onDelete($event)"
+  ></hw-tree-edit>
+</div>

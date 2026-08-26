@@ -1,48 +1,53 @@
-<hw-card-statistic-1>
-  <div class="system-main-three-state">
-    <div class="system-main-three-state-head">
-      <div class="system-main-three-state-head-title">
-        <div class="system-main-three-state-head-title-icon button" (click)="on.hide()">
-          <i class="mdi mdi-chevron-right"></i>
-        </div>
-        <div class="system-main-three-state-head-title-content">{{ title }}</div>
-      </div>
-      <div class="system-main-three-state-head-action">
-        <div class="system-main-three-state-head-action-_">
-          <i class="mdi mdi-dots-vertical"></i>
-        </div>
-        <div class="system-main-three-state-head-action-button">
-          <button (click)="on.details()">查看全部</button>
-        </div>
-      </div>
-    </div>
-    <div class="card-statistic-line system-main-three-state-line"></div>
-    <div class="system-main-three-state-body">
-      @for (item of datas; track $index) {
-        <div class="system-main-three-state-item" (click)="on.details(item)">
-          <div class="system-main-three-state-item-head">
-            <div class="system-main-three-state-item-head-icon">
-              <i [class]="item.icon"></i>
-            </div>
-            <div class="system-main-three-state-item-head-title">
-              {{ item.name }}
-            </div>
-          </div>
-          <div class="system-main-three-state-item-body">
-            <div class="system-main-three-state-item-content green">
-              <div class="system-main-three-state-item-content-value online">
-                {{ item.online }}
-              </div>
-              <div class="system-main-three-state-item-content-name">在线</div>
-            </div>
-            <div class="system-main-three-state-item-line"></div>
-            <div class="system-main-three-state-item-content yellow">
-              <div class="system-main-three-state-item-content-value">{{ item.warning }}</div>
-              <div class="system-main-three-state-item-content-name">异常</div>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
+<div class="system-main-three-state" [class.none]="!show">
+  <div class="system-main-three-state-toggle" (click)="on.toggle()">
+    <i class="mdi" [class.mdi-chevron-right]="show" [class.mdi-chevron-left]="!show"></i>
   </div>
-</hw-card-statistic-1>
+
+  <div class="system-main-three-state-card">
+    <hw-card-statistic-1>
+      <div class="system-main-three-state-inner">
+        <div class="system-main-three-state-head">
+          <div class="system-main-three-state-head-title">
+            <div class="system-main-three-state-head-title-content">{{ title }}</div>
+          </div>
+          <div class="system-main-three-state-head-action">
+            <div class="system-main-three-state-head-action-_">
+              <i class="mdi mdi-dots-vertical"></i>
+            </div>
+            <div class="system-main-three-state-head-action-button">
+              <button (click)="on.details()">查看全部</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-statistic-line system-main-three-state-line"></div>
+        <div class="system-main-three-state-body">
+          @for (item of datas; track $index) {
+            <div class="system-main-three-state-item" (click)="on.details(item)">
+              <div class="system-main-three-state-item-head">
+                <div class="system-main-three-state-item-head-icon">
+                  <i [class]="item.icon"></i>
+                </div>
+                <div class="system-main-three-state-item-head-title">
+                  {{ item.name }}
+                </div>
+              </div>
+              <div class="system-main-three-state-item-body">
+                <div class="system-main-three-state-item-content green">
+                  <div class="system-main-three-state-item-content-value online">
+                    {{ item.online }}
+                  </div>
+                  <div class="system-main-three-state-item-content-name">在线</div>
+                </div>
+                <div class="system-main-three-state-item-line"></div>
+                <div class="system-main-three-state-item-content yellow">
+                  <div class="system-main-three-state-item-content-value">{{ item.warning }}</div>
+                  <div class="system-main-three-state-item-content-name">异常</div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </hw-card-statistic-1>
+  </div>
+</div>

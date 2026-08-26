@@ -1,17 +1,10 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  Output,
-} from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
-import { FlatTreeNode, TreeComponent } from '../tree.component';
+import { FlatTreeNode, TreeComponent } from '../component/tree.component';
 import { TreeMapElementBusiness } from './business/tree-map-element.business';
 import { TreeMapBusiness } from './business/tree-map.business';
 
@@ -93,7 +86,13 @@ export class TreeMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private addNode(id: string, name: string, level: number, type: 'map' | 'element', data: any): void {
+  private addNode(
+    id: string,
+    name: string,
+    level: number,
+    type: 'map' | 'element',
+    data: any,
+  ): void {
     const isMap = type === 'map';
     const iconClass = isMap
       ? 'howell-icon-map5'
@@ -111,8 +110,12 @@ export class TreeMapComponent implements AfterViewInit, OnDestroy {
       <span class="hw-tree-actions">${btns}</span>`;
 
     this.nodes.push({
-      id, label: name, level,
-      expandable: false, html, data: { type, data },
+      id,
+      label: name,
+      level,
+      expandable: false,
+      html,
+      data: { type, data },
     });
   }
 
