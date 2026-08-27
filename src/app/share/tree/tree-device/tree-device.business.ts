@@ -2,9 +2,15 @@ import { Injectable } from '@angular/core';
 import { DB31Device } from '../../../common/data-core/models/db31/db31-device.model';
 import { Device } from '../../../common/data-core/models/devices/device.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
-import { GetDB31DeviceChannelsParams } from '../../../common/data-core/request/services/db31/db31.params';
+import {
+  GetDB31DeviceChannelsParams,
+  GetDB31DevicesParams,
+} from '../../../common/data-core/request/services/db31/db31.params';
 import { DB31RequestService } from '../../../common/data-core/request/services/db31/db31.service';
-import { GetVideoChannelsParams } from '../../../common/data-core/request/services/device/device.params';
+import {
+  GetDevicesParams,
+  GetVideoChannelsParams,
+} from '../../../common/data-core/request/services/device/device.params';
 import { DeviceRequestService } from '../../../common/data-core/request/services/device/device.service';
 import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
@@ -43,7 +49,7 @@ export class TreeDeviceBusiness {
       this.data.device.load(),
       this.data.db31.load(),
     ]);
-    /* 转换设备数据 */
+    /* 转换设备数据（全量拉取，筛选在组件侧进行） */
     const converted = await Promise.all(deviceDatas.map((d) => this.convert(d)));
     const convertedDb31 = await Promise.all(db31Datas.map((d) => this.convert(d)));
     const deviceGrouped = ArrayTool.groupBy(converted, (x) => x.DeviceType);
@@ -119,7 +125,8 @@ export class TreeDeviceBusiness {
     },
     device: {
       load: () => {
-        return this.service.device.all();
+        let params = new GetDevicesParams();
+        return this.service.device.all(params);
       },
       channels: (deviceId: string) => {
         let params = new GetVideoChannelsParams();
@@ -129,7 +136,8 @@ export class TreeDeviceBusiness {
     },
     db31: {
       load: () => {
-        return this.service.db31.device.all();
+        let params = new GetDB31DevicesParams();
+        return this.service.db31.device.all(params);
       },
       channels: async (device: DB31Device) => {
         let params = new GetDB31DeviceChannelsParams();

@@ -5,6 +5,10 @@ import { Device } from '../../../common/data-core/models/devices/device.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
 
+export interface TreeDeviceArgs {
+  name?: string;
+}
+
 /** @widgetjs/tree 节点格式 */
 export interface TreeDeviceNode {
   id: string;

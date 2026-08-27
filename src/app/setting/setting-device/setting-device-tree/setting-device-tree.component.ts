@@ -1,14 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component, effect, EventEmitter, input, OnDestroy, output } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { InputIconComponent } from '../../../common/components/input-icon/input-icon.component';
 import { Device } from '../../../common/data-core/models/devices/device.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { TreeDeviceComponent } from '../../../share/tree/tree-device/tree-device.component';
-import { IDevice } from '../../../share/tree/tree-device/tree-device.model';
+import { IDevice, TreeDeviceArgs } from '../../../share/tree/tree-device/tree-device.model';
 
 @Component({
   selector: 'hw-setting-device-tree',
-  imports: [TreeDeviceComponent],
+  imports: [CommonModule, TreeDeviceComponent, InputIconComponent],
   templateUrl: './setting-device-tree.component.html',
   styleUrl: './setting-device-tree.component.less',
 })
@@ -47,7 +49,8 @@ export class SettingDeviceTreeComponent implements OnDestroy {
   }
 
   tree = {
-    load: new EventEmitter<void>(),
+    args: {} as TreeDeviceArgs,
+    load: new EventEmitter<TreeDeviceArgs>(),
     bound: new EventEmitter<GeoMapElement[]>(),
     loaded: (datas: Record<number, IDevice[]>) => {
       if (Object.keys(datas).length === 0) {
@@ -66,6 +69,9 @@ export class SettingDeviceTreeComponent implements OnDestroy {
     },
     position: (data: any) => {
       this.position.emit(data);
+    },
+    search: () => {
+      this.tree.load.emit(this.tree.args);
     },
   };
 }

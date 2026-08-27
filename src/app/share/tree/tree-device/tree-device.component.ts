@@ -19,7 +19,7 @@ import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
 import { FlatTreeNode, TreeComponent } from '../component/tree.component';
 import { TreeDeviceBusiness } from './tree-device.business';
-import { IDevice, KeyNameValue } from './tree-device.model';
+import { IDevice, KeyNameValue, TreeDeviceArgs } from './tree-device.model';
 
 @Component({
   selector: 'hw-tree-device',
@@ -32,7 +32,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() selected?: Device;
   @Output() selectedChange = new EventEmitter<Device | undefined>();
 
-  @Input('load') reload?: EventEmitter<void>;
+  @Input('load') reload?: EventEmitter<TreeDeviceArgs>;
   @Output() loaded = new EventEmitter<Record<string, IDevice[]>>();
 
   @Input() bound: GeoMapElement[] = [];
@@ -53,6 +53,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   private lastDatas?: Record<string, IDevice[]>;
   private lastTypes?: KeyNameValue[];
   private elements: GeoMapElement[] = [];
+  private args: TreeDeviceArgs = {};
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['bound']) {
@@ -91,7 +92,12 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
 
   private regist() {
     if (this.reload) {
-      this.subs.add(this.reload.subscribe(() => this.loadTree()));
+      this.subs.add(
+        this.reload.subscribe((x) => {
+          this.args = x;
+          this.loadTree();
+        }),
+      );
     }
   }
 
@@ -118,11 +124,32 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   private async buildTree(types: KeyNameValue[], datas: Record<string, IDevice[]>): Promise<void> {
     this.nodes = [];
     this.nodeIndex = 0;
+    const query = (this.args.name ?? '').trim().toLowerCase();
+
     for (const t of types) {
-      await this.addCategoryNode(t);
       const devices = datas[t.Key] ?? [];
-      for (const d of devices) {
-        this.addDeviceNode(d, t.Key);
+      const name = t.Name || (await this.language.device.DeviceType(t.Value));
+
+      if (query) {
+        const catMatches = this.match(name, query);
+        const catHasHit = devices.some(
+          (d) => this.deviceMatches(d, query) || this.deviceHasHit(d, query),
+        );
+        /* 类别自身与下方均未命中则跳过 */
+        if (!catMatches && !catHasHit) continue;
+        /* 命中类别保留全部子节点；下方还有命中则展开，否则折叠 */
+        this.addCategoryNode(t, name, catMatches ? catHasHit : true);
+        for (const d of devices) {
+          const dm = this.deviceMatches(d, query);
+          const chHasHit = this.deviceHasHit(d, query);
+          if (!dm && !chHasHit) continue;
+          this.addDeviceNode(d, t.Key, dm ? chHasHit : true, query, dm);
+        }
+      } else {
+        this.addCategoryNode(t, name, true);
+        for (const d of devices) {
+          this.addDeviceNode(d, t.Key, false, '', true);
+        }
       }
     }
     this.cdr.detectChanges();
@@ -152,9 +179,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
 
   /* ---- 节点添加 ---- */
 
-  private async addCategoryNode(type: KeyNameValue): Promise<void> {
-    const name = type.Name || (await this.language.device.DeviceType(type.Value));
-
+  private addCategoryNode(type: KeyNameValue, name: string, expanded: boolean): void {
     const icon =
       IconTool.DeviceType(type.Value, type.Key.includes('db31')) || 'howell-icon-camera_line';
     this.nodes.push({
@@ -162,13 +187,19 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
       label: name || `类型${type.Value}`,
       level: 0,
       expandable: true,
-      expanded: true,
+      expanded,
       html: `<i class="hw-tree-icon ${icon}"></i><span class="hw-tree-label">${name || `类型${type.Value}`}</span>`,
       data: type,
     });
   }
 
-  private addDeviceNode(d: IDevice, parentTypeId: string): void {
+  private addDeviceNode(
+    d: IDevice,
+    parentTypeId: string,
+    expanded: boolean,
+    query: string,
+    matched: boolean,
+  ): void {
     const deviceId = `dev_${parentTypeId}_${d.Id}_${this.nodeIndex++}`;
     this.nodes.push({
       id: deviceId,
@@ -176,18 +207,14 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
       level: 1,
       parentId: `type_${parentTypeId}`,
       expandable: true,
-      expanded: true,
+      expanded,
       html: `<i class="hw-tree-icon ${d.Icon}"></i><span class="hw-tree-label">${d.Name || d.Id}</span>`,
       data: d,
     });
 
-    /* 添加通道子节点 */
-    const ipc = d as any;
-    if (ipc.Channel) {
-      this.addChannelNode(ipc.Channel, deviceId, d.Icon);
-    }
-    if (ipc.Channels && Array.isArray(ipc.Channels)) {
-      for (const ch of ipc.Channels) {
+    /* 添加通道子节点：命中设备保留全部，否则仅保留命中通道 */
+    for (const ch of this.channelsOf(d)) {
+      if (matched || this.match(ch.Name, query)) {
         this.addChannelNode(ch, deviceId, d.Icon);
       }
     }
@@ -221,5 +248,27 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
       actionsHtml: btn,
       data: ch,
     });
+  }
+
+  /* ---- 筛选辅助 ---- */
+
+  private match(name: string | undefined, query: string): boolean {
+    return (name ?? '').toLowerCase().includes(query);
+  }
+
+  private channelsOf(d: IDevice): (VideoChannel | DB31Channel)[] {
+    const ipc = d as any;
+    const list: (VideoChannel | DB31Channel)[] = [];
+    if (ipc.Channel) list.push(ipc.Channel);
+    if (ipc.Channels && Array.isArray(ipc.Channels)) list.push(...ipc.Channels);
+    return list;
+  }
+
+  private deviceMatches(d: IDevice, query: string): boolean {
+    return this.match(d.Name, query);
+  }
+
+  private deviceHasHit(d: IDevice, query: string): boolean {
+    return this.channelsOf(d).some((ch) => this.match(ch.Name, query));
   }
 }

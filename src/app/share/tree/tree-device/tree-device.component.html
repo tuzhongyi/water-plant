@@ -1,3 +1,8 @@
 <div class="tree-device">
-  <hw-tree [nodes]="nodes" [selectedId]="selectedId" (action)="onAction($event)"></hw-tree>
+  <hw-tree
+    [nodes]="nodes"
+    [selectedId]="selectedId"
+    [autoExpand]="false"
+    (action)="onAction($event)"
+  ></hw-tree>
 </div>

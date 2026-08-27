@@ -1,5 +1,6 @@
 export interface Config {
   title: string;
+  skin: 'green' | 'blue';
   playback: PlaybackConfig;
   videoUrl: string;
   user: UserConfig;
