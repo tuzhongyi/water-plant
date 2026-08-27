@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CardStatistic1Component } from '../../../../common/components/card-statistic-1/card-statistic-1.component';
+import { InputIconComponent } from '../../../../common/components/input-icon/input-icon.component';
 import { VideoChannel } from '../../../../common/data-core/models/devices/video-channel.model';
 import { RegionTreeNode } from '../../../../common/data-core/models/regions/region-tree-node.model';
 import { TreeRegionEditArgs } from '../../../../share/tree/tree-region-edit/tree-region-edit.model';
 import { SystemVideoDeviceListMultipleComponent } from '../system-video-device-list-multiple/system-video-device-list-multiple.component';
+import { SystemVideoDeviceListArgs } from '../system-video-device-list/system-video-device-list.model';
 import { SystemVideoDeviceRegionEditComponent } from '../system-video-device-region-edit/system-video-device-region-edit.component';
 import { SystemVideoDeviceRegionConfigBusiness } from './system-video-device-region-config.business';
 
@@ -14,9 +16,8 @@ import { SystemVideoDeviceRegionConfigBusiness } from './system-video-device-reg
   imports: [
     CommonModule,
     CardStatistic1Component,
-    // SystemVideoDeviceRegionComponent,
+    InputIconComponent,
     SystemVideoDeviceListMultipleComponent,
-    // TreeRegionEditComponent,
     SystemVideoDeviceRegionEditComponent,
   ],
   templateUrl: './system-video-device-region-config.component.html',
@@ -175,12 +176,17 @@ export class SystemVideoDeviceRegionConfigComponent {
     },
   };
   device = {
+    args: {} as SystemVideoDeviceListArgs,
+    load: new EventEmitter<SystemVideoDeviceListArgs>(),
     datas: [] as VideoChannel[],
     inverse: [] as string[],
     selected: [] as VideoChannel[],
     on: {
       select: (datas: VideoChannel[]) => {
         this.disabled.change();
+      },
+      search: () => {
+        this.device.load.emit(this.device.args);
       },
     },
   };

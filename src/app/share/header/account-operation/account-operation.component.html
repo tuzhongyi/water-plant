@@ -1,22 +1,23 @@
 <div class="app-account-operation">
-  <div class="operation-item" title="地图" (click)="on.main()">
+  <div class="operation-item" title="地图" [class.selected]="selected.main" (click)="on.main()">
     <i class="mdi mdi-home"></i>
   </div>
-  <div class="operation-item" title="视频" (click)="on.video()">
+  <div class="operation-item" title="视频" [class.selected]="selected.video" (click)="on.video()">
     <i class="mdi mdi-video"></i>
   </div>
   <div class="operation-item" title="下载" (click)="on.download()">
     <i class="mdi mdi-cloud-download"></i>
   </div>
-  @if (display.setting) {
-    <div class="operation-item" title="设置" (click)="on.setting()">
-      <i class="mdi mdi-settings"></i>
-    </div>
-  } @else {
-    <div class="operation-item" title="主页" (click)="on.main()">
-      <i class="howell-icon-map4"></i>
-    </div>
-  }
+
+  <div
+    class="operation-item"
+    title="设置"
+    [class.selected]="selected.setting"
+    (click)="on.setting()"
+  >
+    <i class="mdi mdi-settings"></i>
+  </div>
+
   <div class="operation-item" title="账号" (click)="menu.target($event)">
     <div class="log-out">
       <i class="howell-icon-account"></i>

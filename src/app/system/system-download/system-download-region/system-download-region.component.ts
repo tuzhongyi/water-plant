@@ -2,9 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CardComponent } from '../../../common/components/card/card.component';
 import { InputIconComponent } from '../../../common/components/input-icon/input-icon.component';
-import { RegionResource } from '../../../common/data-core/models/regions/region-resource.model';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
-import { Region } from '../../../common/data-core/models/regions/region.model';
 import { TreeRegionComponent } from '../../../share/tree/tree-region/tree-region.component';
 import { TreeRegionArgs } from '../../../share/tree/tree-region/tree-region.model';
 
@@ -15,9 +13,9 @@ import { TreeRegionArgs } from '../../../share/tree/tree-region/tree-region.mode
   styleUrl: './system-download-region.component.less',
 })
 export class SystemDownloadRegionComponent {
-  @Input() selected?: RegionTreeNode | Region | RegionResource;
-  @Output() selectedChange = new EventEmitter<RegionTreeNode | Region | RegionResource>();
-  @Output() loaded = new EventEmitter<(RegionTreeNode | Region | RegionResource)[]>();
+  @Input() selected?: RegionTreeNode;
+  @Output() selectedChange = new EventEmitter<RegionTreeNode>();
+  @Output() loaded = new EventEmitter<RegionTreeNode[]>();
 
   tree = {
     args: {} as TreeRegionArgs,
@@ -28,10 +26,10 @@ export class SystemDownloadRegionComponent {
     search: () => {
       this.tree.load.emit(this.tree.args);
     },
-    loaded: (datas: (RegionTreeNode | Region | RegionResource)[]) => {
+    loaded: (datas: RegionTreeNode[]) => {
       this.loaded.emit(datas);
     },
-    selected: (data: RegionTreeNode | Region | RegionResource) => {
+    selected: (data: RegionTreeNode) => {
       this.selected = data;
       this.selectedChange.emit(data);
     },

@@ -19,4 +19,6 @@ export class RegionTreeNode implements IIdNameModel {
   /**	RegionTreeNode[]	子区域	O	*/
   @Type(() => RegionTreeNode)
   Children?: RegionTreeNode[];
+  /**	Boolean	展开状态（筛选时前端计算，非接口字段）	O	*/
+  expanded?: boolean;
 }

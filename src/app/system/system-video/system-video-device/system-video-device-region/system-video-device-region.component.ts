@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RegionResource } from '../../../../common/data-core/models/regions/region-resource.model';
 import { RegionTreeNode } from '../../../../common/data-core/models/regions/region-tree-node.model';
-import { Region } from '../../../../common/data-core/models/regions/region.model';
 import { TreeRegionComponent } from '../../../../share/tree/tree-region/tree-region.component';
 import { TreeRegionArgs } from '../../../../share/tree/tree-region/tree-region.model';
 
@@ -29,8 +28,7 @@ export class SystemVideoDeviceRegionComponent {
     config: () => {
       this.config.emit();
     },
-    dblclick: (data: Region | RegionResource | RegionTreeNode) => {
-      if (data instanceof Region) return;
+    dblclick: (data: RegionTreeNode) => {
       this.nodedblclick.emit(data);
     },
   };

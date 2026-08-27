@@ -3,14 +3,16 @@
     <div class="card-head system-video-device-head">
       <div class="card-head-title">摄像机</div>
       <div class="button-group">
-        <button (click)="manager.on.mode()">
-          @if (device.show) {
+        @if (device.show) {
+          <button (click)="manager.on.mode()" title="多层">
             <i class="mdi mdi-file-tree"></i>
-          }
-          @if (region.show) {
+          </button>
+        }
+        @if (region.show) {
+          <button (click)="manager.on.mode()" title="列表">
             <i class="mdi mdi-format-list-bulleted"></i>
-          }
-        </button>
+          </button>
+        }
       </div>
     </div>
     <div class="card-line"></div>

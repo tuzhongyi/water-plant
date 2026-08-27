@@ -315,7 +315,12 @@ export class ModelController {
 
   /* ---- 全局视图拟合 ---- */
 
-  fitAllModelsInView(targets: ModelViewerModel[], force = false): void {
+  fitAllModelsInView(
+    targets: ModelViewerModel[],
+    force = false,
+    animate = true,
+    onlyFileNames?: Set<string>,
+  ): void {
     if (targets.length === 0) {
       this.initViewFitted = false;
       return;
@@ -325,7 +330,8 @@ export class ModelController {
     if (this.internalModels.size === 0) return;
 
     const combined = new THREE.Box3();
-    for (const [, s] of this.internalModels) {
+    for (const [id, s] of this.internalModels) {
+      if (onlyFileNames && !onlyFileNames.has(id)) continue;
       for (const mesh of s.meshes) {
         if (!mesh.visible) continue;
         combined.expandByObject(mesh);
@@ -379,7 +385,15 @@ export class ModelController {
         new THREE.Vector3().subVectors(targetPos, targetLookAt).normalize(),
         dist * 2,
       );
-    this.animateCamera(targetPos, targetLookAt, startPos);
+    if (animate) {
+      this.animateCamera(targetPos, targetLookAt, startPos);
+    } else {
+      /* 直接落位，不做动画过渡（切换 renderMode 时先加载 village 的场景） */
+      if (this.cameraAnimId) cancelAnimationFrame(this.cameraAnimId);
+      cam.position.copy(targetPos);
+      this.sceneService.controls.target.copy(targetLookAt);
+      this.sceneService.controls.update();
+    }
     this.initViewFitted = true;
   }
 

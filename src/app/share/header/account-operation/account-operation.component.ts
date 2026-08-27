@@ -1,8 +1,9 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
-import { RoutePath } from '../../../app.path';
+import { RegionNode, RoutePath } from '../../../app.path';
 import { LocalStorage } from '../../../common/storage/local.storage';
 import { AccountOperationDisplay } from './account-operation.model';
 
@@ -12,7 +13,7 @@ import { AccountOperationDisplay } from './account-operation.model';
   templateUrl: './account-operation.component.html',
   styleUrls: ['./account-operation.component.less'],
 })
-export class AccountOperationComponent implements OnInit {
+export class AccountOperationComponent implements OnInit, OnDestroy {
   constructor(
     private local: LocalStorage,
     private router: Router,
@@ -20,6 +21,14 @@ export class AccountOperationComponent implements OnInit {
 
   username: string = '';
   display = new AccountOperationDisplay();
+  /** 当前浏览器 URL 对应页面（用于高亮选中态） */
+  selected = {
+    main: false,
+    video: false,
+    setting: false,
+  };
+
+  private sub = new Subscription();
 
   ngOnInit(): void {
     let info = this.local.auth.get();
@@ -27,11 +36,30 @@ export class AccountOperationComponent implements OnInit {
       this.username = info.username;
     }
     this.init();
+    this.sub.add(
+      this.router.events.subscribe((e) => {
+        if (e instanceof NavigationEnd) {
+          this.update(e.urlAfterRedirects);
+        }
+      }),
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
   private init() {
-    let url = location.toString();
-    this.display.setting = !url.toLowerCase().includes('setting');
+    this.update(location.toString());
+  }
+
+  /** 根据当前 URL 刷新各入口选中态 */
+  private update(url: string) {
+    url = url.toLowerCase();
+    this.display.setting = !url.includes('setting');
+    this.selected.main = url.includes(`${RegionNode.system}/${RegionNode.main}`);
+    this.selected.video = url.includes(`${RegionNode.system}/${RegionNode.video}`);
+    this.selected.setting = url.includes(`${RegionNode.setting}`);
   }
 
   @HostListener('window:click')
@@ -49,23 +77,23 @@ export class AccountOperationComponent implements OnInit {
 
   on = {
     logout: () => {
-      this.router.navigateByUrl(RoutePath.login);
+      this.router.navigateByUrl(RegionNode.login);
     },
     help: () => {
       window.open(`http://${location.hostname}:${location.port ?? 80}/help/help.html`);
     },
     setting: () => {
-      this.router.navigateByUrl(RoutePath.setting);
+      this.router.navigateByUrl(RegionNode.setting);
     },
     main: () => {
-      this.router.navigateByUrl(RoutePath.system);
+      this.router.navigateByUrl(`${RegionNode.system}/${RegionNode.main}`);
     },
 
     download: () => {
       window.open(RoutePath.download, '_blank');
     },
     video: () => {
-      this.router.navigateByUrl(`${RoutePath.system}/${RoutePath.video}`);
+      this.router.navigateByUrl(`${RegionNode.system}/${RegionNode.video}`);
     },
   };
 }

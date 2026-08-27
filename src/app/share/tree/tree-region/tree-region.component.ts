@@ -8,9 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { RegionResource } from '../../../common/data-core/models/regions/region-resource.model';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
-import { Region } from '../../../common/data-core/models/regions/region.model';
 import { FlatTreeNode, TreeComponent } from '../component/tree.component';
 import { TreeRegionBusiness } from './tree-region.business';
 import { TreeRegionArgs } from './tree-region.model';
@@ -25,13 +23,13 @@ import { TreeRegionArgs } from './tree-region.model';
 export class TreeRegionComponent implements AfterViewInit, OnDestroy {
   @Input() load?: EventEmitter<TreeRegionArgs>;
   @Input() collapse?: EventEmitter<void>;
-  @Input() selected?: RegionTreeNode | Region | RegionResource;
-  @Output() selectedChange = new EventEmitter<RegionTreeNode | Region | RegionResource>();
+  @Input() selected?: RegionTreeNode;
+  @Output() selectedChange = new EventEmitter<RegionTreeNode>();
 
   @Input() reload?: EventEmitter<void>;
-  @Output() loaded = new EventEmitter<(RegionTreeNode | Region | RegionResource)[]>();
+  @Output() loaded = new EventEmitter<RegionTreeNode[]>();
 
-  @Output() nodedblclick = new EventEmitter<RegionTreeNode | RegionResource>();
+  @Output() nodedblclick = new EventEmitter<RegionTreeNode>();
 
   /** 节点后的操作按钮是否可见，默认不可见 */
   @Input() actionable = false;
@@ -95,9 +93,12 @@ export class TreeRegionComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  /** 默认展开：筛选时全部展开，否则仅根节点 */
+  /** 默认展开：筛选时按 filter 标记的展开状态，否则仅根节点 */
   private expandDefault(node: FlatTreeNode): boolean {
-    return !!this.args.name || node.level < 1;
+    if (this.args.name) {
+      return (node.data as RegionTreeNode)?.expanded ?? true;
+    }
+    return node.level < 1;
   }
 
   /** 由扁平结点还原根区域树（loaded 对外输出） */
@@ -127,10 +128,7 @@ export class TreeRegionComponent implements AfterViewInit, OnDestroy {
   }
 
   onNodeDblclick(node: FlatTreeNode): void {
-    if (
-      node.data instanceof Region ||
-      (node.data instanceof RegionTreeNode && node.data.RegionNodeType == 1)
-    ) {
+    if (node.data instanceof RegionTreeNode && node.data.RegionNodeType == 1) {
       node.expanded = !node.expanded;
     } else {
       this.nodedblclick.emit(node.data);

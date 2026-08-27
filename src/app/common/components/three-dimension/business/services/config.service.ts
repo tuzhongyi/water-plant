@@ -12,7 +12,7 @@ export class ConfigService {
   private state = inject(StateService);
   private sceneService = inject(SceneService);
 
-  async loadConfig(mode: RenderMode): Promise<ThreeDimensionConfig | null> {
+  async loadConfig(mode: RenderMode, restoreCamera = true): Promise<ThreeDimensionConfig | null> {
     try {
       const res = await firstValueFrom(this.configApi.config(mode));
       const config: ThreeDimensionConfig = {
@@ -29,8 +29,12 @@ export class ConfigService {
       this.state.settings$.next(mergedSettings);
       this.state.viewPreset$.next(mergedSettings.viewPreset || 'medium');
 
-      /* 从保存的配置恢复相机视图、maxDistance、网格大小 */
-      this.restoreCameraFromSettings(res.settings);
+      /* 从保存的配置恢复相机视图、maxDistance、网格大小。
+       * 切换 renderMode 时不应恢复保存的相机（那是针对旧模型的陈旧视角），
+       * 由 reloadAllModelsForMode 在 village 加载后重新居中。 */
+      if (restoreCamera) {
+        this.restoreCameraFromSettings(res.settings);
+      }
 
       return config;
     } catch (err) {

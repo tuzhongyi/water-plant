@@ -22,10 +22,29 @@
     gap: 20px;
   }
 
-  &-tree {
+  &-body {
     height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
+  }
+
+  &-device {
+
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: @gap;
+
+    &-filter {
+      width: 100%;
+      height: 36px;
+    }
+
+    &-list {
+      width: 100%;
+      height: calc(100% - @gap - 36px);
+    }
   }
 }

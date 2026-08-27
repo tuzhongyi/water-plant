@@ -794,8 +794,13 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   }
 
   /** 筛选与当前 models() 匹配的 ModelEntry，映射为 ModelTransformConfig 并 emit */
-  private fitAllModelsInView(targets: ModelViewerModel[], force = false): void {
-    this.modelCtrl.fitAllModelsInView(targets, force);
+  private fitAllModelsInView(
+    targets: ModelViewerModel[],
+    force = false,
+    animate = true,
+    onlyFileNames?: Set<string>,
+  ): void {
+    this.modelCtrl.fitAllModelsInView(targets, force, animate, onlyFileNames);
   }
 
   private getAllMeshes(): { mesh: THREE.Mesh; modelId: string }[] {
@@ -1411,15 +1416,37 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         this.modelCtrl.setConfigCache(modelFiles);
       } catch {}
 
-      /* 2️⃣ 重新加载 config.json，完成后注入用户选择的 renderMode */
-      const config = await this.configService.loadConfig(mode);
+      /* 2️⃣ 重新加载 config.json，完成后注入用户选择的 renderMode。
+       * 注意：切换模式时不恢复保存的相机（那是针对旧模型的陈旧视角）。 */
+      const config = await this.configService.loadConfig(mode, false);
       if (config) {
         this.state.updateSettings({ renderMode: mode });
       }
 
       /* 3️⃣ 对每个模型用新模式路径重建 URL 并重新加载 */
       const currentModels = untracked(() => this.models());
-      for (const m of currentModels) {
+
+      /* 优先加载 village 大场景：先加载并居中视角，再加载其余模型 */
+      const village = currentModels.find(
+        (m) => this.modelCtrl.getModelType(m.fileName) === 'village',
+      );
+      const others = currentModels.filter((m) => m !== village);
+
+      if (village) {
+        const villageUrl = PathTool.three.get.file(mode, village.fileName);
+        await this.reloadSingleModel({ ...village, url: villageUrl });
+
+        /* village 加载后先隐藏，居中后再显示，避免加载瞬间出现在偏移位置 */
+        const villageEntry = this.state.loadedModels.get(village.fileName);
+        if (villageEntry) villageEntry.wrapper.visible = false;
+
+        /* 仅以 village 包围盒为中心（其余建筑此时可能还是旧模式的模型、位置尚未重建） */
+        this.fitAllModelsInView(currentModels, true, false, new Set([village.fileName]));
+
+        if (villageEntry) villageEntry.wrapper.visible = true;
+      }
+
+      for (const m of others) {
         const newUrl = PathTool.three.get.file(mode, m.fileName);
         await this.reloadSingleModel({ ...m, url: newUrl });
       }

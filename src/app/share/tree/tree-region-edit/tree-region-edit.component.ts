@@ -8,7 +8,6 @@ import {
   signal,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { RegionResource } from '../../../common/data-core/models/regions/region-resource.model';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
 import { FlatTreeNode } from '../component/tree.model';
 import { TreeEditComponent } from '../tree-edit/tree-edit.component';
@@ -117,10 +116,8 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
   }
 
   /** 判断结点是否为资源（资源为叶子，不可再添加子节点） */
-  private isResource(data: unknown): boolean {
-    if (data instanceof RegionResource) return true;
-    if (data instanceof RegionTreeNode) return data.RegionNodeType === 2;
-    return false;
+  private isResource(data: RegionTreeNode): boolean {
+    return data.RegionNodeType === 2;
   }
 
   /** 由扁平结点还原根区域树（loaded 对外输出） */
@@ -151,9 +148,9 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
   }
 
   /** 点击结点：更新选中并对外输出 */
-  onNodeClick(node: TreeEditNode): void {
-    this.selected = node.data as RegionTreeNode;
-    this.selectedChange.emit(node.data as RegionTreeNode);
+  onNodeClick(node: TreeEditNode<RegionTreeNode>): void {
+    this.selected = node.data;
+    this.selectedChange.emit(node.data);
   }
 
   /** 收缩所有节点 */
