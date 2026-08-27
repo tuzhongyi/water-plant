@@ -20,6 +20,7 @@ import { TransformControls } from 'three/examples/jsm/Addons.js';
 import { PathTool } from '../../../common/tools/path-tool/path.tool';
 import { MarkerController } from './business/controllers/marker.controller';
 import { InternalModelState, ModelController } from './business/controllers/model.controller';
+import { ThreeDTreeController } from './business/controllers/tree/three-d-tree.controller';
 import {
   FitView,
   LabelMode,
@@ -53,7 +54,7 @@ import { ViewService } from './business/services/view.service';
   templateUrl: './three-dimension.html',
   styleUrl: './three-dimension.less',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ModelController, MarkerController],
+  providers: [ModelController, MarkerController, ThreeDTreeController],
 })
 export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
@@ -149,6 +150,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private edgesService = inject(EdgesService);
   private modelCtrl = inject(ModelController);
   private markerCtrl = inject(MarkerController);
+  private treeCtrl = inject(ThreeDTreeController);
   private viewService = inject(ViewService);
   /** 报警勾边扩散动画（注入即激活，见 AlarmEffectService 构造器注册 beforeRender） */
   private alarmEffect = inject(AlarmEffectService);
@@ -256,6 +258,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
       this.state.updateSettings({ renderMode: rm });
 
+      /* 树仅在 solid 模式显示，其余模式隐藏 */
+      this.treeCtrl.sync(rm);
+
       /* 场景未就绪（首次构造期间）仅更新设置，ngAfterViewInit 会用新模式完成初始加载 */
       if (!this.modelCtrl.sceneReady) return;
 
@@ -319,6 +324,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           this.modelCtrl.sceneReady = true;
           const rm = this.renderMode();
           if (rm) this.state.updateSettings({ renderMode: rm });
+          this.treeCtrl.sync(rm);
           this.syncModels(this.models());
           this.applyLoadedConfig();
           this.inited.emit();
@@ -348,6 +354,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     /* 清理 marker */
     this.markerCtrl.dispose();
+
+    /* 清理树 */
+    this.treeCtrl.dispose();
 
     /* ---- 清理 state 缓存（先清理，避免 dispose 中触发回调） ---- */
     this.state.selectedModelId$.next(null);
