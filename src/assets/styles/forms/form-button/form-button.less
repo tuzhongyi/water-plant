@@ -3,6 +3,7 @@
 @import "./form-button-selection.less";
 @import "./form-button-border.less";
 @import "./form-button-map.less";
+@import url(../../colors/color-@.less);
 
 button {
   background-color: transparent;
@@ -11,7 +12,7 @@ button {
   cursor: pointer;
   margin: 0;
   padding: 0;
-  color: #ddf4ff;
+  color: var(--normal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,8 +26,8 @@ button {
   text-shadow: 0 0 0 transparent;
 
   &:hover {
-    color: #fff;
-    text-shadow: #fff 0px 0 10px;
+    color: @white;
+    text-shadow: @white 0px 0 10px;
   }
 
   &:disabled {
@@ -44,29 +45,29 @@ button {
   text-shadow: 0 0 0 transparent;
 
   &:hover {
-    color: white;
-    text-shadow: #fff 0px 0 10px;
+    color: @white;
+    text-shadow: @white 0px 0 10px;
   }
 
   &.disabled {
-    color: #999;
+    color: @gray-9;
     pointer-events: none;
     cursor: not-allowed;
   }
 
   &.selected {
-    color: #69adff;
-    text-shadow: #69adff 0px 0 10px;
+    color: @blue-69ad;
+    text-shadow: @blue-69ad 0px 0 10px;
 
     &:hover {
-      color: #87bdff;
-      text-shadow: #87bdff 0px 0 10px;
+      color: @blue-87;
+      text-shadow: @blue-87 0px 0 10px;
     }
   }
 }
 
 .button-normal {
-  background: linear-gradient(to bottom, rgba(42, 194, 225, 0.8), rgba(45, 118, 206, 0.8));
+  background: linear-gradient(to bottom, rgba(@blue-2ac, 0.8), rgba(@blue-2d, 0.8));
   height: 100%;
   padding: 0 10px;
   height: 36px;
@@ -78,7 +79,7 @@ button {
   transition: background-color 0.3s;
 
   &:hover {
-    background: linear-gradient(to bottom, rgba(42, 194, 225, 1), rgba(45, 118, 206, 1));
+    background: linear-gradient(to bottom, @blue-2ac, @blue-2d);
   }
 
 }

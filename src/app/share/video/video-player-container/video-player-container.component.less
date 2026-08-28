@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .video-player-container {
   height: 100%;
   width: 100%;
@@ -10,14 +12,14 @@
     right: 34px;
     top: -37px;
 
-    color: rgba(23, 241, 198, 0.7);
+    color: rgba(var(--green-r), var(--green-g), var(--green-b), 0.7);
     font-size: 21px;
 
     &>* {
       cursor: pointer;
 
       &:hover {
-        color: #ffa899;
+        color: @salmon;
       }
     }
   }
@@ -31,7 +33,7 @@
 
     &-item {
       display: flex;
-      color: white;
+      color: @white;
       justify-content: start;
       align-items: center;
       margin-right: 10px;
@@ -55,7 +57,7 @@
 
   &-body {
     height: 100%;
-    background-color: black;
+    background-color: @black;
 
     &.playback {
       height: calc(100% - @video-player-container-head-height - @video-player-container-head-margin);

@@ -1,7 +1,9 @@
+@import url(../../assets/styles/colors/color-@.less);
+
 .login {
   width: 100%;
   height: 100%;
-  background-image: url(../../assets/images/bg.jpg);
+  background-image: var(--img-bg);
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -19,7 +21,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-image: url(../../assets/images/login/login-panel.png);
+    background-image: var(--img-login-panel);
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -27,7 +29,7 @@
   }
 
   &-head {
-    color: #fff;
+    color: @white;
     text-align: center;
     font-weight: normal;
     margin-top: 26px;
@@ -39,7 +41,7 @@
     width: 69%;
     height: 2px;
     margin: 0 auto;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #6997ff, rgba(0, 0, 0, 0));
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), @blue-69, rgba(0, 0, 0, 0));
   }
 
   &-body {
@@ -65,7 +67,7 @@
         &.username,
         &.password {
           height: 40px;
-          border: 2px solid #5e6ebf;
+          border: 2px solid @blue-5e;
         }
 
 
@@ -77,11 +79,11 @@
           width: 12%;
           height: 100%;
           font-size: 20px;
-          color: #cfd7ff;
+          color: @blue-cf;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-right: 2px solid #5e6ebf;
+          border-right: 2px solid @blue-5e;
         }
 
         &-value {
@@ -93,7 +95,7 @@
             width: 100%;
             background: transparent;
             border: none;
-            color: #d8f4ff;
+            color: @normal;
             outline: none;
             font-size: 18px;
             font-family: "Source Han Sans CN Normal";
@@ -116,7 +118,7 @@
       margin: 20px 0;
 
       &>label>input[type=checkbox] {
-        border: 2px solid #5e6ebf;
+        border: 2px solid @blue-5e;
       }
     }
   }
@@ -126,7 +128,7 @@
     width: 100%;
     height: 100%;
     background: transparent;
-    background-image: url(../../assets/images/login/login-btn.png);
+    background-image: var(--img-login-btn);
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -135,11 +137,11 @@
     transition: background-image .15s ease-in-out;
 
     &:hover {
-      background-image: url(../../assets/images/login/login-btn-hover.png);
+      background-image: var(--img-login-btn-hover);
     }
 
     &:active {
-      background-image: url(../../assets/images/login/login-btn-active.png);
+      background-image: var(--img-login-btn-active);
     }
   }
 

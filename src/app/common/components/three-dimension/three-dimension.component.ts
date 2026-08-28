@@ -392,7 +392,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private ensureStandbySprite(): void {
     /* 从 standby MarkerArgs 的 icon 中读取 normal */
     const standbyData = this.standby();
-    const iconUrl = standbyData?.icon?.normal ?? 'assets/images/camera.png';
+    const iconUrl = standbyData!.icon.normal;
 
     /* sprite 已存在：仅图标变化时更新纹理 */
     if (this.standbySprite) {

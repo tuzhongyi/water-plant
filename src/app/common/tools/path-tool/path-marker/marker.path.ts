@@ -5,8 +5,8 @@ import { MarkerDoorPath } from './marker-door.path';
 import { MarkerSensorPath } from './marker-sensor.path';
 
 export class MarkerPathTool {
-  constructor(path: string = '') {
-    this.basic = `${path}assets/images/map/marker`;
+  constructor(skin: string) {
+    this.basic = `assets/images/${skin}/map/marker`;
   }
 
   private basic: string;

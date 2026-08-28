@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .select-control {
   min-width: 100%;
   width: 100%;
@@ -7,12 +9,12 @@
   transition: width 0.5s;
 
   &.border {
-    border: 1px solid #07a990;
+    border: 1px solid var(--teal);
     box-sizing: border-box;
 
 
     &.disabled {
-      border-color: #2A5497;
+      border-color: @blue-2a;
     }
   }
 
@@ -32,7 +34,7 @@
       &>option {
         padding: 5px 10px;
         text-indent: 20px;
-        background-color: #064445;
+        background-color: var(--teal-3);
       }
     }
   }
@@ -40,7 +42,7 @@
   .clear {
     display: flex;
     align-items: center;
-    color: #ddf4ff;
+    color: var(--normal);
     position: absolute;
     cursor: pointer;
     width: 16px;
@@ -50,14 +52,14 @@
     transform: translateY(-50%);
 
     &:hover {
-      color: white
+      color: @white
     }
   }
 
   .default {
     display: flex;
     align-items: center;
-    color: #ddf4ff;
+    color: var(--normal);
     height: 100%;
     top: 0;
     pointer-events: none;

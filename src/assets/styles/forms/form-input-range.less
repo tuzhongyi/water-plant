@@ -1,3 +1,5 @@
+@import url(../colors/color-@.less);
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -14,7 +16,7 @@ input[type="range"] {
   &::-webkit-slider-runnable-track {
     /*可以修改轨道的若干样式*/
     height: 2px;
-    background: #eee;
+    background: @gray-ee;
   }
 
   &::-webkit-slider-thumb {
@@ -24,9 +26,9 @@ input[type="range"] {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background-color: #07a990;
+    background-color: var(--teal);
     border: 1px solid transparent;
     margin-top: -7px;
-    border-image: linear-gradient(#07a990, #07a990) 0 fill / 6 16 6 0 / 0px 0px 0 2000px;
+    border-image: linear-gradient(var(--teal), var(--teal)) 0 fill / 6 16 6 0 / 0px 0px 0 2000px;
   }
 }

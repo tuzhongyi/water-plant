@@ -1,6 +1,6 @@
 export class PathImageSVGTool {
   constructor(path: string = '') {
-    this.basic = `${path}/assets/image/svg`;
+    this.basic = `${path}/svg`;
   }
 
   private basic: string;

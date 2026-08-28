@@ -1,11 +1,13 @@
+@import url(./colors/color-@.less);
+
 .label-select {
   width: 100%;
   height: auto;
   position: relative;
-  background-color: rgba(6, 153, 156, 0.3);
+  background-color: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
 
   &:focus {
-    background-color: #003a3b;
+    background-color: var(--teal-option);
 
   }
 
@@ -13,7 +15,7 @@
     display: flex;
     height: 34px;
     position: relative;
-    border: 1px solid #17f1c6;
+    border: 1px solid var(--green);
     cursor: pointer;
 
     .placeholder {
@@ -54,8 +56,8 @@
     box-sizing: border-box;
     height: auto;
     max-height: 326px;
-    background-color: #003a3b;
-    border: 1px solid #17f1c6;
+    background-color: var(--teal-option);
+    border: 1px solid var(--green);
     border-top: none;
     overflow: auto;
     // padding: 5px;
@@ -74,7 +76,7 @@
   cursor: pointer;
   // background: transparent;
   font-size: 14px;
-  color: #eaedff;
+  color: @blue-ea;
   margin: 2.5px;
   padding: 2px 5px;
   flex-shrink: 0;
@@ -82,7 +84,7 @@
   align-items: center;
   justify-content: center;
 
-  background-color: rgba(6, 153, 156, 0.3);
+  background-color: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
 
   &:first-child {
     margin-left: 5px;
@@ -97,30 +99,30 @@
   }
 
   .close-btn {
-    color: #fff;
+    color: @white;
 
     &:hover {
-      color: #e15e64;
+      color: @red-tip;
     }
   }
 }
 
 .green-label-select {
   .label-select-item {
-    background: #1e7925;
+    background: @green-1e;
   }
 }
 
 .blue-label-select {
   .label-select-item {
-    background: #3a94ff;
+    background: @blue-3a;
   }
 }
 
 .select-item--green {
-  background: #1e7925;
+  background: @green-1e;
 }
 
 .select-item--blue {
-  background: #3a94ff;
+  background: @blue-3a;
 }

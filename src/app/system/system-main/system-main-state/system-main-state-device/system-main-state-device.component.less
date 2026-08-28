@@ -39,14 +39,14 @@
       border-bottom-color: var(--color);
       border-image: linear-gradient(to top, var(--color) 8px, transparent 8px) 1;
 
-      --icon: url(../../../../../assets/images/statistic/device-state/statistic-device-state-online.png);
+      --icon: var(--img-device-online);
 
       &.green {
-        --icon: url(../../../../../assets/images/statistic/device-state/statistic-device-state-online.png);
+        --icon: var(--img-device-online);
       }
 
       &.redlight {
-        --icon: url(../../../../../assets/images/statistic/device-state/statistic-device-state-offline.png);
+        --icon: var(--img-device-offline);
       }
 
       &-icon {
@@ -62,7 +62,7 @@
       }
 
       &-value {
-        color: white;
+        color: @white;
       }
 
 
@@ -74,7 +74,7 @@
   &-chart {
     width: calc((100% - 5%) * 0.5);
     height: 100%;
-    background-image: url(../../../../../assets/images/statistic/device-state/statistic-device-state-background.png);
+    background-image: var(--img-device-bg);
     background-repeat: no-repeat;
     background-position: center center;
     flex-shrink: 0;

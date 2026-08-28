@@ -1,3 +1,5 @@
+@import url(../../colors/color-@.less);
+
 @button-path-1: polygon(10px 0,
     100% 0,
     100% calc(100% - 10px),
@@ -21,7 +23,7 @@
   width: max-content;
   padding: 0 15px;
   position: relative;
-  background: linear-gradient(to bottom, rgba(42, 194, 225, 1), rgba(45, 118, 206, 1));
+  background: linear-gradient(to bottom, @blue-2ac, @blue-2d);
   /* 进行裁剪 */
   clip-path: @button-path-1;
   cursor: pointer;
@@ -40,7 +42,7 @@
     /* 置于底层 */
     z-index: -1;
     /* 设置背景色 */
-    background: #06999c4d;
+    background: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
 
     /* 设置裁剪 */
     clip-path: @button-path-1;
@@ -56,7 +58,7 @@
   width: max-content;
   padding: 0 15px;
   position: relative;
-  background: linear-gradient(to bottom, rgba(42, 194, 225, 1), rgba(45, 118, 206, 1));
+  background: linear-gradient(to bottom, @blue-2ac, @blue-2d);
   /* 进行裁剪 */
   clip-path: @button-path-1;
   cursor: pointer;
@@ -74,14 +76,14 @@
     /* 置于底层 */
     z-index: -1;
     /* 设置背景色 */
-    background: #06999c4d;
+    background: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
 
     /* 设置裁剪 */
     clip-path: @button-path-1;
   }
 
   &:hover {
-    background: linear-gradient(to top, rgba(42, 194, 225, 0.8), rgba(42, 194, 225, 1));
+    background: linear-gradient(to top, rgba(@blue-2ac, 0.8), @blue-2ac);
   }
 }
 
@@ -95,7 +97,7 @@
     width: calc(100% - 2px);
     height: calc(100% - 2px);
     clip-path: @button-path-2;
-    background: linear-gradient(to bottom, #1d5274, #172548);
+    background: linear-gradient(to bottom, @blue-1d, @blue-17);
   }
 }
 
@@ -108,8 +110,8 @@
   width: max-content;
   padding: 0 15px;
   position: relative;
-  background: #07a990;
-  color: #4a8eff;
+  background: var(--teal);
+  color: @blue-4a;
   /* 进行裁剪 */
   clip-path: @button-path-1;
   cursor: pointer;
@@ -127,7 +129,7 @@
     /* 置于底层 */
     z-index: -1;
     /* 设置背景色 */
-    background: #06999c4d;
+    background: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
 
     /* 设置裁剪 */
     clip-path: @button-path-1;
@@ -159,7 +161,7 @@
   padding: 0 15px;
   position: relative;
   /* 外框颜色 */
-  background: #17f1c6;
+  background: var(--green);
   /* 进行裁剪 */
   clip-path: @button-path-1;
   cursor: pointer;
@@ -177,7 +179,7 @@
     /* 置于底层 */
     z-index: -1;
     /* 设置背景色 */
-    background: #0D515A;
+    background: var(--teal-4);
 
     /* 设置裁剪 */
     clip-path: @button-path-1;
@@ -185,21 +187,21 @@
 
   &:hover {
     /* 外框颜色，模拟 .button-border.green:hover 的 border-color */
-    background: #f46855;
+    background: @alarm-soft;
 
     &::after {
       /* 背景色，模拟 .button-border.green:hover 的 background-color */
-      background: #7d4237;
+      background: @red-dark;
     }
   }
 
   &.selected {
     /* 外框颜色，模拟 .button-border.green:hover 的 border-color */
-    background: #f46855;
+    background: @alarm-soft;
 
     &::after {
       /* 背景色，模拟 .button-border.green:hover 的 background-color */
-      background: #7d4237;
+      background: @red-dark;
     }
   }
 }

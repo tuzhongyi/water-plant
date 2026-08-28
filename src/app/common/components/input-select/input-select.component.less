@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .search-container {
   position: relative;
   width: 100%;
@@ -9,8 +11,8 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: #080e2b;
-  border: 1px solid #07a990;
+  background: @blue-08;
+  border: 1px solid var(--teal);
   max-height: 300px;
   overflow-y: auto;
   z-index: 1000;
@@ -24,7 +26,7 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: #2F61D2;
-    color: #fff;
+    background-color: @blue-61;
+    color: @white;
   }
 }

@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 :host {
   width: 100%;
   height: auto;
@@ -8,17 +10,17 @@
   width: 100%;
   height: auto;
   position: relative;
-  // background-image: url(../../../../assets/image/select-arrow.png);
+
   background-position: center right 10px;
   background-repeat: no-repeat;
 
-  background-color: #050d14;
+  background-color: @blue-05;
 
   .label-select-header {
     display: flex;
     height: 36px;
     position: relative;
-    border: 1px solid #07a990;
+    border: 1px solid var(--teal);
     cursor: pointer;
     padding-right: 36px;
     box-sizing: border-box;
@@ -31,7 +33,7 @@
       display: flex;
       align-items: center;
       padding-left: 10px;
-      color: #ddf4ff;
+      color: var(--normal);
       box-sizing: border-box;
     }
 
@@ -61,10 +63,10 @@
     border-top: none;
     overflow: auto;
 
-    border: 1px solid #07a990;
+    border: 1px solid var(--teal);
     padding: 10px;
     box-sizing: border-box;
-    background-color: #050d14;
+    background-color: @blue-05;
 
     &.show {
       display: block;
@@ -90,7 +92,7 @@
   &>.label-select-item {
     width: 100%;
     background-color: transparent;
-    color: #ddf4ff;
+    color: var(--normal);
     font-size: 16px;
     overflow: hidden;
     padding: 0 5px;
@@ -103,14 +105,14 @@
 .clear {
   display: flex;
   align-items: center;
-  color: #ddf4ff;
+  color: var(--normal);
   cursor: pointer;
   width: 16px;
   height: 100%;
 
 
   &:hover {
-    color: white
+    color: @white
   }
 }
 
@@ -119,7 +121,7 @@
   cursor: pointer;
   // background: transparent;
   font-size: 14px;
-  color: #eaedff;
+  color: @blue-ea;
   margin: 2.5px;
   padding: 2px 5px;
   box-sizing: border-box;
@@ -129,14 +131,14 @@
   justify-content: center;
   gap: 10px;
 
-  background-color: rgb(25, 64, 118);
+  background-color: @blue-19;
 
 
   .close-btn {
-    color: #fff;
+    color: @white;
 
     &:hover {
-      color: #e15e64;
+      color: @red-tip;
     }
   }
 }

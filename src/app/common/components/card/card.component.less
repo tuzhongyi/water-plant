@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .card {
   width: 100%;
   height: 100%;
@@ -10,7 +12,7 @@
   // 必须和 slice 对应
   border-width: 48px 198px 48px 198px;
 
-  border-image-source: url('../../../../assets/images/card/card.png');
+  border-image-source: var(--img-card);
 
   // 上 右 下 左
   border-image-slice: 48 198 48 198 fill;
@@ -28,7 +30,7 @@
   }
 
   &-title {
-    color: #fff;
+    color: @white;
     font-size: 24px;
     height: 24px;
   }
@@ -52,7 +54,7 @@
     flex-shrink: 0;
 
     &-title {
-      color: white;
+      color: @white;
       font-size: 18px;
     }
   }
@@ -60,7 +62,7 @@
   &-line {
     width: 100%;
     height: 1px;
-    background: linear-gradient(to right, #ffffff 0 24px, transparent 24px 27px, rgba(255, 255, 255, 0.2) 27px calc(100% - 13px), transparent calc(100% - 13px) calc(100% - 10px), #17f1c6 calc(100% - 10px) 100%);
+    background: linear-gradient(to right, @white 0 24px, transparent 24px 27px, rgba(@white, 0.2) 27px calc(100% - 13px), transparent calc(100% - 13px) calc(100% - 10px), var(--green) calc(100% - 10px) 100%);
     margin: 10px 0;
   }
 

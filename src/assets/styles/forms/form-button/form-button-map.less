@@ -5,7 +5,7 @@
   height: 42px;
   padding-bottom: 6px;
   color: @green;
-  background-image: url(../../../images/map/button-map.png);
+  background-image: var(--img-map-button);
   background-repeat: no-repeat;
   background-position: center center;
   display: flex;
@@ -14,11 +14,11 @@
   backdrop-filter: blur(8px);
 
   &:hover {
-    background-image: url(../../../images/map/button-map-hover.png);
+    background-image: var(--img-map-button-hover);
   }
 
   &.selected {
     color: @redlight;
-    background-image: url(../../../images/map/button-map-selected.png);
+    background-image: var(--img-map-button-selected);
   }
 }

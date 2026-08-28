@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .alarm-mask {
   position: fixed;
   width: 100%;
@@ -29,7 +31,7 @@
 
 
   .alarm-mask-top {
-    background-image: url(/assets/images/alarm/top.png);
+    background-image: var(--img-alarm-top);
     position: absolute;
     top: 20px;
     left: 0;
@@ -58,7 +60,7 @@
     left: 0;
     width: 100%;
     height: 37px;
-    background-image: url(/assets/images/alarm/bottom.png);
+    background-image: var(--img-alarm-bottom);
     background-position: center center;
     background-repeat: no-repeat;
 
@@ -125,7 +127,7 @@
 @right-width: 48%;
 
 @margin: 22px;
-@color: #ff2e2e;
+@color: @red-bright;
 
 
 @keyframes flicker {
@@ -156,7 +158,7 @@
     z-index: 9;
     display: flex;
     align-items: center;
-    color: white;
+    color: @white;
     font-size: 30px;
 
     &:hover {
@@ -196,7 +198,7 @@
       animation-duration: 3s;
       animation-name: flicker;
       animation-iteration-count: infinite;
-      background-image: url(/assets/images/alarm/border/t-l.png);
+      background-image: var(--img-alarm-tl);
       background-position: center;
       background-size: 100% 100%;
 
@@ -211,7 +213,7 @@
       animation-duration: 3s;
       animation-name: flicker;
       animation-iteration-count: infinite;
-      background-image: url(/assets/images/alarm/border/t-r.png);
+      background-image: var(--img-alarm-tr);
       background-position: center;
       background-size: 100% 100%;
 
@@ -258,7 +260,7 @@
       animation-duration: 3s;
       animation-name: flicker;
       animation-iteration-count: infinite;
-      background-image: url(/assets/images/alarm/border/b-l.png);
+      background-image: var(--img-alarm-bl);
       background-position: center;
       background-size: 100% 100%;
 
@@ -274,7 +276,7 @@
       animation-duration: 3s;
       animation-name: flicker;
       animation-iteration-count: infinite;
-      background-image: url(/assets/images/alarm/border/b-r.png);
+      background-image: var(--img-alarm-br);
       background-position: center;
       background-size: 100% 100%;
     }
@@ -312,7 +314,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: white;
+        color: @white;
 
       }
 

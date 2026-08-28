@@ -1,20 +1,22 @@
+@import "./color-@.less";
+
 @tr-odd: transparent;
 @tr-even: transparent;
-@tr-hover: rgba(239, 111, 89, 0.4);
-@tr-hover-text: #ffd0c8;
-@tr-selected: rgba(239, 111, 89, 0.6);
-@tr-selected-text: white;
+@tr-hover: rgba(@alarm, 0.4);
+@tr-hover-text: @alarm-light;
+@tr-selected: rgba(@alarm, 0.6);
+@tr-selected-text: @white;
 
-@table-button-color: #17f1c6b3;
-@table-button-color-hover: #ffa899;
+@table-button-color: rgba(var(--green-r), var(--green-g), var(--green-b), 0.7);
+@table-button-color-hover: @salmon;
 
 
-@thead-background: rgba(23, 241, 198, 0.3);
-@thead-text: #fff;
-@border: #07a990;
+@thead-background: rgba(var(--green-r), var(--green-g), var(--green-b), 0.3);
+@thead-text: @white;
+@border: var(--teal);
 
-@list-tr: #0e3d34;
-@list-thead-text: #17f1c6;
-@list-tbody-text: white;
-@list-operation-text: #17f1c6;
-@list-operation-text-hover: #ffa899;
+@list-tr: var(--teal-row);
+@list-thead-text: var(--green);
+@list-tbody-text: @white;
+@list-operation-text: var(--green);
+@list-operation-text-hover: @salmon;

@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .system-download-table {
   height: 100%;
   width: 100%;
@@ -22,23 +24,23 @@
   font-size: 13px;
 
   &.downloading {
-    color: #2f9bff;
+    color: @blue-2f;
   }
 
   &.paused {
-    color: #f0c674;
+    color: @yellow-soft;
   }
 
   &.saving {
-    color: #17f1c6;
+    color: var(--green);
   }
 
   &.completed {
-    color: #7cd992;
+    color: @green-7c;
   }
 
   &.failed {
-    color: #ef6f59;
+    color: @alarm;
   }
 }
 
@@ -46,6 +48,6 @@
 
 
   .button {
-    color: #17f1c6b3
+    color: rgba(var(--green-r), var(--green-g), var(--green-b), 0.7)
   }
 }

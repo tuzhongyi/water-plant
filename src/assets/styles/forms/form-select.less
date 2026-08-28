@@ -1,3 +1,5 @@
+@import url(../colors/color-@.less);
+
 select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -6,9 +8,9 @@ select {
   box-sizing: border-box;
   margin: 0;
   outline: none;
-  border: 1px solid #07a990;
-  background-color: #06999c4d;
-  color: #ddf4ff;
+  border: 1px solid var(--teal);
+  background-color: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
+  color: var(--normal);
   position: relative;
   height: 36px;
   width: min-content;
@@ -16,12 +18,12 @@ select {
   width: 100%;
 
 
-  background-image: url(../../images/select.svg);
+  background-image: var(--img-select);
   background-repeat: no-repeat;
   background-position: right 10px center;
 
   option {
-    background-color: #06999c;
+    background-color: var(--teal-2);
   }
 
 

@@ -1,3 +1,5 @@
+@import url(../../../../../assets/styles/colors/color-@.less);
+
 .system-main-three {
   @button-height: 42px;
   @padding-bottom: 10px;
@@ -80,11 +82,11 @@
 
     &>button {
       backdrop-filter: blur(8px);
-      color: #17f1c6;
+      color: var(--green);
 
       &:hover,
       &.selected {
-        color: white;
+        color: @white;
       }
     }
 
@@ -104,11 +106,11 @@
 
     &>button {
       backdrop-filter: blur(8px);
-      color: #17f1c6;
+      color: var(--green);
 
       &:hover,
       &.selected {
-        color: white;
+        color: @white;
       }
     }
 

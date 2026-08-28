@@ -20,6 +20,7 @@ export class SettingMapThreeConverter {
   constructor(
     private business: SettingMapBusiness,
     private config: ConfigRequestService,
+    private path: PathTool,
   ) {}
 
   default = 'VIL.glb';
@@ -60,6 +61,7 @@ export class SettingMapThreeConverter {
         let building: GeoMapElement | undefined = undefined;
         let modelId = this.default;
         let config = await this.config.map;
+        let marker = await this.path.marker;
         if (data.ParentId) {
           building = await this.get.building(data.ParentId);
           if (building && building?.ElementId) {
@@ -76,7 +78,7 @@ export class SettingMapThreeConverter {
             y: data.Location?.Altitude || 0,
           },
           modelId: modelId,
-          icon: PathTool.marker.get(data.ElementType),
+          icon: marker.get(data.ElementType),
           data: data,
           viewfield: {
             ...config.viewfield,
@@ -119,30 +121,32 @@ export class SettingMapThreeConverter {
 
   args = {
     from: {
-      data: (data: IIdNameModel) => {
+      data: async (data: IIdNameModel) => {
         if (data instanceof DB31Channel) {
-          return this.args.from.db31(data);
+          return await this.args.from.db31(data);
         } else if (data instanceof VideoChannel) {
-          return this.args.from.video(data);
+          return await this.args.from.video(data);
         } else {
           throw new Error('Standby 未知类型转换');
         }
       },
-      video: (data: VideoChannel) => {
+      video: async (data: VideoChannel) => {
+        let marker = await this.path.marker;
         let entity: MarkerArgs = {
           id: data.Id,
           name: data.Name,
-          icon: PathTool.marker.get(MapElementType.Camera),
+          icon: marker.get(MapElementType.Camera),
           data: data,
         };
         return entity;
       },
-      db31: (data: DB31Channel) => {
+      db31: async (data: DB31Channel) => {
         let type = this.element.to.type(data.DeviceType);
+        let marker = await this.path.marker;
         let entity: MarkerArgs = {
           id: data.Id,
           name: data.Name || '',
-          icon: PathTool.marker.get(type),
+          icon: marker.get(type),
           data: data,
         };
         return entity;

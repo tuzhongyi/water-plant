@@ -1,3 +1,5 @@
+@import url(../../../../../assets/styles/colors/color-@.less);
+
 .multi-select-control {
   position: relative;
   width: 100%;
@@ -5,7 +7,7 @@
 
 
   &-selection {
-    background-color: #d7d7d7;
+    background-color: @gray-d7;
     display: flex;
     align-items: center;
     padding: 0 3px;
@@ -16,13 +18,14 @@
 
     &s {
       width: 100%;
-      border: 1px solid #7f7f7f;
+      border: 1px solid @gray-7f;
       border-radius: 0.25rem;
       height: 30px;
       padding: 2px 5px;
       box-sizing: border-box;
       display: flex;
-      background-image: url("../../../../../assets/images/select.png");
+      background-image: var(--img-select);
+
       background-repeat: no-repeat;
       background-position: calc(100% - 4px) 50%;
       transition: all 0.4s ease 0s;
@@ -36,7 +39,7 @@
       }
 
       &:hover {
-        border-color: #07a990;
+        border-color: var(--teal);
       }
     }
   }
@@ -63,8 +66,8 @@
     }
 
     &:hover {
-      background-color: #2f61d2;
-      color: white;
+      background-color: @blue-61;
+      color: @white;
     }
 
     &s {
@@ -72,9 +75,9 @@
       position: absolute;
       left: 0;
       top: 30px;
-      background-color: white;
+      background-color: @white;
       width: 100%;
-      border: 1px solid #000;
+      border: 1px solid @black;
       z-index: 2;
       overflow-y: auto;
       max-height: 200px;

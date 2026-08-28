@@ -1,3 +1,5 @@
+@import url(../../../assets/styles/colors/color-@.less);
+
 .setting-index {
   @head-height: 24px;
   @padding: 20px;
@@ -17,7 +19,7 @@
 
     height: calc(@head-height + @padding);
     width: 100%;
-    border-bottom: 1px solid #006764;
+    border-bottom: 1px solid var(--teal-dark);
     box-sizing: content-box;
 
 
@@ -26,7 +28,7 @@
     align-items: center;
     gap: 20px;
 
-    color: #fff;
+    color: @white;
     font-size: 24px;
 
     &>* {
@@ -34,13 +36,13 @@
       padding-bottom: @padding;
 
       &.selected {
-        color: #ff8373;
-        border-bottom: solid 2px #ff8373;
-        text-shadow: #ff8373dd 0px 0 10px;
+        color: @redlight;
+        border-bottom: solid 2px @redlight;
+        text-shadow: rgba(@redlight, 0.87) 0px 0 10px;
 
 
         &:hover {
-          text-shadow: #ff8373 0px 0 10px;
+          text-shadow: @redlight 0px 0 10px;
         }
       }
     }

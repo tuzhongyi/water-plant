@@ -6,16 +6,16 @@
   gap: 8px;
   height: 34px;
   padding: 0 12px;
-  border: 1px solid rgba(0, 103, 100, 0.7);
+  border: 1px solid rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.7);
   border-radius: 3px;
-  background-color: rgba(0, 103, 100, 0.3);
+  background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.3);
 
   &-bar {
     position: relative;
     width: 100px;
     height: 3px;
     border-radius: 3px;
-    background: rgba(0, 103, 100, 0.5);
+    background: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.5);
 
     input[type='range'] {
       position: absolute;
@@ -45,9 +45,9 @@
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        background: #fff;
+        background: @white;
         cursor: pointer;
-        border: 1px solid #07a990;
+        border: 1px solid var(--teal);
         margin-top: -4px;
       }
 
@@ -55,9 +55,9 @@
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        background: #fff;
+        background: @white;
         cursor: pointer;
-        border: 1px solid #07a990;
+        border: 1px solid var(--teal);
       }
     }
   }

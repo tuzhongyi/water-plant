@@ -22,9 +22,68 @@
 @sky :#38bdf8;
 @rgb: var(--color-r), var(--color-g), var(--color-b);
 
+// ============ 语义色（两皮肤同值，仅收敛到此处） ============
+// 红 / 告警
+@alarm: #ef6f59;
+@alarm-soft: #f46855;
+@alarm-light: #ffd0c8;
+@salmon: #ffa899;
+@red-bright: #ff2e2e;
+@red-warn: #ff7a7a;
+@red-tip: #e15e64;
+// 黄 / 橙
+@amber: #ffba00;
+@yellow-soft: #f0c674;
+@yellow-pale: #fde19a;
+@yellow-light: #fdd49a;
+@yellow-fade: #fdf59a;
+@yellow-bright: #fbed50;
+@yellow-high: #fbf069;
+// 蓝（语义，非皮肤主色）
+@blue-2f: #2f9bff;
+@blue-61: #2f61d2;
+@blue-4a: #4a8eff;
+@blue-69: #6997ff;
+@blue-5e: #5e6ebf;
+@blue-cf: #cfd7ff;
+@blue-2a: #2a5497;
+@blue-19: #194076;
+@blue-08: #080e2b;
+@blue-0c: #0c1729;
+@blue-2ac: #2ac2e1;
+@blue-00: #006dcc;
+@blue-00b: #0088cc;
+@blue-00c: #0044cc;
+@blue-00a: #002a80;
+@blue-1a: #1a3f52;
+@blue-05: #050d14;
+@blue-ea: #eaedff;
+@blue-2d: #2d76ce;
+// 中性
+@black: #000000;
+@gray-9: #999999;
+@gray-d7: #d7d7d7;
+@gray-7f: #7f7f7f;
+@gray-cc: #cccccc;
+@gray-ee: #eeeeee;
+
+@red-hover: #c25344;
+@red-dark: #7d4237;
+@green-1e: #1e7925;
+@green-7c: #7cd992;
+@blue-3a: #3a94ff;
+@blue-75: #7586e0;
+@blue-69ad: #69adff;
+@blue-87: #87bdff;
+@blue-27a: #27adc8;
+@blue-26: #2667b5;
+@blue-1d: #1d5274;
+@blue-17: #172548;
+
 html {
   --white: @white;
   --green: @green;
+  --greenlight: @greenlight;
   --red: @red;
   --redlight: @redlight;
   --orange: @orange;
@@ -55,6 +114,10 @@ html {
   --green-r: 23;
   --green-g: 241;
   --green-b: 198;
+
+  --greenlight-r: 193;
+  --greenlight-g: 255;
+  --greenlight-b: 245;
 
   --red-r: 247;
   --red-g: 61;
@@ -95,6 +158,102 @@ html {
   --sky-r: 56;
   --sky-g: 189;
   --sky-b: 248;
+
+
+  /* ========== 皮肤主题色（green 默认，blue 由 html[data-skin='blue'] 覆盖） ========== */
+  --normal: #ddf4ff;
+
+  --teal: #07a990;
+  --teal-r: 7;
+  --teal-g: 169;
+  --teal-b: 144;
+
+  --teal-4: #0d515a;
+  --teal-4-r: 13;
+  --teal-4-g: 81;
+  --teal-4-b: 90;
+
+  --teal-dark: #006764;
+  --teal-dark-r: 0;
+  --teal-dark-g: 103;
+  --teal-dark-b: 100;
+
+  --teal-bg: #043d40;
+  --teal-bg-r: 4;
+  --teal-bg-g: 61;
+  --teal-bg-b: 64;
+
+  --teal-option: #003a3b;
+  --teal-option-r: 0;
+  --teal-option-g: 58;
+  --teal-option-b: 59;
+
+  --teal-row: #0e3d34;
+  --teal-row-r: 14;
+  --teal-row-g: 61;
+  --teal-row-b: 52;
+
+  --teal-2: #06999c;
+  --teal-2-r: 6;
+  --teal-2-g: 153;
+  --teal-2-b: 156;
+
+  --teal-3: #064445;
+  --teal-3-r: 6;
+  --teal-3-g: 68;
+  --teal-3-b: 69;
+
+  --teal-muted: #498e84;
+  --teal-muted-r: 73;
+  --teal-muted-g: 142;
+  --teal-muted-b: 132;
+
+  --teal-deep: #053134;
+  --teal-deep-r: 5;
+  --teal-deep-g: 49;
+  --teal-deep-b: 52;
+
+  --mint-deep: #00150f;
+
+  --page-bg: #020e0e;
+  --page-bg-r: 2;
+  --page-bg-g: 14;
+  --page-bg-b: 14;
+
+  --steel: #7fb3c8;
+  --steel-r: 127;
+  --steel-g: 179;
+  --steel-b: 200;
+
+
+  /* ========== 主题图片（green 默认，blue 由 html[data-skin='blue'] 覆盖） ========== */
+  --img-select: url(/assets/images/green/select.svg);
+  --img-select-white: url(/assets/images/green/select-white.svg);
+  --img-bg: url(/assets/images/green/bg.jpg);
+  --img-background-1: url(/assets/images/green/background-1.png);
+  --img-bg-body: url(/assets/images/green/bg-body.png);
+  --img-bg-header: url(/assets/images/green/bg-header.png);
+  --img-bg-header-1: url(/assets/images/green/bg-header-1.png);
+  --img-login-panel: url(/assets/images/green/login/login-panel.png);
+  --img-login-btn: url(/assets/images/green/login/login-btn.png);
+  --img-login-btn-hover: url(/assets/images/green/login/login-btn-hover.png);
+  --img-login-btn-active: url(/assets/images/green/login/login-btn-active.png);
+  --img-map-button: url(/assets/images/green/map/button-map.png);
+  --img-map-button-hover: url(/assets/images/green/map/button-map-hover.png);
+  --img-map-button-selected: url(/assets/images/green/map/button-map-selected.png);
+  --img-window-border: url(/assets/images/green/window/window-border.png);
+  --img-card: url(/assets/images/green/card/card.png);
+  --img-stat-card-1: url(/assets/images/green/statistic/card/statistic-card-1.png);
+  --img-stat-card-2: url(/assets/images/green/statistic/card/statistic-card-2.png);
+  --img-device-online: url(/assets/images/green/statistic/device-state/statistic-device-state-online.png);
+  --img-device-offline: url(/assets/images/green/statistic/device-state/statistic-device-state-offline.png);
+  --img-device-bg: url(/assets/images/green/statistic/device-state/statistic-device-state-background.png);
+  --img-alarm-top: url(/assets/images/green/alarm/top.png);
+  --img-alarm-bottom: url(/assets/images/green/alarm/bottom.png);
+  --img-alarm-tl: url(/assets/images/green/alarm/border/t-l.png);
+  --img-alarm-tr: url(/assets/images/green/alarm/border/t-r.png);
+  --img-alarm-bl: url(/assets/images/green/alarm/border/b-l.png);
+  --img-alarm-br: url(/assets/images/green/alarm/border/b-r.png);
 
 
   /* ========== 颜色工具类 ========== */
@@ -4799,4 +4958,117 @@ html {
   .color-b-255 {
     --color-b: 255
   }
+}
+
+/* ========== blue 皮肤（占位色，美工出稿后替换） ========== */
+html[data-skin='blue'] {
+  --green: #1e90ff;
+  --green-r: 30;
+  --green-g: 144;
+  --green-b: 255;
+
+  --greenlight: #d6e9ff;
+  --greenlight-r: 214;
+  --greenlight-g: 233;
+  --greenlight-b: 255;
+
+  --cyan: #63c6ff;
+  --cyan-r: 99;
+  --cyan-g: 198;
+  --cyan-b: 255;
+
+  --normal: #dbeafe;
+  --normal-r: 219;
+  --normal-g: 234;
+  --normal-b: 254;
+
+  --teal: #2d6bde;
+  --teal-r: 45;
+  --teal-g: 107;
+  --teal-b: 222;
+
+  --teal-4: #0d3a5e;
+  --teal-4-r: 13;
+  --teal-4-g: 58;
+  --teal-4-b: 94;
+
+  --teal-dark: #1e3a8a;
+  --teal-dark-r: 30;
+  --teal-dark-g: 58;
+  --teal-dark-b: 138;
+
+  --teal-bg: #0b1f3a;
+  --teal-bg-r: 11;
+  --teal-bg-g: 31;
+  --teal-bg-b: 58;
+
+  --teal-option: #0a1830;
+  --teal-option-r: 10;
+  --teal-option-g: 24;
+  --teal-option-b: 48;
+
+  --teal-row: #12294a;
+  --teal-row-r: 18;
+  --teal-row-g: 41;
+  --teal-row-b: 74;
+
+  --teal-2: #2563eb;
+  --teal-2-r: 37;
+  --teal-2-g: 99;
+  --teal-2-b: 235;
+
+  --teal-3: #0f2a4a;
+  --teal-3-r: 15;
+  --teal-3-g: 42;
+  --teal-3-b: 74;
+
+  --teal-muted: #4a6a8a;
+  --teal-muted-r: 74;
+  --teal-muted-g: 106;
+  --teal-muted-b: 138;
+
+  --teal-deep: #051f33;
+  --teal-deep-r: 5;
+  --teal-deep-g: 31;
+  --teal-deep-b: 51;
+
+  --mint-deep: #001024;
+
+  --page-bg: #020714;
+  --page-bg-r: 2;
+  --page-bg-g: 7;
+  --page-bg-b: 20;
+
+  --steel: #7f9fd6;
+  --steel-r: 127;
+  --steel-g: 159;
+  --steel-b: 214;
+
+  --img-select: url(/assets/images/blue/select.svg);
+  --img-select-white: url(/assets/images/blue/select-white.svg);
+  --img-bg: url(/assets/images/blue/bg.jpg);
+  --img-background-1: url(/assets/images/blue/background-1.png);
+  --img-bg-body: url(/assets/images/blue/bg-body.png);
+  --img-bg-header: url(/assets/images/blue/bg-header.png);
+  --img-bg-header-1: url(/assets/images/blue/bg-header-1.png);
+  --img-login-panel: url(/assets/images/blue/login/login-panel.png);
+  --img-login-btn: url(/assets/images/blue/login/login-btn.png);
+  --img-login-btn-hover: url(/assets/images/blue/login/login-btn-hover.png);
+  --img-login-btn-active: url(/assets/images/blue/login/login-btn-active.png);
+  --img-map-button: url(/assets/images/blue/map/button-map.png);
+  --img-map-button-hover: url(/assets/images/blue/map/button-map-hover.png);
+  --img-map-button-selected: url(/assets/images/blue/map/button-map-selected.png);
+  --img-window-border: url(/assets/images/blue/window/window-border.png);
+  --img-card: url(/assets/images/blue/card/card.png);
+  --img-stat-card-1: url(/assets/images/blue/statistic/card/statistic-card-1.png);
+  --img-stat-card-2: url(/assets/images/blue/statistic/card/statistic-card-2.png);
+  --img-device-online: url(/assets/images/blue/statistic/device-state/statistic-device-state-online.png);
+  --img-device-offline: url(/assets/images/blue/statistic/device-state/statistic-device-state-offline.png);
+  --img-device-bg: url(/assets/images/blue/statistic/device-state/statistic-device-state-background.png);
+  --img-alarm-top: url(/assets/images/blue/alarm/top.png);
+  --img-alarm-bottom: url(/assets/images/blue/alarm/bottom.png);
+  --img-alarm-tl: url(/assets/images/blue/alarm/border/t-l.png);
+  --img-alarm-tr: url(/assets/images/blue/alarm/border/t-r.png);
+  --img-alarm-bl: url(/assets/images/blue/alarm/border/b-l.png);
+  --img-alarm-br: url(/assets/images/blue/alarm/border/b-r.png);
 }

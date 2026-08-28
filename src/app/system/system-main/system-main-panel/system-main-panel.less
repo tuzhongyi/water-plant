@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .system-main-panel {
   width: 100%;
   height: auto;
@@ -13,7 +15,7 @@
 
 
   &-head {
-    color: white;
+    color: @white;
   }
 
   &-body {
@@ -29,11 +31,11 @@
 
 
     &-name {
-      color: #17f1c6b3;
+      color: rgba(var(--green-r), var(--green-g), var(--green-b), 0.7);
     }
 
     &-value {
-      color: white;
+      color: @white;
     }
   }
 

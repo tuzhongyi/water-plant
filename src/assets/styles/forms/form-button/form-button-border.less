@@ -18,30 +18,30 @@
   }
 
   &.full {
-    background-color: #07a990;
+    background-color: var(--teal);
 
     &:hover {
-      border: 1px solid #f46855;
-      background-color: #c2534480;
+      border: 1px solid @alarm-soft;
+      background-color: rgba(@red-hover, 0.5);
     }
   }
 
 
   &.green,
   &.green-dark {
-    border: solid #07a990 1px;
+    border: solid var(--teal) 1px;
     color: white;
 
 
     &:hover {
-      border-color: #f46855;
-      background-color: #c2534480;
+      border-color: @alarm-soft;
+      background-color: rgba(@red-hover, 0.5);
     }
 
     &.selected {
 
-      border-color: #ef6f59b3;
-      background-color: #f4685580;
+      border-color: rgba(@alarm, 0.7);
+      background-color: rgba(@alarm-soft, 0.5);
     }
   }
 
@@ -49,34 +49,34 @@
 
     text-shadow: none;
     border-radius: 3px;
-    border-color: rgba(0, 103, 100, 0.7);
-    background-color: rgba(0, 103, 100, 0.3);
+    border-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.7);
+    background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.3);
 
     &:hover {
 
-      border-color: rgba(244, 104, 85, 0.3);
-      background-color: #c2534480;
+      border-color: rgba(@alarm-soft, 0.3);
+      background-color: rgba(@red-hover, 0.5);
     }
 
     &.selected {
 
-      border-color: #ef6f59b3;
-      background-color: #f4685580;
+      border-color: rgba(@alarm, 0.7);
+      background-color: rgba(@alarm-soft, 0.5);
     }
   }
 
   &.greendark {
-    border: solid #07a990 1px;
-    color: #fff;
-    background-color: #00676480;
+    border: solid var(--teal) 1px;
+    color: @white;
+    background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.5);
     cursor: pointer;
     height: 34px;
     font-size: 18px;
     padding: 0 10px;
 
     &:hover {
-      border-color: #f46855;
-      background-color: #c2534480;
+      border-color: @alarm-soft;
+      background-color: rgba(@red-hover, 0.5);
     }
   }
 

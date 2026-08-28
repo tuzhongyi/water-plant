@@ -1,8 +1,10 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .hw-tree {
   width: 100%;
   height: 100%;
   font-size: 18px;
-  color: #ddf4ff;
+  color: var(--normal);
 
   &-node {
     height: 40px;
@@ -13,16 +15,16 @@
     padding-right: 10px;
 
     &:hover {
-      background-color: #ef6f5966;
-      color: #ffd0c8;
+      background-color: rgba(@alarm, 0.4);
+      color: @alarm-light;
     }
 
     &.selected {
-      background-color: #ef6f5999;
-      color: #fff;
+      background-color: rgba(@alarm, 0.6);
+      color: @white;
 
       &:hover {
-        color: #ffd0c8;
+        color: @alarm-light;
       }
     }
   }
@@ -36,7 +38,7 @@
     cursor: pointer;
 
     &:hover {
-      color: white;
+      color: @white;
     }
   }
 
@@ -54,7 +56,7 @@
     margin-right: 6px;
     flex-shrink: 0;
     font-size: 20px;
-    color: #17f1c6;
+    color: var(--green);
   }
 
   &-label {
@@ -82,8 +84,8 @@
     color: inherit;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
+      background: rgba(@white, 0.2);
+      color: @white;
     }
   }
 
@@ -100,6 +102,6 @@
   color: var(--color, inherit);
 
   &:hover {
-    color: white !important;
+    color: @white !important;
   }
 }

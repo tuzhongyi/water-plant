@@ -1,3 +1,5 @@
+@import url(../../colors/color-@.less);
+
 .table-page {
   table {
     tbody {
@@ -10,10 +12,10 @@
 
             .button,
             button {
-              color: #17f1c6b3;
+              color: rgba(var(--green-r), var(--green-g), var(--green-b), 0.7);
 
               &:hover {
-                color: #ffa899;
+                color: @salmon;
               }
             }
           }

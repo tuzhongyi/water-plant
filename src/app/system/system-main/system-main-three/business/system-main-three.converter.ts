@@ -16,6 +16,7 @@ export class SystemMainThreeConverter {
   constructor(
     private business: SystemMainThreeBusiness,
     private config: ConfigRequestService,
+    private path: PathTool,
   ) {}
 
   default = 'VIL.glb';
@@ -44,6 +45,7 @@ export class SystemMainThreeConverter {
         let building: GeoMapElement | undefined = undefined;
         let modelId = this.default;
         let config = await this.config.map;
+        let marker = await this.path.marker;
         if (data.ParentId) {
           building = await this.get.building(data.ParentId);
           if (building && building?.ElementId) {
@@ -60,7 +62,7 @@ export class SystemMainThreeConverter {
             y: data.Location?.Altitude || 0,
           },
           modelId: modelId,
-          icon: PathTool.marker.get(data.ElementType),
+          icon: marker.get(data.ElementType),
           offline: data.ElementState == 1,
           alarm: data.ElementState == 2 || this.business.element.alarm.has(data.Id),
           data: data,

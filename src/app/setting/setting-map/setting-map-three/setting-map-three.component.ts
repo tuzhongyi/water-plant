@@ -111,10 +111,10 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
      * standby 输入变化处理：将外部传入的 standby 数据转换为 marker 参数并写入 3D 组件
      * @param change 输入属性变化
      */
-    standby: (change: SimpleChange) => {
+    standby: async (change: SimpleChange) => {
       if (change) {
         if (this.standby) {
-          let entity = this.converter.args.from.data(this.standby);
+          let entity = await this.converter.args.from.data(this.standby);
           this.element.standby.set(entity);
         } else {
           this.element.standby.set(undefined);

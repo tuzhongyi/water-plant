@@ -1,6 +1,6 @@
 export class PathImageSystemModuleTool {
-  constructor(node: string = '') {
-    this.base = `${node}/assets/image/system/module/system-module-icon`;
+  constructor(path: string = '') {
+    this.base = `${path}/system/module/system-module-icon`;
   }
 
   private base: string;

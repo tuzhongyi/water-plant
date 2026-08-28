@@ -12,15 +12,15 @@ input[type="password"] {
   padding: 0 10px;
   box-sizing: border-box;
   height: 36px;
-  color: #ddf4ff;
+  color: var(--normal);
 
   &:focus {
-    background-color: #c253441a;
+    background-color: rgba(@red-hover, 0.1);
   }
 
   &:-internal-autofill-previewed,
   &:-internal-autofill-selected {
-    -webkit-text-fill-color: #FFFFFF !important;
+    -webkit-text-fill-color: @white !important;
     transition: background-color 5000s ease-in-out 0s !important;
   }
 
@@ -35,7 +35,7 @@ input[type="password"] {
 
   &:read-only {
     // color: #71acff;
-    color: #fff;
+    color: @white;
     cursor: default;
   }
 

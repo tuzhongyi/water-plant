@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .system-record {
   @line-height: 1px;
   @head-height: 24px;
@@ -14,7 +16,7 @@
   &-line {
     width: 100%;
     height: @line-height;
-    background: linear-gradient(to right, #ffffff 0 24px, transparent 24px 27px, rgba(255, 255, 255, 0.2) 27px calc(100% - 13px), transparent calc(100% - 13px) calc(100% - 10px), #17f1c6 calc(100% - 10px) 100%);
+    background: linear-gradient(to right, @white 0 24px, transparent 24px 27px, rgba(@white, 0.2) 27px calc(100% - 13px), transparent calc(100% - 13px) calc(100% - 10px), var(--green) calc(100% - 10px) 100%);
   }
 
 
@@ -25,7 +27,7 @@
     align-items: center;
 
     &-selection {
-      color: #fff;
+      color: @white;
       font-size: 24px;
       padding-left: calc(24px + 10px);
 
@@ -34,10 +36,10 @@
       }
 
       &>.selected {
-        color: #ff8373;
+        color: @redlight;
         padding-bottom: 21px;
         margin-bottom: -21px;
-        border-bottom: solid 2px #ff8373;
+        border-bottom: solid 2px @redlight;
       }
     }
   }

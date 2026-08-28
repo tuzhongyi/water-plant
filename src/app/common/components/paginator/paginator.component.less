@@ -1,3 +1,5 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
 .paginator {
   box-sizing: border-box;
   text-align: center;
@@ -23,8 +25,8 @@
 
       &.current {
         // background-color: #4a8eff;
-        background-color: #ef6f5999;
-        color: #FFF
+        background-color: rgba(@alarm, 0.6);
+        color: @white
       }
     }
 
@@ -34,7 +36,7 @@
       height: 24px;
       box-sizing: border-box;
       border: none;
-      border-bottom: 1px solid #ddf4ff;
+      border-bottom: 1px solid var(--normal);
       background-color: transparent;
     }
 

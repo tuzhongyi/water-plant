@@ -1,3 +1,4 @@
+@import url(../../../../assets/styles/colors/color-@.less);
 @import '../component/tree.component.less';
 
 :host {
@@ -46,18 +47,18 @@ input-icon.hw-tree-input {
   color: inherit;
 
   &.ok {
-    color: #17f1c6;
+    color: var(--green);
 
     &:hover {
-      color: #fff;
+      color: @white;
     }
   }
 
   &.cancel {
-    color: #ff7a7a;
+    color: @red-warn;
 
     &:hover {
-      color: #fff;
+      color: @white;
     }
   }
 }

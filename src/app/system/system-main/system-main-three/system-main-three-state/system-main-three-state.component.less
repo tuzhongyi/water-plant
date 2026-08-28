@@ -28,8 +28,8 @@
     transition: left 0.4s ease, color 0.4s ease;
 
     &:hover {
-      color: white;
-      text-shadow: #fff 0 0 10px;
+      color: @white;
+      text-shadow: @white 0 0 10px;
     }
   }
 
@@ -75,7 +75,7 @@
     align-items: center;
 
     &-title {
-      color: white;
+      color: @white;
       display: flex;
       align-items: center;
 
@@ -130,7 +130,7 @@
     flex-direction: column;
     gap: 10px;
     padding: 10px;
-    background-color: rgba(0, 103, 100, 0.3);
+    background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.3);
     border-radius: 5%;
     cursor: pointer;
     opacity: 0.9;
@@ -152,7 +152,7 @@
     }
 
     &-line {
-      border: 1px solid rgba(0, 103, 100, 0.7);
+      border: 1px solid rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.7);
     }
 
     &-content {
