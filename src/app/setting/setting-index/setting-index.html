@@ -3,17 +3,24 @@
     <div class="setting-index-title">
       <div
         class="button"
-        [class.selected]="path == SettingPath.map_element"
-        (click)="changePath(SettingPath.map_element)"
+        [class.selected]="path == SettingPath.map"
+        (click)="on.path(SettingPath.map)"
       >
-        地图元素
+        地图布控
       </div>
       <div
         class="button"
-        [class.selected]="path == SettingPath.map"
-        (click)="changePath(SettingPath.map)"
+        [class.selected]="path == SettingPath.region"
+        (click)="on.path(SettingPath.region)"
       >
-        地图布控
+        区域资源设置
+      </div>
+      <div
+        class="button"
+        [class.selected]="path == SettingPath.config"
+        (click)="on.path(SettingPath.config)"
+      >
+        系统设置
       </div>
     </div>
     <div class="setting-index-content">

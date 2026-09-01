@@ -1,54 +1,63 @@
 .system-video-player {
-  @head-height: 34px;
+  @head-width: 34px;
 
 
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
+
 
 
 
   &-head {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    height: @head-height;
+    flex-direction: column;
+    justify-content: space-between;
+    width: @head-width;
+    height: 100%;
 
-    button {
-      height: @head-height;
-      aspect-ratio: 1;
-      padding: 0;
+    .button-group {
+      flex-direction: column;
 
-      i {
+      button {
+        height: @head-width;
+        aspect-ratio: 1;
+        padding: 0;
 
-        &.mdi {
-          &-stop {
-            font-size: 28px;
-            margin-top: -3px;
+        i {
+
+          &.mdi {
+            &-stop {
+              font-size: 28px;
+              margin-top: -3px;
+            }
+
+            &-view-grid {
+              margin-top: -2px;
+            }
+
+            &-apps {
+              font-size: 20px;
+              margin-top: -2px;
+            }
           }
 
-          &-view-grid {
-            margin-top: -2px;
-          }
-
-          &-apps {
+          &.howell-icon-screen-16 {
             font-size: 20px;
-            margin-top: -2px;
+            margin-top: 2px;
           }
-        }
 
-        &.howell-icon-screen-16 {
-          font-size: 20px;
-          margin-top: 2px;
         }
 
       }
-
     }
+
+
   }
 
   &-body {
-    height: calc(100% - 21px - @head-height);
+    width: calc(100% - 21px - @head-width);
+    height: 100%;
   }
 }

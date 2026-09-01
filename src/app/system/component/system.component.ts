@@ -6,6 +6,7 @@ import { ConfigRequestService } from '../../common/data-core/request/config/conf
 import { GlobalStorage } from '../../common/storage/global.storage';
 import { LocalStorage } from '../../common/storage/local.storage';
 import { HeaderComponent } from '../../share/header/header.component';
+import { SystemLayoutService } from './system-layout.service';
 
 @Component({
   selector: 'hw-system',
@@ -19,9 +20,11 @@ export class SystemComponent implements OnInit {
     private global: GlobalStorage,
     private router: Router,
     private config: ConfigRequestService,
+    public layout: SystemLayoutService,
   ) {}
 
   title = signal<string>('');
+
   keep = {
     key: 'keep',
     get: () => {
@@ -72,4 +75,8 @@ export class SystemComponent implements OnInit {
       this.title.set(x.title);
     });
   }
+
+  head = {
+    visibility: true,
+  };
 }

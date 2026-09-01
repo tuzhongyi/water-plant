@@ -422,7 +422,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     inited: false,
     focus: new EventEmitter<FitView | void>(),
     moveto: new EventEmitter<MoveToArgs>(),
-    renderMode: signal<RenderMode>(RenderMode.overlay),
+    renderMode: signal<RenderMode>(RenderMode.solid),
     config: signal<ThreeDConfig | undefined>(undefined),
     model: {
       datas: signal<ModelViewerModel[]>([]),

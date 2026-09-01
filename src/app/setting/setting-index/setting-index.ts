@@ -32,7 +32,9 @@ export class SettingIndexComponent {
     });
   }
 
-  changePath(path: SettingPath) {
-    this.router.navigateByUrl(`/${path}`);
-  }
+  on = {
+    path: (path: SettingPath) => {
+      this.router.navigateByUrl(`/${path}`);
+    },
+  };
 }

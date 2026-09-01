@@ -1,29 +1,74 @@
 <hw-card-statistic-2>
   <div class="system-video-player">
-    <div class="card-head system-video-player-head">
-      <div class="card-head-title">视频预览</div>
-      <div class="button-group">
-        <button class="button-border green" title="单画面" (click)="player.on.mode(1)">
-          <i class="mdi mdi-stop"></i>
-        </button>
-        <button class="button-border green" title="四画面" (click)="player.on.mode(4)">
-          <i class="mdi mdi-view-grid"></i>
-        </button>
-        <button class="button-border green" title="九画面" (click)="player.on.mode(9)">
-          <i class="mdi mdi-apps"></i>
-        </button>
-        <button class="button-border green" title="十六画面" (click)="player.on.mode(16)">
-          <i class="howell-icon-screen-16"></i>
-        </button>
-      </div>
-    </div>
-    <div class="card-line"></div>
     <div class="system-video-player-body">
       <howell-video-player-list
         [mode]="player.mode"
         [play]="player.preview"
         [(index)]="player.index"
+        [getviewgroup]="getviewgroup"
       ></howell-video-player-list>
+    </div>
+
+    <div class="card-line-column"></div>
+    <div class="card-head system-video-player-head">
+      <div class="button-group">
+        <button
+          class="button-border green"
+          [class.selected]="player.mode == 1"
+          title="单画面"
+          (click)="player.on.mode(1)"
+        >
+          <i class="mdi mdi-stop"></i>
+        </button>
+        <button
+          class="button-border green"
+          [class.selected]="player.mode == 4"
+          title="四画面"
+          (click)="player.on.mode(4)"
+        >
+          <i class="mdi mdi-view-grid"></i>
+        </button>
+        <button
+          class="button-border green"
+          [class.selected]="player.mode == 9"
+          title="九画面"
+          (click)="player.on.mode(9)"
+        >
+          <i class="mdi mdi-apps"></i>
+        </button>
+        <button
+          class="button-border green"
+          [class.selected]="player.mode == 16"
+          title="十六画面"
+          (click)="player.on.mode(16)"
+        >
+          <i class="howell-icon-screen-16"></i>
+        </button>
+      </div>
+      <div class="button-group">
+        <button
+          class="button-border green"
+          [title]="expand ? '还原' : '展开'"
+          (click)="player.on.expand()"
+        >
+          @if (expand) {
+            <i class="mdi mdi-unfold-less-vertical"></i>
+          } @else {
+            <i class="mdi mdi-unfold-more-vertical"></i>
+          }
+        </button>
+        <button
+          class="button-border green"
+          [title]="fullscreen ? '还原' : '全屏'"
+          (click)="player.on.fullscreen()"
+        >
+          @if (fullscreen) {
+            <i class="mdi mdi-fullscreen-exit"></i>
+          } @else {
+            <i class="mdi mdi-fullscreen"></i>
+          }
+        </button>
+      </div>
     </div>
   </div>
 </hw-card-statistic-2>

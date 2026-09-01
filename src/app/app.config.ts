@@ -2,15 +2,15 @@ import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalE
 import { provideRouter } from '@angular/router';
 
 import { provideToastr } from 'ngx-toastr';
-import { ConfigRequestService } from './common/data-core/request/config/config-request.service';
+import { GlobalStorage } from './common/storage/global.storage';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAppInitializer(() => {
-      const config = inject(ConfigRequestService);
-      return config.get().then((cfg) => {
-        document.documentElement.setAttribute('data-skin', cfg.skin ?? 'green');
+      const global = inject(GlobalStorage);
+      return global.skin.then((skin) => {
+        document.documentElement.setAttribute('data-skin', skin);
       });
     }),
     provideBrowserGlobalErrorListeners(),

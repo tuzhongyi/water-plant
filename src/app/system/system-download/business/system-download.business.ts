@@ -3,13 +3,19 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DeviceVideoDownloadParams } from '../../../common/data-core/request/services/device/device.params';
 import { DeviceRequestService } from '../../../common/data-core/request/services/device/device.service';
+import { LocalStorage } from '../../../common/storage/local.storage';
 import { Duration } from '../../../common/tools/date-time-tool/duration.model';
 import { DownloadTask, SystemDownloadArgs } from './system-download.model';
 
 /**	下载任务业务：维护任务列表，按时长分割（单段≤30分钟），按最大并发数真实下载并保存到本地，超出限制的任务排队 */
 @Injectable()
 export class SystemDownloadBusiness {
-  constructor(private service: DeviceRequestService) {}
+  constructor(
+    private service: DeviceRequestService,
+    local: LocalStorage,
+  ) {
+    this.count = local.config.download.get();
+  }
 
   private tasks: DownloadTask[] = [];
   /**	任务列表变更通知（携带最新列表），组件据此刷新 signal */
@@ -18,6 +24,8 @@ export class SystemDownloadBusiness {
   private seq = 0;
   /**	最大并发下载数，超出部分排队 */
   private count = 5;
+  /**	每个下载中任务对应的 AbortController，用于删除/暂停时中止底层请求 */
+  private controllers = new Map<string, AbortController>();
 
   /**	按时长切割并创建下载任务加入队列，返回最新任务列表 */
   download(args: SystemDownloadArgs): DownloadTask[] {
@@ -34,8 +42,10 @@ export class SystemDownloadBusiness {
 
   /**	删除任务 */
   remove(id: string): void {
+    this.abort(id);
     this.tasks = this.tasks.filter((t) => t.id !== id);
     this.emit();
+    this.schedule();
   }
 
   /**	取消下载（等同删除） */
@@ -45,6 +55,7 @@ export class SystemDownloadBusiness {
 
   /**	暂停下载 */
   pause(id: string): void {
+    this.abort(id);
     this.patch(id, { state: 'paused' });
   }
 
@@ -72,6 +83,12 @@ export class SystemDownloadBusiness {
 
   private emit(): void {
     this.changes.next(this.tasks);
+  }
+
+  /**	中止任务正在进行的下载请求（若存在），删除/暂停时调用 */
+  private abort(id: string): void {
+    this.controllers.get(id)?.abort();
+    this.controllers.delete(id);
   }
 
   /**	时长切割：单段最长 30 分钟，超出自动分割成多个片段（最新时间段在前） */
@@ -118,6 +135,8 @@ export class SystemDownloadBusiness {
 
   /**	真实下载单个任务：请求二进制视频流 → 保存到本地 → 更新状态，完成后继续调度 */
   private async start(task: DownloadTask): Promise<void> {
+    const controller = new AbortController();
+    this.controllers.set(task.id, controller);
     this.patch(task.id, { state: 'downloading' });
     // 实时进度：已下载字节与速度（节流更新，避免频繁触发界面刷新）
     const startTime = Date.now();
@@ -143,7 +162,7 @@ export class SystemDownloadBusiness {
         lastLoaded = loaded;
         lastTime = now;
         this.patch(task.id, patch);
-      });
+      }, controller.signal);
       // 下载期间若被暂停/取消/删除，则不再保存或标记完成
       if (!this.active(task.id)) return;
       this.save(blob, fileName);
@@ -156,6 +175,7 @@ export class SystemDownloadBusiness {
         this.patch(task.id, { state: 'failed', message: '下载失败' });
       }
     } finally {
+      this.controllers.delete(task.id);
       this.schedule();
     }
   }

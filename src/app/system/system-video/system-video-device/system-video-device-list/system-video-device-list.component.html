@@ -4,6 +4,7 @@
       <div
         class="system-video-device-list-table-tr"
         [class.selected]="selected == item"
+        [style.height]="`calc((100% - 5px * ${page().PageSize - 1}) / ${page().PageSize})`"
         (click)="on.select($event, item)"
         (dblclick)="on.dblclick($event, item)"
       >

@@ -1,0 +1,56 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+
+.system-video-index {
+  @head-height: 24px;
+  @padding: 0 10px 10px 10px;
+  @gap: 20px;
+
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  gap: @gap;
+
+
+
+  &-title {
+
+    height: calc(@head-height + @gap);
+    width: 100%;
+    border-bottom: 1px solid var(--teal-dark);
+    box-sizing: content-box;
+
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+
+    color: @white;
+    font-size: 24px;
+
+    &>* {
+      cursor: pointer;
+      padding-bottom: @gap;
+
+      &.selected {
+        color: @redlight;
+        border-bottom: solid 2px @redlight;
+        text-shadow: rgba(@redlight, 0.87) 0px 0 10px;
+
+
+        &:hover {
+          text-shadow: @redlight 0px 0 10px;
+        }
+      }
+    }
+  }
+
+  &-content {
+    width: 100%;
+    height: calc(100% - (@head-height + @gap + 1px) - @gap);
+    flex-grow: 1;
+  }
+}

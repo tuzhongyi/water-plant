@@ -5,7 +5,8 @@ import { CardStatistic1Component } from '../../../../common/components/card-stat
 import { InputIconComponent } from '../../../../common/components/input-icon/input-icon.component';
 import { VideoChannel } from '../../../../common/data-core/models/devices/video-channel.model';
 import { RegionTreeNode } from '../../../../common/data-core/models/regions/region-tree-node.model';
-import { TreeRegionEditArgs } from '../../../../share/tree/tree-region-edit/tree-region-edit.model';
+import { TreeRegionEditOutputArgs } from '../../../../share/tree/tree-region-edit/tree-region-edit.model';
+import { TreeRegionArgs } from '../../../../share/tree/tree-region/tree-region.model';
 import { SystemVideoDeviceListMultipleComponent } from '../system-video-device-list-multiple/system-video-device-list-multiple.component';
 import { SystemVideoDeviceListArgs } from '../system-video-device-list/system-video-device-list.model';
 import { SystemVideoDeviceRegionEditComponent } from '../system-video-device-region-edit/system-video-device-region-edit.component';
@@ -31,9 +32,6 @@ export class SystemVideoDeviceRegionConfigComponent {
     private toastr: ToastrService,
   ) {}
 
-  /** 触发区域树重新加载（增删改 / 移入移出成功后） */
-  reload = new EventEmitter<void>();
-
   disabled = {
     input: signal<boolean>(true),
     output: signal<boolean>(true),
@@ -46,7 +44,7 @@ export class SystemVideoDeviceRegionConfigComponent {
 
       disabled = true;
       if (
-        !!this.device.selected &&
+        this.device.selected.length > 0 &&
         !!this.region.selected &&
         this.region.selected.RegionNodeType == 1
       ) {
@@ -57,11 +55,18 @@ export class SystemVideoDeviceRegionConfigComponent {
   };
 
   region = {
+    args: {} as TreeRegionArgs,
+    load: new EventEmitter<TreeRegionArgs>(),
+    /** 触发区域树重新加载（增删改 / 移入移出成功后） */
+    reload: new EventEmitter<void>(),
     resources: [] as RegionTreeNode[],
     /** 资源 id → 所属区域 id（用于 output 移出资源） */
     parents: new Map<string, string>(),
     selected: undefined as RegionTreeNode | undefined,
     on: {
+      search: () => {
+        this.region.load.emit(this.region.args);
+      },
       select: (data?: RegionTreeNode) => {
         this.disabled.change();
       },
@@ -83,7 +88,7 @@ export class SystemVideoDeviceRegionConfigComponent {
         this.region.parents = parents;
         this.device.inverse = resources.map((x) => x.Id);
       },
-      create: (result: TreeRegionEditArgs) => {
+      create: (result: TreeRegionEditOutputArgs) => {
         if (!result.value) {
           this.toastr.warning('名称不能为空');
           return;
@@ -97,7 +102,7 @@ export class SystemVideoDeviceRegionConfigComponent {
           : this.business.region.root(result.value);
         task
           .then(() => {
-            this.reload.emit();
+            this.region.reload.emit();
             this.toastr.success('操作成功');
             this.change.emit();
           })
@@ -105,7 +110,7 @@ export class SystemVideoDeviceRegionConfigComponent {
             this.toastr.error('操作失败');
           });
       },
-      update: (result: TreeRegionEditArgs) => {
+      update: (result: TreeRegionEditOutputArgs) => {
         if (!result.value) {
           this.toastr.warning('名称不能为空');
           return;
@@ -115,7 +120,7 @@ export class SystemVideoDeviceRegionConfigComponent {
         this.business.region
           .update(node.Id, result.value)
           .then(() => {
-            this.reload.emit();
+            this.region.reload.emit();
             this.toastr.success('操作成功');
             this.change.emit();
           })
@@ -123,11 +128,11 @@ export class SystemVideoDeviceRegionConfigComponent {
             this.toastr.error('操作失败');
           });
       },
-      delete: (result: TreeRegionEditArgs) => {
+      delete: (result: TreeRegionEditOutputArgs) => {
         const node = result.data;
         if (!node) return;
         this.business.region.delete(node.Id).then(() => {
-          this.reload.emit();
+          this.region.reload.emit();
           this.toastr.success('操作成功');
           this.change.emit();
         });
@@ -137,11 +142,17 @@ export class SystemVideoDeviceRegionConfigComponent {
         if (!resource) return;
         const regionId = this.region.parents.get(resource.Id);
         if (!regionId) return;
-        this.business.resource.delete(regionId, resource.Id).then(() => {
-          this.reload.emit();
-          this.toastr.success('操作成功');
-          this.change.emit();
-        });
+        this.business.resource
+          .delete(regionId, resource.Id)
+          .then(() => {
+            this.region.selected = undefined;
+            this.region.reload.emit();
+            this.toastr.success('操作成功');
+            this.change.emit();
+          })
+          .finally(() => {
+            this.disabled.change();
+          });
       },
       input: async () => {
         if (this.region.selected) {
@@ -168,9 +179,10 @@ export class SystemVideoDeviceRegionConfigComponent {
           }
           if (count.success > 0) {
             this.toastr.success(`操作成功${count.success}个`);
-            this.reload.emit();
+            this.region.reload.emit();
             this.change.emit();
           }
+          this.disabled.change();
         }
       },
     },

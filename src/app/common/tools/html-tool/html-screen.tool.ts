@@ -5,8 +5,6 @@ export class HtmlScreenTool {
     },
   };
 
-  get(width: number, ratio: number) {}
-
   has = {
     head: {
       from: {
@@ -19,6 +17,45 @@ export class HtmlScreenTool {
           return `${width + gain}px`;
         },
       },
+    },
+  };
+
+  get = {
+    fullscreen: () => {
+      return !!(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement ||
+        (document as any).msFullscreenElement
+      );
+    },
+  };
+
+  set = {
+    fullscreen(value: boolean, e?: HTMLElement) {
+      if (!value) {
+        const doc: any = document;
+        if (doc.exitFullscreen) {
+          doc.exitFullscreen();
+        } else if (doc.webkitExitFullscreen) {
+          doc.webkitExitFullscreen();
+        } else if (doc.mozCancelFullScreen) {
+          doc.mozCancelFullScreen();
+        } else if (doc.msExitFullscreen) {
+          doc.msExitFullscreen();
+        }
+        return;
+      }
+      const element: any = e ?? document.body;
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
     },
   };
 }

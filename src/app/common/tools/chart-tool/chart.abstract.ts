@@ -6,6 +6,7 @@ export abstract class EChartAbstract {
   abstract element?: ElementRef;
   protected chart = new PromiseValue<echarts.ECharts>();
   private handle?: any;
+  private observer?: ResizeObserver;
 
   protected init() {
     this.handle = this.resize.bind(this);
@@ -16,6 +17,8 @@ export abstract class EChartAbstract {
     if (this.element) {
       let chart = echarts.init(this.element.nativeElement);
       this.chart.set(chart);
+      this.observer = new ResizeObserver(this.handle);
+      this.observer.observe(this.element.nativeElement);
     }
   }
   protected destroy(): void {
@@ -26,10 +29,13 @@ export abstract class EChartAbstract {
       window.removeEventListener('resize', this.handle);
       this.handle = undefined;
     }
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = undefined;
+    }
   }
 
   private resize() {
-    console.log('resize');
     this.chart.get().then((chart) => {
       chart.resize();
     });

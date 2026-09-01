@@ -124,10 +124,16 @@ export class DeviceRequestService extends AbstractService<Device> {
   download(
     params: DeviceVideoDownloadParams,
     onProgress?: (loaded: number, total: number) => void,
+    signal?: AbortSignal,
   ) {
     let url = DeviceUrl.download(params.VideoChannelId, params.TimeRange, params.FileName);
-    return this.http.download(url, 'video/mp4', {
-      process: (progress) => onProgress?.(progress.loaded, progress.total),
-    });
+    return this.http.download(
+      url,
+      'video/mp4',
+      {
+        process: (progress) => onProgress?.(progress.loaded, progress.total),
+      },
+      signal,
+    );
   }
 }

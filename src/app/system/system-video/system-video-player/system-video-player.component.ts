@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CardStatistic2Component } from '../../../common/components/card-statistic-2/card-statistic-2.component';
+import { VideoChannelViewGroup } from '../../../common/data-core/models/devices/video-channel-view-group.model';
+import { HtmlTool } from '../../../common/tools/html-tool/html.tool';
 import {
   IVideoPlayerArgs,
   PreviewArgs,
 } from '../../../share/video/video-player-content/video-player-content.model';
 import { VideoPlayerListComponent } from '../../../share/video/video-player-list/video-player-list.component';
 import { ScreenMode } from '../../../share/video/video-player-list/video-player-list.model';
+import { SystemLayoutService } from '../../component/system-layout.service';
 
 @Component({
   selector: 'hw-system-video-player',
@@ -17,10 +20,17 @@ import { ScreenMode } from '../../../share/video/video-player-list/video-player-
 })
 export class SystemVideoPlayerComponent implements OnInit, OnDestroy {
   @Input() preview?: EventEmitter<PreviewArgs>;
+  @Input() getviewgroup?: EventEmitter<(e: VideoChannelViewGroup) => void>;
+  @Input() expand = false;
+  @Output() expandChange = new EventEmitter<boolean>();
 
-  constructor() {}
+  constructor(private layout: SystemLayoutService) {}
 
   private subs = new Subscription();
+
+  get fullscreen() {
+    return HtmlTool.screen.get.fullscreen();
+  }
 
   ngOnInit(): void {
     this.regist();
@@ -52,6 +62,14 @@ export class SystemVideoPlayerComponent implements OnInit, OnDestroy {
         let datas = new Array(this.player.mode);
         datas[this.player.index] = args;
         this.player.preview.emit(datas);
+      },
+      fullscreen: () => {
+        HtmlTool.screen.set.fullscreen(!this.fullscreen);
+      },
+      expand: () => {
+        this.expand = !this.expand;
+        this.expandChange.emit(this.expand);
+        // this.layout.headerVisible.set(!this.expand);
       },
     },
   };

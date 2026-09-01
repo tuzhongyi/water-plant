@@ -1,0 +1,23 @@
+<howell-card>
+  <div class="system-video-index">
+    <div class="system-video-index-title">
+      <div
+        class="button"
+        [class.selected]="path == Path.video.preview"
+        (click)="on.path(Path.video.preview)"
+      >
+        视频预览
+      </div>
+      <div
+        class="button"
+        [class.selected]="path == Path.video.playback"
+        (click)="on.path(Path.video.playback)"
+      >
+        视频回放
+      </div>
+    </div>
+    <div class="system-video-index-content">
+      <router-outlet />
+    </div>
+  </div>
+</howell-card>

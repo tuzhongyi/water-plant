@@ -1,9 +1,11 @@
 <div class="setting-map-manager">
   <div class="setting-map-container">
     <div class="setting-map-list">
-      <howell-card>
+      <hw-card-statistic-1>
         <div class="setting-map-list-container card-flex column">
-          <div class="card-head">设备信息</div>
+          <div class="card-head">
+            <div class="card-head-title">设备信息</div>
+          </div>
           <div class="card-line"></div>
           <div class="card-body">
             <hw-setting-device-tree
@@ -15,11 +17,11 @@
             ></hw-setting-device-tree>
           </div>
         </div>
-      </howell-card>
+      </hw-card-statistic-1>
     </div>
 
     <div class="setting-map-three">
-      <howell-card>
+      <hw-card-statistic-2>
         <hw-setting-map-three
           [load]="three.load"
           (maploaded)="three.on.loaded.map($event)"
@@ -31,7 +33,7 @@
           (standbyCancel)="three.standby.set(undefined)"
           (viewfield)="three.on.viewfield($event)"
         ></hw-setting-map-three>
-      </howell-card>
+      </hw-card-statistic-2>
     </div>
   </div>
   @if (window.details.map.show) {

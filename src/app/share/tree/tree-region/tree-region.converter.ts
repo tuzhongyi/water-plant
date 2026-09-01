@@ -108,8 +108,8 @@ export class TreeRegionConverter {
     return [...children].sort((a, b) => {
       const type = this.order(a) - this.order(b);
       if (type !== 0) return type;
-      const leaf = this.leaf(a) - this.leaf(b);
-      if (leaf !== 0) return leaf;
+      // const leaf = this.leaf(a) - this.leaf(b);
+      // if (leaf !== 0) return leaf;
       return (a.Name || a.Id).localeCompare(b.Name || b.Id);
     });
   }

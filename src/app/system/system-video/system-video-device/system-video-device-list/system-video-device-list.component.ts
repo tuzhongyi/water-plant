@@ -34,19 +34,21 @@ export class SystemVideoDeviceListComponent implements OnInit, OnChanges, OnDest
   @Output() loaded = new EventEmitter<VideoChannel[]>();
   @Output() error = new EventEmitter<Error>();
   @Output() itemdblclick = new EventEmitter<VideoChannel>();
+  @Input() pagesize = 12;
 
   constructor(private business: SystemVideoDeviceListBusiness) {}
 
   source: VideoChannel[] = [];
 
   datas = signal<VideoChannel[]>([]);
-  page = signal<Page>(Page.create(1, 12));
+  page = signal<Page>(Page.create(1, this.pagesize));
   private subs = new Subscription();
 
   ngOnChanges(changes: SimpleChanges): void {
     this.change.inverse(changes['inverse']);
   }
   ngOnInit(): void {
+    this.page.set(Page.create(1, this.pagesize));
     this.regist();
     this.load(1, this.args);
   }

@@ -8,7 +8,8 @@ import {
   signal,
 } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { CardComponent } from '../../../common/components/card/card.component';
+import { CardStatistic1Component } from '../../../common/components/card-statistic-1/card-statistic-1.component';
+import { CardStatistic2Component } from '../../../common/components/card-statistic-2/card-statistic-2.component';
 import { MarkerViewfieldArgs } from '../../../common/components/three-dimension/business/models/types';
 import { WindowConfirmComponent } from '../../../common/components/window-confirm/window-confirm.component';
 import { WindowComponent } from '../../../common/components/window-control/window.component';
@@ -33,7 +34,8 @@ import { SettingMapManagerWindow } from './setting-map-manager.window';
     SettingDeviceTreeComponent,
     WindowComponent,
     WindowConfirmComponent,
-    CardComponent,
+    CardStatistic1Component,
+    CardStatistic2Component,
     SettingMapDetailsComponent,
   ],
   templateUrl: './setting-map-manager.component.html',

@@ -33,15 +33,16 @@ export class HowellHttpClient {
     return new Blob([response], { type: mime });
   }
 
-  /**	带进度的二进制下载：process 实时回调已下载/总字节（总字节未知时为 0），完成后返回 Blob */
+  /**	带进度的二进制下载：process 实时回调已下载/总字节（总字节未知时为 0），完成后返回 Blob；传入 signal 可中止请求 */
   download(
     path: string,
     mime: string,
     event?: { process?: (progress: { loaded: number; total: number }) => void },
+    signal?: AbortSignal,
   ) {
     let options = this.getAuth();
     return new Promise<Blob>((resolve, reject) => {
-      this.http
+      const subscription = this.http
         .get(path, {
           ...options,
           responseType: 'blob',
@@ -58,6 +59,19 @@ export class HowellHttpClient {
           },
           error: (err) => reject(err),
         });
+
+      // 外部中止：取消订阅以中断底层 XHR 请求，并拒绝 Promise
+      const onAbort = () => {
+        subscription.unsubscribe();
+        reject(new Error('下载已取消'));
+      };
+      if (signal) {
+        if (signal.aborted) {
+          onAbort();
+        } else {
+          signal.addEventListener('abort', onAbort, { once: true });
+        }
+      }
     });
   }
 

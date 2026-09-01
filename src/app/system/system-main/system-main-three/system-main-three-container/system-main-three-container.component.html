@@ -69,7 +69,11 @@
     }
   </div>
   <div class="system-main-three-full">
-    <button class="button-border green-dark" (click)="manager.button.full()">
+    <button
+      class="button-border green-dark"
+      [title]="manager.fulled ? '还原' : '满屏'"
+      (click)="manager.button.full()"
+    >
       @if (manager.fulled) {
         <i class="mdi mdi-fullscreen-exit"></i>
       } @else {

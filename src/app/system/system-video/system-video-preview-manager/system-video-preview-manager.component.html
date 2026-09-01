@@ -1,0 +1,33 @@
+<div class="system-video-preview-manager">
+  <div class="system-video-preview-source">
+    <div class="system-video-preview-source-device">
+      <hw-system-video-device-manager
+        [pagesize]="6"
+        [reload]="device.reload"
+        (config)="window.config.show = true"
+        (preview)="device.on.preview($event)"
+      ></hw-system-video-device-manager>
+    </div>
+    <div class="system-video-preview-source-viewgroup">
+      <hw-system-video-view-group-manager></hw-system-video-view-group-manager>
+    </div>
+  </div>
+  <div class="system-video-preview-player" [class.full]="player.expand">
+    <hw-system-video-player
+      [preview]="player.preview"
+      [getviewgroup]="player.view.get"
+      [(expand)]="player.expand"
+    ></hw-system-video-player>
+  </div>
+</div>
+
+<app-window
+  [model]="window.config"
+  [style]="window.config.style"
+  [title]="window.config.title"
+  (OnClosing)="window.config.on.close()"
+>
+  <hw-system-video-device-region-config
+    (change)="window.config.changed = true"
+  ></hw-system-video-device-region-config>
+</app-window>

@@ -1,5 +1,5 @@
 export class ImageUrlTool {
-  static get error() {
-    return '/assets/images/image-error.png';
+  static error(skin: string) {
+    return `/assets/images/${skin}/image-error.png`;
   }
 }

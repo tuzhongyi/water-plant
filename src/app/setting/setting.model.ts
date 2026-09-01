@@ -5,6 +5,8 @@ export enum SettingPath {
   device_search = 'setting/device-search',
   device_list = 'setting/device-list',
   db31 = 'setting/db31',
+  config = 'setting/config',
+  region = 'setting/region',
 }
 
 export enum SettingPathNode {
@@ -14,4 +16,6 @@ export enum SettingPathNode {
   device_search = 'device-search',
   device_list = 'device-list',
   db31 = 'db31',
+  config = 'config',
+  region = 'region',
 }

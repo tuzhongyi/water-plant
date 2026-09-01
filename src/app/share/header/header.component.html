@@ -1,12 +1,4 @@
-<div
-  class="header"
-  [ngStyle]="{
-    height: visibility ? '100%' : '0',
-  }"
-  [ngClass]="{
-    hidden: !visibility,
-  }"
->
+<div class="header" [ngClass]="{ collapsed: !visibility }">
   <div class="header-content">
     <div class="header-content-info navigation">
       <div class="button-group">
@@ -28,4 +20,9 @@
       <app-account-operation></app-account-operation>
     </div>
   </div>
+  @if (collapsible) {
+    <div class="header-operation" (click)="on.visibility()">
+      <i class="mdi" [ngClass]="visibility ? 'mdi-chevron-up' : 'mdi-chevron-down'"></i>
+    </div>
+  }
 </div>

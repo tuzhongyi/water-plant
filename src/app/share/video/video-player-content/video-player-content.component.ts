@@ -15,6 +15,7 @@ export class VideoPlayerContentComponent implements OnInit {
   @Input('preview') input_preview?: EventEmitter<PreviewArgs>;
   @Input('playback') input_playback?: EventEmitter<PlaybackArgs>;
   @Input() name: string = '';
+  @Output() nameChange = new EventEmitter<string>();
   @Input() stop = new EventEmitter<void>();
   @Input() seek: EventEmitter<number> = new EventEmitter();
   @Input('reserve')
@@ -66,11 +67,13 @@ export class VideoPlayerContentComponent implements OnInit {
   }
 
   preview(args: PreviewArgs) {
+    this.name = args.cameraName;
     this.business.preview(args).then((data) => {
       this.play.emit(data);
     });
   }
   playback(args: PlaybackArgs) {
+    this.name = args.cameraName;
     if (this.playing) {
       this.playing = false;
     }

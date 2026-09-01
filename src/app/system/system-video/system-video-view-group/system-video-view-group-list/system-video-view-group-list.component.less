@@ -1,0 +1,66 @@
+@import url(../../../../../assets/styles/colors/color-@.less);
+
+.system-video-device-list {
+
+  @gap: 5px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  // gap: @gap;
+  border: 1px solid var(--teal);
+
+
+
+
+  &-table {
+    height: calc((100%));
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: @gap;
+    overflow-y: auto;
+    font-size: 18px;
+
+    &-tr {
+      width: 100%;
+      height: 40px;
+      flex-shrink: 0;
+      padding: 0 10px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.3);
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(@alarm, 0.4);
+        color: @alarm-light;
+      }
+
+      &.selected {
+        background-color: rgba(@alarm, 0.6);
+        color: @white;
+      }
+    }
+
+    &-td {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+
+
+      .button-group {
+        justify-content: flex-end;
+        gap: 0px;
+
+        button {
+          padding: 0;
+          color: var(--color);
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 <div class="system-video-device-region-edit">
   <div class="system-video-device-region-edit-body">
     <hw-tree-region-edit
+      [load]="load"
       [selected]="selected"
       (selectedChange)="on.select($event)"
       [reload]="reload"

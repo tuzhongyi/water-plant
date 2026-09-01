@@ -33,6 +33,7 @@ export class SystemVideoDeviceManagerComponent implements OnInit, OnDestroy {
   @Input() reload?: EventEmitter<void>;
   @Output() preview = new EventEmitter<PreviewArgs>();
   @Output() playback = new EventEmitter<PlaybackArgs>();
+  @Input() pagesize = 12;
 
   constructor() {}
 
@@ -73,8 +74,10 @@ export class SystemVideoDeviceManagerComponent implements OnInit, OnDestroy {
 
         if (data instanceof RegionTreeNode) {
           args.cameraId = data.Id;
+          args.cameraName = data.Name;
         } else {
           args.cameraId = data.ResourceId;
+          args.cameraName = data.ResourceName;
         }
 
         this.preview.emit(args);

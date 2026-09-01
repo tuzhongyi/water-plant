@@ -1,0 +1,21 @@
+<hw-card-statistic-1>
+  <div class="setting-config-skin">
+    <div class="card-head">
+      <div class="card-head-title">皮肤设置</div>
+    </div>
+    <div class="card-line"></div>
+    <div class="card-body no-foot">
+      <div class="forms">
+        <div class="form-item">
+          <div class="form-item-text">系统皮肤：</div>
+          <div class="form-item-value fill full">
+            <select [(ngModel)]="skin" (change)="on.skin()">
+              <option value="green">绿色</option>
+              <option value="blue">蓝色</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</hw-card-statistic-1>

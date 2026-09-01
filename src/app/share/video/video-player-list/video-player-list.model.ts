@@ -37,7 +37,7 @@ export class VideoPlayerListItem {
 
   playing = false;
 
-  private args?: IVideoPlayerArgs;
+  args?: IVideoPlayerArgs;
 
   resume() {
     if (this.args) {
@@ -51,10 +51,12 @@ export class VideoPlayerListItem {
   }
 
   preview(args: PreviewArgs) {
+    this.args = args;
     this.event.preview.emit(args);
     this.playing = true;
   }
   playback(args: PlaybackArgs) {
+    this.args = args;
     this.event.playback.emit(args);
     this.playing = true;
   }

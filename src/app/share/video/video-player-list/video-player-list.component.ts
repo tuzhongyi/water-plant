@@ -12,6 +12,8 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { VideoChannelViewGroup } from '../../../common/data-core/models/devices/video-channel-view-group.model';
+import { VideoChannelView } from '../../../common/data-core/models/devices/video-channel-view.model';
 import { VideoPlayerContentComponent } from '../video-player-content/video-player-content.component';
 import {
   IVideoPlayerArgs,
@@ -35,6 +37,8 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() playing = new EventEmitter<number>();
   @Output() stoping = new EventEmitter<number>();
+
+  @Input() getviewgroup?: EventEmitter<(e: VideoChannelViewGroup) => void>;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -130,12 +134,39 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
       });
       this.subs.add(sub);
     }
+    if (this.getviewgroup) {
+      this.subs.add(
+        this.getviewgroup.subscribe((callback) => {
+          callback(this.get.viewgroup());
+        }),
+      );
+    }
   }
 
   private get = {
     screen: (length: number) => {
       const n = Math.ceil(Math.sqrt(length));
       return n * n;
+    },
+    viewgroup: (): VideoChannelViewGroup => {
+      let group = new VideoChannelViewGroup();
+      group.ViewNumber = this.mode;
+      group.Views = [];
+      this.datas.forEach((item, index) => {
+        if (!item.playing) {
+          return;
+        }
+        let args = item.args;
+        if (args) {
+          let view = new VideoChannelView();
+          view.ViewNo = index + 1;
+          view.VideoChannelId = args.cameraId;
+          view.VideoChannelName = args.cameraName ?? '';
+          view.StreamType = args.stream;
+          group.Views.push(view);
+        }
+      });
+      return group;
     },
   };
 

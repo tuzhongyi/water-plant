@@ -19,7 +19,7 @@ import {
 } from '../tree-edit/tree-edit.model';
 import { TreeRegionBusiness } from '../tree-region/tree-region.business';
 import { TreeRegionArgs } from '../tree-region/tree-region.model';
-import { TreeRegionEditArgs } from './tree-region-edit.model';
+import { TreeRegionEditOutputArgs } from './tree-region-edit.model';
 
 @Component({
   selector: 'hw-tree-region-edit',
@@ -36,11 +36,11 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
   @Input() addRoot?: EventEmitter<void>;
   @Output() loaded = new EventEmitter<RegionTreeNode[]>();
   /** 新增子节点的操作结果 */
-  @Output() create = new EventEmitter<TreeRegionEditArgs>();
+  @Output() create = new EventEmitter<TreeRegionEditOutputArgs>();
   /** 修改节点的操作结果 */
-  @Output() update = new EventEmitter<TreeRegionEditArgs>();
+  @Output() update = new EventEmitter<TreeRegionEditOutputArgs>();
   /** 删除节点的操作结果 */
-  @Output() delete = new EventEmitter<TreeRegionEditArgs>();
+  @Output() delete = new EventEmitter<TreeRegionEditOutputArgs>();
   private _selected?: RegionTreeNode;
   /** 当前选中结点（双向绑定） */
   @Input()
@@ -125,11 +125,21 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
     return nodes.filter((n) => !n.parentId).map((n) => n.data as RegionTreeNode);
   }
 
-  /** 恢复展开状态：用户手动设置优先，否则默认全部展开 */
+  /** 恢复展开状态：用户手动设置优先，否则按默认深度 */
   private applyExpanded(nodes: TreeEditNode[]): void {
     for (const node of nodes) {
-      node.expanded = this.overrides.has(node.id) ? this.overrides.get(node.id)! : true;
+      node.expanded = this.overrides.has(node.id)
+        ? this.overrides.get(node.id)!
+        : this.expandDefault(node);
     }
+  }
+
+  /** 默认展开：筛选时按 filter 标记的展开状态，否则仅根节点 */
+  private expandDefault(node: TreeEditNode): boolean {
+    if (this.args.name) {
+      return (node.data as RegionTreeNode)?.expanded ?? true;
+    }
+    return node.level < 1;
   }
 
   /** 当前选中结点 → 扁平结点 id（用于高亮） */

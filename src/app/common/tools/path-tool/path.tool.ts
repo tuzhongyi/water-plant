@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConfigRequestService } from '../../data-core/request/config/config-request.service';
+import { GlobalStorage } from '../../storage/global.storage';
 import { ConfigPath } from './config.path';
 import { ThreePathTool } from './path-3d/3d.path';
 import { SkinPathImageTool } from './path-image.tool';
@@ -14,11 +14,11 @@ export class PathTool {
   }
   static three = new ThreePathTool();
 
-  constructor(private config: ConfigRequestService) {}
+  constructor(private global: GlobalStorage) {}
 
   get marker() {
-    return this.config.get().then((x) => {
-      return new MarkerPathTool(x.skin);
+    return this.global.skin.then((skin) => {
+      return new MarkerPathTool(skin);
     });
   }
 }
