@@ -36,7 +36,7 @@
         <span class="hw-tree-actions" (click)="$event.stopPropagation()">
           @if (node.editable && editingId !== node.id) {
             <button
-              class="button hw-tree-action-btn hw-tree-action-edit green"
+              class="button hw-tree-action-btn hw-tree-action-edit primary"
               title="修改"
               (click)="onEdit(node)"
             >
@@ -45,7 +45,7 @@
           }
           @if (node.addable && addingParentId !== node.id) {
             <button
-              class="button hw-tree-action-btn hw-tree-action-add green"
+              class="button hw-tree-action-btn hw-tree-action-add primary"
               title="添加"
               (click)="onAdd(node)"
             >
@@ -54,7 +54,7 @@
           }
           @if (node.deletable) {
             <button
-              class="button hw-tree-action-btn hw-tree-action-delete green"
+              class="button hw-tree-action-btn hw-tree-action-delete primary"
               title="删除"
               (click)="onDelete(node)"
             >

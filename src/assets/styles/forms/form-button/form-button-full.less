@@ -7,35 +7,35 @@
   transition: all 0.5s;
 
 
-  &.green {
-    border: solid var(--teal) 1px;
+  &.primary {
+    border: solid var(--secondary) 1px;
     height: 34px;
     padding: 0 10px;
     font-size: 18px;
 
     &:hover {
-      border-color: @alarm-soft;
-      background-color: rgba(@red-hover, 0.5);
+      border-color: var(--button-hover-border);
+      background-color: var(--button-hover-bg);
     }
 
     &.selected {
-      border-color: rgba(@alarm, 0.7);
-      background-color: rgba(@alarm-soft, 0.5);
+      border-color: var(--button-selected-border);
+      background-color: var(--button-selected-bg);
     }
   }
 
-  &.greendark {
-    border: solid var(--teal) 1px;
+  &.primarydark {
+    border: solid var(--secondary) 1px;
     color: @white;
-    background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.5);
+    background-color: rgba(var(--surface-dark-r), var(--surface-dark-g), var(--surface-dark-b), 0.5);
     cursor: pointer;
     height: 34px;
     font-size: 18px;
     padding: 0 10px;
 
     &:hover {
-      border-color: @alarm-soft;
-      background-color: rgba(@red-hover, 0.5);
+      border-color: var(--button-hover-border);
+      background-color: var(--button-hover-bg);
     }
   }
 

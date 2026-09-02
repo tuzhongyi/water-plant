@@ -41,7 +41,7 @@ export class MessageBar {
       text: text,
       okButton: '确定',
       cancelButton: '取消',
-      okButtonClass: 'custom green  p-r-20 p-l-20',
+      okButtonClass: 'custom primary  p-r-20 p-l-20',
       cancelButtonClass: 'switch blue p-r-20 p-l-20',
       top: -1,
       confirm: function () {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from '../data-core/models/security/user/user.model';
 import { ConfigRequestService } from '../data-core/request/config/config-request.service';
+import { LocationTool } from '../tools/location.tool';
 import { PromiseValue } from '../tools/value-tool/value.promise';
 import { LocalStorage } from './local.storage';
 
@@ -18,6 +19,13 @@ export class GlobalStorage {
   ) {}
 
   get skin(): Promise<'green' | 'blue'> {
+    if (location.search) {
+      let params = LocationTool.query.get(location.search);
+      let skin = params['skin'];
+      if (skin === 'green' || skin === 'blue') {
+        return Promise.resolve(skin);
+      }
+    }
     let cached = this.local.config.skin.get();
     if (cached === 'green' || cached === 'blue') {
       return Promise.resolve(cached);

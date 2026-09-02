@@ -15,16 +15,16 @@
     padding-right: 10px;
 
     &:hover {
-      background-color: rgba(@alarm, 0.4);
-      color: @alarm-light;
+      background-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.4);
+      color: var(--button-hover-border);
     }
 
     &.selected {
-      background-color: rgba(@alarm, 0.6);
+      background-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.6);
       color: @white;
 
       &:hover {
-        color: @alarm-light;
+        color: var(--button-hover-border);
       }
     }
   }
@@ -56,7 +56,7 @@
     margin-right: 6px;
     flex-shrink: 0;
     font-size: 20px;
-    color: var(--green);
+    color: var(--primary);
   }
 
   &-label {
@@ -102,6 +102,6 @@
   color: var(--color, inherit);
 
   &:hover {
-    color: @white !important;
+    color: @white  !important;
   }
 }

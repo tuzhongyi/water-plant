@@ -165,17 +165,17 @@
   }
 
   .datetimepicker table tr td.minute:hover {
-    background: var(--teal);
+    background: var(--secondary);
     cursor: pointer;
   }
 
   .datetimepicker table tr td.hour:hover {
-    background: var(--teal);
+    background: var(--secondary);
     cursor: pointer;
   }
 
   .datetimepicker table tr td.day:hover {
-    background: var(--teal);
+    background: var(--secondary);
     cursor: pointer;
   }
 
@@ -283,7 +283,7 @@
   .datetimepicker table tr td.active:hover[disabled],
   .datetimepicker table tr td.active.disabled[disabled],
   .datetimepicker table tr td.active.disabled:hover[disabled] {
-    background-color: @alarm-soft;
+    background-color: var(--button-hover-bg);
   }
 
   .datetimepicker table tr td.active:active,
@@ -294,7 +294,7 @@
   .datetimepicker table tr td.active:hover.active,
   .datetimepicker table tr td.active.disabled.active,
   .datetimepicker table tr td.active.disabled:hover.active {
-    background-color: rgba(@alarm-soft, 0.5);
+    background-color: var(--button-hover-bg);
   }
 
   .datetimepicker table tr td span {
@@ -332,7 +332,7 @@
   }
 
   .datetimepicker table tr td span:hover {
-    background: var(--teal);
+    background: var(--secondary);
   }
 
   .datetimepicker table tr td span.disabled,
@@ -393,7 +393,7 @@
   .datetimepicker table tr td span.active:hover.active,
   .datetimepicker table tr td span.active.disabled.active,
   .datetimepicker table tr td span.active.disabled:hover.active {
-    background-color: rgba(@alarm-soft, 0.5);
+    background-color: var(--button-hover-bg);
   }
 
   .datetimepicker table tr td span.old {
@@ -415,7 +415,7 @@
 
   .datetimepicker thead tr:first-child th:hover,
   .datetimepicker tfoot th:hover {
-    background: var(--teal);
+    background: var(--secondary);
   }
 
   .input-append.date .add-on i,
@@ -429,7 +429,7 @@
 
   .datetimepicker.dropdown-menu {
     top: auto;
-    border: 1px solid var(--teal);
+    border: 1px solid var(--secondary);
   }
 
   .datetimepicker .datetimepicker-hours .table-condensed .hour legend {
@@ -452,7 +452,7 @@
   }
 
   .datetimepicker table tbody .week-tr {
-    background: linear-gradient(to bottom, @blue-2ac, var(--teal));
+    background: linear-gradient(to bottom, @blue-2ac, var(--secondary));
 
   }
 

@@ -122,7 +122,7 @@ export class TreeMapElementComponent implements AfterViewInit, OnInit, OnDestroy
   private addElementNode(element: GeoMapElement, parentTypeId: number): void {
     const nodeId = `el_${parentTypeId}_${element.Id}_${this.nodeIndex++}`;
     const icon = IconTool.MapElementType(element.ElementType) || 'howell-icon-map-pin';
-    const btn = `<div class="button hw-tree-action-btn hw-tree-action-position green" title="定位">
+    const btn = `<div class="button hw-tree-action-btn hw-tree-action-position primary" title="定位">
                    <i class="glyphicon glyphicon-map-marker"></i>
                  </div>`;
 

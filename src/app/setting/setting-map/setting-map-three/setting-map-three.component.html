@@ -27,7 +27,7 @@
       <div class="button-group">
         @for (item of building.datas(); track $index) {
           <button
-            class="button-border green"
+            class="button-border primary"
             (click)="manager.building.select(item)"
             (dblclick)="manager.building.expand(item)"
           >
@@ -41,10 +41,10 @@
   @if (floor.datas().length > 0) {
     <div class="setting-map-three-floor">
       <div class="button-group">
-        <button class="button-border green" (click)="floor.on.back()">返回</button>
+        <button class="button-border primary" (click)="floor.on.back()">返回</button>
         @for (item of floor.datas(); track $index) {
           <button
-            class="button-border green"
+            class="button-border primary"
             [class.selected]="floor.selected()?.Id == item.Id"
             (click)="floor.on.select(item)"
           >

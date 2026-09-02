@@ -19,21 +19,21 @@
       <div class="system-main-record-filter">
         <div class="button-group">
           <button
-            class="button-border green"
+            class="button-border primary"
             [class.selected]="!table.args.type"
             (click)="table.on.filter()"
           >
             全部报警
           </button>
           <button
-            class="button-border green"
+            class="button-border primary"
             [class.selected]="table.args.type == Type.device"
             (click)="table.on.filter(Type.device)"
           >
             设备故障
           </button>
           <button
-            class="button-border green"
+            class="button-border primary"
             [class.selected]="table.args.type == Type.alarm"
             (click)="table.on.filter(Type.alarm)"
           >

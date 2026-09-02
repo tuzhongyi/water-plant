@@ -42,7 +42,7 @@
     /* 置于底层 */
     z-index: -1;
     /* 设置背景色 */
-    background: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
+    background: rgba(var(--secondary-2-r), var(--secondary-2-g), var(--secondary-2-b), 0.3);
 
     /* 设置裁剪 */
     clip-path: @button-path-1;
@@ -76,7 +76,7 @@
     /* 置于底层 */
     z-index: -1;
     /* 设置背景色 */
-    background: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
+    background: rgba(var(--secondary-2-r), var(--secondary-2-g), var(--secondary-2-b), 0.3);
 
     /* 设置裁剪 */
     clip-path: @button-path-1;
@@ -110,7 +110,7 @@
   width: max-content;
   padding: 0 15px;
   position: relative;
-  background: var(--teal);
+  background: var(--secondary);
   color: @blue-4a;
   /* 进行裁剪 */
   clip-path: @button-path-1;
@@ -129,7 +129,7 @@
     /* 置于底层 */
     z-index: -1;
     /* 设置背景色 */
-    background: rgba(var(--teal-2-r), var(--teal-2-g), var(--teal-2-b), 0.3);
+    background: rgba(var(--secondary-2-r), var(--secondary-2-g), var(--secondary-2-b), 0.3);
 
     /* 设置裁剪 */
     clip-path: @button-path-1;
@@ -154,14 +154,14 @@
   color: inherit;
 }
 
-.button-clip-green {
+.button-clip-primary {
   height: 36px;
   min-width: 100px;
   width: max-content;
   padding: 0 15px;
   position: relative;
   /* 外框颜色 */
-  background: var(--green);
+  background: var(--primary);
   /* 进行裁剪 */
   clip-path: @button-path-1;
   cursor: pointer;
@@ -179,29 +179,29 @@
     /* 置于底层 */
     z-index: -1;
     /* 设置背景色 */
-    background: var(--teal-4);
+    background: var(--surface-4);
 
     /* 设置裁剪 */
     clip-path: @button-path-1;
   }
 
   &:hover {
-    /* 外框颜色，模拟 .button-border.green:hover 的 border-color */
-    background: @alarm-soft;
+    /* 外框颜色，模拟 .button-border.primary:hover 的 border-color */
+    background: var(--button-hover-border);
 
     &::after {
-      /* 背景色，模拟 .button-border.green:hover 的 background-color */
-      background: @red-dark;
+      /* 背景色，模拟 .button-border.primary:hover 的 background-color */
+      background: var(--button-clip-hover-bg);
     }
   }
 
   &.selected {
-    /* 外框颜色，模拟 .button-border.green:hover 的 border-color */
-    background: @alarm-soft;
+    /* 外框颜色，模拟 .button-border.primary:hover 的 border-color */
+    background: var(--button-hover-border);
 
     &::after {
-      /* 背景色，模拟 .button-border.green:hover 的 background-color */
-      background: @red-dark;
+      /* 背景色，模拟 .button-border.primary:hover 的 background-color */
+      background: var(--button-clip-selected-bg);
     }
   }
 }

@@ -163,13 +163,13 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
         const ch = node.data as VideoChannel | DB31Channel;
         const isBound = this.elements.some((b) => b.ElementId === ch.Id);
         node.actionsHtml = isBound
-          ? `<div class="button hw-tree-action-btn hw-tree-action-position green" title="定位">
+          ? `<div class="button hw-tree-action-btn hw-tree-action-position primary" title="定位">
                <i class="glyphicon glyphicon-map-marker"></i>
              </div>
              <div class="button hw-tree-action-btn hw-tree-action-unbind redlight" title="解绑">
                <i class="howell-icon-Unlink"></i>
              </div>`
-          : `<div class="button hw-tree-action-btn hw-tree-action-bind green" title="绑定">
+          : `<div class="button hw-tree-action-btn hw-tree-action-bind primary" title="绑定">
                <i class="howell-icon-Link"></i>
              </div>`;
       }
@@ -225,13 +225,13 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
     const nodeId = `ch_${deviceId}_${chId}_${this.nodeIndex++}`;
     const isBound = this.elements.some((b) => b.ElementId === chId);
     const btn = isBound
-      ? `<div class="button hw-tree-action-btn hw-tree-action-position green" title="定位">
+      ? `<div class="button hw-tree-action-btn hw-tree-action-position primary" title="定位">
            <i class="glyphicon glyphicon-map-marker"></i>
          </div>
          <div class="button hw-tree-action-btn hw-tree-action-unbind redlight" title="解绑">
            <i class="howell-icon-Unlink"></i>
          </div>`
-      : `<div class="button hw-tree-action-btn hw-tree-action-bind green" title="绑定">
+      : `<div class="button hw-tree-action-btn hw-tree-action-bind primary" title="绑定">
            <i class="howell-icon-Link"></i>
          </div>`;
 

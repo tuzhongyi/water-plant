@@ -30,7 +30,7 @@
       <app-time-control [model]="duration.end" [beginModel]="duration.begin"></app-time-control>
     </div>
     <div class="video-player-container-head-item">
-      <button class="button-border green" (click)="playback()">开始回放</button>
+      <button class="button-border primary" (click)="playback()">开始回放</button>
     </div>
   </div>
   <div class="video-player-container-body" [class.playback]="mode === PlayMode.vod">

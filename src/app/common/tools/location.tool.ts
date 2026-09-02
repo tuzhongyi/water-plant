@@ -1,5 +1,18 @@
 export class LocationTool {
   static query = {
+    get: (url: string): Record<string, string> => {
+      let index = url.indexOf('?');
+      let search = url.substring(index + 1);
+      let result: Record<string, string> = {};
+      let keyValues = search.split('&');
+      for (let i = 0; i < keyValues.length; i++) {
+        let keyValue = keyValues[i].split('=');
+        let key = keyValue[0];
+        let value = keyValue[1];
+        result[key] = value;
+      }
+      return result;
+    },
     decode(url: string) {
       let index = url.indexOf('?');
       let search = url.substring(index + 1);

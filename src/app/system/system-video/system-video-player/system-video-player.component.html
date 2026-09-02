@@ -13,7 +13,7 @@
     <div class="card-head system-video-player-head">
       <div class="button-group">
         <button
-          class="button-border green"
+          class="button-border primary"
           [class.selected]="player.mode == 1"
           title="单画面"
           (click)="player.on.mode(1)"
@@ -21,7 +21,7 @@
           <i class="mdi mdi-stop"></i>
         </button>
         <button
-          class="button-border green"
+          class="button-border primary"
           [class.selected]="player.mode == 4"
           title="四画面"
           (click)="player.on.mode(4)"
@@ -29,7 +29,7 @@
           <i class="mdi mdi-view-grid"></i>
         </button>
         <button
-          class="button-border green"
+          class="button-border primary"
           [class.selected]="player.mode == 9"
           title="九画面"
           (click)="player.on.mode(9)"
@@ -37,7 +37,7 @@
           <i class="mdi mdi-apps"></i>
         </button>
         <button
-          class="button-border green"
+          class="button-border primary"
           [class.selected]="player.mode == 16"
           title="十六画面"
           (click)="player.on.mode(16)"
@@ -47,7 +47,7 @@
       </div>
       <div class="button-group">
         <button
-          class="button-border green"
+          class="button-border primary"
           [title]="expand ? '还原' : '展开'"
           (click)="player.on.expand()"
         >
@@ -58,7 +58,7 @@
           }
         </button>
         <button
-          class="button-border green"
+          class="button-border primary"
           [title]="fullscreen ? '还原' : '全屏'"
           (click)="player.on.fullscreen()"
         >

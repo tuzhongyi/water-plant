@@ -10,7 +10,7 @@
   .mat-tree-node,
   .mat-nested-tree-node {
     color: @white;
-    background-color: rgba(var(--green-r), var(--green-g), var(--green-b), 0.3);
+    background-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.3);
     font-size: 18px;
     font-weight: normal;
     cursor: pointer;
@@ -19,12 +19,12 @@
     margin-bottom: 10px;
 
     &:hover {
-      background-color: rgba(@alarm, 0.4);
-      color: @alarm-light;
+      background-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.4);
+      color: var(--button-hover-border);
     }
 
     &.high-light {
-      background-color: rgba(@alarm, 0.6);
+      background-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.6);
     }
 
     &.hide {

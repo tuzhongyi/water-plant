@@ -70,7 +70,7 @@
   </div>
   <div class="system-main-three-full">
     <button
-      class="button-border green-dark"
+      class="button-border primary-dark"
       [title]="manager.fulled ? '还原' : '满屏'"
       (click)="manager.button.full()"
     >
@@ -83,17 +83,17 @@
   </div>
   <!-- <div class="system-main-three-viewer">
     <div></div>
-    <button class="button-border green-dark" (click)="manager.button.view(FitView.Top)">
+    <button class="button-border primary-dark" (click)="manager.button.view(FitView.Top)">
       <i class="howell-icon-top_view"></i>
     </button>
     <div></div>
-    <button class="button-border green-dark" (click)="manager.button.view(FitView.Left)">
+    <button class="button-border primary-dark" (click)="manager.button.view(FitView.Left)">
       <i class="howell-icon-left_view"></i>
     </button>
-    <button class="button-border green-dark" (click)="manager.button.view()">
+    <button class="button-border primary-dark" (click)="manager.button.view()">
       <i class="howell-icon-view"></i>
     </button>
-    <button class="button-border green-dark" (click)="manager.button.view(FitView.Right)">
+    <button class="button-border primary-dark" (click)="manager.button.view(FitView.Right)">
       <i class="howell-icon-right_view"></i>
     </button>
   </div> -->
@@ -103,7 +103,7 @@
       <div class="button-group">
         @for (item of building.datas(); track $index) {
           <button
-            class="button-border green-dark"
+            class="button-border primary-dark"
             (click)="manager.building.select(item)"
             (dblclick)="manager.building.expand(item)"
           >
@@ -117,10 +117,10 @@
   @if (floor.datas().length > 0) {
     <div class="system-main-three-floor">
       <div class="button-group">
-        <button class="button-border green-dark" (click)="floor.on.back()">返回</button>
+        <button class="button-border primary-dark" (click)="floor.on.back()">返回</button>
         @for (item of floor.datas(); track $index) {
           <button
-            class="button-border green-dark"
+            class="button-border primary-dark"
             [class.selected]="floor.selected()?.Id == item.Id"
             (click)="floor.on.select(item)"
           >

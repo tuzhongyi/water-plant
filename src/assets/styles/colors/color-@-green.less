@@ -1,0 +1,207 @@
+html {
+  --white: @white;
+  --primary: @green;
+  --primary-light: @greenlight;
+  --green: @green;
+  --red: @red;
+  --redlight: @redlight;
+  --orange: @orange;
+  --cyan: @cyan;
+  --yellow: @yellow;
+  --blue: @blue;
+  --gray: @gray;
+  --pink: @pink;
+  --purple: @purple;
+  --sky: @sky;
+
+  --sub: @redlight;
+  --sub-r: 244;
+  --sub-r: 104;
+  --sub-r: 85;
+
+  --color: var(--white);
+  --color-r: 255;
+  --color-g: 255;
+  --color-b: 255;
+
+
+  /* RGB 分量变量 */
+  --normal-r: 221;
+  --normal-g: 244;
+  --normal-b: 255;
+
+  --white-r: 255;
+  --white-g: 255;
+  --white-b: 255;
+
+  --primary-r: 23;
+  --primary-g: 241;
+  --primary-b: 198;
+
+  --primary-light-r: 193;
+  --primary-light-g: 255;
+  --primary-light-b: 245;
+
+  --green-r: 23;
+  --green-g: 241;
+  --green-b: 198;
+
+  --red-r: 247;
+  --red-g: 61;
+  --red-b: 61;
+
+  --redlight-r: 255;
+  --redlight-g: 118;
+  --redlight-b: 44;
+
+  --orange-r: 255;
+  --orange-g: 186;
+  --orange-b: 0;
+
+  --cyan-r: 0;
+  --cyan-g: 245;
+  --cyan-b: 255;
+
+  --yellow-r: 245;
+  --yellow-g: 200;
+  --yellow-b: 66;
+
+  --blue-r: 30;
+  --blue-g: 144;
+  --blue-b: 255;
+
+  --gray-r: 102;
+  --gray-g: 102;
+  --gray-b: 102;
+
+  --pink-r: 232;
+  --pink-g: 121;
+  --pink-b: 249;
+
+  --purple-r: 167;
+  --purple-g: 139;
+  --purple-b: 250;
+
+  --sky-r: 56;
+  --sky-g: 189;
+  --sky-b: 248;
+
+
+  /* ========== 皮肤主题色（green 默认，blue 由 html[data-skin='blue'] 覆盖） ========== */
+  --normal: #ddf4ff;
+
+  --secondary: #07a990;
+  --secondary-r: 7;
+  --secondary-g: 169;
+  --secondary-b: 144;
+
+  --surface-4: #0d515a;
+  --surface-4-r: 13;
+  --surface-4-g: 81;
+  --surface-4-b: 90;
+
+  --surface-dark: #006764;
+  --surface-dark-r: 0;
+  --surface-dark-g: 103;
+  --surface-dark-b: 100;
+
+  --surface: #043d40;
+  --surface-r: 4;
+  --surface-g: 61;
+  --surface-b: 64;
+
+  --surface-option: #003a3b;
+  --surface-option-r: 0;
+  --surface-option-g: 58;
+  --surface-option-b: 59;
+
+  --surface-row: #0e3d34;
+  --surface-row-r: 14;
+  --surface-row-g: 61;
+  --surface-row-b: 52;
+
+  --secondary-2: #06999c;
+  --secondary-2-r: 6;
+  --secondary-2-g: 153;
+  --secondary-2-b: 156;
+
+  --surface-3: #064445;
+  --surface-3-r: 6;
+  --surface-3-g: 68;
+  --surface-3-b: 69;
+
+  --muted: #498e84;
+  --muted-r: 73;
+  --muted-g: 142;
+  --muted-b: 132;
+
+  --surface-deep: #053134;
+  --surface-deep-r: 5;
+  --surface-deep-g: 49;
+  --surface-deep-b: 52;
+
+  --surface-deepest: #00150f;
+
+  --page-bg: #020e0e;
+  --page-bg-r: 2;
+  --page-bg-g: 14;
+  --page-bg-b: 14;
+
+  --steel: #7fb3c8;
+  --steel-r: 127;
+  --steel-g: 179;
+  --steel-b: 200;
+
+  /* ========== 按钮 hover/selected（green 默认：红系列） ========== */
+  --button-hover-border: rgb(244, 104, 85);
+  /* @alarm-soft */
+  --button-hover-border-soft: rgba(244, 104, 85, 0.3);
+  /* @alarm-soft 0.3 */
+  --button-hover-bg: rgba(194, 83, 68, 0.5);
+  /* @red-hover 0.5 */
+  --button-selected-border: rgba(239, 111, 89, 0.7);
+  /* @alarm 0.7 */
+  --button-selected-bg: rgba(244, 104, 85, 0.5);
+  /* @alarm-soft 0.5 */
+  --button-clip-hover-bg: #7d4237;
+  /* @red-dark */
+  --button-clip-selected-bg: #7d4237;
+  /* @red-dark */
+
+  --button-hover-border-r: 244;
+  --button-hover-border-g: 104;
+  --button-hover-border-b: 85;
+
+  --button-hover-bg-r: 194;
+  --button-hover-bg-g: 83;
+  --button-hover-bg-b: 68;
+
+  /* ========== 主题图片（green 默认，blue 由 html[data-skin='blue'] 覆盖） ========== */
+  --img-select: url(/assets/images/green/select.svg);
+  --img-select-white: url(/assets/images/green/select-white.svg);
+  --img-bg: url(/assets/images/green/bg.jpg);
+  --img-background-1: url(/assets/images/green/background-1.png);
+  --img-bg-body: url(/assets/images/green/bg-body.png);
+  --img-bg-header: url(/assets/images/green/bg-header.png);
+  --img-bg-header-1: url(/assets/images/green/bg-header-1.png);
+  --img-login-panel: url(/assets/images/green/login/login-panel.png);
+  --img-login-btn: url(/assets/images/green/login/login-btn.png);
+  --img-login-btn-hover: url(/assets/images/green/login/login-btn-hover.png);
+  --img-login-btn-active: url(/assets/images/green/login/login-btn-active.png);
+  --img-map-button: url(/assets/images/green/map/button-map.png);
+  --img-map-button-hover: url(/assets/images/green/map/button-map-hover.png);
+  --img-map-button-selected: url(/assets/images/green/map/button-map-selected.png);
+  --img-window-border: url(/assets/images/green/window/window-border.png);
+  --img-card: url(/assets/images/green/card/card.png);
+  --img-stat-card-1: url(/assets/images/green/statistic/card/statistic-card-1.png);
+  --img-stat-card-2: url(/assets/images/green/statistic/card/statistic-card-2.png);
+  --img-device-online: url(/assets/images/green/statistic/device-state/statistic-device-state-online.png);
+  --img-device-offline: url(/assets/images/green/statistic/device-state/statistic-device-state-offline.png);
+  --img-device-bg: url(/assets/images/green/statistic/device-state/statistic-device-state-background.png);
+  --img-alarm-top: url(/assets/images/green/alarm/top.png);
+  --img-alarm-bottom: url(/assets/images/green/alarm/bottom.png);
+  --img-alarm-tl: url(/assets/images/green/alarm/border/t-l.png);
+  --img-alarm-tr: url(/assets/images/green/alarm/border/t-r.png);
+  --img-alarm-bl: url(/assets/images/green/alarm/border/b-l.png);
+  --img-alarm-br: url(/assets/images/green/alarm/border/b-r.png);
+}

@@ -19,7 +19,7 @@
 
     height: calc(@head-height + @gap);
     width: 100%;
-    border-bottom: 1px solid var(--teal-dark);
+    border-bottom: 1px solid var(--surface-dark);
     box-sizing: content-box;
 
 
@@ -36,13 +36,13 @@
       padding-bottom: @gap;
 
       &.selected {
-        color: @redlight;
-        border-bottom: solid 2px @redlight;
-        text-shadow: rgba(@redlight, 0.87) 0px 0 10px;
+        color: var(--sub);
+        border-bottom: solid 2px var(--sub);
+        text-shadow: rgba(var(--sub-r), var(--sub-g), var(--sub-b), 0.87) 0px 0 10px;
 
 
         &:hover {
-          text-shadow: @redlight 0px 0 10px;
+          text-shadow: var(--sub) 0px 0 10px;
         }
       }
     }

@@ -12,16 +12,16 @@
     background-color: rgba(var(--normal-r), var(--normal-g), var(--normal-b), 0.25);
   }
 
-  &.green {
-    color: @green;
-    border: 1px solid rgba(@green, 0.5);
+  &.primary {
+    color: var(--primary);
+    border: 1px solid rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
 
     &:hover {
-      border-color: @green;
+      border-color: var(--primary);
     }
 
     &.selected {
-      background-color: rgba(@green, 0.25);
+      background-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.25);
     }
   }
 

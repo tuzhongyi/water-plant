@@ -8,7 +8,7 @@
   flex-wrap: wrap;
 
   &-screen {
-    border: 2px solid var(--teal-dark);
+    border: 2px solid var(--surface-dark);
     width: calc(100% - 2px * 1);
     height: calc(100% - 2px * 1);
     cursor: pointer;
@@ -30,7 +30,7 @@
     }
 
     &.selected {
-      border-color: rgba(@alarm, 0.7);
+      border-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.7);
     }
   }
 }

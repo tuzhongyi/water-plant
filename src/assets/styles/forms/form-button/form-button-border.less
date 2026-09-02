@@ -18,65 +18,65 @@
   }
 
   &.full {
-    background-color: var(--teal);
+    background-color: var(--secondary);
 
     &:hover {
-      border: 1px solid @alarm-soft;
-      background-color: rgba(@red-hover, 0.5);
+      border: 1px solid var(--button-hover-border);
+      background-color: var(--button-hover-bg);
     }
   }
 
 
-  &.green,
-  &.green-dark {
-    border: solid var(--teal) 1px;
+  &.primary,
+  &.primary-dark {
+    border: solid var(--secondary) 1px;
     color: white;
 
 
     &:hover {
-      border-color: @alarm-soft;
-      background-color: rgba(@red-hover, 0.5);
+      border-color: var(--button-hover-border);
+      background-color: var(--button-hover-bg);
     }
 
     &.selected {
 
-      border-color: rgba(@alarm, 0.7);
-      background-color: rgba(@alarm-soft, 0.5);
+      border-color: var(--button-selected-border);
+      background-color: var(--button-selected-bg);
     }
   }
 
-  &.green-dark {
+  &.primary-dark {
 
     text-shadow: none;
     border-radius: 3px;
-    border-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.7);
-    background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.3);
+    border-color: rgba(var(--surface-dark-r), var(--surface-dark-g), var(--surface-dark-b), 0.7);
+    background-color: rgba(var(--surface-dark-r), var(--surface-dark-g), var(--surface-dark-b), 0.3);
 
     &:hover {
 
-      border-color: rgba(@alarm-soft, 0.3);
-      background-color: rgba(@red-hover, 0.5);
+      border-color: var(--button-hover-border-soft);
+      background-color: var(--button-hover-bg);
     }
 
     &.selected {
 
-      border-color: rgba(@alarm, 0.7);
-      background-color: rgba(@alarm-soft, 0.5);
+      border-color: var(--button-selected-border);
+      background-color: var(--button-selected-bg);
     }
   }
 
-  &.greendark {
-    border: solid var(--teal) 1px;
+  &.primarydark {
+    border: solid var(--secondary) 1px;
     color: @white;
-    background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.5);
+    background-color: rgba(var(--surface-dark-r), var(--surface-dark-g), var(--surface-dark-b), 0.5);
     cursor: pointer;
     height: 34px;
     font-size: 18px;
     padding: 0 10px;
 
     &:hover {
-      border-color: @alarm-soft;
-      background-color: rgba(@red-hover, 0.5);
+      border-color: var(--button-hover-border);
+      background-color: var(--button-hover-bg);
     }
   }
 

@@ -81,13 +81,13 @@
 
     width: 22px;
     height: 22px;
-    color: var(--green);
+    color: var(--primary);
 
     display: flex;
     justify-content: center;
     align-items: center;
 
-    border: solid var(--teal) 1px;
+    border: solid var(--secondary) 1px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 16px;
@@ -95,9 +95,9 @@
     transition: 0.4s;
 
     &:hover {
-      border-color: @alarm-soft;
+      border-color: var(--button-hover-bg);
       background-color: rgba(@red-hover, 0.5);
-      color: @alarm-light;
+      color: var(--button-hover-border);
     }
   }
 }

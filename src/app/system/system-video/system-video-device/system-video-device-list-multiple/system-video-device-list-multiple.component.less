@@ -7,15 +7,15 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--teal);
+  border: 1px solid var(--secondary);
 
   &-page {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: @page-height;
-    border-top: 1px solid var(--teal);
-    background: rgba(var(--green-r), var(--green-g), var(--green-b), 0.3);
+    border-top: 1px solid var(--secondary);
+    background: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.3);
 
     &-actions {
       display: flex;
@@ -24,7 +24,7 @@
 
       button {
         padding: 0;
-        color: var(--green);
+        color: var(--primary);
         cursor: pointer;
       }
     }
@@ -48,16 +48,16 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: rgba(var(--teal-dark-r), var(--teal-dark-g), var(--teal-dark-b), 0.3);
+      background-color: rgba(var(--surface-dark-r), var(--surface-dark-g), var(--surface-dark-b), 0.3);
       cursor: pointer;
 
       &:hover {
-        background-color: rgba(@alarm, 0.4);
-        color: @alarm-light;
+        background-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.4);
+        color: var(--button-hover-border);
       }
 
       &.selected {
-        background-color: rgba(@alarm, 0.6);
+        background-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.6);
         color: @white;
       }
     }
