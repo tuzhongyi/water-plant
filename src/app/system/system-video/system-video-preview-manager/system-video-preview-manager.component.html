@@ -3,31 +3,54 @@
     <div class="system-video-preview-source-device">
       <hw-system-video-device-manager
         [pagesize]="6"
+        [regionconfigable]="true"
         [reload]="device.reload"
-        (config)="window.config.show = true"
+        [selected]="device.selected"
+        (selectedChange)="device.on.select($event)"
+        (config)="window.config.show.set(true)"
         (preview)="device.on.preview($event)"
       ></hw-system-video-device-manager>
     </div>
     <div class="system-video-preview-source-viewgroup">
-      <hw-system-video-view-group-manager></hw-system-video-view-group-manager>
+      <hw-system-video-view-group-manager
+        [load]="viewgroup.load"
+        [selected]="viewgroup.selected"
+        (selectedChange)="viewgroup.on.select($event)"
+        (play)="viewgroup.on.play($event)"
+        (update)="viewgroup.on.update($event)"
+        (delete)="viewgroup.on.delete($event)"
+      ></hw-system-video-view-group-manager>
     </div>
   </div>
   <div class="system-video-preview-player" [class.full]="player.expand">
     <hw-system-video-player
       [preview]="player.preview"
-      [getviewgroup]="player.view.get"
+      [grouppreview]="player.viewgroup"
       [(expand)]="player.expand"
+      [(screen)]="player.screen"
+      (viewgroup)="viewgroup.on.save($event)"
+      [viewgroupable]="true"
     ></hw-system-video-player>
   </div>
 </div>
-
-<app-window
-  [model]="window.config"
-  [style]="window.config.style"
-  [title]="window.config.title"
-  (OnClosing)="window.config.on.close()"
->
-  <hw-system-video-device-region-config
-    (change)="window.config.changed = true"
-  ></hw-system-video-device-region-config>
-</app-window>
+@if (window.config.show()) {
+  <app-window
+    [model]="window.config"
+    [style]="window.config.style"
+    [title]="window.config.title"
+    (OnClosing)="window.config.on.close()"
+  >
+    <hw-system-video-device-region-config
+      (change)="window.config.changed = true"
+    ></hw-system-video-device-region-config>
+  </app-window>
+}
+@if (window.viewgroup.delete.show()) {
+  <confirm-window
+    [model]="window.viewgroup.delete"
+    [title]="window.viewgroup.delete.title"
+    [content]="window.viewgroup.delete.content"
+    (ok)="window.viewgroup.delete.on.ok()"
+    (cancel)="window.viewgroup.delete.on.cancel()"
+  ></confirm-window>
+}

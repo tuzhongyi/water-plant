@@ -1,0 +1,47 @@
+<hw-card-statistic-1>
+  <div class="system-video-playback-control">
+    <div class="card-head">
+      <div class="card-head-title">回放时间</div>
+    </div>
+    <div class="card-line"></div>
+    <div class="card-body no-foot">
+      <div class="forms">
+        <div class="form-item">
+          <div class="form-item-text">选择日期：</div>
+          <div class="form-item-value fill">
+            <date-time-control
+              [format]="'yyyy-MM-dd'"
+              [startView]="DateTimePickerView.month"
+              [minView]="DateTimePickerView.month"
+              [(date)]="date"
+            ></date-time-control>
+          </div>
+        </div>
+        <!-- <div class="form-item">
+          <div class="form-item-text">开始时间：</div>
+          <div class="form-item-value fill">
+            <app-time-control [(time)]="duration.begin" [end]="duration.end"></app-time-control>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="form-item-text">结束时间：</div>
+          <div class="form-item-value fill">
+            <app-time-control [(time)]="duration.end" [begin]="duration.begin"></app-time-control>
+          </div>
+        </div> -->
+        <div class="form-item">
+          <div class="form-item-text">选择时间：</div>
+          <div class="form-item-value time">
+            <app-time-control [(time)]="duration.begin" [end]="duration.end"></app-time-control>到
+            <app-time-control [(time)]="duration.end" [begin]="duration.begin"></app-time-control>
+          </div>
+        </div>
+        <div class="form-item fill submit">
+          <div class="form-item-value fill">
+            <button (click)="on.playback()" class="button-border primary">开始回放</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</hw-card-statistic-1>

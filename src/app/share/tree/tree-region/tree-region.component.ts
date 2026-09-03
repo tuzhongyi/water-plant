@@ -3,9 +3,12 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   Output,
   signal,
+  SimpleChange,
+  SimpleChanges,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
@@ -20,7 +23,7 @@ import { TreeRegionArgs } from './tree-region.model';
   styleUrls: ['./tree-region.component.less'],
   providers: [TreeRegionBusiness],
 })
-export class TreeRegionComponent implements AfterViewInit, OnDestroy {
+export class TreeRegionComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() load?: EventEmitter<TreeRegionArgs>;
   @Input() collapse?: EventEmitter<void>;
   @Input() selected?: RegionTreeNode;
@@ -44,6 +47,9 @@ export class TreeRegionComponent implements AfterViewInit, OnDestroy {
   constructor(private business: TreeRegionBusiness) {}
 
   private subs = new Subscription();
+  ngOnChanges(changes: SimpleChanges): void {
+    this.change.selected(changes['selected']);
+  }
 
   ngAfterViewInit(): void {
     this.regist();
@@ -53,6 +59,14 @@ export class TreeRegionComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
+
+  private change = {
+    selected: (change: SimpleChange) => {
+      if (change) {
+        this.syncSelectedId();
+      }
+    },
+  };
 
   /** 订阅外部 load 事件：父级触发筛选时以新 args 重新加载 */
   private regist(): void {
@@ -77,6 +91,7 @@ export class TreeRegionComponent implements AfterViewInit, OnDestroy {
       const nodes = await this.business.load(this.args);
       this.applyExpanded(nodes);
       this.nodes.set(nodes);
+      this.syncSelectedId();
       this.loaded.emit(this.roots(nodes));
     } catch {
       this.nodes.set([]);
@@ -106,6 +121,19 @@ export class TreeRegionComponent implements AfterViewInit, OnDestroy {
     return nodes.filter((n) => !n.parentId).map((n) => n.data as RegionTreeNode);
   }
 
+  /** 根据当前 selected（RegionTreeNode）解析出对应扁平结点的 id，用于高亮 */
+  private syncSelectedId(): void {
+    const selected = this.selected;
+    if (!selected) {
+      this.selectedId = undefined;
+      return;
+    }
+    const node = this.nodes().find(
+      (n) => n.data === selected || n.data?.Id === selected.Id,
+    );
+    this.selectedId = node?.id;
+  }
+
   onToggle(node: FlatTreeNode): void {
     this.overrides.set(node.id, !!node.expanded);
   }
@@ -124,6 +152,7 @@ export class TreeRegionComponent implements AfterViewInit, OnDestroy {
 
   onNodeClick(node: FlatTreeNode): void {
     this.selected = node.data;
+    this.selectedId = node.id;
     this.selectedChange.emit(node.data);
   }
 

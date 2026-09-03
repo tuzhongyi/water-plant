@@ -36,7 +36,7 @@
       </hw-card-statistic-2>
     </div>
   </div>
-  @if (window.details.map.show) {
+  @if (window.details.map.show()) {
     <app-window
       [model]="window.details.map"
       [style]="window.details.map.style"
@@ -49,12 +49,12 @@
       ></hw-setting-map-details>
     </app-window>
   }
-  @if (window.confirm.show) {
+  @if (window.confirm.show()) {
     <confirm-window
       [model]="window.confirm"
       [content]="window.confirm.content"
       (ok)="tree.bind.unbind()"
-      (cancel)="window.confirm.show = false"
+      (cancel)="window.confirm.show.set(false)"
     >
     </confirm-window>
   }

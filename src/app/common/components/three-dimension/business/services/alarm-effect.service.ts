@@ -55,6 +55,11 @@ export class AlarmEffectService {
       this.animateEmissive(entry, pulse);
       this.animateDiffuse(entry, pulse);
     }
+
+    /* 报警动画持续时保持每帧重绘，空闲时则由 SceneService 自动停渲 */
+    if (this.animating.size > 0) {
+      this.scene.requestRender();
+    }
   }
 
   /** 勾边扩散：线宽与透明度随脉冲呼吸（仅 overlay/edges 模式可见） */

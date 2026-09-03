@@ -18,7 +18,7 @@ export class ThreePathTool {
         return `${this.folder}/tree/tree-models.json`;
       },
       model: (type: number) => {
-        return `${this.folder}/tree/tree.glb`;
+        return `${this.folder}/tree/tree${type}.glb`;
       },
     };
   }

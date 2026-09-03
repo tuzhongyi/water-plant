@@ -25,16 +25,16 @@ class DetailsWindow extends WindowViewModel {
 
   create(args: SettingMapElementDetailsArgs) {
     this.args = args;
-    this.show = true;
+    this.show.set(true);
   }
   update(data: GeoMapElement) {
     this.data = data;
-    this.show = true;
+    this.show.set(true);
   }
   close() {
     this.args = undefined;
     this.data = undefined;
-    this.show = false;
+    this.show.set(false);
   }
   ok() {
     this.that.tree.load.emit();

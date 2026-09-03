@@ -3,7 +3,7 @@
     <div class="card-head">
       <div class="forms" [class.disabled]="disabled">
         <div class="form-item datetime">
-          <div class="form-item-text">选择日期:</div>
+          <div class="form-item-text">选择日期：</div>
           <div class="form-item-value">
             <date-time-control
               [disabled]="disabled"
@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="form-item">
-          <div class="form-item-text">开始时间:</div>
+          <div class="form-item-text">开始时间：</div>
           <div class="form-item-value fill time">
             <app-time-control
               [(time)]="manager.time.begin"
@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="form-item">
-          <div class="form-item-text">结束时间:</div>
+          <div class="form-item-text">结束时间：</div>
           <div class="form-item-value fill time">
             <app-time-control
               [(time)]="manager.time.end"
@@ -33,7 +33,11 @@
           </div>
         </div>
         <div class="form-item">
-          <button class="button-border primary" [disabled]="disabled" (click)="manager.on.download()">
+          <button
+            class="button-border primary"
+            [disabled]="disabled"
+            (click)="manager.on.download()"
+          >
             下载
           </button>
         </div>

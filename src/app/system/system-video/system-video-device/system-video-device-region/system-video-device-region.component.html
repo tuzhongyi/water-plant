@@ -5,6 +5,8 @@
       [reload]="reload"
       [collapse]="collapse"
       [actionable]="actionable"
+      [selected]="selected"
+      (selectedChange)="on.select($event)"
       (nodedblclick)="on.dblclick($event)"
     ></hw-tree-region>
   </div>

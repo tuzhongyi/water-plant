@@ -29,7 +29,7 @@ export class SystemMainWindow {
   alarm = new AlarmWindow();
 
   get opened() {
-    return this.alarm.show || this.video.single.show || this.video.multiple.show;
+    return this.alarm.show() || this.video.single.show() || this.video.multiple.show();
   }
 }
 
@@ -122,9 +122,9 @@ class VideoMultipleWindow extends WindowViewModel {
 
   open(data: DeviceEventRecord | GeoMapElement[], alarm = false) {
     if (data instanceof DeviceEventRecord) {
-      this.show = this.from.record(data, alarm);
+      this.show.set(this.from.record(data, alarm));
     } else {
-      this.show = this.from.map.element(data);
+      this.show.set(this.from.map.element(data));
     }
   }
 
@@ -225,7 +225,7 @@ class AlarmWindow extends VideoMultipleWindow {
 
   override open(data: DeviceEventRecord | GeoMapElement[], alarm = true) {
     super.open(data, alarm);
-    if (this.show) {
+    if (this.show()) {
       this.startAutoClose();
     }
   }
@@ -240,7 +240,7 @@ class AlarmWindow extends VideoMultipleWindow {
       this.countdown.set(this.countdown() - 1);
       if (this.countdown() <= 0) {
         this.stopAutoClose();
-        this.show = false;
+        this.show.set(false);
       }
     }, 1000);
   }

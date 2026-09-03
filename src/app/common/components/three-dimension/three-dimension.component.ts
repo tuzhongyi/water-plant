@@ -1046,6 +1046,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     }
     if (s.showGrid !== undefined) this.sceneService.setGrid(s.showGrid);
     if (s.showAxes !== undefined) this.sceneService.setAxes(s.showAxes);
+
+    this.sceneService.requestRender();
   }
 
   /* ---- BBox helpers ---- */
@@ -1228,6 +1230,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
         this.gizmoHelperInScene = false;
       }
     }
+    this.sceneService.requestRender();
   }
 
   private disposeModelTC(): void {
@@ -1518,6 +1521,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.scene.add(this.findCircle);
     /* 重建后立即根据当前鼠标位置定位，避免半径变化后圈消失直到鼠标移动才显示 */
     this.updateFindCircle();
+    this.sceneService.requestRender();
   }
 
   /** 创建搜索范围指示圈（填充圆盘 + 轮廓线） */

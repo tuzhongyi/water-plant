@@ -2,7 +2,7 @@
   <div class="system-record-head">
     <div class="forms">
       <div class="form-item">
-        <div class="form-item-text">开始时间</div>
+        <div class="form-item-text">开始时间：</div>
         <div class="form-item-value time">
           <date-time-control
             [(date)]="table.args.duration.begin"
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="form-item">
-        <div class="form-item-text">结束时间</div>
+        <div class="form-item-text">结束时间：</div>
         <div class="form-item-value time">
           <date-time-control
             [(date)]="table.args.duration.end"
@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="form-item">
-        <div class="form-item-text">事件类型</div>
+        <div class="form-item-text">事件类型：</div>
         <div class="form-item-value">
           <hw-select [nullable]="true" [(selected)]="table.args.type">
             <select [(ngModel)]="table.args.type">
@@ -36,13 +36,13 @@
         </div>
       </div>
       <div class="form-item">
-        <div class="form-item-text">门禁名称</div>
+        <div class="form-item-text">门禁名称：</div>
         <div class="form-item-value name">
           <input type="text" [(ngModel)]="table.args.name" placeholder="名称或描述" />
         </div>
       </div>
       <div class="form-item">
-        <div class="form-item-text">出入人员</div>
+        <div class="form-item-text">出入人员：</div>
         <div class="form-item-value name">
           <input type="text" [(ngModel)]="table.args.value" placeholder="出入人员姓名" />
         </div>

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RegionResource } from '../../../../common/data-core/models/regions/region-resource.model';
 import { RegionTreeNode } from '../../../../common/data-core/models/regions/region-tree-node.model';
 import { TreeRegionComponent } from '../../../../share/tree/tree-region/tree-region.component';
 import { TreeRegionArgs } from '../../../../share/tree/tree-region/tree-region.model';
@@ -17,7 +16,9 @@ export class SystemVideoDeviceRegionComponent {
   @Input() actionable = false;
   @Output() config = new EventEmitter<void>();
   @Input() reload?: EventEmitter<void>;
-  @Output() nodedblclick = new EventEmitter<RegionResource | RegionTreeNode>();
+  @Output() nodedblclick = new EventEmitter<RegionTreeNode>();
+  @Input() selected?: RegionTreeNode;
+  @Output() selectedChange = new EventEmitter<RegionTreeNode>();
 
   collapse = new EventEmitter();
 
@@ -30,6 +31,10 @@ export class SystemVideoDeviceRegionComponent {
     },
     dblclick: (data: RegionTreeNode) => {
       this.nodedblclick.emit(data);
+    },
+    select: (data: RegionTreeNode) => {
+      this.selected = data;
+      this.selectedChange.emit(this.selected);
     },
   };
 }

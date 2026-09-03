@@ -8,7 +8,7 @@
         <hw-system-main-record-manager
           [load]="record.load"
           (playback)="record.on.playback($event)"
-          (all)="window.table.record.show = true"
+          (all)="window.table.record.show.set(true)"
         ></hw-system-main-record-manager>
       </div>
     </div>
@@ -33,7 +33,7 @@
     <button (click)="on.test()">text</button>
   </div> -->
 
-  @if (window.table.element.show) {
+  @if (window.table.element.show()) {
     <app-window
       [model]="window.table.element"
       [style]="window.table.element.style"
@@ -49,7 +49,7 @@
       ></hw-system-element-manager>
     </app-window>
   }
-  @if (window.table.record.show) {
+  @if (window.table.record.show()) {
     <app-window
       [model]="window.table.record"
       [style]="window.table.record.style"
@@ -57,12 +57,12 @@
     >
       <hw-system-record-manager
         (playback)="video.single.playback($event)"
-        (close)="window.table.record.show = false"
+        (close)="window.table.record.show.set(false)"
       ></hw-system-record-manager>
     </app-window>
   }
 
-  @if (window.config.three.show) {
+  @if (window.config.three.show()) {
     <app-window
       [model]="window.config.three"
       [style]="window.config.three.style"
@@ -71,7 +71,7 @@
       <hw-system-main-three-config-manager></hw-system-main-three-config-manager>
     </app-window>
   }
-  @if (window.video.single.show) {
+  @if (window.video.single.show()) {
     <app-window
       [model]="window.video.single"
       [style]="window.video.single.style"
@@ -88,7 +88,7 @@
       ></howell-video-player-container>
     </app-window>
   }
-  @if (window.video.multiple.show) {
+  @if (window.video.multiple.show()) {
     <app-window
       [model]="window.video.multiple"
       [style]="window.video.multiple.style"
@@ -101,7 +101,7 @@
       ></howell-video-player-list>
     </app-window>
   }
-  @if (window.alarm.show) {
+  @if (window.alarm.show()) {
     <app-alarm [model]="window.alarm" [style]="window.alarm.style" [title]="window.alarm.title">
       <div class="system-main-window-alarm">
         <div class="system-main-window-alarm-body">

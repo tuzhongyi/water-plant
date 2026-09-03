@@ -29,6 +29,8 @@
             [args]="manager.args"
             [load]="device.load"
             [pagesize]="pagesize"
+            [selected]="device.selected"
+            (selectedChange)="device.on.select($event)"
             (itemdblclick)="device.on.preview($event)"
           ></hw-system-video-device-list>
         }
@@ -36,11 +38,17 @@
           <hw-system-video-device-region
             [load]="region.load"
             [reload]="reload"
+            [selected]="region.selected"
+            (selectedChange)="region.on.select($event)"
             (config)="region.on.config()"
             (nodedblclick)="region.on.preview($event)"
+            [configable]="regionconfigable"
           ></hw-system-video-device-region>
         }
       </div>
+    </div>
+    <div>
+      <ng-content></ng-content>
     </div>
   </div>
 </hw-card-statistic-1>

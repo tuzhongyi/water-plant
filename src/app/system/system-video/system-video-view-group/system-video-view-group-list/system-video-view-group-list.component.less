@@ -1,6 +1,6 @@
 @import url(../../../../../assets/styles/colors/color-@.less);
 
-.system-video-device-list {
+.system-video-view-group-list {
 
   @gap: 5px;
   height: 100%;
@@ -9,7 +9,7 @@
   flex-direction: column;
   // gap: @gap;
   border: 1px solid var(--secondary);
-
+  overflow-y: auto;
 
 
 
@@ -24,7 +24,7 @@
 
     &-tr {
       width: 100%;
-      height: 40px;
+      height: 34px;
       flex-shrink: 0;
       padding: 0 10px;
       box-sizing: border-box;
@@ -37,11 +37,52 @@
       &:hover {
         background-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.4);
         color: var(--button-hover-border);
+
+        .button-group {
+          display: flex;
+        }
       }
 
       &.selected {
         background-color: rgba(var(--button-hover-border-r), var(--button-hover-border-g), var(--button-hover-border-b), 0.6);
         color: @white;
+
+        input-icon {
+          margin: 0 -10px;
+          width: calc(100% + 10px * 2);
+          height: 100%;
+          background-color: var(--surface);
+
+          &.update-input {
+            ::ng-deep {
+              .input-icon-btn {
+                width: auto;
+                height: 100%;
+
+                .button-group {
+                  height: 100%;
+                }
+              }
+            }
+
+            .ok {
+              color: var(--green);
+
+              &:hover {
+                color: @white;
+              }
+            }
+
+            .cancel {
+              color: @red-warn;
+
+              &:hover {
+                color: @white;
+              }
+            }
+          }
+
+        }
       }
     }
 
@@ -55,6 +96,7 @@
       .button-group {
         justify-content: flex-end;
         gap: 0px;
+        display: none;
 
         button {
           padding: 0;

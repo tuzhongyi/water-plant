@@ -184,7 +184,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       element: (args: { type?: MapElementType; buildingId?: string }) => {
         this.window.table.element.type = args.type;
         this.window.table.element.buildingId = args.buildingId;
-        this.window.table.element.show = true;
+        this.window.table.element.show.set(true);
       },
       resetstate: (data: GeoMapElement) => {
         this.business.element.reset(data.Id).then((x) => {
@@ -246,7 +246,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
         this.window.video.single.autoplay = true;
         this.window.video.single.cameraId = data.ElementId;
         this.window.video.single.mode = PlayMode.live;
-        this.window.video.single.show = true;
+        this.window.video.single.show.set(true);
       },
       playback: (data: DeviceEventRecord) => {
         this.window.video.single.mode = PlayMode.vod;
@@ -272,7 +272,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
         this.window.video.single.end = duration.end;
         this.window.video.single.cameraId = cameraId;
         this.window.video.single.autoplay = true;
-        this.window.video.single.show = true;
+        this.window.video.single.show.set(true);
       },
     },
   };

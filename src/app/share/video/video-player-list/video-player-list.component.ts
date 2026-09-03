@@ -10,10 +10,11 @@ import {
   SimpleChanges,
 } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { VideoChannelViewGroup } from '../../../common/data-core/models/devices/video-channel-view-group.model';
 import { VideoChannelView } from '../../../common/data-core/models/devices/video-channel-view.model';
+import { Language } from '../../../common/tools/language-tool/language';
 import { VideoPlayerContentComponent } from '../video-player-content/video-player-content.component';
 import {
   IVideoPlayerArgs,
@@ -32,6 +33,7 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
   @Input() mode = ScreenMode.one;
   @Input() play?: EventEmitter<IVideoPlayerArgs[]>;
   @Input() seek?: EventEmitter<number>;
+  @Input() stop?: EventEmitter<number>;
   @Input() index: number = 0;
   @Output() indexChange = new EventEmitter<number>();
 
@@ -70,6 +72,7 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
       current = new VideoPlayerListItem(0);
     }
     this.index = 0;
+    this.indexChange.emit(this.index);
     this.datas = [current];
   }
   initModelMore() {
@@ -85,10 +88,12 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.index >= this.mode) {
       this.index = this.mode - 1;
+      this.indexChange.emit(this.index);
     } else {
       let current = this.datas.find((x) => x.selected);
       if (current) {
         this.index = current.index;
+        this.indexChange.emit(this.index);
       }
     }
   }
@@ -134,6 +139,12 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
       });
       this.subs.add(sub);
     }
+    if (this.stop) {
+      let sub = this.stop.subscribe((index) => {
+        this.datas[index].stop();
+      });
+      this.subs.add(sub);
+    }
     if (this.getviewgroup) {
       this.subs.add(
         this.getviewgroup.subscribe((callback) => {
@@ -150,6 +161,8 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
     },
     viewgroup: (): VideoChannelViewGroup => {
       let group = new VideoChannelViewGroup();
+      group.Name = formatDate(new Date(), Language.yyyyMMddHHmmss, 'en');
+      group.Sort = 1;
       group.ViewNumber = this.mode;
       group.Views = [];
       this.datas.forEach((item, index) => {

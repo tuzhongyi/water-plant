@@ -66,7 +66,7 @@ export class SettingMapManagerComponent implements OnInit {
       details: {
         open: (data?: GeoMap) => {
           this.window.details.map.data = data;
-          this.window.details.map.show = true;
+          this.window.details.map.show.set(true);
         },
         ok: (data: GeoMap) => {
           this.three.load.emit();
@@ -74,7 +74,7 @@ export class SettingMapManagerComponent implements OnInit {
           this.geo.map.details.close();
         },
         close: () => {
-          this.window.details.map.show = false;
+          this.window.details.map.show.set(false);
         },
       },
     },
@@ -152,14 +152,14 @@ export class SettingMapManagerComponent implements OnInit {
         let element = this.geo.element.datas().find((x) => x.ElementId == data.Id);
         if (element) {
           this.window.confirm.data = element;
-          this.window.confirm.show = true;
+          this.window.confirm.show.set(true);
         }
       },
       unbind: () => {
         if (this.window.confirm.data) {
           this.business.element.unbind(this.window.confirm.data.Id).then((x) => {
             this.toastr.success('解绑成功');
-            this.window.confirm.show = false;
+            this.window.confirm.show.set(false);
             this.three.load.emit();
             this.business.element.all().then((x) => {
               this.geo.element.datas.set(x);

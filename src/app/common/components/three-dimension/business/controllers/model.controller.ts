@@ -154,6 +154,8 @@ export class ModelController {
     if (selId && !targetKeys.has(selId)) {
       this.state.selectedModelId$.next(null);
     }
+
+    this.sceneService.requestRender();
   }
 
   /* ---- 内部状态管理 ---- */
@@ -208,6 +210,8 @@ export class ModelController {
     if (this.currentGlobalSettings) {
       this.applyRenderModeToMeshes(s.meshes, this.currentGlobalSettings);
     }
+
+    this.sceneService.requestRender();
   }
 
   getAllMeshes(): { mesh: THREE.Mesh; modelId: string }[] {
@@ -284,11 +288,13 @@ export class ModelController {
       this.internalModels.delete(id);
     }
     this.modelService.removeModel(id);
+    this.sceneService.requestRender();
   }
 
   doClearAll(): void {
     for (const id of Array.from(this.state.loadedModels.keys())) this.modelService.removeModel(id);
     this.state.statusMessage$.next('已清空所有模型');
+    this.sceneService.requestRender();
   }
 
   /* ---- 聚焦 ---- */
@@ -311,6 +317,7 @@ export class ModelController {
     );
     ctrl.target.copy(ctr);
     ctrl.update();
+    this.sceneService.requestRender();
   }
 
   /* ---- 全局视图拟合 ---- */
@@ -393,6 +400,7 @@ export class ModelController {
       cam.position.copy(targetPos);
       this.sceneService.controls.target.copy(targetLookAt);
       this.sceneService.controls.update();
+      this.sceneService.requestRender();
     }
     this.initViewFitted = true;
   }
@@ -420,6 +428,7 @@ export class ModelController {
       cam.position.lerpVectors(startPos, targetPos, ease);
       ctrl.target.lerpVectors(startLookAt, targetLookAt, ease);
       ctrl.update();
+      this.sceneService.requestRender();
       if (t < 1) {
         this.cameraAnimId = requestAnimationFrame(animate.bind(null, startTime));
       } else {
@@ -455,6 +464,7 @@ export class ModelController {
       s.bboxHelper.dispose();
       s.bboxHelper = undefined;
     }
+    this.sceneService.requestRender();
   }
 
   /* ---- 渲染参数 ---- */
@@ -493,6 +503,7 @@ export class ModelController {
       .filter((e) => targetKeys.has(e.fileName))
       .map((e) => this.entryToTransformConfig(e));
     this.loaded.emit(configs);
+    this.sceneService.requestRender();
   }
 
   entryToTransformConfig(entry: ModelEntry): ModelTransformConfig {

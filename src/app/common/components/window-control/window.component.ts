@@ -51,7 +51,7 @@ export class WindowComponent implements OnInit {
 
   closeButtonClick() {
     if (this.manualClose === false) {
-      this.model.show = false;
+      this.model.show.set(false);
     }
     this.OnClosing.emit(true);
   }

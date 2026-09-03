@@ -1,16 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChange,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CardStatistic1Component } from '../../../../common/components/card-statistic-1/card-statistic-1.component';
 import { InputIconComponent } from '../../../../common/components/input-icon/input-icon.component';
 import { VideoChannel } from '../../../../common/data-core/models/devices/video-channel.model';
-import { RegionResource } from '../../../../common/data-core/models/regions/region-resource.model';
 import { RegionTreeNode } from '../../../../common/data-core/models/regions/region-tree-node.model';
 import { TreeRegionArgs } from '../../../../share/tree/tree-region/tree-region.model';
-import {
-  PlaybackArgs,
-  PreviewArgs,
-} from '../../../../share/video/video-player-content/video-player-content.model';
+import { PreviewArgs } from '../../../../share/video/video-player-content/video-player-content.model';
 import { SystemVideoDeviceListComponent } from '../system-video-device-list/system-video-device-list.component';
 import { SystemVideoDeviceListArgs } from '../system-video-device-list/system-video-device-list.model';
 import { SystemVideoDeviceRegionComponent } from '../system-video-device-region/system-video-device-region.component';
@@ -28,12 +34,14 @@ import { SystemVideoDeviceRegionComponent } from '../system-video-device-region/
   templateUrl: './system-video-device-manager.component.html',
   styleUrl: './system-video-device-manager.component.less',
 })
-export class SystemVideoDeviceManagerComponent implements OnInit, OnDestroy {
+export class SystemVideoDeviceManagerComponent implements OnChanges, OnInit, OnDestroy {
   @Output() config = new EventEmitter<void>();
   @Input() reload?: EventEmitter<void>;
   @Output() preview = new EventEmitter<PreviewArgs>();
-  @Output() playback = new EventEmitter<PlaybackArgs>();
+  @Input() selected?: RegionTreeNode | VideoChannel;
+  @Output() selectedChange = new EventEmitter<RegionTreeNode | VideoChannel>();
   @Input() pagesize = 12;
+  @Input() regionconfigable = false;
 
   constructor() {}
 
@@ -48,9 +56,30 @@ export class SystemVideoDeviceManagerComponent implements OnInit, OnDestroy {
       document.removeEventListener('keydown', this.handle);
     }
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.change.selected(changes['selected']);
+  }
+
+  private change = {
+    selected: (change: SimpleChange) => {
+      if (change) {
+        if (this.selected instanceof VideoChannel) {
+          this.device.selected = this.selected;
+          this.region.selected = undefined;
+        } else if (this.selected instanceof RegionTreeNode) {
+          this.device.selected = undefined;
+          this.region.selected = this.selected;
+        } else {
+          this.device.selected = undefined;
+          this.region.selected = undefined;
+        }
+      }
+    },
+  };
 
   device = {
     show: false,
+    selected: undefined as VideoChannel | undefined,
     load: new EventEmitter<SystemVideoDeviceListArgs>(),
     on: {
       preview: (data: VideoChannel) => {
@@ -59,26 +88,31 @@ export class SystemVideoDeviceManagerComponent implements OnInit, OnDestroy {
         args.stream = 1;
         this.preview.emit(args);
       },
+      select: (data: VideoChannel) => {
+        this.selected = data;
+        this.device.selected = data;
+        this.selectedChange.emit(data);
+      },
     },
   };
   region = {
     show: true,
+    selected: undefined as RegionTreeNode | undefined,
     load: new EventEmitter<TreeRegionArgs>(),
     on: {
       config: () => {
         this.config.emit();
       },
-      preview: (data: RegionResource | RegionTreeNode) => {
+      select: (data: RegionTreeNode) => {
+        this.selected = data;
+        this.region.selected = data;
+        this.selectedChange.emit(data);
+      },
+      preview: (data: RegionTreeNode) => {
         let args = new PreviewArgs();
         args.stream = 1;
-
-        if (data instanceof RegionTreeNode) {
-          args.cameraId = data.Id;
-          args.cameraName = data.Name;
-        } else {
-          args.cameraId = data.ResourceId;
-          args.cameraName = data.ResourceName;
-        }
+        args.cameraId = data.Id;
+        args.cameraName = data.Name;
 
         this.preview.emit(args);
       },

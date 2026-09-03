@@ -186,6 +186,10 @@ export class HowellHttpClient {
           } else if (e.status == 200) {
             if (e.error && e.error.text) {
               resolve(e.error.text as R);
+            } else {
+              /* 200 但 body 无法解析（如删除接口返回空/纯文本）：视为成功返回 null，
+               * 避免 Promise 永久挂起，导致调用方 .then/.finally 永不执行 */
+              resolve(null as any as R);
             }
           } else {
             reject(e);

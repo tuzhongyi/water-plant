@@ -46,6 +46,8 @@ export class SceneService {
 
   private animationId = 0;
   private renderPaused = false;
+  /** 是否需要重绘一帧。空闲时（无相机移动/无场景变更）置为 false 以跳过 GPU 渲染。 */
+  private needsRender = true;
   private canvas!: HTMLCanvasElement;
   private containerEl!: HTMLElement;
   private resizeObserver?: ResizeObserver;
@@ -95,6 +97,13 @@ export class SceneService {
     };
     this.controls.update();
 
+    /* 相机交互（含阻尼/autoRotate）触发重绘；鼠标悬停/点击/滚轮作为兜底 */
+    this.controls.addEventListener('change', () => this.requestRender());
+    this.renderer.domElement.addEventListener('pointermove', () => this.requestRender());
+    this.renderer.domElement.addEventListener('pointerdown', () => this.requestRender());
+    this.renderer.domElement.addEventListener('pointerup', () => this.requestRender());
+    this.renderer.domElement.addEventListener('wheel', () => this.requestRender());
+
     this.setupLights();
     this.setupComposer(w, h);
 
@@ -104,6 +113,11 @@ export class SceneService {
     this.applySettings(this.state.settings);
 
     this.state.settings$.subscribe(s => this.applySettings(s));
+
+    /* 模型增删/可见性、选中/悬停高亮都会改变画面，需要重绘 */
+    this.state.loadedModels$.subscribe(() => this.requestRender());
+    this.state.selectedModelId$.subscribe(() => this.requestRender());
+    this.state.hoveredModelId$.subscribe(() => this.requestRender());
 
     this.zone.runOutsideAngular(() => this.animate());
   }
@@ -161,6 +175,8 @@ export class SceneService {
     /* 更新 composer 中 RenderPass 的相机引用 */
     const renderPass = this.composer.passes[0] as RenderPass;
     renderPass.camera = newCam;
+
+    this.requestRender();
   }
 
   applySettings(s: RenderSettings): void {
@@ -215,6 +231,8 @@ export class SceneService {
         );
       }
     }
+
+    this.requestRender();
   }
 
   setGrid(show: boolean): void {
@@ -239,6 +257,7 @@ export class SceneService {
     const divs = 20;
     this.gridHelper = new THREE.GridHelper(sz, divs, 0x444444, 0x222222);
     this.scene.add(this.gridHelper);
+    this.requestRender();
   }
 
   private axesSize = 5
@@ -251,6 +270,7 @@ export class SceneService {
       this.axesHelper.dispose()
       this.axesHelper = new THREE.AxesHelper(size)
       this.scene.add(this.axesHelper)
+      this.requestRender()
     }
   }
 
@@ -263,6 +283,7 @@ export class SceneService {
       this.axesHelper.dispose();
       this.axesHelper = undefined;
     }
+    this.requestRender();
   }
 
   setCenterDot(show: boolean): void {
@@ -277,6 +298,7 @@ export class SceneService {
       (this.centerDot.material as THREE.Material).dispose();
       this.centerDot = undefined;
     }
+    this.requestRender();
   }
 
   private onResize(): void {
@@ -301,6 +323,8 @@ export class SceneService {
     this.renderer.setSize(w, h, false);
     this.renderer.domElement.style.width = '';
     this.renderer.domElement.style.height = '';
+
+    this.requestRender();
   }
 
   setRenderPaused(paused: boolean): void {
@@ -309,6 +333,7 @@ export class SceneService {
     if (paused) {
       cancelAnimationFrame(this.animationId);
     } else {
+      this.requestRender();
       this.zone.runOutsideAngular(() => this.animate());
     }
   }
@@ -317,6 +342,12 @@ export class SceneService {
     this.animationId = requestAnimationFrame(() => this.animate());
     for (const cb of this.beforeRenderCallbacks) cb();
     this.controls.update();
+
+    /* 空闲时跳过 GPU 渲染：无相机移动、无场景变更就不绘制，省 GPU 资源 */
+    if (!this.needsRender) {
+      return;
+    }
+    this.needsRender = false;
 
     /* label 恒定屏幕大小（与 marker label 一致，labelFontSize = 目标像素高度） */
     const cam = this.camera;
@@ -348,6 +379,11 @@ export class SceneService {
     this.renderer.clearDepth();
     this.renderer.render(this.overlayScene, this.camera);
     this.renderer.autoClear = true;
+  }
+
+  /** 标记需要重绘一帧。所有改变场景/相机状态的入口都应调用，空闲时自动停止渲染以省 GPU。 */
+  requestRender(): void {
+    this.needsRender = true;
   }
 
   addBeforeRender(cb: () => void): void {

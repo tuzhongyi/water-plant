@@ -2,7 +2,7 @@
   <div class="system-element-head">
     <div class="forms">
       <div class="form-item">
-        <div class="form-item-text">类型</div>
+        <div class="form-item-text">类型：</div>
         <div class="form-item-value">
           <hw-select [nullable]="true" [(selected)]="table.args.type">
             <select [(ngModel)]="table.args.type">
@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="form-item">
-        <div class="form-item-text">楼栋</div>
+        <div class="form-item-text">楼栋：</div>
         <div class="form-item-value">
           <hw-select [nullable]="true" [(selected)]="table.args.buildingId">
             <select [(ngModel)]="table.args.buildingId">
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="form-item">
-        <div class="form-item-text">名称</div>
+        <div class="form-item-text">名称：</div>
         <div class="form-item-value">
           <input type="text" [(ngModel)]="table.args.name" placeholder="搜索名称或描述" />
         </div>

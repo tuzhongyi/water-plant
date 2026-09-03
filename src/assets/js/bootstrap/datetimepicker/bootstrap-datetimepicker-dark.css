@@ -10,7 +10,7 @@
 
 .datetimepicker.dropdown-menu {
 
-  background-color: #003a3b;
+  background-color: var(--surface-option);
   color: white;
 }
 
@@ -24,7 +24,7 @@
 .datetimepicker table tr td span.active.disabled:hover.active {
 
   background-image: none;
-  background-color: rgba(23, 241, 198, 0.7);
+  background-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.7);
 }
 
 .datetimepicker table tr td.active:active,
@@ -37,22 +37,22 @@
 .datetimepicker table tr td.active.disabled:hover.active {
 
   background-image: none;
-  background-color: rgba(23, 241, 198, 0.7);
+  background-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.7);
 }
 
 .datetimepicker table tr td span:hover {
-  background-color: rgba(23, 241, 198, 0.5);
+  background-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
 }
 
 .datetimepicker thead tr:first-child th:hover,
 .datetimepicker tfoot th:hover {
-  background-color: rgba(23, 241, 198, 0.5);
+  background-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
 }
 
 .datetimepicker table tr td.day:hover {
-  background-color: rgba(23, 241, 198, 0.5);
+  background-color: rgba(var(--primary-r), var(--primary-g), var(--primary-b), 0.5);
 }
 
 .datetimepicker.dropdown-menu {
-  border: solid #07a990 1px;
+  border: solid var(--secondary) 1px;
 }

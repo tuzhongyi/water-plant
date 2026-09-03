@@ -224,6 +224,7 @@ export class MarkerController {
         this.sceneService.addBeforeRender(this.updateLabelPositions);
         this.labelUpdateRegistered = true;
       }
+      this.sceneService.requestRender();
     },
 
     visibility: (models: ModelViewerModel[]): void => {
@@ -241,6 +242,7 @@ export class MarkerController {
           this.removeFromScene(item);
         }
       }
+      this.sceneService.requestRender();
     },
   };
 
@@ -366,6 +368,7 @@ export class MarkerController {
         this.sceneService.camera.position.lerpVectors(startPos, endPos, ease);
         this.sceneService.controls.target.lerpVectors(startTgt, endTgt, ease);
         this.sceneService.controls.update();
+        this.sceneService.requestRender();
         if (t < 1) requestAnimationFrame(animate);
       };
       requestAnimationFrame(animate);
@@ -631,6 +634,9 @@ export class MarkerController {
     if (!anyActive) {
       this.alarmRingAnimating = false;
       this.sceneService.removeBeforeRender(this.updateAlarmRings);
+    } else {
+      /* 报警环动画进行中，保持每帧重绘 */
+      this.sceneService.requestRender();
     }
   };
 

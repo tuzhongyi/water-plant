@@ -5,11 +5,13 @@ export interface IVideoPlayerArgs {
   cameraId: string;
   cameraName?: string;
   stream: StreamType;
+  index?: number;
 }
 export class PreviewArgs implements IVideoPlayerArgs {
   stream: StreamType = StreamType.main;
   cameraId!: string;
   cameraName = '';
+  index?: number;
 }
 export class PlaybackArgs implements IVideoPlayerArgs {
   stream: StreamType = StreamType.main;
@@ -17,4 +19,5 @@ export class PlaybackArgs implements IVideoPlayerArgs {
   cameraName = '';
   duration?: Duration;
   time?: Date;
+  index?: number;
 }

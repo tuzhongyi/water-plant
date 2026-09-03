@@ -4,6 +4,21 @@
       <div class="card-head-title">视频组</div>
     </div>
     <div class="card-line"></div>
-    <div class="card-body no-foot"></div>
+    <div class="card-body no-foot system-video-view-group-container">
+      <div class="system-video-view-group-filter">
+        <input-icon [(value)]="list.args.name" (clear)="on.search()">
+          <button (click)="on.search()"><i class="howell-icon-search"></i></button>
+        </input-icon>
+      </div>
+      <div class="system-video-view-group-list">
+        <hw-system-video-view-group-list
+          [load]="list.load"
+          [selected]="selected"
+          (selectedChange)="list.on.select($event)"
+          (play)="list.on.play($event)"
+          (delete)="list.on.delete($event)"
+        ></hw-system-video-view-group-list>
+      </div>
+    </div>
   </div>
 </hw-card-statistic-1>

@@ -1,1 +1,22 @@
-<p>system-video-playback-manager works!</p>
+<div class="system-video-playback-manager">
+  <div class="system-video-playback-source">
+    <div class="system-video-playback-source-device">
+      <hw-system-video-device-manager
+        [pagesize]="5"
+        [reload]="device.reload"
+        [(selected)]="device.selected"
+      ></hw-system-video-device-manager>
+    </div>
+    <div class="system-video-playback-source-control">
+      <hw-system-video-playback-control
+        (playback)="control.on.playback($event)"
+      ></hw-system-video-playback-control>
+    </div>
+  </div>
+  <div class="system-video-playback-player" [class.full]="player.expand">
+    <hw-system-video-player
+      [playback]="player.playback"
+      [(expand)]="player.expand"
+    ></hw-system-video-player>
+  </div>
+</div>

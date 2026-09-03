@@ -78,7 +78,7 @@ export class AlarmComponent implements OnInit, AfterViewInit, OnDestroy {
 
   closeButtonClick() {
     if (this.manualClose === false) {
-      this.model.show = false;
+      this.model.show.set(false);
     }
     this.OnClosing.emit(true);
   }

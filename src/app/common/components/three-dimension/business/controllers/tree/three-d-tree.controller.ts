@@ -52,6 +52,7 @@ export class ThreeDTreeController {
     if (this.visible && !this.loaded && !this.loading && this.sceneService.scene) {
       void this.load();
     }
+    this.sceneService.requestRender();
   }
 
   /* ---- 加载 ---- */
@@ -80,6 +81,7 @@ export class ThreeDTreeController {
       }
       this.root.visible = this.visible;
       this.loaded = true;
+      this.sceneService.requestRender();
     } catch (err) {
       console.warn('[ThreeDTreeController] 树模型加载失败:', err);
     } finally {
@@ -119,16 +121,8 @@ export class ThreeDTreeController {
         material.color.setScalar(TREE_BRIGHTNESS);
 
         const geo = mesh.geometry.clone();
-        /* SketchUp 等导出的 GLB 根节点常带 0.001 单位换算缩放，直接烘焙 matrixWorld 会把整棵树
-         * 压到毫米级。这里分解世界矩阵后去掉 scale，只保留平移与旋转（旋转是 Z-up→Y-up 轴向转换，
-         * 必须保留），让数据里的 scale=1 对应树的自然尺寸，再由实例矩阵的 scale 统一缩放。 */
-        const worldPos = new THREE.Vector3();
-        const worldQuat = new THREE.Quaternion();
-        const worldScale = new THREE.Vector3();
-        mesh.matrixWorld.decompose(worldPos, worldQuat, worldScale);
-        geo.applyMatrix4(
-          new THREE.Matrix4().compose(worldPos, worldQuat, new THREE.Vector3(1, 1, 1)),
-        );
+        /* 模型已修正单位，直接烘焙 matrixWorld（含 scale）即可，无需再丢弃 scale。 */
+        geo.applyMatrix4(mesh.matrixWorld);
 
         parts.push({ geometry: geo, material });
       });

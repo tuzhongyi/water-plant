@@ -87,6 +87,7 @@ export class ViewService {
       cam.position.lerpVectors(startPos, targetPos, ease);
       ctrl.target.lerpVectors(startTgt, targetLookAt, ease);
       ctrl.update();
+      this.sceneService.requestRender();
 
       if (t < 1) {
         requestAnimationFrame(step);

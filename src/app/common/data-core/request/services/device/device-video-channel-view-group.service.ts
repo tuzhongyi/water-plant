@@ -43,6 +43,8 @@ export class DeviceVideoChannelViewGroupRequestService {
   async delete(id: string) {
     let url = DeviceUrl.viewGroup.item(id);
     return this.http.delete<HowellResponse<VideoChannelViewGroup>>(url).then((x) => {
+      // 删除成功（HTTP 200）但响应体为空/无法解析时，视为成功，避免误判为失败
+      if (!x) return;
       return HowellResponseProcess.item(x, VideoChannelViewGroup);
     });
   }
