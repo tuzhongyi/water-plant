@@ -469,6 +469,8 @@ export class MarkerController {
     for (const [, item] of this._cache) {
       this.ensureFan(item);
     }
+    /* 扇形增删是画面变化，需触发重绘，否则要等下一次鼠标移动等无关事件才显示 */
+    this.sceneService.requestRender();
   }
 
   /* ================================================================
@@ -520,6 +522,39 @@ export class MarkerController {
       const dx = item.sprite.position.x - center.x;
       const dz = item.sprite.position.z - center.z;
       if (Math.sqrt(dx * dx + dz * dz) <= radius) {
+        results.push(item.data);
+      }
+    }
+    return results;
+  }
+
+  /** 查询指定位置所属视野扇形内的所有 marker（XZ 平面，按各 marker 的 radius/angle/course 判断）。
+   *  仅统计视野扇形已启用（viewfield.enabled）且当前在场景中的 marker。 */
+  markersInFan(point: THREE.Vector3): MarkerEntity[] {
+    const results: MarkerEntity[] = [];
+    for (const [, item] of this._cache) {
+      if (!item.inScene) continue;
+      const vf = item.data.viewfield;
+      if (!vf || vf.enabled !== true) continue;
+
+      const radius = vf.radius ?? VIEWFIELD_DEFAULT_RADIUS;
+      const angle = vf.angle ?? VIEWFIELD_DEFAULT_ANGLE;
+      const course = vf.course ?? 0;
+
+      /* 距离：点必须在扇形半径内 */
+      const dx = point.x - item.sprite.position.x;
+      const dz = point.z - item.sprite.position.z;
+      if (Math.sqrt(dx * dx + dz * dz) > radius) continue;
+
+      /* 方向：点相对 marker 的方位角需落在 [course - angle/2, course + angle/2] */
+      const halfAngle = THREE.MathUtils.degToRad(angle / 2);
+      const courseRad = THREE.MathUtils.degToRad(course);
+      let rel = Math.atan2(dz, dx) - courseRad;
+      /* 归一化到 [-π, π]，处理跨 ±π 的环绕 */
+      if (rel > Math.PI) rel -= Math.PI * 2;
+      else if (rel < -Math.PI) rel += Math.PI * 2;
+
+      if (Math.abs(rel) <= halfAngle) {
         results.push(item.data);
       }
     }

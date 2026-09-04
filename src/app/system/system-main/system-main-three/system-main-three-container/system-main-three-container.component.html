@@ -15,10 +15,13 @@
       [meshVisibility]="floor.target"
       (markerDblClick)="three.on.camera.dblclick($event)"
       [moveto]="three.moveto"
-      [findRadius]="element.find.radius"
-      [findbegin]="element.find.begin"
-      [findstop]="element.find.stop"
-      (findend)="element.find.end($event)"
+      [findcircleRadius]="element.find.circle.radius"
+      [findcirclebegin]="element.find.circle.begin"
+      [findcirclestop]="element.find.circle.stop"
+      (findcircleend)="element.find.circle.end($event)"
+      [findfanbegin]="element.find.fan.begin"
+      [findfanstop]="element.find.fan.stop"
+      (findfanend)="element.find.fan.end($event)"
       [viewfield]="element.viewfield"
     ></hw-3d>
   </div>
@@ -40,29 +43,37 @@
       >
         <i class="howell-icon-shade"></i>
       </button>
-      <button
+      <!-- <button
         class="button-map"
         title="摄像机视野"
         [class.selected]="element.viewfield == 'show'"
         (click)="manager.button.viewfield()"
       >
         <i class="mdi mdi-looks"></i>
-      </button>
+      </button> -->
       <button class="button-map" title="点位筛选" (click)="manager.button.filter()">
         <i class="howell-icon-filter"></i>
       </button>
       <button
         class="button-map"
         title="区域联动"
-        [class.selected]="element.find.finding"
-        (click)="manager.button.find()"
+        [class.selected]="element.find.fan.finding"
+        (click)="manager.button.find.fan()"
+      >
+        <i class="mdi mdi-looks"></i>
+      </button>
+      <button
+        class="button-map"
+        title="区域查找"
+        [class.selected]="element.find.circle.finding"
+        (click)="manager.button.find.circle()"
       >
         <i class="mdi mdi-adjust"></i>
       </button>
     </div>
-    @if (element.find.finding) {
+    @if (element.find.circle.finding) {
       <hw-system-main-three-config-find-slider
-        [(value)]="element.find.radius"
+        [(value)]="element.find.circle.radius"
         [min]="1"
         [max]="100"
       ></hw-system-main-three-config-find-slider>
@@ -141,11 +152,22 @@
     </div>
   }
 
-  @if (element.find.found.length > 0) {
+  @if (element.find.circle.found.length > 0) {
     <div class="system-main-three-found">
       <hw-system-main-three-element-manager
-        [datas]="element.find.found"
-        (close)="element.find.found = []"
+        [datas]="element.find.circle.found"
+        (close)="element.find.circle.found = []"
+        (video)="manager.on.video($event)"
+        (preview)="manager.on.preview($event)"
+      ></hw-system-main-three-element-manager>
+    </div>
+  }
+
+  @if (element.find.fan.found.length > 0) {
+    <div class="system-main-three-found">
+      <hw-system-main-three-element-manager
+        [datas]="element.find.fan.found"
+        (close)="element.find.fan.found = []"
         (video)="manager.on.video($event)"
         (preview)="manager.on.preview($event)"
       ></hw-system-main-three-element-manager>

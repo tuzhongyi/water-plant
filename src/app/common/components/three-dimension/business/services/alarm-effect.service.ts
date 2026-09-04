@@ -41,6 +41,8 @@ export class AlarmEffectService {
         /* 离开报警状态：恢复勾边默认线宽/透明度（emissive/漫反射由 reapplyCurrentState 恢复） */
         if (this.animating.delete(entry.id)) {
           this.resetEdges(entry);
+          /* 恢复勾边也是画面变化，需触发一次重绘，否则会停留在报警时的线宽 */
+          this.scene.requestRender();
         }
         continue;
       }

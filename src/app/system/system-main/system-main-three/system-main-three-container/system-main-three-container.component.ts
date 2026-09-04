@@ -75,7 +75,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   private init() {
     this.business.config.load().then((x) => {
       this.three.config.set(x);
-      this.element.find.radius = x.find.radius;
+      this.element.find.circle.radius = x.find.radius;
     });
     this.business.element.get.alarms().then((elements) => {
       elements.forEach((x) => {
@@ -147,7 +147,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     );
     this.subs.add(
       this.business.config.change.subscribe((x) => {
-        this.element.find.radius = x.find.radius;
+        this.element.find.circle.radius = x.find.radius;
       }),
     );
   }
@@ -201,8 +201,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.manager.building.show = false;
         this.manager.filter.show = false;
         this.manager.filter.clear(false);
-        if (this.element.find.finding) {
-          this.element.find.stop.emit();
+        if (this.element.find.circle.finding) {
+          this.element.find.circle.stop.emit();
+        }
+        if (this.element.find.fan.finding) {
+          this.element.find.fan.stop.emit();
         }
       },
       full: () => {
@@ -238,15 +241,29 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.manager.button.clear();
         this.three.focus.emit(mode);
       },
-      find: () => {
-        if (this.element.find.finding) {
-          this.element.find.stop.emit();
-        } else {
-          this.manager.button.clear();
-          this.element.find.found = [];
-          this.element.find.begin.emit(this.element.find.radius);
-          this.element.find.finding = true;
-        }
+      find: {
+        circle: () => {
+          if (this.element.find.circle.finding) {
+            this.element.find.circle.stop.emit();
+          } else {
+            this.manager.button.clear();
+            this.element.find.circle.found = [];
+            this.element.find.circle.begin.emit(this.element.find.circle.radius);
+            this.element.find.circle.finding = true;
+          }
+        },
+        fan: () => {
+          if (this.element.find.fan.finding) {
+            this.element.find.fan.stop.emit();
+          } else {
+            this.manager.button.clear();
+            this.element.find.fan.found = [];
+            /* 进入扇形查找时打开摄像机视野，方便对照扇形范围 */
+            this.element.viewfield = ViewfieldMode.show;
+            this.element.find.fan.begin.emit();
+            this.element.find.fan.finding = true;
+          }
+        },
       },
       viewfield: () => {
         if (this.element.viewfield == ViewfieldMode.hide) {
@@ -302,14 +319,28 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     viewfield: ViewfieldMode.hide,
     ViewfieldMode: ViewfieldMode,
     find: {
-      finding: false,
-      found: [] as GeoMapElement[],
-      radius: 20,
-      begin: new EventEmitter<number>(),
-      stop: new EventEmitter<void>(),
-      end: (datas: MarkerEntity[]) => {
-        this.element.find.found = datas.map((x) => x.data);
-        this.element.find.finding = false;
+      circle: {
+        finding: false,
+        found: [] as GeoMapElement[],
+        radius: 20,
+        begin: new EventEmitter<number>(),
+        stop: new EventEmitter<void>(),
+        end: (datas: MarkerEntity[]) => {
+          this.element.find.circle.found = datas.map((x) => x.data);
+          this.element.find.circle.finding = false;
+        },
+      },
+      fan: {
+        finding: false,
+        found: [] as GeoMapElement[],
+        begin: new EventEmitter<void>(),
+        stop: new EventEmitter<void>(),
+        end: (datas: MarkerEntity[]) => {
+          this.element.find.fan.found = datas.map((x) => x.data);
+          this.element.find.fan.finding = false;
+          /* 退出扇形查找时隐藏摄像机视野 */
+          this.element.viewfield = ViewfieldMode.hide;
+        },
       },
     },
     get: (modelId: string) => {
