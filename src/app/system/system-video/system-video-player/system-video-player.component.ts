@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { CardStatistic2Component } from '../../../common/components/card-statistic-2/card-statistic-2.component';
+import { CardStatisticComponent } from '../../../common/components/card-statistic/card-statistic.component';
 import { VideoChannelViewGroup } from '../../../common/data-core/models/devices/video-channel-view-group.model';
 import { HtmlTool } from '../../../common/tools/html-tool/html.tool';
 import {
@@ -15,7 +15,7 @@ import { SystemLayoutService } from '../../component/system-layout.service';
 
 @Component({
   selector: 'hw-system-video-player',
-  imports: [CommonModule, CardStatistic2Component, VideoPlayerListComponent],
+  imports: [CommonModule, CardStatisticComponent, VideoPlayerListComponent],
   templateUrl: './system-video-player.component.html',
   styleUrl: './system-video-player.component.less',
 })

@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CardStatistic1Component } from '../../../common/components/card-statistic-1/card-statistic-1.component';
+import { CardStatisticComponent } from '../../../common/components/card-statistic/card-statistic.component';
 import { GlobalStorage } from '../../../common/storage/global.storage';
 
 @Component({
   selector: 'hw-setting-config-skin',
-  imports: [CommonModule, FormsModule, CardStatistic1Component],
+  imports: [CommonModule, FormsModule, CardStatisticComponent],
   templateUrl: './setting-config-skin.component.html',
   styleUrl: './setting-config-skin.component.less',
 })

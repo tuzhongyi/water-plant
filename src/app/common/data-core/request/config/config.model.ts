@@ -2,20 +2,24 @@ export interface Config {
   title: string;
   skin: 'green' | 'blue';
   playback: PlaybackConfig;
-  videoUrl: string;
-  user: UserConfig;
-  reload: number;
+  video: VideoConfig;
+
   event: EventConfig;
   alarm: AlarmConfig;
 }
+
+interface VideoConfig {
+  playback: PlaybackConfig;
+  reload: number;
+  videoUrl: string;
+  loop: number;
+}
+
 interface PlaybackConfig {
   begin: number;
   end: number;
 }
-interface UserConfig {
-  username: string;
-  password: string;
-}
+
 interface EventConfig {
   device: number[];
   alarm: number[];

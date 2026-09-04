@@ -15,10 +15,13 @@ import { SystemVideoViewGroupArgs } from '../business/system-video-view-group.mo
 })
 export class SystemVideoViewGroupListComponent implements OnInit, OnDestroy {
   @Input('load') _load?: EventEmitter<SystemVideoViewGroupArgs>;
+
   @Input() selected?: VideoChannelViewGroup;
+
   @Output() selectedChange = new EventEmitter<VideoChannelViewGroup>();
   @Output() play = new EventEmitter<VideoChannelViewGroup>();
   @Output() delete = new EventEmitter<VideoChannelViewGroup>();
+  @Output() loaded = new EventEmitter<VideoChannelViewGroup[]>();
 
   constructor(private business: SystemVideoViewGroupBusiness) {}
 
@@ -47,7 +50,11 @@ export class SystemVideoViewGroupListComponent implements OnInit, OnDestroy {
 
   private load(args: SystemVideoViewGroupArgs) {
     return this.business.load(args).then((x) => {
-      this.datas.set(x);
+      let datas = x.sort((a, b) => {
+        return a.Sort - b.Sort;
+      });
+      this.datas.set(datas);
+      this.loaded.emit(datas);
       return;
     });
   }

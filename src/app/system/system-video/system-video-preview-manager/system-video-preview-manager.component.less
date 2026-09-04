@@ -25,12 +25,18 @@
 
     &-device {
       width: 100%;
-      height: calc((100% - 10px) * 0.618);
+      flex: 618 0 0;
+      min-height: 0;
+      overflow: hidden;
+      transition: flex-grow 0.3s ease, flex-basis 0.3s ease;
     }
 
     &-viewgroup {
       width: 100%;
-      height: calc((100% - 10px) * 0.382);
+      flex: 382 0 0;
+      min-height: 0;
+      overflow: hidden;
+      transition: flex-grow 0.3s ease, flex-basis 0.3s ease;
     }
   }
 
@@ -48,6 +54,14 @@
       left: 0;
     }
   }
+}
+
+// 面板最小化：只保留 card head（head 24px + padding 30px = 54px），另一面板占满剩余空间
+.system-video-preview-source.device-minimized .system-video-preview-source-device {
+  flex: 0 0 54px;
+}
+.system-video-preview-source.viewgroup-minimized .system-video-preview-source-viewgroup {
+  flex: 0 0 54px;
 }
 
 .view-group-update-window {

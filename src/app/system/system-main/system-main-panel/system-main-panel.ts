@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
-import { CardStatistic1Component } from '../../../common/components/card-statistic-1/card-statistic-1.component';
+import { CardStatisticComponent } from '../../../common/components/card-statistic/card-statistic.component';
 import { NameValue } from '../../../common/data-core/models/capabilities/enum-name-value.model';
 import { Device } from '../../../common/data-core/models/devices/device.model';
 import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
@@ -8,7 +8,7 @@ import { LanguageTool } from '../../../common/tools/language-tool/language.tool'
 
 @Component({
   selector: 'hw-system-main-panel',
-  imports: [CommonModule, CardStatistic1Component],
+  imports: [CommonModule, CardStatisticComponent],
   templateUrl: './system-main-panel.html',
   styleUrl: './system-main-panel.less',
 })

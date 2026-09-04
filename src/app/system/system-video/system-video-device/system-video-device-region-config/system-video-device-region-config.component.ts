@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { CardStatistic1Component } from '../../../../common/components/card-statistic-1/card-statistic-1.component';
+import { CardStatisticComponent } from '../../../../common/components/card-statistic/card-statistic.component';
 import { InputIconComponent } from '../../../../common/components/input-icon/input-icon.component';
 import { VideoChannel } from '../../../../common/data-core/models/devices/video-channel.model';
 import { RegionTreeNode } from '../../../../common/data-core/models/regions/region-tree-node.model';
@@ -16,7 +16,7 @@ import { SystemVideoDeviceRegionConfigBusiness } from './system-video-device-reg
   selector: 'hw-system-video-device-region-config',
   imports: [
     CommonModule,
-    CardStatistic1Component,
+    CardStatisticComponent,
     InputIconComponent,
     SystemVideoDeviceListMultipleComponent,
     SystemVideoDeviceRegionEditComponent,

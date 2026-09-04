@@ -1,10 +1,17 @@
 <div class="system-video-preview-manager">
-  <div class="system-video-preview-source">
+  <div
+    class="system-video-preview-source"
+    [class.device-minimized]="device.minimize"
+    [class.viewgroup-minimized]="viewgroup.minimize"
+  >
     <div class="system-video-preview-source-device">
       <hw-system-video-device-manager
         [pagesize]="6"
         [regionconfigable]="true"
+        [minimizeable]="true"
         [reload]="device.reload"
+        [minimize]="device.minimize"
+        (minimizeChange)="device.on.minimize($event)"
         [selected]="device.selected"
         (selectedChange)="device.on.select($event)"
         (config)="window.config.show.set(true)"
@@ -14,6 +21,10 @@
     <div class="system-video-preview-source-viewgroup">
       <hw-system-video-view-group-manager
         [load]="viewgroup.load"
+        [create]="viewgroup.save"
+        [minimizeable]="true"
+        [minimize]="viewgroup.minimize"
+        (minimizeChange)="viewgroup.on.minimize($event)"
         [selected]="viewgroup.selected"
         (selectedChange)="viewgroup.on.select($event)"
         (play)="viewgroup.on.play($event)"

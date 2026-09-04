@@ -1,7 +1,31 @@
-<hw-card-statistic-1>
+<hw-card-statistic [type]="1">
   <div class="system-video-view-group-manager">
-    <div class="card-head">
-      <div class="card-head-title">视频组</div>
+    <div class="card-head system-video-view-group-head">
+      <div>
+        <div class="card-head-title">
+          <div class="button card-head-toggle" (click)="on.minimize()">
+            <i class="mdi mdi-chevron-right" [class.down]="minimize"></i>
+          </div>
+          视频组
+        </div>
+      </div>
+      <div class="button-group">
+        @if (!!selected && list.datas.length > 1) {
+          <button title="排序前移" [disabled]="loop.index <= 0" (click)="on.sort(-1)">
+            <i class="mdi mdi-arrow-up"></i>
+          </button>
+          <button
+            title="排序后移"
+            [disabled]="loop.index >= list.datas.length - 1"
+            (click)="on.sort(1)"
+          >
+            <i class="mdi mdi-arrow-down"></i>
+          </button>
+        }
+        <button title="顺序播放视频组" [class.active]="loop.ing" (click)="on.loop()">
+          <i class="howell-icon-restore"></i>
+        </button>
+      </div>
     </div>
     <div class="card-line"></div>
     <div class="card-body no-foot system-video-view-group-container">
@@ -15,10 +39,11 @@
           [load]="list.load"
           [selected]="selected"
           (selectedChange)="list.on.select($event)"
+          (loaded)="list.on.loaded($event)"
           (play)="list.on.play($event)"
           (delete)="list.on.delete($event)"
         ></hw-system-video-view-group-list>
       </div>
     </div>
   </div>
-</hw-card-statistic-1>
+</hw-card-statistic>

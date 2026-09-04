@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CardStatistic1Component } from '../../../common/components/card-statistic-1/card-statistic-1.component';
+import { CardStatisticComponent } from '../../../common/components/card-statistic/card-statistic.component';
 import { DateTimeControlComponent } from '../../../common/components/date-time-control/date-time-control.component';
 import { TimeControlComponent } from '../../../common/components/time-control/time-control.component';
 import { DateTimePickerView } from '../../../common/directives/date-time-picker/date-time-picker.directive';
@@ -13,7 +13,7 @@ import { Duration } from '../../../common/tools/date-time-tool/duration.model';
   imports: [
     CommonModule,
     FormsModule,
-    CardStatistic1Component,
+    CardStatisticComponent,
     DateTimeControlComponent,
     TimeControlComponent,
   ],

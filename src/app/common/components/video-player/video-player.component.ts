@@ -238,7 +238,7 @@ export class VideoPlayerComponent implements OnDestroy, OnInit, AfterViewInit, O
 
   async init() {
     let x = await this.config.get();
-    let url = x.videoUrl
+    let url = x.video.videoUrl
       .replace('localhost', location.hostname)
       .replace('127.0.0.1', location.hostname);
     this.webUrl = url;

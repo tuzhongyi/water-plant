@@ -1,7 +1,7 @@
 <div class="setting-map-manager">
   <div class="setting-map-container">
     <div class="setting-map-list">
-      <hw-card-statistic-1>
+      <hw-card-statistic>
         <div class="setting-map-list-container card-flex column">
           <div class="card-head">
             <div class="card-head-title">设备信息</div>
@@ -17,11 +17,11 @@
             ></hw-setting-device-tree>
           </div>
         </div>
-      </hw-card-statistic-1>
+      </hw-card-statistic>
     </div>
 
     <div class="setting-map-three">
-      <hw-card-statistic-2>
+      <hw-card-statistic [type]="2">
         <hw-setting-map-three
           [load]="three.load"
           (maploaded)="three.on.loaded.map($event)"
@@ -33,7 +33,7 @@
           (standbyCancel)="three.standby.set(undefined)"
           (viewfield)="three.on.viewfield($event)"
         ></hw-setting-map-three>
-      </hw-card-statistic-2>
+      </hw-card-statistic>
     </div>
   </div>
   @if (window.details.map.show()) {

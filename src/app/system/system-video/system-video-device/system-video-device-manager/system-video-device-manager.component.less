@@ -9,6 +9,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
   }
 
   &-head {
@@ -16,15 +17,31 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .card-head-toggle {
+      cursor: pointer;
+
+      .mdi-chevron-right {
+        margin-top: 1px;
+        display: inline-block;
+        transition: transform 0.3s ease;
+
+        &.down {
+          transform: rotate(90deg);
+        }
+      }
+    }
   }
 
   &-body {
     display: flex;
     flex-direction: column;
-    gap: @gap
+    gap: @gap;
+    min-height: 0;
   }
 
   &-list {
     height: calc(100% - @filter-height - @gap);
+    min-height: 0;
   }
 }

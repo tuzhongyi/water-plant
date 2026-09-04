@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CardStatistic1Component } from '../../../../../common/components/card-statistic-1/card-statistic-1.component';
+import { CardStatisticComponent } from '../../../../../common/components/card-statistic/card-statistic.component';
 import { MapElementType } from '../../../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../../../common/data-core/models/geographic/map-element.model';
 import { SystemMainThreeElementTableComponent } from '../system-main-three-element-table/system-main-three-element-table.component';
 
 @Component({
   selector: 'hw-system-main-three-element-manager',
-  imports: [CommonModule, CardStatistic1Component, SystemMainThreeElementTableComponent],
+  imports: [CommonModule, CardStatisticComponent, SystemMainThreeElementTableComponent],
   templateUrl: './system-main-three-element-manager.component.html',
   styleUrl: './system-main-three-element-manager.component.less',
 })

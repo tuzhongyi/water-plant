@@ -9,7 +9,7 @@ import {
   SimpleChange,
   SimpleChanges,
 } from '@angular/core';
-import { CardStatistic1Component } from '../../../../common/components/card-statistic-1/card-statistic-1.component';
+import { CardStatisticComponent } from '../../../../common/components/card-statistic/card-statistic.component';
 import { MapElementType } from '../../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../../common/data-core/models/geographic/map-element.model';
 import { ArrayTool } from '../../../../common/tools/array-tool/array.tool';
@@ -19,7 +19,7 @@ import { SystemMainThreeState } from './system-main-three-state.model';
 
 @Component({
   selector: 'hw-system-main-three-state',
-  imports: [CommonModule, CardStatistic1Component],
+  imports: [CommonModule, CardStatisticComponent],
   templateUrl: './system-main-three-state.component.html',
   styleUrl: './system-main-three-state.component.less',
 })

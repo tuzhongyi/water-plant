@@ -11,7 +11,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CardStatistic1Component } from '../../../../common/components/card-statistic-1/card-statistic-1.component';
+import { CardStatisticComponent } from '../../../../common/components/card-statistic/card-statistic.component';
 import { InputIconComponent } from '../../../../common/components/input-icon/input-icon.component';
 import { VideoChannel } from '../../../../common/data-core/models/devices/video-channel.model';
 import { RegionTreeNode } from '../../../../common/data-core/models/regions/region-tree-node.model';
@@ -27,7 +27,7 @@ import { SystemVideoDeviceRegionComponent } from '../system-video-device-region/
     CommonModule,
     FormsModule,
     InputIconComponent,
-    CardStatistic1Component,
+    CardStatisticComponent,
     SystemVideoDeviceRegionComponent,
     SystemVideoDeviceListComponent,
   ],
@@ -42,6 +42,10 @@ export class SystemVideoDeviceManagerComponent implements OnChanges, OnInit, OnD
   @Output() selectedChange = new EventEmitter<RegionTreeNode | VideoChannel>();
   @Input() pagesize = 12;
   @Input() regionconfigable = false;
+  @Input() minimizeable = false;
+
+  @Input() minimize = false;
+  @Output() minimizeChange = new EventEmitter<boolean>();
 
   constructor() {}
 
@@ -131,7 +135,11 @@ export class SystemVideoDeviceManagerComponent implements OnChanges, OnInit, OnD
           this.manager.on.search();
         }
       },
-
+      minimize: () => {
+        if (!this.minimizeable) return;
+        this.minimize = !this.minimize;
+        this.minimizeChange.emit(this.minimize);
+      },
       search: () => {
         this.manager.args.first = true;
         if (this.device.show) {

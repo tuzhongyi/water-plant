@@ -30,7 +30,7 @@ export class VideoPlayerKeepBusiness {
           this.reload(player);
           this.interval(player);
         },
-        x.reload * 1000 * 60,
+        x.video.reload * 1000 * 60,
       );
     });
   }

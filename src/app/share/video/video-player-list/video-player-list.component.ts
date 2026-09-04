@@ -7,6 +7,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  SimpleChange,
   SimpleChanges,
 } from '@angular/core';
 
@@ -50,6 +51,8 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
   private subs = new Subscription();
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.change.mode(changes['mode']);
+
     if (changes['mode']) {
       this.initScreens();
       // if (this.mode > ScreenMode.one && this.index != 0) {
@@ -65,6 +68,14 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
     this.initScreens();
     this.registEvent();
   }
+
+  private change = {
+    mode: (change: SimpleChange) => {
+      if (change) {
+        this.initScreens();
+      }
+    },
+  };
 
   initModeOne() {
     let current = this.datas[this.index];
@@ -185,6 +196,9 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
 
   onscreenclicked(index: number) {
     this.index = this.datas.findIndex((x) => x.index == index);
+    this.datas.forEach((x) => {
+      x.selected = x.index == this.index;
+    });
     this.indexChange.emit(this.index);
   }
   onstop(index: number) {

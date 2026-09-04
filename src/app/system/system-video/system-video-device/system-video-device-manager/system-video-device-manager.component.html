@@ -1,7 +1,16 @@
-<hw-card-statistic-1>
+<hw-card-statistic>
   <div class="system-video-device-manager">
     <div class="card-head system-video-device-head">
-      <div class="card-head-title">摄像机</div>
+      <div>
+        <div class="card-head-title">
+          @if (minimizeable) {
+            <div class="button card-head-toggle" (click)="manager.on.minimize()">
+              <i class="mdi mdi-chevron-right" [class.down]="minimize"></i>
+            </div>
+          }
+          摄像机
+        </div>
+      </div>
       <div class="button-group">
         @if (device.show) {
           <button (click)="manager.on.mode()" title="多层">
@@ -13,6 +22,7 @@
             <i class="mdi mdi-format-list-bulleted"></i>
           </button>
         }
+        @if (minimizeable) {}
       </div>
     </div>
     <div class="card-line"></div>
@@ -51,4 +61,4 @@
       <ng-content></ng-content>
     </div>
   </div>
-</hw-card-statistic-1>
+</hw-card-statistic>

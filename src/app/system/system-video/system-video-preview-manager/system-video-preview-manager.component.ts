@@ -41,9 +41,16 @@ export class SystemVideoPreviewManagerComponent {
   window = new SystemVideoPreviewManagerWindow(this);
 
   device = {
+    minimize: false,
     reload: new EventEmitter<void>(),
     selected: undefined as RegionTreeNode | VideoChannel | undefined,
     on: {
+      minimize: (value: boolean) => {
+        this.device.minimize = value;
+        if (value) {
+          this.viewgroup.minimize = false;
+        }
+      },
       preview: (args: PreviewArgs) => {
         this.player.preview.emit(args);
       },
@@ -62,9 +69,17 @@ export class SystemVideoPreviewManagerComponent {
     viewgroup: new EventEmitter<PreviewArgs[]>(),
   };
   viewgroup = {
+    minimize: false,
     load: new EventEmitter<void>(),
+    save: new EventEmitter<VideoChannelViewGroup>(),
     selected: undefined as VideoChannelViewGroup | undefined,
     on: {
+      minimize: (value: boolean) => {
+        this.viewgroup.minimize = value;
+        if (value) {
+          this.device.minimize = false;
+        }
+      },
       select: (data?: VideoChannelViewGroup) => {
         if (data) {
           this.viewgroup.selected = data;
@@ -72,9 +87,7 @@ export class SystemVideoPreviewManagerComponent {
         }
       },
       save: (e: VideoChannelViewGroup) => {
-        this.business.save(e).then((x) => {
-          this.viewgroup.load.emit();
-        });
+        this.viewgroup.save.emit(e);
       },
       play: (e: VideoChannelViewGroup) => {
         this.player.screen = e.ViewNumber;

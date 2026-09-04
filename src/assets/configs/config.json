@@ -1,16 +1,15 @@
 {
   "title": "惠南水厂智能平台",
   "skin": "blue",
-  "playback": {
-    "begin": -15,
-    "end": 15
+  "video": {
+    "videoUrl": "http://127.0.0.1/video/wsplayer/wsplayer.html",
+    "playback": {
+      "begin": -15,
+      "end": 15
+    },
+    "reload": 240,
+    "loop": 60
   },
-  "videoUrl": "http://127.0.0.1/video/wsplayer/wsplayer.html",
-  "user": {
-    "username": "admin",
-    "password": "howell.net.cn"
-  },
-  "reload": 240,
   "event": {
     "device": [
       1,
