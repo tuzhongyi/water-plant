@@ -15,7 +15,9 @@ import { CardComponent } from '../../../common/components/card/card.component';
 import { DateTimeControlComponent } from '../../../common/components/date-time-control/date-time-control.component';
 import { TimeControlComponent } from '../../../common/components/time-control/time-control.component';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
+import { DateTimePickerView } from '../../../common/directives/date-time-picker/date-time-picker.directive';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
+import { Language } from '../../../common/tools/language-tool/language';
 import { SystemDownloadBusiness } from '../business/system-download.business';
 import { DownloadTask } from '../business/system-download.model';
 import { SystemDownloadTableComponent } from '../system-download-table/system-download-table.component';
@@ -42,9 +44,13 @@ export class SystemDownloadContainerComponent implements OnInit, OnChanges, OnDe
   constructor(public business: SystemDownloadBusiness) {}
 
   disabled = true;
+  View = DateTimePickerView;
+  Language = Language;
 
   ngOnInit(): void {
     this.regist();
+    this.manager.time.begin.setSeconds(0);
+    this.manager.time.end.setSeconds(0);
   }
   ngOnChanges(changes: SimpleChanges): void {
     this.change.data(changes['data']);
@@ -88,22 +94,8 @@ export class SystemDownloadContainerComponent implements OnInit, OnChanges, OnDe
   };
 
   manager = {
-    date: new Date(),
     time: DateTimeTool.before(new Date(), 30 * 60),
     on: {
-      date: () => {
-        let year = this.manager.date.getFullYear();
-        let month = this.manager.date.getMonth();
-        let day = this.manager.date.getDate();
-
-        this.manager.time.begin.setFullYear(year);
-        this.manager.time.begin.setMonth(month);
-        this.manager.time.begin.setDate(day);
-
-        this.manager.time.end.setFullYear(year);
-        this.manager.time.end.setMonth(month);
-        this.manager.time.end.setDate(day);
-      },
       download: async () => {
         console.log('[download] 点击下载, data=', this.data, 'disabled=', this.disabled);
         if (this.data) {

@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'hw-card-statistic',
@@ -9,4 +9,6 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 })
 export class CardStatisticComponent {
   @Input() type = 1;
+
+  @ViewChild('container') element?: ElementRef<HTMLDivElement>;
 }

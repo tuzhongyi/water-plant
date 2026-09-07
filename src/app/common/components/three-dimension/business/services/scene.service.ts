@@ -48,6 +48,24 @@ export class SceneService {
   private renderPaused = false;
   /** 是否需要重绘一帧。空闲时（无相机移动/无场景变更）置为 false 以跳过 GPU 渲染。 */
   private needsRender = true;
+
+  /** 自适应画质：目标帧时长（默认 30 FPS）与 EMA 平滑后的实测渲染耗时（仅在实际渲染的帧更新） */
+  private readonly targetFrameMs = 1000 / 30;
+  private renderMs = 0;
+  private readonly emaAlpha = 0.2;
+  /** 树画质 0..1：1=全量不减树，0=最大减树。按“实测耗时相对目标帧时长的偏差”积分调整 */
+  private quality = 1;
+  private readonly qualityRate = 0.5;
+
+  /** 当前树画质（0..1），供树控制器等 LOD 读取；低帧率自动下调，高帧率恢复 1 */
+  get treeQuality(): number {
+    return this.quality;
+  }
+
+  /** 实测帧率（EMA，FPS），便于观测/调试自适应画质 */
+  get frameRate(): number {
+    return this.renderMs > 0 ? 1000 / this.renderMs : 0;
+  }
   private canvas!: HTMLCanvasElement;
   private containerEl!: HTMLElement;
   private resizeObserver?: ResizeObserver;
@@ -372,6 +390,8 @@ export class SceneService {
       }
     }
 
+    /* 实测本帧 GPU 渲染耗时（含叠加层），EMA 平滑后驱动自适应画质 */
+    const t0 = performance.now();
     this.composer.render();
 
     /* 叠加渲染 overlayScene（TC gizmo），覆盖在 composer 输出之上 */
@@ -379,6 +399,11 @@ export class SceneService {
     this.renderer.clearDepth();
     this.renderer.render(this.overlayScene, this.camera);
     this.renderer.autoClear = true;
+
+    this.renderMs += this.emaAlpha * (performance.now() - t0 - this.renderMs);
+    /* 耗时超出目标则下调画质（减树），低于目标则上调画质（恢复全量），积分收敛到目标帧率附近 */
+    const err = (this.renderMs - this.targetFrameMs) / this.targetFrameMs;
+    this.quality = THREE.MathUtils.clamp(this.quality - err * this.qualityRate, 0, 1);
   }
 
   /** 标记需要重绘一帧。所有改变场景/相机状态的入口都应调用，空闲时自动停止渲染以省 GPU。 */

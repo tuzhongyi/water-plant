@@ -2,34 +2,26 @@
   <div class="download-container">
     <div class="card-head">
       <div class="forms" [class.disabled]="disabled">
-        <div class="form-item datetime">
-          <div class="form-item-text">选择日期：</div>
-          <div class="form-item-value">
-            <date-time-control
-              [disabled]="disabled"
-              [(date)]="manager.date"
-              (dateChange)="manager.on.date()"
-            ></date-time-control>
-          </div>
-        </div>
         <div class="form-item">
           <div class="form-item-text">开始时间：</div>
           <div class="form-item-value fill time">
-            <app-time-control
-              [(time)]="manager.time.begin"
-              [end]="manager.time.end"
+            <date-time-control
               [disabled]="disabled"
-            ></app-time-control>
+              [format]="Language.YearMonthDayHHmmss"
+              [minView]="View.hour"
+              [(date)]="manager.time.begin"
+            ></date-time-control>
           </div>
         </div>
         <div class="form-item">
           <div class="form-item-text">结束时间：</div>
           <div class="form-item-value fill time">
-            <app-time-control
-              [(time)]="manager.time.end"
-              [begin]="manager.time.begin"
+            <date-time-control
               [disabled]="disabled"
-            ></app-time-control>
+              [format]="Language.YearMonthDayHHmmss"
+              [minView]="View.hour"
+              [(date)]="manager.time.end"
+            ></date-time-control>
           </div>
         </div>
         <div class="form-item">

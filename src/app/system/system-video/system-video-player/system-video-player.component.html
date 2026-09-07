@@ -59,23 +59,25 @@
         }
       </div>
       <div class="button-group">
+        @if (!fullscreen.value()) {
+          <button
+            class="button-border primary"
+            [title]="expand ? '还原' : '展开'"
+            (click)="on.expand()"
+          >
+            @if (expand) {
+              <i class="mdi mdi-unfold-less-vertical"></i>
+            } @else {
+              <i class="mdi mdi-unfold-more-vertical"></i>
+            }
+          </button>
+        }
         <button
           class="button-border primary"
-          [title]="expand ? '还原' : '展开'"
-          (click)="on.expand()"
-        >
-          @if (expand) {
-            <i class="mdi mdi-unfold-less-vertical"></i>
-          } @else {
-            <i class="mdi mdi-unfold-more-vertical"></i>
-          }
-        </button>
-        <button
-          class="button-border primary"
-          [title]="fullscreen ? '还原' : '全屏'"
+          [title]="fullscreen.value() ? '还原' : '全屏'"
           (click)="on.fullscreen()"
         >
-          @if (fullscreen) {
+          @if (fullscreen.value()) {
             <i class="mdi mdi-fullscreen-exit"></i>
           } @else {
             <i class="mdi mdi-fullscreen"></i>

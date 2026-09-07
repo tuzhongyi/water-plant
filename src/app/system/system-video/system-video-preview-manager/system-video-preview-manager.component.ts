@@ -41,6 +41,7 @@ export class SystemVideoPreviewManagerComponent {
   window = new SystemVideoPreviewManagerWindow(this);
 
   device = {
+    viewcount: 6,
     minimize: false,
     reload: new EventEmitter<void>(),
     selected: undefined as RegionTreeNode | VideoChannel | undefined,
@@ -78,6 +79,9 @@ export class SystemVideoPreviewManagerComponent {
         this.viewgroup.minimize = value;
         if (value) {
           this.device.minimize = false;
+          this.device.viewcount = 12;
+        } else {
+          this.device.viewcount = 6;
         }
       },
       select: (data?: VideoChannelViewGroup) => {

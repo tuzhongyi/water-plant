@@ -28,6 +28,7 @@ import { SystemVideoDeviceListArgs } from './system-video-device-list.model';
 export class SystemVideoDeviceListComponent implements OnInit, OnChanges, OnDestroy {
   @Input() args: SystemVideoDeviceListArgs = {};
   @Input('load') _load?: EventEmitter<SystemVideoDeviceListArgs>;
+  @Input() reload?: EventEmitter<void>;
   @Input() inverse: string[] = [];
   @Input() selected?: VideoChannel;
   @Output() selectedChange = new EventEmitter<VideoChannel>();
@@ -46,6 +47,7 @@ export class SystemVideoDeviceListComponent implements OnInit, OnChanges, OnDest
 
   ngOnChanges(changes: SimpleChanges): void {
     this.change.inverse(changes['inverse']);
+    this.change.pagesize(changes['pagesize']);
   }
   ngOnInit(): void {
     this.page.set(Page.create(1, this.pagesize));
@@ -61,6 +63,23 @@ export class SystemVideoDeviceListComponent implements OnInit, OnChanges, OnDest
         this.load(this.page().PageIndex, this.args);
       }
     },
+    pagesize: (change: SimpleChange) => {
+      if (change) {
+        let page = this.page();
+        page.PageSize = this.pagesize;
+
+        /* 以当前页第一条数据为锚点：换页大小后让它仍落在新页码上，保持视角连续 */
+        let target = 1;
+        const first = this.datas()[0];
+        if (first) {
+          const idx = this.filter(this.inverse).findIndex((x) => x.Id === first.Id);
+          if (idx >= 0) {
+            target = Math.floor(idx / this.pagesize) + 1;
+          }
+        }
+        this.load(target, this.args);
+      }
+    },
   };
 
   private regist() {
@@ -71,6 +90,13 @@ export class SystemVideoDeviceListComponent implements OnInit, OnChanges, OnDest
           this.selected = undefined;
           this.selectedChange.emit(this.selected);
           this.load(index, this.args);
+        }),
+      );
+    }
+    if (this.reload) {
+      this.subs.add(
+        this.reload.subscribe((x) => {
+          this.load(this.page().PageIndex, this.args);
         }),
       );
     }

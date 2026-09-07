@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CardStatisticComponent } from '../../../common/components/card-statistic/card-statistic.component';
 import { VideoChannelViewGroup } from '../../../common/data-core/models/devices/video-channel-view-group.model';
@@ -35,15 +44,25 @@ export class SystemVideoPlayerComponent implements OnInit, OnDestroy {
   constructor(private layout: SystemLayoutService) {}
 
   private subs = new Subscription();
+  @ViewChild(CardStatisticComponent) card?: CardStatisticComponent;
 
-  get fullscreen() {
-    return HtmlTool.screen.get.fullscreen();
-  }
+  /* 全屏状态用 signal 驱动，通过 fullscreenchange 事件同步。
+   * 不要用 getter 直接读 document.fullscreenElement：requestFullscreen 是异步的，
+   * 在模板里读会因 DOM 状态跨检测周期变化而报 NG0100。 */
+  fullscreen = {
+    value: signal(false),
+    change: () => {
+      this.fullscreen.value.set(HtmlTool.screen.get.fullscreen());
+    },
+  };
 
   ngOnInit(): void {
+    this.fullscreen.value.set(HtmlTool.screen.get.fullscreen());
+    document.addEventListener('fullscreenchange', this.fullscreen.change);
     this.regist();
   }
   ngOnDestroy(): void {
+    document.removeEventListener('fullscreenchange', this.fullscreen.change);
     this.subs.unsubscribe();
   }
 
@@ -104,7 +123,7 @@ export class SystemVideoPlayerComponent implements OnInit, OnDestroy {
       this.player.play.emit(datas);
     },
     fullscreen: () => {
-      HtmlTool.screen.set.fullscreen(!this.fullscreen);
+      HtmlTool.screen.set.fullscreen(!this.fullscreen.value(), this.card?.element?.nativeElement);
     },
     expand: () => {
       this.expand = !this.expand;

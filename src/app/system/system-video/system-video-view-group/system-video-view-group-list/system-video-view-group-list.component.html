@@ -5,6 +5,7 @@
         class="system-video-view-group-list-table-tr"
         [class.selected]="item.Id == selected?.Id"
         (click)="on.select($event, item)"
+        (dblclick)="on.play($event, item)"
       >
         @if (update.ing && item.Id == selected?.Id) {
           <input-icon class="update-input" [(value)]="update.value" [canclear]="false">

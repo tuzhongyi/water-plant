@@ -10,14 +10,33 @@ import { ThreeDTreeModel } from './three-d-tree.model';
  *  统一压暗漫反射 albedo 以接近 3D 查看器的自然亮度（0~1，越小越暗，可调）。 */
 const TREE_BRIGHTNESS = 0.3;
 
-/** 树的最大渲染距离（世界单位）：相机到树的距离超过该值时跳过绘制。
- *  镜头拉远（俯瞰全景）时自动减树、拉近时恢复完整细节，降低 GPU 顶点处理压力。
- *  树的分布范围约 130 单位，设 800 既能保证近景整片树可见，又能在远景时及时减树。 */
-const TREE_MAX_DISTANCE = 800;
+/** 树在屏幕上的像素高度阈值（单位：像素），代表最大减树档（画质 q=0）的端点：
+ *  低于 TREE_CULL_PX 直接不画；介于 CULL 与 FULL 之间按比例抽稀（越远越稀）；
+ *  达到 FULL 全量绘制。实际阈值随画质 q 线性插值到 0（q=1 时完全不减树）。
+ *  用“屏幕像素大小”而非世界距离，可随缩放/视口/FOV 自动适配。 */
+const TREE_CULL_PX = 3;
+const TREE_FULL_PX = 26;
+
+/** 密集林区判定：以树为中心、半径 TREE_NEIGHBOR_RADIUS（世界单位）内的邻居数超过
+ *  TREE_ISOLATED_MAX 视为密集林区（随机抽稀）；否则为成排/孤植等结构树（沿排交替消失）。 */
+const TREE_NEIGHBOR_RADIUS = 10;
+const TREE_ISOLATED_MAX = 4;
+
+/** 成排树的“隔一棵消失”键值：链上奇数位的树分配该值（抽稀密度低于它即被移除），
+ *  偶数位分配 0（永不移除）。值越接近 1，成排树越晚开始交替消失。 */
+const TREE_ROW_ALTERNATE_KEY = 0.9;
+
+/** 由树位置生成稳定抽样值 [0,1)，用于远景抽稀：同一棵树多次 updateLod 结果一致，避免帧间闪烁 */
+function hash01(x: number, z: number): number {
+  const h = Math.sin(x * 127.1 + z * 311.7) * 43758.5453;
+  return h - Math.floor(h);
+}
 
 /** 一棵树模板：按材质合并后的几何体（每材质一个合并几何体） */
 interface TreeTemplate {
   parts: { geometry: THREE.BufferGeometry; material: THREE.Material }[];
+  /** 树模型的世界高度（未缩放），用于屏幕像素尺寸换算 */
+  height: number;
 }
 
 /** 一个 type 下的实例组：同一模板的多个 InstancedMesh（每个 part 一个）共享同一组实例矩阵 */
@@ -26,6 +45,11 @@ interface TreeGroup {
   /** 与 items 一一对应的世界坐标，供距离/视锥裁剪时快速读取，避免重复 new Vector3 */
   positions: THREE.Vector3[];
   meshes: THREE.InstancedMesh[];
+  /** 树模型世界高度（未缩放），每棵树的屏幕高度 = height × scale */
+  height: number;
+  /** 每棵树的抽稀键值 [0,1)：密集林区为稳定随机值，成排树为“隔一棵”交替值，
+   *  孤植/小簇为 0。抽稀密度低于键值即移除该树（键值 0 永不移除）。 */
+  keys: number[];
 }
 
 /**
@@ -44,7 +68,7 @@ export class ThreeDTreeController {
   private root = new THREE.Group();
   /** 树模板缓存：URL → 合并后的模板（同一模型文件只加载/合并一次） */
   private templateCache = new Map<string, TreeTemplate>();
-  /** 按 type 分组的实例网格，用于按相机距离/视锥动态减树 */
+  /** 按 type 分组的实例网格，用于按屏幕像素大小/视锥动态减树 */
   private groups = new Map<number, TreeGroup>();
   /** 已创建的所有 InstancedMesh，用于释放资源 */
   private instanced: THREE.InstancedMesh[] = [];
@@ -87,17 +111,21 @@ export class ThreeDTreeController {
       const trees = await this.fetchTreeModels();
       if (trees.length === 0) return;
 
+      /* 预计算每棵树的抽稀键值：密集林区随机、成排树隔一棵交替、孤植/小簇永不抽 */
+      const keys = this.computeTreeKeys(trees);
+
       /* 按 type 分组实例化（目前所有 type 指向同一模型，但保留扩展性） */
-      const byType = new Map<number, ThreeDTreeModel[]>();
-      for (const t of trees) {
+      const byType = new Map<number, { item: ThreeDTreeModel; key: number }[]>();
+      for (let i = 0; i < trees.length; i++) {
+        const t = trees[i];
         const arr = byType.get(t.type);
-        if (arr) arr.push(t);
-        else byType.set(t.type, [t]);
+        if (arr) arr.push({ item: t, key: keys[i] });
+        else byType.set(t.type, [{ item: t, key: keys[i] }]);
       }
 
-      for (const [type, items] of byType) {
+      for (const [type, entries] of byType) {
         const template = await this.getTemplate(type);
-        if (template) this.buildInstanced(type, template, items);
+        if (template) this.buildInstanced(type, template, entries);
       }
 
       if (!this.root.parent) {
@@ -139,6 +167,9 @@ export class ThreeDTreeController {
        * 直接 clone 每个网格几何体并烘焙变换（去掉单位换算缩放），作为实例化的一部分。
        * 材质保留 GLTF 的标准材质（带光照，贴近 3D 查看器的观感），只压暗 albedo 降低过曝。 */
       const parts: TreeTemplate['parts'] = [];
+      /* 累计模板几何体 Y 轴包围盒，得到树模型未缩放时的世界高度 */
+      let maxY = -Infinity;
+      let minY = Infinity;
       template.traverse((c) => {
         if (!(c as THREE.Mesh).isMesh) return;
         const mesh = c as THREE.Mesh;
@@ -152,6 +183,11 @@ export class ThreeDTreeController {
         const geo = mesh.geometry.clone();
         /* 模型已修正单位，直接烘焙 matrixWorld（含 scale）即可，无需再丢弃 scale。 */
         geo.applyMatrix4(mesh.matrixWorld);
+        geo.computeBoundingBox();
+        if (geo.boundingBox) {
+          if (geo.boundingBox.max.y > maxY) maxY = geo.boundingBox.max.y;
+          if (geo.boundingBox.min.y < minY) minY = geo.boundingBox.min.y;
+        }
 
         parts.push({ geometry: geo, material });
       });
@@ -161,7 +197,9 @@ export class ThreeDTreeController {
         if ((c as THREE.Mesh).isMesh) (c as THREE.Mesh).geometry.dispose();
       });
 
-      const result: TreeTemplate = { parts };
+      /* 高度兜底 5，避免平面几何体导致像素恒为 0 */
+      const height = maxY > minY ? maxY - minY : 5;
+      const result: TreeTemplate = { parts, height };
       this.templateCache.set(url, result);
       return result;
     } catch (err) {
@@ -171,7 +209,13 @@ export class ThreeDTreeController {
   }
 
   /** 用模板几何体为每棵树写入实例矩阵，构建 InstancedMesh */
-  private buildInstanced(type: number, template: TreeTemplate, items: ThreeDTreeModel[]): void {
+  private buildInstanced(
+    type: number,
+    template: TreeTemplate,
+    entries: { item: ThreeDTreeModel; key: number }[],
+  ): void {
+    const items = entries.map((e) => e.item);
+    const keys = entries.map((e) => e.key);
     const meshes: THREE.InstancedMesh[] = [];
     /* 预计算世界坐标，后续 distanceTo/包围球测试直接复用，避免每帧 new */
     const positions = items.map((t) => new THREE.Vector3(t.position.x, t.position.y, t.position.z));
@@ -197,11 +241,71 @@ export class ThreeDTreeController {
       this.instanced.push(im);
       this.root.add(im);
     }
-    this.groups.set(type, { items, positions, meshes });
+    this.groups.set(type, { items, positions, meshes, height: template.height, keys });
   }
 
-  /** 按相机距离 + 视锥裁剪动态收缩实例数：只把可见的树写进实例矩阵前段并缩小 count，
-   *  其余实例不再被 GPU 处理。由相机 change 触发，镜头静止时不做任何计算。 */
+  /** 计算每棵树的抽稀键值 [0,1)：
+   *  - 密集林区（邻居数 > TREE_ISOLATED_MAX）：稳定随机值，抽稀后呈自然稀疏林相；
+   *  - 成排树（度数 ≤ 2 且可连成链）：沿链交替标记，抽稀时“隔一棵消失”而非随机缺棵；
+   *  - 孤植/小簇（其余非密集树）：键值 0，永不移除。
+   *  仅在加载时执行一次。 */
+  private computeTreeKeys(trees: ThreeDTreeModel[]): number[] {
+    const n = trees.length;
+    const R2 = TREE_NEIGHBOR_RADIUS * TREE_NEIGHBOR_RADIUS;
+
+    /* 邻接表：水平面（x,z）半径 R 内的邻居索引（1200 棵树 O(n²) 代价可忽略） */
+    const neighbors: number[][] = Array.from({ length: n }, () => []);
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const dx = trees[i].position.x - trees[j].position.x;
+        const dz = trees[i].position.z - trees[j].position.z;
+        if (dx * dx + dz * dz < R2) {
+          neighbors[i].push(j);
+          neighbors[j].push(i);
+        }
+      }
+    }
+
+    const keys = neighbors.map((nb, i) =>
+      nb.length > TREE_ISOLATED_MAX ? hash01(trees[i].position.x, trees[i].position.z) : 0,
+    );
+
+    /* 沿成排链交替标记：只遍历度数 ≤ 2 的节点（孤植/端点/链中），奇数位赋交替键值 */
+    const visited = new Array<boolean>(n).fill(false);
+    const walk = (start: number): void => {
+      let idx = 0;
+      let cur = start;
+      let prev = -1;
+      while (cur !== -1) {
+        visited[cur] = true;
+        if (idx % 2 === 1) keys[cur] = TREE_ROW_ALTERNATE_KEY;
+        let next = -1;
+        for (const nb of neighbors[cur]) {
+          if (nb === prev || visited[nb] || neighbors[nb].length > 2) continue;
+          next = nb;
+          break;
+        }
+        prev = cur;
+        cur = next;
+        idx++;
+      }
+    };
+
+    /* 先由链端点（度数 0/1）出发覆盖整条链，再处理剩余度数 2 的成环链 */
+    for (let i = 0; i < n; i++) {
+      if (visited[i] || neighbors[i].length > 1) continue;
+      walk(i);
+    }
+    for (let i = 0; i < n; i++) {
+      if (visited[i] || neighbors[i].length !== 2) continue;
+      walk(i);
+    }
+
+    return keys;
+  }
+
+  /** 按屏幕像素大小 + 视锥裁剪动态收缩实例数：远景树按比例抽稀，只把保留的树写进实例矩阵前段
+   *  并缩小 count，其余实例不再被 GPU 处理。由相机 change 触发，镜头静止时不做任何计算。 */
   private updateLod(): void {
     const cam = this.sceneService.camera;
     /* change 事件先于本帧渲染触发，相机 world 矩阵尚未刷新，需手动同步后再算视锥 */
@@ -210,6 +314,15 @@ export class ThreeDTreeController {
     this.frustum.setFromProjectionMatrix(this.projScreenMatrix);
     const camPos = cam.position;
 
+    /* 屏幕像素尺寸换算（透视：随距离变大；正交：与距离无关，用固定视高） */
+    const screenH = this.sceneService.renderer?.domElement?.clientHeight || 600;
+    const isPerspective = cam instanceof THREE.PerspectiveCamera;
+    /* 画质 q（0..1）：1=全量不减树，0=最大减树。低帧率时由 SceneService 动态下调 */
+    const q = this.sceneService.treeQuality;
+    const reduce = q < 1;
+    const cullPx = TREE_CULL_PX * (1 - q);
+    const fullPx = TREE_FULL_PX * (1 - q);
+
     for (const group of this.groups.values()) {
       const items = group.items;
       let count = 0;
@@ -217,14 +330,29 @@ export class ThreeDTreeController {
         const t = items[i];
         const p = group.positions[i];
 
-        /* 距离裁剪：镜头拉远时减树 */
-        if (camPos.distanceTo(p) > TREE_MAX_DISTANCE) continue;
-
         /* 视锥裁剪：只画视野内的树（树干中心 + 约一个树冠半径的包围球） */
         this.sphere.center.copy(p);
         this.sphere.center.y += 1;
         this.sphere.radius = 2.5 * t.scale;
         if (!this.frustum.intersectsSphere(this.sphere)) continue;
+
+        if (reduce) {
+          /* 屏幕像素高度 = 树的世界高度 ÷ 该距离处每像素对应的世界单位 */
+          const dist = camPos.distanceTo(p);
+          const viewH = isPerspective
+            ? 2 * dist * Math.tan(THREE.MathUtils.degToRad((cam as THREE.PerspectiveCamera).fov) / 2)
+            : 20 / (cam as THREE.OrthographicCamera).zoom;
+          const worldPerPixel = viewH / screenH;
+          const pixels = (group.height * t.scale) / worldPerPixel;
+
+          /* 太小直接不画；介于 cullPx 与 fullPx 之间按稳定抽样值抽稀（越远越稀） */
+          if (pixels < cullPx) continue;
+          if (pixels < fullPx) {
+            const density = (pixels - cullPx) / (fullPx - cullPx);
+            /* 键值大于当前密度则移除：密集林区随机、成排树隔一棵交替、孤植/小簇(0)永不抽 */
+            if (group.keys[i] > density) continue;
+          }
+        }
 
         this.dummy.position.set(t.position.x, t.position.y, t.position.z);
         this.dummy.rotation.set(0, THREE.MathUtils.degToRad(t.direction), 0);
