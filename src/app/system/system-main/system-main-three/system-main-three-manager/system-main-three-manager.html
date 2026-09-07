@@ -1,4 +1,4 @@
-<div class="system-main-three-manager">
+<div class="system-main-three-manager" #container>
   <div
     class="system-main-three-container"
     wheel-ctrl
@@ -17,7 +17,8 @@
       (maploaded)="map.on.maploaded($event)"
       (buildingselect)="map.building.selected = $event"
       (resetstate)="map.on.resetstate($event)"
-      (full)="map.on.full($event)"
+      (expandscreen)="map.on.expandscreen($event)"
+      (fullscreen)="map.on.fullscreen($event)"
     ></hw-system-main-three-container>
   </div>
 

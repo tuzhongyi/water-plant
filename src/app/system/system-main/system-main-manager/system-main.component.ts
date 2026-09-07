@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -20,6 +21,7 @@ import { DeviceEventRecord } from '../../../common/data-core/models/events/devic
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { MqttRequestService } from '../../../common/data-core/request/services/mqtt/mqtt.service';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
+import { HtmlTool } from '../../../common/tools/html-tool/html.tool';
 import { wait } from '../../../common/tools/wait';
 import { VideoPlayerContainerComponent } from '../../../share/video/video-player-container/video-player-container.component';
 import { VideoPlayerListComponent } from '../../../share/video/video-player-list/video-player-list.component';
@@ -64,6 +66,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
   ) {}
 
+  @ViewChild('card') mapcontainer?: CardComponent;
   window = new SystemMainWindow();
   private handle = {
     loop: undefined as any,
@@ -173,7 +176,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     load: new EventEmitter<void>(),
     alarm: new EventEmitter<string>(),
     unalarm: new EventEmitter<GeoMapElement>(),
-    full: signal<boolean>(false),
+    expandscreen: signal<boolean>(false),
     on: {
       preview: (data: GeoMapElement) => {
         this.video.single.preview(data);
@@ -192,8 +195,11 @@ export class SystemMainComponent implements OnInit, OnDestroy {
           this.window.table.element.reload.emit();
         });
       },
-      full: (value: boolean) => {
-        this.map.full.set(value);
+      expandscreen: (value: boolean) => {
+        this.map.expandscreen.set(value);
+      },
+      fullscreen: (value: boolean) => {
+        HtmlTool.screen.set.fullscreen(value, this.mapcontainer?.element?.nativeElement);
       },
     },
   };

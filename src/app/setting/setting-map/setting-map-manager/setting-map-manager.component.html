@@ -1,7 +1,7 @@
 <div class="setting-map-manager">
   <div class="setting-map-container">
     <div class="setting-map-list">
-      <hw-card-statistic>
+      <hw-card-statistic [type]="4">
         <div class="setting-map-list-container card-flex column">
           <div class="card-head">
             <div class="card-head-title">设备信息</div>
@@ -21,7 +21,7 @@
     </div>
 
     <div class="setting-map-three">
-      <hw-card-statistic [type]="2">
+      <hw-card-statistic [type]="3">
         <hw-setting-map-three
           [load]="three.load"
           (maploaded)="three.on.loaded.map($event)"

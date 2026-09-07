@@ -12,8 +12,8 @@
         ></hw-system-main-record-manager>
       </div>
     </div>
-    <div class="system-main-three" [class.full]="map.full()">
-      <howell-card>
+    <div class="system-main-three" [class.full]="map.expandscreen()">
+      <howell-card #card>
         <hw-system-main-three-manager
           [load]="map.load"
           [alarm]="map.alarm"
@@ -23,7 +23,8 @@
           (video)="map.on.video($event)"
           (element)="map.on.element($event)"
           (resetstate)="map.on.resetstate($event)"
-          (full)="map.on.full($event)"
+          (expandscreen)="map.on.expandscreen($event)"
+          (fullscreen)="map.on.fullscreen($event)"
         ></hw-system-main-three-manager>
       </howell-card>
     </div>

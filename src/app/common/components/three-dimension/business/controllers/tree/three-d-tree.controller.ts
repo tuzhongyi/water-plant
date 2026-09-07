@@ -91,11 +91,12 @@ export class ThreeDTreeController {
   }
 
   /**
-   * 同步渲染模式：solid 显示树，其余模式隐藏。首次进入 solid 时异步加载树模型。
+   * 同步树的显隐：show 为外部「是否显示树」开关，mode 为渲染模式。
+   * 仅当 show 为 true 且 mode 为 solid 时显示树；首次显示时异步加载树模型。
    * 场景未初始化（sceneService.scene 尚未创建）时只更新显隐标记，不触发加载。
    */
-  sync(mode: RenderMode): void {
-    this.visible = mode === RenderMode.solid;
+  sync(mode: RenderMode, show: boolean = true): void {
+    this.visible = show && mode === RenderMode.solid;
     this.root.visible = this.visible;
     if (this.visible && !this.loaded && !this.loading && this.sceneService.scene) {
       void this.load();

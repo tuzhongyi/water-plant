@@ -79,6 +79,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   modelreload = input<EventEmitter<ModelViewerModel>>();
   /** 渲染模式：solid=实体 / edges=线框 / overlay=覆盖 */
   renderMode = input<RenderMode>(RenderMode.overlay);
+  /** 是否显示场景中的树：true 显示/加载，false 隐藏（树仅在 solid 模式生效） */
+  trees = input<boolean>(true);
+
   /** 变换 Gizmo 可见性，true 时对选中的模型显示位置/旋转/缩放手柄。
    *  未设置时回退到 config.json 的 settings.gizmoVisible */
   gizmoVisible = input<boolean>();
@@ -267,9 +270,6 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
       this.state.updateSettings({ renderMode: rm });
 
-      /* 树仅在 solid 模式显示，其余模式隐藏 */
-      this.treeCtrl.sync(rm);
-
       /* 场景未就绪（首次构造期间）仅更新设置，ngAfterViewInit 会用新模式完成初始加载 */
       if (!this.modelCtrl.sceneReady) return;
 
@@ -287,6 +287,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           }
         }
       }
+    });
+    /** 树的显隐由 trees 输入 + 渲染模式共同决定：仅 solid 模式显示，trees=false 强制隐藏 */
+    effect(() => {
+      this.treeCtrl.sync(this.renderMode(), this.trees());
     });
     /** findcircleRadius：外部修改时同步到 activeFindcircleRadius，若处于查找模式则实时更新搜索圈 */
     effect(() => {
@@ -333,7 +337,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           this.modelCtrl.sceneReady = true;
           const rm = this.renderMode();
           if (rm) this.state.updateSettings({ renderMode: rm });
-          this.treeCtrl.sync(rm);
+          this.treeCtrl.sync(rm, this.trees());
           this.syncModels(this.models());
           this.applyLoadedConfig();
           this.inited.emit();
@@ -928,7 +932,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       e.stopPropagation(); // 阻止冒泡到父级 div，避免误触 button.clear()→findcirclestop
       const results =
         this.findcircleGroup?.visible && this.findcircleGroup.position
-          ? this.markerCtrl.markersInRadius(this.findcircleGroup.position, this.activeFindcircleRadius)
+          ? this.markerCtrl.markersInRadius(
+              this.findcircleGroup.position,
+              this.activeFindcircleRadius,
+            )
           : [];
       this.cleanupFindcircleMode();
       this.findcircleend.emit(results);

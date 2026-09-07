@@ -104,15 +104,20 @@
 
     width: calc(40px);
 
-    &>button {
-      backdrop-filter: blur(8px);
-      color: var(--primary);
+    .button-group {
+      flex-direction: column;
 
-      &:hover,
-      &.selected {
-        color: @white;
+      &>button {
+        backdrop-filter: blur(8px);
+        color: var(--primary);
+
+        &:hover,
+        &.selected {
+          color: @white;
+        }
       }
     }
+
 
 
 

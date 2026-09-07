@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { CardComponent } from '../../../common/components/card/card.component';
 import { DateTimeControlComponent } from '../../../common/components/date-time-control/date-time-control.component';
-import { TimeControlComponent } from '../../../common/components/time-control/time-control.component';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
 import { DateTimePickerView } from '../../../common/directives/date-time-picker/date-time-picker.directive';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
@@ -29,7 +28,6 @@ import { SystemDownloadTableComponent } from '../system-download-table/system-do
     FormsModule,
     CardComponent,
     DateTimeControlComponent,
-    TimeControlComponent,
     SystemDownloadTableComponent,
   ],
   templateUrl: './system-download-container.component.html',

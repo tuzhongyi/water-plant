@@ -164,7 +164,7 @@ export const SystemMainStateDeviceEChartOption: any = {
           name: 'online',
           itemStyle: {
             color: 'rgba(23, 241, 198, 0.5)',
-            borderColor: '#183B3F',
+            borderColor: '#222222',
             borderWidth: 5,
           },
         },
@@ -173,7 +173,7 @@ export const SystemMainStateDeviceEChartOption: any = {
           name: 'offline',
           itemStyle: {
             color: 'rgba(255, 131, 115, 0.5)',
-            borderColor: '#183B3F',
+            borderColor: '#222222',
             borderWidth: 5,
           },
         },
@@ -201,7 +201,7 @@ export const SystemMainStateDeviceEChartOption: any = {
           name: 'online',
           itemStyle: {
             color: '#17f1c6',
-            borderColor: '#183B3F',
+            borderColor: '#222222',
             borderWidth: 5,
           },
         },
@@ -210,7 +210,7 @@ export const SystemMainStateDeviceEChartOption: any = {
           name: 'offline',
           itemStyle: {
             color: '#ff8373',
-            borderColor: '#183B3F',
+            borderColor: '#222222',
             borderWidth: 5,
           },
         },

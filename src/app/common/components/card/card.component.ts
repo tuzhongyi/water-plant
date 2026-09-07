@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'howell-card',
@@ -8,6 +8,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class CardComponent implements OnInit {
   constructor() {}
+
+  @ViewChild('card_container') element?: ElementRef<HTMLDivElement>;
 
   ngOnInit(): void {}
 }

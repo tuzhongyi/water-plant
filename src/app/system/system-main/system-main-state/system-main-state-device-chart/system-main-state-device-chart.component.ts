@@ -68,8 +68,7 @@ export class SystemMainStateDeviceChartComponent
       // 对应 CSS 变量 --primary（在线） / --sub（离线）
       const primary = skin === 'blue' ? [63, 146, 252] : [23, 241, 198];
       const sub = skin === 'blue' ? [255, 186, 59] : [255, 131, 115];
-      const rgba = (c: number[], a: number) =>
-        `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a})`;
+      const rgba = (c: number[], a: number) => `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a})`;
       const rgb = (c: number[]) => `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
 
       const option = this.option;
@@ -83,6 +82,7 @@ export class SystemMainStateDeviceChartComponent
       // 内环（半透明）
       option.series[2].data[0].itemStyle.color = rgba(primary, 0.5);
       option.series[2].data[1].itemStyle.color = rgba(sub, 0.5);
+
       // 外环（实心）
       option.series[3].data[0].itemStyle.color = rgb(primary);
       option.series[3].data[1].itemStyle.color = rgb(sub);

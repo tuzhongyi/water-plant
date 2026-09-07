@@ -15,6 +15,7 @@ import { MapElementType } from '../../../../common/data-core/enums/geo/map-eleme
 import { GeoMapElement } from '../../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../../common/data-core/models/geographic/map.model';
 import { ThreeDConfig } from '../../../../common/storage/three-d-storage/three-d-store.model';
+import { HtmlTool } from '../../../../common/tools/html-tool/html.tool';
 import { wait } from '../../../../common/tools/wait';
 import { MapModel } from '../../../../setting/setting-map/business/setting-map.model';
 import { SystemMainThreeBusiness } from '../business/system-main-three.business';
@@ -53,7 +54,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() found = new EventEmitter<GeoMapElement[]>();
   @Output() resetstate = new EventEmitter<GeoMapElement>();
-  @Output() full = new EventEmitter<boolean>();
+  @Output() expandscreen = new EventEmitter<boolean>();
+  @Output() fullscreen = new EventEmitter<boolean>();
 
   constructor(
     private business: SystemMainThreeBusiness,
@@ -63,6 +65,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
 
   ngOnInit(): void {
+    this.manager.fullscreen.value.set(HtmlTool.screen.get.fullscreen());
+    document.addEventListener('fullscreenchange', this.manager.fullscreen.change);
     this.regist();
     this.init();
     this.map.load();
@@ -70,6 +74,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     this.element.load(this.args, false);
   }
   ngOnDestroy(): void {
+    document.removeEventListener('fullscreenchange', this.manager.fullscreen.change);
     this.subs.unsubscribe();
   }
   private init() {
@@ -168,7 +173,13 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
 
   manager = {
-    fulled: false,
+    expand: false,
+    fullscreen: {
+      value: signal(false),
+      change: () => {
+        this.manager.fullscreen.value.set(HtmlTool.screen.get.fullscreen());
+      },
+    },
     filter: {
       show: false,
       clear: (reload: boolean) => {
@@ -208,9 +219,15 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
           this.element.find.fan.stop.emit();
         }
       },
-      full: () => {
-        this.manager.fulled = !this.manager.fulled;
-        this.full.emit(this.manager.fulled);
+
+      screen: {
+        expand: () => {
+          this.manager.expand = !this.manager.expand;
+          this.expandscreen.emit(this.manager.expand);
+        },
+        full: () => {
+          this.fullscreen.emit(!this.manager.fullscreen.value());
+        },
       },
       building: () => {
         this.manager.button.clear();
@@ -402,11 +419,13 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       if (datas.length == 1) {
         this.floor.on.select(datas[0]);
       }
+      this.three.model.tree.set(false);
     },
     clear: () => {
       this.floor.model.set(undefined);
       this.floor.datas.set([]);
       this.floor.selected.set(undefined);
+      this.three.model.tree.set(true);
     },
 
     on: {
@@ -456,6 +475,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     renderMode: signal<RenderMode>(RenderMode.solid),
     config: signal<ThreeDConfig | undefined>(undefined),
     model: {
+      tree: signal(true),
       datas: signal<ModelViewerModel[]>([]),
       reload: new EventEmitter<ModelViewerModel>(),
       clear: () => {

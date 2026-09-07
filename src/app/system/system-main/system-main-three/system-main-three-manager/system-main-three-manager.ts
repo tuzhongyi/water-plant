@@ -32,7 +32,8 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() element = new EventEmitter<{ type?: MapElementType; buildingId?: string }>();
   @Output() resetstate = new EventEmitter<GeoMapElement>();
-  @Output() full = new EventEmitter<boolean>();
+  @Output() expandscreen = new EventEmitter<boolean>();
+  @Output() fullscreen = new EventEmitter<boolean>();
   constructor(private business: SystemMainThreeBusiness) {}
 
   config?: ThreeDConfig;
@@ -83,8 +84,11 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
       resetstate: (data: GeoMapElement) => {
         this.resetstate.emit(data);
       },
-      full: (value: boolean) => {
-        this.full.emit(value);
+      expandscreen: (value: boolean) => {
+        this.expandscreen.emit(value);
+      },
+      fullscreen: (value: boolean) => {
+        this.fullscreen.emit(value);
       },
     },
   };
