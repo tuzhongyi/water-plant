@@ -15,8 +15,10 @@ import { CardComponent } from '../../../common/components/card/card.component';
 import { PlayMode } from '../../../common/components/video-player/video-player.model';
 import { WindowComponent } from '../../../common/components/window-control/window.component';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
+import { IDevice } from '../../../common/data-core/models/common/device.interface';
 import { DB31Device } from '../../../common/data-core/models/db31/db31-device.model';
 import { Device } from '../../../common/data-core/models/devices/device.model';
+import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { DeviceEventRecord } from '../../../common/data-core/models/events/device-event-record.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { MqttRequestService } from '../../../common/data-core/request/services/mqtt/mqtt.service';
@@ -24,7 +26,10 @@ import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool
 import { HtmlTool } from '../../../common/tools/html-tool/html.tool';
 import { wait } from '../../../common/tools/wait';
 import { VideoPlayerContainerComponent } from '../../../share/video/video-player-container/video-player-container.component';
+import { PreviewArgs } from '../../../share/video/video-player-content/video-player-content.model';
 import { VideoPlayerListComponent } from '../../../share/video/video-player-list/video-player-list.component';
+import { SystemDeviceChannelManagerComponent } from '../../system-device/system-device-channel-manager/system-device-channel-manager.component';
+import { SystemDeviceManagerComponent } from '../../system-device/system-device-manager/system-device-manager.component';
 import { SystemElementManagerComponent } from '../../system-element/system-element-manager/system-element-manager.component';
 import { SystemRecordManagerComponent } from '../../system-record/system-record-manager/system-record-manager.component';
 import { SystemMainRecordManagerComponent } from '../system-main-record/system-main-record-manager/system-main-record-manager.component';
@@ -54,6 +59,8 @@ import { SystemMainWindow } from './system-main.window';
     SystemElementManagerComponent,
     SystemMainThreeConfigManagerComponent,
     SystemRecordManagerComponent,
+    SystemDeviceManagerComponent,
+    SystemDeviceChannelManagerComponent,
   ],
   templateUrl: './system-main.component.html',
   styleUrl: './system-main.component.less',
@@ -74,18 +81,15 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
 
   data = {
-    device: {
-      datas: [] as Device[],
-    },
-    db31: {
-      datas: [] as DB31Device[],
-    },
+    all: signal<IDevice[]>([]),
+    device: signal<Device[]>([]),
+    db31: signal<DB31Device[]>([]),
   };
 
   ngOnInit(): void {
     this.init();
     this.regist();
-    this.load(true);
+    this.load();
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -101,14 +105,14 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     }, 60_1000);
   }
 
-  private load(init = false) {
+  private load() {
     let loaded = [false, false];
     this.business.device
       .load()
       .then((x) => {
-        this.data.device.datas = x;
-        if (init) {
-        }
+        this.data.device.set(x);
+
+        this.data.all.set([...x, ...this.data.db31()]);
       })
       .finally(() => {
         loaded[0] = true;
@@ -116,7 +120,9 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     this.business.db31
       .load()
       .then((x) => {
-        this.data.db31.datas = x;
+        this.data.db31.set(x);
+
+        this.data.all.set([...this.data.device(), ...x]);
       })
       .finally(() => {
         loaded[1] = true;
@@ -247,12 +253,20 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       },
     },
     single: {
-      preview: (data: GeoMapElement) => {
-        this.window.video.single.title = data.Name;
-        this.window.video.single.autoplay = true;
-        this.window.video.single.cameraId = data.ElementId;
-        this.window.video.single.mode = PlayMode.live;
-        this.window.video.single.show.set(true);
+      preview: (data: GeoMapElement | VideoChannel) => {
+        if (data instanceof GeoMapElement) {
+          this.window.video.single.title = data.Name;
+          this.window.video.single.autoplay = true;
+          this.window.video.single.cameraId = data.ElementId;
+          this.window.video.single.mode = PlayMode.live;
+          this.window.video.single.show.set(true);
+        } else if (data instanceof VideoChannel) {
+          this.window.video.single.title = data.Name;
+          this.window.video.single.autoplay = true;
+          this.window.video.single.cameraId = data.Id;
+          this.window.video.single.mode = PlayMode.live;
+          this.window.video.single.show.set(true);
+        }
       },
       playback: (data: DeviceEventRecord) => {
         this.window.video.single.mode = PlayMode.vod;
@@ -280,6 +294,16 @@ export class SystemMainComponent implements OnInit, OnDestroy {
         this.window.video.single.autoplay = true;
         this.window.video.single.show.set(true);
       },
+    },
+  };
+
+  channel = {
+    preview: (data: PreviewArgs) => {
+      this.window.video.single.title = data.cameraName || '';
+      this.window.video.single.autoplay = true;
+      this.window.video.single.cameraId = data.cameraId;
+      this.window.video.single.mode = PlayMode.live;
+      this.window.video.single.show.set(true);
     },
   };
 }

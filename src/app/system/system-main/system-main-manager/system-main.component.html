@@ -2,7 +2,10 @@
   <div class="system-main-container">
     <div class="system-main-left">
       <div class="system-main-state">
-        <hw-system-main-state-device [datas]="data.device.datas"></hw-system-main-state-device>
+        <hw-system-main-state-device
+          [datas]="data.all()"
+          (list)="window.table.device.open($event)"
+        ></hw-system-main-state-device>
       </div>
       <div class="system-main-record">
         <hw-system-main-record-manager
@@ -60,6 +63,34 @@
         (playback)="video.single.playback($event)"
         (close)="window.table.record.show.set(false)"
       ></hw-system-record-manager>
+    </app-window>
+  }
+  @if (window.table.device.show()) {
+    <app-window
+      [model]="window.table.device"
+      [style]="window.table.device.style"
+      [title]="window.table.device.title"
+      [lineable]="true"
+    >
+      <hw-system-device-manager
+        [datas]="data.all()"
+        [state]="window.table.device.state"
+        (preview)="video.single.preview($event)"
+        (close)="window.table.device.show.set(false)"
+      ></hw-system-device-manager>
+    </app-window>
+  }
+  @if (window.table.channel.show()) {
+    <app-window
+      [model]="window.table.channel"
+      [style]="window.table.channel.style"
+      [title]="window.table.channel.title"
+      [lineable]="true"
+    >
+      <hw-system-device-channel-manager
+        [device]="window.table.channel.device"
+        (preview)="channel.preview($event)"
+      ></hw-system-device-channel-manager>
     </app-window>
   }
 

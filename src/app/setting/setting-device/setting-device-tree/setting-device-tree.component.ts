@@ -6,7 +6,7 @@ import { Device } from '../../../common/data-core/models/devices/device.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { TreeDeviceComponent } from '../../../share/tree/tree-device/tree-device.component';
-import { IDevice, TreeDeviceArgs } from '../../../share/tree/tree-device/tree-device.model';
+import { ITreeDevice, TreeDeviceArgs } from '../../../share/tree/tree-device/tree-device.model';
 
 @Component({
   selector: 'hw-setting-device-tree',
@@ -19,7 +19,7 @@ export class SettingDeviceTreeComponent implements OnDestroy {
   elements = input<GeoMapElement[]>([]);
 
   details = output<Device | undefined>();
-  loaded = output<Record<number, IDevice[]>>();
+  loaded = output<Record<number, ITreeDevice[]>>();
   selected = input<Device>();
   selectedChange = output<Device>();
   bind = output<VideoChannel>();
@@ -52,7 +52,7 @@ export class SettingDeviceTreeComponent implements OnDestroy {
     args: {} as TreeDeviceArgs,
     load: new EventEmitter<TreeDeviceArgs>(),
     bound: new EventEmitter<GeoMapElement[]>(),
-    loaded: (datas: Record<number, IDevice[]>) => {
+    loaded: (datas: Record<number, ITreeDevice[]>) => {
       if (Object.keys(datas).length === 0) {
         this.details.emit(undefined);
       }

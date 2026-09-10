@@ -1,0 +1,39 @@
+@import url(../../../../assets/styles/colors/color-@.less);
+@import url(../../../../assets/styles/colors/color-table.less);
+
+.system-device-channel-table {
+  height: 100%;
+  width: 100%;
+  transition: all 0.5s;
+
+
+  &-body {
+    height: 100%;
+
+    @table-head: calc((100% - 50px) * 0.0909090909);
+
+    .table-split-head {
+      height: @table-head;
+    }
+
+    .table-split-body {
+      height: calc(100% - @table-head);
+    }
+
+    table {
+
+      tbody {
+        tr {
+          height: 45px;
+
+          td {
+            vertical-align: middle;
+            line-height: 0;
+            color: var(--color);
+          }
+        }
+      }
+    }
+  }
+
+}

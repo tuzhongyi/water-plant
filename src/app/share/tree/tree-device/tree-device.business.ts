@@ -16,12 +16,12 @@ import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
 import {
-  DB31DeviceChannel,
-  DeviceDB31,
-  DeviceIPC,
-  DeviceNVR,
-  IDevice,
+  ITreeDevice,
   KeyNameValue,
+  TreeDB31DeviceChannel,
+  TreeDeviceDB31,
+  TreeDeviceIPC,
+  TreeDeviceNVR,
 } from './tree-device.model';
 
 @Injectable()
@@ -43,7 +43,7 @@ export class TreeDeviceBusiness {
     return this.data.types;
   }
 
-  async load(): Promise<Record<string, IDevice[]>> {
+  async load(): Promise<Record<string, ITreeDevice[]>> {
     const [types, deviceDatas, db31Datas] = await Promise.all([
       this.data.types(),
       this.data.device.load(),
@@ -54,7 +54,7 @@ export class TreeDeviceBusiness {
     const convertedDb31 = await Promise.all(db31Datas.map((d) => this.convert(d)));
     const deviceGrouped = ArrayTool.groupBy(converted, (x) => x.DeviceType);
     const db31Grouped = ArrayTool.groupBy(convertedDb31, (x) => x.DeviceType);
-    const result: Record<string, IDevice[]> = {};
+    const result: Record<string, ITreeDevice[]> = {};
     for (const t of types) {
       if (t.Key.startsWith(this.key.device)) {
         result[t.Key] = deviceGrouped[t.Value] ?? [];
@@ -65,7 +65,7 @@ export class TreeDeviceBusiness {
     return result;
   }
 
-  private async convert(data: Device | DB31Device): Promise<IDevice> {
+  private async convert(data: Device | DB31Device): Promise<ITreeDevice> {
     if (data instanceof Device) {
       let channels: VideoChannel[] = [];
       try {
@@ -74,7 +74,7 @@ export class TreeDeviceBusiness {
 
       switch (data.DeviceType) {
         case 1:
-          let ipc = ObjectTool.assign(data, DeviceIPC);
+          let ipc = ObjectTool.assign(data, TreeDeviceIPC);
           if (channels.length > 0) {
             ipc.Channel = channels[0];
             ipc.Icon = IconTool.DeviceType(ipc.DeviceType);
@@ -82,7 +82,7 @@ export class TreeDeviceBusiness {
           }
           return ipc;
         case 2:
-          let nvr = ObjectTool.assign(data, DeviceNVR);
+          let nvr = ObjectTool.assign(data, TreeDeviceNVR);
           nvr.Key = `${this.key.device}${nvr.DeviceType}`;
           nvr.Icon = IconTool.DeviceType(nvr.DeviceType);
           nvr.Channels = [...channels];
@@ -92,12 +92,12 @@ export class TreeDeviceBusiness {
           throw new Error('未知设备类型');
       }
     } else {
-      let channels: DB31DeviceChannel[] = [];
+      let channels: TreeDB31DeviceChannel[] = [];
       try {
         channels = await this.data.db31.channels(data);
       } catch (error) {}
 
-      let db31 = ObjectTool.assign(data, DeviceDB31);
+      let db31 = ObjectTool.assign(data, TreeDeviceDB31);
       db31.Key = `${this.key.db31}${db31.DeviceType}`;
       db31.Icon = IconTool.DeviceType(db31.DeviceType, true);
       db31.Channels = [...channels];
@@ -144,7 +144,7 @@ export class TreeDeviceBusiness {
         params.DeviceId = device.Id;
         let channels = await this.service.db31.channel.all(params);
         return channels.map((x) => {
-          let channel = ObjectTool.assign(x, DB31DeviceChannel);
+          let channel = ObjectTool.assign(x, TreeDB31DeviceChannel);
           channel.DeviceName = device.Name;
           return channel;
         });

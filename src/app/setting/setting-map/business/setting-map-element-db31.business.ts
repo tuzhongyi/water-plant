@@ -4,7 +4,7 @@ import { GisPoint } from '../../../common/data-core/models/geographic/gis-point.
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
 import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
-import { DB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
+import { TreeDB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
 
 export class SettingMapElementDB31Business {
   constructor(private service: GeographicRequestService) {}
@@ -25,7 +25,7 @@ export class SettingMapElementDB31Business {
 
   private convert = {
     channel: (
-      data: DB31DeviceChannel,
+      data: TreeDB31DeviceChannel,
       location: { x: number; y: number; z: number },
       mapId: string,
       parentId?: string,

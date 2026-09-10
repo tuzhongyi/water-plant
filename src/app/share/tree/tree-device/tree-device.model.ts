@@ -18,27 +18,27 @@ export interface TreeDeviceNode {
   check?: boolean;
   data?: Device;
 }
-export interface IDevice extends IIdNameModel<string, string | undefined> {
+export interface ITreeDevice extends IIdNameModel<string, string | undefined> {
   Key: string;
   Icon: string;
   DeviceType: number;
 }
-export class DeviceNVR extends Device implements IDevice {
+export class TreeDeviceNVR extends Device implements ITreeDevice {
   Key: string = '';
   Icon: string = '';
   Channels: VideoChannel[] = [];
 }
-export class DeviceIPC extends Device implements IDevice {
+export class TreeDeviceIPC extends Device implements ITreeDevice {
   Key: string = '';
   Icon: string = '';
   Channel?: VideoChannel;
 }
-export class DeviceDB31 extends DB31Device implements IDevice {
+export class TreeDeviceDB31 extends DB31Device implements ITreeDevice {
   Key: string = '';
   Icon: string = '';
-  Channels: DB31DeviceChannel[] = [];
+  Channels: TreeDB31DeviceChannel[] = [];
 }
-export class DB31DeviceChannel extends DB31Channel {
+export class TreeDB31DeviceChannel extends DB31Channel {
   DeviceName?: string;
 }
 export class KeyNameValue<T = number> extends NameValue<T> {

@@ -19,7 +19,7 @@ import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
 import { FlatTreeNode, TreeComponent } from '../component/tree.component';
 import { TreeDeviceBusiness } from './tree-device.business';
-import { IDevice, KeyNameValue, TreeDeviceArgs } from './tree-device.model';
+import { ITreeDevice, KeyNameValue, TreeDeviceArgs } from './tree-device.model';
 
 @Component({
   selector: 'hw-tree-device',
@@ -33,7 +33,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   @Output() selectedChange = new EventEmitter<Device | undefined>();
 
   @Input('load') reload?: EventEmitter<TreeDeviceArgs>;
-  @Output() loaded = new EventEmitter<Record<string, IDevice[]>>();
+  @Output() loaded = new EventEmitter<Record<string, ITreeDevice[]>>();
 
   @Input() bound: GeoMapElement[] = [];
   @Output() bind = new EventEmitter<VideoChannel>();
@@ -50,7 +50,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   ) {}
 
   private subs = new Subscription();
-  private lastDatas?: Record<string, IDevice[]>;
+  private lastDatas?: Record<string, ITreeDevice[]>;
   private lastTypes?: KeyNameValue[];
   private elements: GeoMapElement[] = [];
   private args: TreeDeviceArgs = {};
@@ -121,7 +121,10 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
 
   private nodeIndex = 0;
 
-  private async buildTree(types: KeyNameValue[], datas: Record<string, IDevice[]>): Promise<void> {
+  private async buildTree(
+    types: KeyNameValue[],
+    datas: Record<string, ITreeDevice[]>,
+  ): Promise<void> {
     this.nodes = [];
     this.nodeIndex = 0;
     const query = (this.args.name ?? '').trim().toLowerCase();
@@ -194,7 +197,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   }
 
   private addDeviceNode(
-    d: IDevice,
+    d: ITreeDevice,
     parentTypeId: string,
     expanded: boolean,
     query: string,
@@ -256,7 +259,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
     return (name ?? '').toLowerCase().includes(query);
   }
 
-  private channelsOf(d: IDevice): (VideoChannel | DB31Channel)[] {
+  private channelsOf(d: ITreeDevice): (VideoChannel | DB31Channel)[] {
     const ipc = d as any;
     const list: (VideoChannel | DB31Channel)[] = [];
     if (ipc.Channel) list.push(ipc.Channel);
@@ -264,11 +267,11 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
     return list;
   }
 
-  private deviceMatches(d: IDevice, query: string): boolean {
+  private deviceMatches(d: ITreeDevice, query: string): boolean {
     return this.match(d.Name, query);
   }
 
-  private deviceHasHit(d: IDevice, query: string): boolean {
+  private deviceHasHit(d: ITreeDevice, query: string): boolean {
     return this.channelsOf(d).some((ch) => this.match(ch.Name, query));
   }
 }

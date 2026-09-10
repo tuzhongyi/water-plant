@@ -1,18 +1,28 @@
 <howell-card>
   <div class="system-main-state-device">
-    <div class="card-head"><div class="card-head-title">设备运行状态</div></div>
+    <div class="card-head system-main-state-device-head">
+      <div class="card-head-title">设备运行状态</div>
+      <div class="system-main-state-device-head-action">
+        <div class="system-main-state-device-head-action-_">
+          <i class="mdi mdi-dots-vertical"></i>
+        </div>
+        <div class="system-main-state-device-head-action-button">
+          <button (click)="on.list()">查看全部</button>
+        </div>
+      </div>
+    </div>
     <div class="card-line"></div>
     <div class="system-main-state-device-content card-body">
       <div class="system-main-state-device-chart">
         <hw-system-main-state-device-chart [data]="data"></hw-system-main-state-device-chart>
       </div>
       <div class="system-main-state-device-info">
-        <div class="system-main-state-device-info-item primary">
+        <div class="system-main-state-device-info-item primary" (click)="on.list(0)">
           <div class="system-main-state-device-info-item-icon"></div>
           <div class="system-main-state-device-info-item-name">在线</div>
           <div class="system-main-state-device-info-item-value">{{ data.online }}</div>
         </div>
-        <div class="system-main-state-device-info-item sub">
+        <div class="system-main-state-device-info-item sub" (click)="on.list(1)">
           <div class="system-main-state-device-info-item-icon"></div>
           <div class="system-main-state-device-info-item-name">离线</div>
           <div class="system-main-state-device-info-item-value">{{ data.offline }}</div>

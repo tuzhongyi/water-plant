@@ -21,13 +21,22 @@ export class GetDevicesParams extends PagedParams {
   DeviceState?: number;
 }
 export class GetVideoChannelsParams extends PagedParams {
-  /**	String[]	通道ID	O	*/ Ids?: string[];
-  /**	String	通道名称，支持LIKE	O	*/ Name?: string;
-  /**	String	音频格式	O	*/ AudioFormat?: string;
-  /**	String	视频格式	O	*/ VideoFormat?: string;
-  /**	String	设备ID	O	*/ DeviceId?: string;
-  /**	Boolean	云台控制	O	*/ PTZ?: boolean;
-  /**	Boolean	是否启用	O	*/ Enabled?: boolean;
+  /**	String[]	通道ID	O	*/
+  Ids?: string[];
+  /**	String	通道名称，支持LIKE	O	*/
+  Name?: string;
+  /**	String	音频格式	O	*/
+  AudioFormat?: string;
+  /**	String	视频格式	O	*/
+  VideoFormat?: string;
+  /**	String	设备ID	O	*/
+  DeviceId?: string;
+  /**	Boolean	云台控制	O	*/
+  PTZ?: boolean;
+  /**	Boolean	是否启用	O	*/
+  Enabled?: boolean;
+  /**	Int32	通道状态，0-正常，1-离线	O */
+  ChannelState?: number;
 }
 export class DeviceSearchingParams implements IParams {
   /**	String	协议类型	M	*/

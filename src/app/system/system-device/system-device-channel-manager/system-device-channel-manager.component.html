@@ -1,0 +1,24 @@
+<div class="system-device-channel-manager">
+  <div class="system-device-channel-head">
+    <div class="forms">
+      <div class="form-item">
+        <div class="form-item-text">名称：</div>
+        <div class="form-item-value text">
+          <input type="text" [(ngModel)]="table.args.name" />
+        </div>
+      </div>
+      <div class="form-item submit">
+        <button class="button-border full" (click)="table.on.search()">
+          <i class="howell-icon-search2"></i>查询
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="system-device-channel-body">
+    <hw-system-device-channel-table
+      [args]="table.args"
+      [load]="table.load"
+      (preview)="table.on.preview($event)"
+    ></hw-system-device-channel-table>
+  </div>
+</div>

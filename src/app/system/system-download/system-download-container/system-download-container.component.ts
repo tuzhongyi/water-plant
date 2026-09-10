@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { CardComponent } from '../../../common/components/card/card.component';
 import { DateTimeControlComponent } from '../../../common/components/date-time-control/date-time-control.component';
+import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
 import { DateTimePickerView } from '../../../common/directives/date-time-picker/date-time-picker.directive';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
@@ -35,7 +36,7 @@ import { SystemDownloadTableComponent } from '../system-download-table/system-do
   providers: [SystemDownloadBusiness],
 })
 export class SystemDownloadContainerComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() data?: RegionTreeNode;
+  @Input() data?: RegionTreeNode | VideoChannel;
 
   private subs = new Subscription();
 
@@ -70,8 +71,10 @@ export class SystemDownloadContainerComponent implements OnInit, OnChanges, OnDe
   private change = {
     data: (change: SimpleChange) => {
       if (change) {
-        if (this.data) {
+        if (this.data instanceof RegionTreeNode) {
           this.disabled = this.data.RegionNodeType != 2;
+        } else if (this.data instanceof VideoChannel) {
+          this.disabled = false;
         } else {
           this.disabled = true;
         }

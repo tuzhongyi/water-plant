@@ -1,8 +1,9 @@
 import { Transform } from 'class-transformer';
+import { IDevice } from '../common/device.interface';
 import { IIdNameModel } from '../interface/model.interface';
 import { Transformer } from '../transformer';
 /**	Device (设备信息)	*/
-export class Device implements IIdNameModel {
+export class Device implements IIdNameModel, IDevice {
   /**	String	设备ID	M	*/
   Id!: string;
   /**	String	服务器名称	M	*/

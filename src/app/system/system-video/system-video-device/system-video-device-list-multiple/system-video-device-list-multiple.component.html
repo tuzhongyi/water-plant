@@ -31,15 +31,5 @@
       <button class="button" title="反选" (click)="on.invert()">反选</button>
       <button class="button" title="取消" (click)="on.clear()">取消</button>
     </div>
-    <paginator
-      [page]="page()"
-      [jump]="false"
-      [total]="false"
-      [gapable]="false"
-      [first]="false"
-      [last]="false"
-      (change)="on.page($event)"
-    >
-    </paginator>
   </div>
 </div>

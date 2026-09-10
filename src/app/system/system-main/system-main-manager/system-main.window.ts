@@ -2,6 +2,7 @@ import { EventEmitter, signal } from '@angular/core';
 import { PlayMode } from '../../../common/components/video-player/video-player.model';
 import { WindowViewModel } from '../../../common/components/window-control/window.model';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
+import { IDevice } from '../../../common/data-core/models/common/device.interface';
 import { DeviceEventRecord } from '../../../common/data-core/models/events/device-event-record.model';
 import { DeviceEventResource } from '../../../common/data-core/models/events/device-event-resource.model';
 import { EventBehaviorAction } from '../../../common/data-core/models/events/event-behavior-action.model';
@@ -22,6 +23,8 @@ export class SystemMainWindow {
   table = {
     element: new MapElementTableWindow(),
     record: new RecordTableWindow(),
+    device: new DeviceTableWindow(),
+    channel: new DeviceChannelTableWindow(),
   };
   config = {
     three: new ConfigThreeWiondow(),
@@ -99,8 +102,39 @@ export class RecordTableWindow extends WindowViewModel {
   style = {
     ...SizeTool.window.large,
 
+    width: '90%',
+  };
+}
+export class DeviceTableWindow extends WindowViewModel {
+  constructor() {
+    super();
+  }
+
+  title: string = '设备列表';
+  style = {
+    ...SizeTool.window.large,
     width: '80%',
   };
+  state?: number;
+  open(state?: number) {
+    this.state = state;
+    this.show.set(true);
+  }
+}
+export class DeviceChannelTableWindow extends WindowViewModel {
+  constructor() {
+    super();
+  }
+
+  title: string = '设备通道';
+  device?: IDevice;
+  style = {
+    ...SizeTool.window.large,
+  };
+  open(device?: IDevice) {
+    this.device = device;
+    this.show.set(true);
+  }
 }
 class VideoMultipleWindow extends WindowViewModel {
   constructor() {

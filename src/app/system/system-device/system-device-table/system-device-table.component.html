@@ -1,0 +1,85 @@
+<div class="system-device-table">
+  <div class="system-device-table-body table-page">
+    <table border="0" cellpadding="0" cellspacing="0">
+      @for (width of widths; track $index) {
+        <colgroup>
+          <col [ngStyle]="{ width: width, 'min-width': minwidth[$index] }" />
+        </colgroup>
+      }
+      <thead>
+        <tr>
+          <th class="center">序号</th>
+          <th>名称</th>
+          <th>类型</th>
+          <th>URL</th>
+          <th class="center">状态</th>
+          <!-- <th class="center">操作</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of datas(); track $index) {
+          <tr
+            (click)="onselect(item)"
+            [ngClass]="{
+              nohover: !item,
+              nodata: !item,
+              selected: item === selected,
+            }"
+          >
+            <td class="center">
+              @if (item) {
+                {{ page.PageSize * (page.PageIndex - 1) + $index + 1 }}
+              }
+              @if (!item) {
+                &nbsp;
+              }
+            </td>
+
+            <td [title]="item?.name || ''">
+              @if (item) {
+                {{ item?.name || '-' }}
+              }
+            </td>
+            <td [title]="(item?.type?.name | async) || ''">
+              @if (item) {
+                {{ (item.type.name | async) || '-' }}
+              }
+            </td>
+            <td [title]="item?.url || ''">
+              @if (item) {
+                {{ item?.url || '-' }}
+              }
+            </td>
+            <td
+              class="center"
+              [title]="(item?.state?.name | async) || ''"
+              [class.green]="item?.state?.value == 0"
+              [class.redlight]="item?.state?.value == 1"
+            >
+              @if (item) {
+                {{ (item.state.name | async) || '-' }}
+              }
+            </td>
+
+            <!-- <td class="center">
+              @if (item) {
+                <div class="operation">
+                  <button title="查看设备通道" (click)="on.channel($event, item)">
+                    <i class="mdi mdi-sitemap"></i>
+                  </button>
+                </div>
+              }
+            </td> -->
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="system-device-table-foot">
+    <!-- <button title="查看所有设备通道" (click)="on.channel($event)">
+      <i class="mdi mdi-sitemap"></i>
+    </button> -->
+
+    <paginator [page]="page" (change)="on.page($event)"> </paginator>
+  </div>
+</div>

@@ -17,7 +17,7 @@ import { GeoMapElement } from '../../../common/data-core/models/geographic/map-e
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
 import { ArrayTool } from '../../../common/tools/array-tool/array.tool';
-import { DB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
+import { TreeDB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
 import { SettingDeviceTreeComponent } from '../../setting-device/setting-device-tree/setting-device-tree.component';
 import { SettingMapBusiness } from '../business/setting-map.business';
 import { BindingArgs } from '../business/setting-map.model';
@@ -120,7 +120,7 @@ export class SettingMapManagerComponent implements OnInit {
           mapId = map.Id;
         }
 
-        if (standby instanceof VideoChannel || standby instanceof DB31DeviceChannel) {
+        if (standby instanceof VideoChannel || standby instanceof TreeDB31DeviceChannel) {
           this.business.element.bind(standby, args.location, mapId, args.parent?.Id).then(() => {
             this.toastr.success('绑定成功');
             this.three.standby.set(undefined);

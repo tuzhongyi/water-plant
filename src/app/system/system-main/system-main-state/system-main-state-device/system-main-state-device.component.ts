@@ -1,7 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChange,
+  SimpleChanges,
+} from '@angular/core';
 import { CardComponent } from '../../../../common/components/card/card.component';
-import { Device } from '../../../../common/data-core/models/devices/device.model';
+import { IDevice } from '../../../../common/data-core/models/common/device.interface';
 import { SystemMainStateDeviceChartComponent } from '../system-main-state-device-chart/system-main-state-device-chart.component';
 import { SystemMainDeviceState } from './system-main-state-device.model';
 
@@ -12,7 +20,8 @@ import { SystemMainDeviceState } from './system-main-state-device.model';
   styleUrl: './system-main-state-device.component.less',
 })
 export class SystemMainStateDeviceComponent implements OnChanges {
-  @Input('datas') source: Device[] = [];
+  @Input('datas') source: IDevice[] = [];
+  @Output() list = new EventEmitter<number>();
 
   constructor() {}
   data = new SystemMainDeviceState();
@@ -28,7 +37,7 @@ export class SystemMainStateDeviceComponent implements OnChanges {
     },
   };
 
-  private load(datas: Device[]) {
+  private load(datas: IDevice[]) {
     let state = new SystemMainDeviceState();
     datas.forEach((x) => {
       if (x.DeviceState) {
@@ -39,4 +48,10 @@ export class SystemMainStateDeviceComponent implements OnChanges {
     });
     this.data = state;
   }
+
+  on = {
+    list: (state?: number) => {
+      this.list.emit(state);
+    },
+  };
 }

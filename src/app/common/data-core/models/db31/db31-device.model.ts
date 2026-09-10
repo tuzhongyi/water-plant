@@ -1,9 +1,10 @@
 import { Transform } from 'class-transformer';
+import { IDevice } from '../common/device.interface';
 import { IIdNameModel } from '../interface/model.interface';
 import { Transformer } from '../transformer';
 
 /**	DB31Device (DB31设备)	*/
-export class DB31Device implements IIdNameModel<string, string | undefined> {
+export class DB31Device implements IIdNameModel<string, string | undefined>, IDevice {
   /**	String	ID	M	*/
   Id!: string;
   /**	String	DB31系统ID	M	*/

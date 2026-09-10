@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { CardStatisticComponent } from '../../../../common/components/card-statistic/card-statistic.component';
 import { InputIconComponent } from '../../../../common/components/input-icon/input-icon.component';
@@ -36,6 +37,7 @@ export class SystemVideoViewGroupManagerComponent implements OnInit, OnDestroy {
   constructor(
     private business: SystemVideoViewGroupBusiness,
     private config: ConfigRequestService,
+    private toastr: ToastrService,
   ) {
     this.config.get().then((x) => {
       this.loop.interval = x.video.loop * 1000;
@@ -64,9 +66,18 @@ export class SystemVideoViewGroupManagerComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.create.subscribe((data) => {
           data.Sort = this.list.datas.length + 1;
-          this.business.save(data).then((x) => {
-            this.on.search();
-          });
+          this.business
+            .save(data)
+            .then((x) => {
+              this.toastr.success('视频组保存成功');
+              this.on.search();
+            })
+            .catch((x) => {
+              if (x.status == 406) {
+                this.toastr.error('视频组不能有相同的视频');
+              }
+              this.toastr.error('视频组保存失败');
+            });
         }),
       );
     }

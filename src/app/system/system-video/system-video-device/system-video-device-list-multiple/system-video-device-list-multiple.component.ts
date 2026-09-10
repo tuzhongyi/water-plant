@@ -12,22 +12,19 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { PaginatorComponent } from '../../../../common/components/paginator/paginator.component';
 import { VideoChannel } from '../../../../common/data-core/models/devices/video-channel.model';
-import { Page, PagedList } from '../../../../common/data-core/models/interface/page-list.model';
+import { Page } from '../../../../common/data-core/models/interface/page-list.model';
 import { SystemVideoDeviceListBusiness } from '../system-video-device-list/system-video-device-list.business';
 import { SystemVideoDeviceListArgs } from '../system-video-device-list/system-video-device-list.model';
 
 @Component({
   selector: 'hw-system-video-device-list-multiple',
-  imports: [CommonModule, PaginatorComponent],
+  imports: [CommonModule],
   templateUrl: './system-video-device-list-multiple.component.html',
   styleUrl: './system-video-device-list-multiple.component.less',
   providers: [SystemVideoDeviceListBusiness],
 })
-export class SystemVideoDeviceListMultipleComponent
-  implements OnInit, OnChanges, OnDestroy
-{
+export class SystemVideoDeviceListMultipleComponent implements OnInit, OnChanges, OnDestroy {
   @Input() args: SystemVideoDeviceListArgs = {};
   @Input('load') _load?: EventEmitter<SystemVideoDeviceListArgs>;
   @Input() inverse: string[] = [];
@@ -49,7 +46,7 @@ export class SystemVideoDeviceListMultipleComponent
   }
   ngOnInit(): void {
     this.regist();
-    this.load(1, this.args);
+    this.load(this.args);
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -57,7 +54,7 @@ export class SystemVideoDeviceListMultipleComponent
   private change = {
     inverse: (change: SimpleChange) => {
       if (change) {
-        this.load(this.page().PageIndex, this.args);
+        this.load(this.args);
       }
     },
   };
@@ -66,22 +63,21 @@ export class SystemVideoDeviceListMultipleComponent
     if (this._load) {
       this.subs.add(
         this._load.subscribe((x) => {
-          let index = x.first ? 1 : this.page().PageIndex;
           this.selected = [];
           this.selectedChange.emit(this.selected);
-          this.load(index, this.args);
+          this.load(this.args);
         }),
       );
     }
   }
 
-  private load(index: number, args: SystemVideoDeviceListArgs) {
+  private load(args: SystemVideoDeviceListArgs) {
     this.business
       .load(args)
       .then((datas) => {
         this.loaded.emit(datas);
         this.source = datas;
-        this.on.page(index);
+        this.datas.set(this.source);
       })
       .catch((e) => {
         this.error.emit(e);
@@ -138,17 +134,6 @@ export class SystemVideoDeviceListMultipleComponent
     clear: () => {
       this.selected = [];
       this.selectedChange.emit(this.selected);
-    },
-    page: (index: number) => {
-      let source = this.filter(this.inverse);
-      let paged = PagedList.create(source, index, this.page().PageSize);
-      if (paged.Data.length == 0 && paged.Page.PageIndex > 1) {
-        this.on.page(paged.Page.PageIndex - 1);
-        return;
-      }
-
-      this.page.set(paged.Page);
-      this.datas.set(paged.Data);
     },
   };
 }

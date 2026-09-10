@@ -141,7 +141,6 @@ export class SystemVideoDeviceManagerComponent implements OnChanges, OnInit, OnD
         this.minimizeChange.emit(this.minimize);
       },
       search: () => {
-        this.manager.args.first = true;
         if (this.device.show) {
           this.device.load.emit(this.manager.args);
         }

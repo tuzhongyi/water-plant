@@ -3,7 +3,7 @@ import { VideoChannel } from '../../../common/data-core/models/devices/video-cha
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
-import { DB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
+import { TreeDB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
 import { SettingMapElementBuildingBusiness } from './setting-map-element-building.business';
 import { SettingMapElementDB31Business } from './setting-map-element-db31.business';
 import { SettingMapElementVideoBusiness } from './setting-map-element-video.business';
@@ -36,14 +36,14 @@ export class SettingMapElementBusiness {
   }
 
   async bind(
-    data: VideoChannel | DB31DeviceChannel,
+    data: VideoChannel | TreeDB31DeviceChannel,
     location: { x: number; y: number; z: number },
     mapId: string,
     parentId?: string,
   ) {
     if (data instanceof VideoChannel) {
       return this.video.bind(data, location, mapId, parentId);
-    } else if (data instanceof DB31DeviceChannel) {
+    } else if (data instanceof TreeDB31DeviceChannel) {
       return this.db31.bind(data, location, mapId, parentId);
     }
     return undefined;

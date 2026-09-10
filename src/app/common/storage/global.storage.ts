@@ -9,7 +9,7 @@ import { LocalStorage } from './local.storage';
   providedIn: 'root',
 })
 export class GlobalStorage {
-  version = '1.0.2.0';
+  version = '1.0.2.1';
 
   user = new PromiseValue<User>();
 
