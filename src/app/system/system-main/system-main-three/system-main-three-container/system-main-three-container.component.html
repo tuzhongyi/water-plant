@@ -7,6 +7,7 @@
       [renderPaused]="renderPaused"
       (inited)="three.on.inited()"
       (loaded)="three.on.loaded()"
+      (loading)="three.on.loading($event)"
       [markers]="three.camera.datas()"
       [markersMovable]="false"
       (modelClick)="three.on.building.select($event)"
@@ -32,6 +33,7 @@
         class="button-map"
         title="建筑列表"
         (click)="manager.button.building()"
+        [disabled]="three.loading()"
         [class.selected]="manager.building.show || !!floor.model()"
       >
         <i class="howell-icon-MapVillage"></i>
@@ -40,7 +42,7 @@
         class="button-map"
         title="渲染模式"
         (click)="manager.button.mode()"
-        [disabled]="floor.datas().length > 0"
+        [disabled]="floor.datas().length > 0 || three.loading()"
       >
         <i class="howell-icon-shade"></i>
       </button>
@@ -52,13 +54,19 @@
       >
         <i class="mdi mdi-looks"></i>
       </button> -->
-      <button class="button-map" title="点位筛选" (click)="manager.button.filter()">
+      <button
+        class="button-map"
+        title="点位筛选"
+        (click)="manager.button.filter()"
+        [disabled]="three.loading()"
+      >
         <i class="howell-icon-filter"></i>
       </button>
       <button
         class="button-map"
         title="区域联动"
         [class.selected]="element.find.fan.finding"
+        [disabled]="three.loading()"
         (click)="manager.button.find.fan()"
       >
         <i class="mdi mdi-looks"></i>
@@ -67,6 +75,7 @@
         class="button-map"
         title="区域查找"
         [class.selected]="element.find.circle.finding"
+        [disabled]="three.loading()"
         (click)="manager.button.find.circle()"
       >
         <i class="mdi mdi-adjust"></i>

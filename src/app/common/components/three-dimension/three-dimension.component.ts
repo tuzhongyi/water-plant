@@ -100,6 +100,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   modelDoubleClick = output<string>();
   /** 全部模型加载完成后触发，传出与 models() 对应的 ModelTransformConfig 列表 */
   loaded = output<ModelTransformConfig[]>();
+  /** 是否正在加载：场景未就绪 / 模型加载中 / 渲染模式整体重载中为 true，全部就绪后为 false。
+   *  父组件可据此禁用依赖场景已就绪的功能（切换渲染模式、查找等） */
+  loading = output<boolean>();
 
   // ── Marker ───────────────────────────────────────────────
   /** 场景摄像机标记列表 */
@@ -202,6 +205,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   private previousRenderMode?: RenderMode;
   /** 防止 renderMode effect 重复触发导致并发重载 */
   private isReloading = false;
+  /** 当前对外 loading 状态，仅变化时 emit */
+  private isLoading = false;
   /** 自追踪按钮按下状态，避免 e.buttons 在指针离开画布后归零导致拖拽误判为点击 */
   private leftButtonPressed = false;
   private rightButtonPressed = false;
@@ -321,6 +326,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     this.bindEvents();
     this.bindCommands();
+    /* 场景尚未就绪，先通知父组件进入加载态 */
+    this.updateLoading();
 
     /* 预加载 models.json → 构建 config 缓存 → 再加载 config.json */
     const mode = this.renderMode();
@@ -341,6 +348,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           this.syncModels(this.models());
           this.applyLoadedConfig();
           this.inited.emit();
+          this.updateLoading();
         });
       });
   }
@@ -538,6 +546,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
           this.pendingMeshVisibility = undefined;
         }
         if (this.modelCtrl.loadingIds.size === 0) this.modelCtrl.emitLoaded(this.models());
+        this.updateLoading();
       }),
     );
     this.subs.add(this.markerCtrl.markerClick.subscribe((id) => this.markerClick.emit(id)));
@@ -553,13 +562,17 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     );
 
     this.subs.add(
-      this.state.loadModelCmd$.subscribe((c) =>
+      this.state.loadModelCmd$.subscribe((c) => {
+        this.modelCtrl.loadingIds.add(c.fileName);
+        this.updateLoading();
         this.doLoadModel(c.url, c.fileName).finally(() => {
+          this.modelCtrl.loadingIds.delete(c.fileName);
           const entry = this.state.loadedModels.get(c.fileName);
           if (entry) this.modelCtrl.addToInternal(entry);
           if (this.modelCtrl.loadingIds.size === 0) this.modelCtrl.emitLoaded(this.models());
-        }),
-      ),
+          this.updateLoading();
+        });
+      }),
     );
     this.subs.add(this.state.removeModelCmd$.subscribe((id) => this.doRemoveModel(id)));
     this.subs.add(this.state.clearAllCmd$.subscribe(() => this.doClearAll()));
@@ -834,6 +847,17 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     if (this.modelCtrl.loadingIds.size === 0) {
       this.modelCtrl.emitLoaded(this.models());
     }
+    this.updateLoading();
+  }
+
+  /** 重新计算加载状态，变化时对外 emit：
+   *  场景未就绪、任一模型加载中、或整体重载（切换渲染模式）中均视为 loading */
+  private updateLoading(): void {
+    const value =
+      !this.modelCtrl.sceneReady || this.isReloading || this.modelCtrl.loadingIds.size > 0;
+    if (value === this.isLoading) return;
+    this.isLoading = value;
+    this.loading.emit(value);
   }
 
   /** 筛选与当前 models() 匹配的 ModelEntry，映射为 ModelTransformConfig 并 emit */
@@ -1431,6 +1455,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     /* 重新加载 */
     this.modelCtrl.loadingIds.add(m.fileName);
+    this.updateLoading();
     try {
       const entry = await this.modelService.loadModel(m.url, m.fileName);
       if (entry) {
@@ -1468,12 +1493,14 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       }
     } finally {
       this.modelCtrl.loadingIds.delete(m.fileName);
+      this.updateLoading();
     }
   }
 
   /** renderMode 改变时重新加载所有模型：更新 models.json 缓存 → config.json 设置 → 每个模型按新路径重建 */
   private async reloadAllModelsForMode(mode: RenderMode): Promise<void> {
     this.isReloading = true;
+    this.updateLoading();
     try {
       /* 1️⃣ 重新加载 models.json 缓存 */
       try {
@@ -1523,6 +1550,7 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.updateAllModelColors();
     } finally {
       this.isReloading = false;
+      this.updateLoading();
     }
   }
 

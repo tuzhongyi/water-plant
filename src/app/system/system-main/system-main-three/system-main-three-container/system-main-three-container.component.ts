@@ -470,6 +470,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
 
   three = {
     inited: false,
+    loading: signal(false),
     focus: new EventEmitter<FitView | void>(),
     moveto: new EventEmitter<MoveToArgs>(),
     renderMode: signal<RenderMode>(RenderMode.solid),
@@ -490,6 +491,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     on: {
       inited: () => {
         this.three.inited = true;
+      },
+      /** 3D 组件加载状态：场景未就绪/模型加载中为 true，由 3D 组件内部驱动 */
+      loading: (value: boolean) => {
+        this.three.loading.set(value);
       },
       loaded: () => {
         this.three.focus.emit();

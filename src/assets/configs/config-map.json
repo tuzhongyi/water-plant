@@ -13,7 +13,7 @@
     }
   },
   "viewfield": {
-    "radius": 50,
+    "radius": 30,
     "angle": 90
   }
 }

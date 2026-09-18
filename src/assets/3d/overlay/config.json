@@ -137,7 +137,11 @@
           "wall": "#12385e",
           "roof": "#007bff",
           "other": "#666666",
-          "door": "#007800"
+          "door": "#007800",
+          "road": "#333333",
+          "line": "#aaaaaa",
+          "Road": "#333333",
+          "Line": "#aaaaaa"
         }
       },
       "hover": {
@@ -147,7 +151,10 @@
           "wall": "#184d81",
           "roof": "#2491ff",
           "other": "#888888",
-          "door": "#00c800"
+          "door": "#00c800",
+          "road": "#666666",
+          "line": "#ffffff",
+          "Line": "#ffffff"
         }
       },
       "selected": {
@@ -155,9 +162,10 @@
         "background": "#331a00",
         "materials": {
           "wall": "#473600",
-          "roof": "#ffbb00",
+          "roof": "#ff8800",
           "other": "#999999",
-          "door": "#00ff00"
+          "door": "#00ff00",
+          "road": "#473600"
         }
       },
       "alarm": {

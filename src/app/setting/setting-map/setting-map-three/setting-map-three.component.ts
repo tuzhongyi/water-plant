@@ -269,7 +269,6 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
       let models = buildings.map((x) => {
         return this.converter.element.to.building(x, this.three.mode);
       });
-      this.three.loading = true;
       this.three.model.datas.set([...datas, ...models]);
     },
   };
@@ -355,7 +354,6 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
         await this.init(map);
         let datas = this.three.model.datas();
         let village = this.converter.map.to.village(map, this.three.mode);
-        this.three.loading = true;
         this.three.model.datas.set([...datas, village]);
       }
     },
@@ -437,7 +435,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
   three = {
     /** 3D 组件是否已初始化 */
     inited: false,
-    /** 3D 模型是否正在加载 */
+    /** 3D 模型是否正在加载（由 hw-3d 的 loading 事件驱动） */
     loading: false,
     /** 渲染模式 */
     mode: RenderMode.overlay,
@@ -450,7 +448,6 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
       datas: signal<ModelViewerModel[]>([]),
       /** 清空 3D 模型数据 */
       clear: () => {
-        this.three.loading = true;
         this.three.model.datas.set([]);
       },
     },
@@ -466,11 +463,17 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
         this.three.inited = true;
       },
       /**
-       * 3D 模型加载完成回调：清除加载中标记并聚焦视图
+       * 3D 组件加载状态回调：场景未就绪/模型加载中为 true，由 3D 组件内部驱动
+       * @param value 是否正在加载
+       */
+      loading: (value: boolean) => {
+        this.three.loading = value;
+      },
+      /**
+       * 3D 模型加载完成回调：聚焦视图
        * @param datas 加载完成的模型变换配置列表
        */
       loaded: (datas: ModelTransformConfig[]) => {
-        this.three.loading = false;
         setTimeout(() => {
           this.three.focus.emit();
         }, 10);
@@ -526,7 +529,6 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
               this.floor.load(building, expansion);
               let model = this.converter.model.from.file(expansion, building, this.three.mode);
               model.position = { x: 0, y: 0, z: 0 };
-              this.three.loading = true;
               this.three.model.datas.set([model]);
             }
           }

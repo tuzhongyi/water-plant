@@ -5,9 +5,11 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { AlarmViewModel } from './alram.model';
@@ -18,7 +20,7 @@ import { AlarmViewModel } from './alram.model';
   templateUrl: './alarm.component.html',
   styleUrls: ['./alarm.component.less'],
 })
-export class AlarmComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AlarmComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input()
   model = new AlarmViewModel();
 
@@ -56,10 +58,17 @@ export class AlarmComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('audio')
   audio?: ElementRef<HTMLAudioElement>;
+  @ViewChild('titleEl')
+  titleEl?: ElementRef<HTMLElement>;
 
   loop = true;
 
   ngOnInit() {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['title']) {
+      this.fitTitle();
+    }
+  }
   ngAfterViewInit(): void {
     if (this.audio) {
       this.audio.nativeElement.addEventListener('ended', (e) => {
@@ -71,9 +80,33 @@ export class AlarmComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     }
+    this.fitTitle();
   }
   ngOnDestroy(): void {
     this.loop = false;
+  }
+
+  private fitTitle() {
+    const el = this.titleEl?.nativeElement;
+    if (!el) return;
+
+    el.style.fontSize = '';
+    const max = parseFloat(getComputedStyle(el).fontSize);
+    let low = 12;
+    let high = max;
+    let best = max;
+
+    for (let i = 0; i < 30; i++) {
+      const mid = (low + high) / 2;
+      el.style.fontSize = `${mid}px`;
+      if (el.scrollHeight <= el.clientHeight) {
+        best = mid;
+        low = mid;
+      } else {
+        high = mid;
+      }
+    }
+    el.style.fontSize = `${Math.floor(best)}px`;
   }
 
   closeButtonClick() {
