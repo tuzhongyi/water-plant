@@ -114,7 +114,7 @@ export class SystemElementTableBusiness {
       return this.service.device.cache.get(id);
     },
     videochannel: (deviceId: string, channelId: string) => {
-      return this.service.device.video.channel.get(deviceId, channelId);
+      return this.service.device.video.channel.cache.get(channelId);
     },
     db31: (id: string) => {
       return this.service.db31.device.cache.get(id);

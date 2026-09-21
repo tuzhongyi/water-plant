@@ -6,11 +6,13 @@ import { VideoChannel } from '../../../models/devices/video-channel.model';
 import { HowellResponse } from '../../../models/howell-response.model';
 import { PagedList } from '../../../models/interface/page-list.model';
 import { DeviceUrl } from '../../../urls/device/device.url';
+import { Cache } from '../../cache/cache';
+import { AbstractService } from '../../cache/cache.interface';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
 import { GetVideoChannelsParams } from './device.params';
-import type { DeviceRequestService } from './device.service';
 import { registerDevicePlugin } from './device.plugin';
+import type { DeviceRequestService } from './device.service';
 
 declare module './device.service' {
   interface DeviceRequestService {
@@ -35,8 +37,11 @@ export class DeviceVideoRequestService {
   }
 }
 
-class DeviceVideoChannelRequestService {
-  constructor(private http: HowellHttpClient) {}
+@Cache(DeviceUrl.video.channel().basic(), VideoChannel)
+class DeviceVideoChannelRequestService extends AbstractService<VideoChannel> {
+  constructor(private http: HowellHttpClient) {
+    super();
+  }
 
   async create(data: VideoChannel) {
     let url = DeviceUrl.video.channel(data.DeviceId).basic();
@@ -73,7 +78,7 @@ class DeviceVideoChannelRequestService {
       return HowellResponseProcess.paged(x, VideoChannel);
     });
   }
-  all(params = new GetVideoChannelsParams()): Promise<VideoChannel[]> {
+  override all(params = new GetVideoChannelsParams()): Promise<VideoChannel[]> {
     return ServiceTool.all((p) => {
       return this.list(p);
     }, params);

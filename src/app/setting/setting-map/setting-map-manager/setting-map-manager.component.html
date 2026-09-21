@@ -11,6 +11,7 @@
             <hw-setting-device-tree
               [load]="tree.load"
               [elements]="geo.element.datas()"
+              [find]="tree.find"
               (bind)="tree.standby($event)"
               (unbind)="tree.bind.confirm($event)"
               (position)="tree.position($event)"
@@ -32,6 +33,7 @@
           (binding)="three.on.bind($event)"
           (standbyCancel)="three.standby.set(undefined)"
           (viewfield)="three.on.viewfield($event)"
+          (elementdbclick)="three.on.element.dbclick($event)"
         ></hw-setting-map-three>
       </hw-card-statistic>
     </div>

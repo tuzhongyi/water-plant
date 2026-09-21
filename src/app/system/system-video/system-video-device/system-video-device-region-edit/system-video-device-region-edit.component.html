@@ -14,9 +14,14 @@
     ></hw-tree-region-edit>
   </div>
   <div class="system-video-device-region-edit-foot">
-    <button class="button" title="全部折叠" (click)="on.collapse()">
-      <i class="mdi mdi-minus-box-outline"></i>
-    </button>
+    <div class="button-group">
+      <button class="button" title="全部折叠" (click)="on.collapse()">
+        <i class="mdi mdi-minus-box-outline"></i>
+      </button>
+      <button class="button" title="同步摄像机名称" (click)="on.syncname()">
+        <i class="mdi mdi-sync"></i>
+      </button>
+    </div>
     <button class="button" (click)="on.addRoot()">
       <i class="mdi mdi-plus"></i>
       <span>新增根节点</span>

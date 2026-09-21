@@ -794,6 +794,8 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       this.rightButtonPressed = false;
       this.markerCtrl.viewfieldUp();
       this.markerCtrl.viewfieldHoverClear();
+      /* 指针离开画布后不会再收到 pointermove，悬停状态要在这里清掉 */
+      this.setHovered(null);
     });
     /* 按住拖动 ≥4px 视为移动视角，不触发 click/contextmenu 的业务逻辑 */
     c.addEventListener('pointermove', (e: PointerEvent) => {
@@ -926,7 +928,12 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
 
     /* 优先检测 marker hover */
     this.markerCtrl.handle.hover(this.raycaster, this.mouse);
-    if (this.markerCtrl.hoveredId) return;
+    if (this.markerCtrl.hoveredId) {
+      /* 停在 marker 上就不再检测模型，但要把上一次的模型悬停清掉：
+         否则从建筑模型直接移到 marker 上时，建筑的标题不会消失 */
+      this.setHovered(null);
+      return;
+    }
 
     this.raycaster.setFromCamera(this.mouse, this.sceneService.camera);
     const all = this.getAllMeshes();
@@ -939,11 +946,15 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
       const found = all.find((a) => a.mesh === hits[0].object);
       if (found) newHovered = found.modelId;
     }
-    if (this.hoveredId !== newHovered) {
-      this.hoveredId = newHovered;
-      this.state.hoveredModelId$.next(newHovered);
-      this.modelHover.emit(newHovered);
-    }
+    this.setHovered(newHovered);
+  }
+
+  /** 模型悬停变化：去重后同步内部状态，并对外抛事件 */
+  private setHovered(modelId: string | null): void {
+    if (this.hoveredId === modelId) return;
+    this.hoveredId = modelId;
+    this.state.hoveredModelId$.next(modelId);
+    this.modelHover.emit(modelId);
   }
 
   /* ---- Click ---- */

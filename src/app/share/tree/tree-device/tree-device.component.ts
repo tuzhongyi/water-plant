@@ -35,6 +35,8 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input('load') reload?: EventEmitter<TreeDeviceArgs>;
   @Output() loaded = new EventEmitter<Record<string, ITreeDevice[]>>();
 
+  @Input() find?: EventEmitter<string>;
+
   @Input() bound: GeoMapElement[] = [];
   @Output() bind = new EventEmitter<VideoChannel>();
   @Output() unbind = new EventEmitter<VideoChannel>();
@@ -54,6 +56,8 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   private lastTypes?: KeyNameValue[];
   private elements: GeoMapElement[] = [];
   private args: TreeDeviceArgs = {};
+  /** find 传入但当时还没找到的 id：树加载完成后补做一次定位 */
+  private pendingFindId?: string;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['bound']) {
@@ -99,6 +103,43 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
         }),
       );
     }
+    if (this.find) {
+      this.subs.add(
+        this.find.subscribe((id) => {
+          /* 树还没建好（异步加载中）时先记下，buildTree 完成后补做 */
+          if (!this.findNode(id)) {
+            this.pendingFindId = id;
+          }
+        }),
+      );
+    }
+  }
+
+  /* ---- 定位 ---- */
+
+  /**
+   * 在树中定位节点：展开它的所有父节点并选中，使其可见且高亮
+   * @param id 节点的数据 id（设备 id 或通道 id）
+   * @returns 是否找到
+   */
+  private findNode(id: string): boolean {
+    const node = this.nodes.find((n) => n.data?.Id === id);
+    if (!node) return false;
+
+    /* 逐个展开父节点，否则祖先处于折叠状态，选中了也看不见 */
+    let parentId = node.parentId;
+    while (parentId) {
+      const parent = this.nodes.find((n) => n.id === parentId);
+      if (!parent) break;
+      parent.expanded = true;
+      parentId = parent.parentId;
+    }
+
+    this.selectedId = node.id;
+    /* 先刷新，让展开 / 选中落到 DOM 上，外部订阅里才能找到这个节点（如滚动定位） */
+    this.cdr.detectChanges();
+    this.selectedChange.emit(node.data);
+    return true;
   }
 
   /* ---- 数据加载 ---- */
@@ -156,6 +197,13 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
       }
     }
     this.cdr.detectChanges();
+
+    /* 树建好后补做一次之前没找到的定位 */
+    if (this.pendingFindId) {
+      const id = this.pendingFindId;
+      this.pendingFindId = undefined;
+      this.findNode(id);
+    }
   }
 
   /* ---- bound 增量刷新 ---- */

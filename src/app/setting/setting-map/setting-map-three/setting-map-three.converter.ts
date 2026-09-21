@@ -68,6 +68,14 @@ export class SettingMapThreeConverter {
             modelId = this.model.to.expansion(building.ElementId);
           }
         }
+        let offline = data.ElementState == 1;
+        if (data.ElementId) {
+          if (data.FromDB31) {
+            offline = (await this.business.element.db31.state(data.ElementId)) == 1;
+          } else {
+            offline = (await this.business.element.video.state(data.ElementId)) == 1;
+          }
+        }
 
         let entity: MarkerEntity = {
           id: data.Id,
@@ -80,6 +88,7 @@ export class SettingMapThreeConverter {
           modelId: modelId,
           icon: marker.get(data.ElementType),
           data: data,
+          offline: offline,
           viewfield: {
             ...config.viewfield,
             enabled: data.ElementType == MapElementType.Camera,

@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { DB31Channel } from '../../../common/data-core/models/db31/db31-channel.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
-import { GetDB31DeviceChannelsParams } from '../../../common/data-core/request/services/db31/db31.params';
+
+import { GetDB31DeviceChannelsParams } from '../../../common/data-core/request/services/db31/channel/db31-channel.params';
 import { DB31RequestService } from '../../../common/data-core/request/services/db31/db31.service';
 import { GetVideoChannelsParams } from '../../../common/data-core/request/services/device/device.params';
 import { DeviceRequestService } from '../../../common/data-core/request/services/device/device.service';

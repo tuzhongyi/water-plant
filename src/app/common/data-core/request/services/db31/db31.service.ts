@@ -5,8 +5,8 @@ import { HowellResponse } from '../../../models/howell-response.model';
 import { DB31Url } from '../../../urls/db31/db31.url';
 import { HowellHttpClient } from '../howell-http.client';
 import { HowellResponseProcess } from '../service-process';
-import { DB31ChannelRequestService } from './db31-channel.service';
-import { DB31DeviceRequestService } from './db31-device.service';
+import { DB31ChannelRequestService } from './channel/db31-channel.service';
+import { DB31DeviceRequestService } from './device/db31-device.service';
 
 @Injectable({
   providedIn: 'root',

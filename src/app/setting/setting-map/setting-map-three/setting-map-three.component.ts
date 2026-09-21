@@ -65,6 +65,7 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
   /** 输入：外部触发重新加载当前楼层摄像机的信号 */
   @Input() load?: EventEmitter<void>;
   @Output() viewfield = new EventEmitter<MarkerViewfieldArgs>();
+  @Output() elementdbclick = new EventEmitter<GeoMapElement>();
 
   /**
    * 构造器
@@ -217,7 +218,17 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
 
       if (expansion) {
         let floors = await this.business.element.building.floor.load(building.Id);
-        if (floors.length == 0 && expansion.config) {
+        if (
+          expansion.config?.meshVisibility &&
+          floors.length != Object.keys(expansion.config.meshVisibility).length
+        ) {
+          for (let i = 0; i < floors.length; i++) {
+            try {
+              const floor = floors[i];
+              await this.business.element.building.floor.delete(floor.Id);
+            } catch (error) {}
+          }
+
           for (const key in expansion.config.meshVisibility) {
             let args = {
               meshname: key,
@@ -234,6 +245,12 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
     }
     if (changed) {
       this.toastr.success('初始化完成，请刷新界面');
+      this.toastr.warning('5秒钟后自动刷新', undefined, {
+        timeOut: 5000,
+      });
+      setTimeout(() => {
+        location.replace(window.location.href);
+      }, 5 * 1000);
     }
   }
 
@@ -532,6 +549,12 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
               this.three.model.datas.set([model]);
             }
           }
+        },
+      },
+      marker: {
+        dbclick: (id: string) => {
+          let element = this.element.datas().find((x) => x.Id == id);
+          this.elementdbclick.emit(element);
         },
       },
     },

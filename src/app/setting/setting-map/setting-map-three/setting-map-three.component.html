@@ -10,6 +10,7 @@
       (standbyCancel)="three.on.standby.cancel()"
       [markers]="three.camera.datas()"
       [markerSelect]="element.select"
+      (markerDblClick)="three.on.marker.dbclick($event)"
       [markersMovable]="false"
       (markerLoaded)="element.on.loaded()"
       [moveto]="three.moveto"

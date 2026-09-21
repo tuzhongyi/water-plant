@@ -1,6 +1,8 @@
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
+import { DB31RequestService } from '../../../common/data-core/request/services/db31/db31.service';
+import { DeviceRequestService } from '../../../common/data-core/request/services/device/device.service';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
 import { TreeDB31DeviceChannel } from '../../../share/tree/tree-device/tree-device.model';
@@ -10,12 +12,16 @@ import { SettingMapElementVideoBusiness } from './setting-map-element-video.busi
 import { MapElementModel } from './setting-map.model';
 
 export class SettingMapElementBusiness {
-  private video: SettingMapElementVideoBusiness;
-  private db31: SettingMapElementDB31Business;
+  public video: SettingMapElementVideoBusiness;
+  public db31: SettingMapElementDB31Business;
   building: SettingMapElementBuildingBusiness;
-  constructor(private service: GeographicRequestService) {
-    this.video = new SettingMapElementVideoBusiness(service);
-    this.db31 = new SettingMapElementDB31Business(service);
+  constructor(
+    private service: GeographicRequestService,
+    device: DeviceRequestService,
+    db31: DB31RequestService,
+  ) {
+    this.video = new SettingMapElementVideoBusiness(service, device);
+    this.db31 = new SettingMapElementDB31Business(service, db31);
     this.building = new SettingMapElementBuildingBusiness(service);
   }
 

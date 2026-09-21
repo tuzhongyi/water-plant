@@ -13,18 +13,13 @@ export class WindowComponent implements OnInit {
   @Input()
   model = new WindowViewModel();
 
-  @Output()
-  OnClosing: EventEmitter<boolean> = new EventEmitter();
+  @Output() OnClosing: EventEmitter<boolean> = new EventEmitter();
   @Input() headable = true;
-  @Input()
-  background = true;
-  @Input()
-  title: string = '';
-
+  @Input() background = true;
+  @Input() title: string = '';
   @Input() lineable = false;
 
-  @Input()
-  closeButton = true;
+  @Input() closeButton = true;
 
   private _style: any = {
     width: '80%',
@@ -42,8 +37,8 @@ export class WindowComponent implements OnInit {
     this._style = Object.assign(this._style, v);
   }
 
-  @Input()
-  manualClose = false;
+  @Input() manualClose = false;
+  @Input() maskstyle?: any;
 
   constructor() {}
 

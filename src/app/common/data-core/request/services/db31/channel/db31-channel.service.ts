@@ -1,23 +1,26 @@
 import { Injectable } from '@angular/core';
 import { instanceToPlain } from 'class-transformer';
-import { ObjectTool } from '../../../../tools/object-tool/object.tool';
+import { ObjectTool } from '../../../../../tools/object-tool/object.tool';
 
-import { HowellResponse } from '../../../models/howell-response.model';
+import { HowellResponse } from '../../../../models/howell-response.model';
 
-import { ServiceTool } from '../../../../tools/service-tool/service.tool';
-
-import { DB31Channel } from '../../../models/db31/db31-channel.model';
-import { PagedList } from '../../../models/interface/page-list.model';
-import { DB31Url } from '../../../urls/db31/db31.url';
-import { HowellHttpClient } from '../howell-http.client';
-import { HowellResponseProcess } from '../service-process';
-import { GetDB31DeviceChannelsParams } from './db31.params';
+import { DB31Channel } from '../../../../models/db31/db31-channel.model';
+import { PagedList } from '../../../../models/interface/page-list.model';
+import { DB31Url } from '../../../../urls/db31/db31.url';
+import { Cache } from '../../../cache/cache';
+import { AbstractService } from '../../../cache/cache.interface';
+import { HowellHttpClient } from '../../howell-http.client';
+import { HowellResponseProcess } from '../../service-process';
+import { GetDB31DeviceChannelsParams } from './db31-channel.params';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DB31ChannelRequestService {
-  constructor(private http: HowellHttpClient) {}
+@Cache(DB31Url.channel.basic(), DB31Channel)
+export class DB31ChannelRequestService extends AbstractService<DB31Channel> {
+  constructor(private http: HowellHttpClient) {
+    super();
+  }
   async array() {
     let url = DB31Url.channel.basic();
     return this.http.get<HowellResponse<DB31Channel[]>>(url).then((x) => {
@@ -58,10 +61,5 @@ export class DB31ChannelRequestService {
     return this.http.post<HowellResponse<PagedList<DB31Channel>>, any>(url, plain).then((x) => {
       return HowellResponseProcess.paged(x, DB31Channel);
     });
-  }
-  all(params = new GetDB31DeviceChannelsParams()): Promise<DB31Channel[]> {
-    return ServiceTool.all((p) => {
-      return this.list(p);
-    }, params);
   }
 }

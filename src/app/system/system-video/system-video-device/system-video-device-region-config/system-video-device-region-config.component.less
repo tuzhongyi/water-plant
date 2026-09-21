@@ -4,10 +4,20 @@
 
   width: 100%;
   height: 100%;
-  display: flex;
-  gap: @gap;
+  position: relative;
+  display: block;
 
-  &>hw-card-statistic {
+
+  &-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    gap: @gap;
+  }
+
+
+
+  & hw-card-statistic {
     width: calc((100% - @gap - @operation-width) * 0.5);
     height: 100%;
   }

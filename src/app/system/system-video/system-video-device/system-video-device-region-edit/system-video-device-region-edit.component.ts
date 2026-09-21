@@ -23,11 +23,15 @@ export class SystemVideoDeviceRegionEditComponent {
   @Output() create = new EventEmitter<TreeRegionEditOutputArgs>();
   @Output() update = new EventEmitter<TreeRegionEditOutputArgs>();
   @Output() delete = new EventEmitter<TreeRegionEditOutputArgs>();
+  @Output() syncname = new EventEmitter<void>();
 
   /** 通知树组件新增根节点 */
   addRoot = new EventEmitter<void>();
   collapse = new EventEmitter<void>();
   on = {
+    syncname: () => {
+      this.syncname.emit();
+    },
     select: (data: RegionTreeNode) => {
       this.selected = data;
       this.selectedChange.emit(data);

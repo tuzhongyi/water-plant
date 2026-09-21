@@ -21,6 +21,7 @@ export class WindowConfirmComponent implements OnInit {
   @Input() public set style(v: any) {
     this._style = Object.assign(this._style, v);
   }
+  @Input() maskstyle?: any;
   @Input() model: WindowViewModel = new WindowViewModel();
   @Input() title: string = '提示';
   @Input() content: string = '';

@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, signal, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { CardStatisticComponent } from '../../../../common/components/card-statistic/card-statistic.component';
 import { InputIconComponent } from '../../../../common/components/input-icon/input-icon.component';
+import { WindowConfirmComponent } from '../../../../common/components/window-confirm/window-confirm.component';
 import { VideoChannel } from '../../../../common/data-core/models/devices/video-channel.model';
 import { RegionTreeNode } from '../../../../common/data-core/models/regions/region-tree-node.model';
 import { TreeRegionEditOutputArgs } from '../../../../share/tree/tree-region-edit/tree-region-edit.model';
@@ -11,6 +12,7 @@ import { SystemVideoDeviceListMultipleComponent } from '../system-video-device-l
 import { SystemVideoDeviceListArgs } from '../system-video-device-list/system-video-device-list.model';
 import { SystemVideoDeviceRegionEditComponent } from '../system-video-device-region-edit/system-video-device-region-edit.component';
 import { SystemVideoDeviceRegionConfigBusiness } from './system-video-device-region-config.business';
+import { SystemVideoDeviceRegionConfigWindow } from './system-video-device-region-config.window';
 
 @Component({
   selector: 'hw-system-video-device-region-config',
@@ -20,6 +22,7 @@ import { SystemVideoDeviceRegionConfigBusiness } from './system-video-device-reg
     InputIconComponent,
     SystemVideoDeviceListMultipleComponent,
     SystemVideoDeviceRegionEditComponent,
+    WindowConfirmComponent,
   ],
   templateUrl: './system-video-device-region-config.component.html',
   styleUrl: './system-video-device-region-config.component.less',
@@ -31,8 +34,10 @@ export class SystemVideoDeviceRegionConfigComponent {
     private business: SystemVideoDeviceRegionConfigBusiness,
     private toastr: ToastrService,
   ) {}
+  @ViewChild('config') host?: ElementRef<HTMLElement>;
+  protected window = new SystemVideoDeviceRegionConfigWindow();
 
-  disabled = {
+  protected disabled = {
     input: signal<boolean>(true),
     output: signal<boolean>(true),
     change: () => {
@@ -54,7 +59,7 @@ export class SystemVideoDeviceRegionConfigComponent {
     },
   };
 
-  region = {
+  protected region = {
     args: {} as TreeRegionArgs,
     load: new EventEmitter<TreeRegionArgs>(),
     /** 触发区域树重新加载（增删改 / 移入移出成功后） */
@@ -69,6 +74,31 @@ export class SystemVideoDeviceRegionConfigComponent {
       },
       select: (data?: RegionTreeNode) => {
         this.disabled.change();
+      },
+      /** 点击同步按钮：先弹框确认 */
+      syncname: {
+        confirm: () => {
+          this.window.syncname.show.set(true);
+        },
+        /** 确认同步：以摄像机通道名称为准修改资源名称，改完刷新区域树 */
+        ok: async () => {
+          this.window.syncname.show.set(false);
+          try {
+            const count = await this.business.region.syncname();
+            if (count.error > 0) {
+              this.toastr.error(`操作失败${count.error}个`);
+            }
+            if (count.success > 0) {
+              this.toastr.success(`操作成功${count.success}个`);
+              this.region.reload.emit();
+              this.change.emit();
+            } else if (count.error === 0) {
+              this.toastr.info('名称已一致，无需同步');
+            }
+          } catch {
+            this.toastr.error('操作失败');
+          }
+        },
       },
       loaded: (roots: RegionTreeNode[]) => {
         const resources: RegionTreeNode[] = [];
@@ -128,15 +158,32 @@ export class SystemVideoDeviceRegionConfigComponent {
             this.toastr.error('操作失败');
           });
       },
-      delete: (result: TreeRegionEditOutputArgs) => {
-        const node = result.data;
-        if (!node) return;
-        this.business.region.delete(node.Id).then(() => {
-          this.region.reload.emit();
-          this.toastr.success('操作成功');
-          this.change.emit();
-        });
+      /** 点击删除：先弹框确认 */
+      delete: {
+        confirm: (result: TreeRegionEditOutputArgs) => {
+          const node = result.data;
+          if (!node) return;
+          this.window.delete.data = node;
+          this.window.delete.show.set(true);
+        },
+        /** 确认删除 */
+        ok: () => {
+          const node = this.window.delete.data;
+          this.window.delete.show.set(false);
+          if (!node) return;
+          this.business.region
+            .delete(node.Id)
+            .then(() => {
+              this.region.reload.emit();
+              this.toastr.success('操作成功');
+              this.change.emit();
+            })
+            .catch((e) => {
+              this.toastr.error('操作失败');
+            });
+        },
       },
+
       output: () => {
         const resource = this.region.selected;
         if (!resource) return;
@@ -187,7 +234,7 @@ export class SystemVideoDeviceRegionConfigComponent {
       },
     },
   };
-  device = {
+  protected device = {
     args: {} as SystemVideoDeviceListArgs,
     load: new EventEmitter<SystemVideoDeviceListArgs>(),
     datas: [] as VideoChannel[],

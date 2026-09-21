@@ -21,7 +21,10 @@ import { Device } from '../../../common/data-core/models/devices/device.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { DeviceEventRecord } from '../../../common/data-core/models/events/device-event-record.model';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
-import { MqttRequestService } from '../../../common/data-core/request/services/mqtt/mqtt.service';
+import {
+  Mqtt,
+  MqttRequestService,
+} from '../../../common/data-core/request/services/mqtt/mqtt.service';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
 import { HtmlTool } from '../../../common/tools/html-tool/html.tool';
 import { wait } from '../../../common/tools/wait';
@@ -102,7 +105,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       this.load().then((x) => {
         this.map.load.emit();
       });
-    }, 60_1000);
+    }, 60 * 1000);
   }
 
   private load() {
@@ -135,7 +138,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
 
   private regist() {
     this.subs.add(
-      this.mqtt.event.subscribe((x) => {
+      Mqtt.event.subscribe((x) => {
         let id = x.Resource?.ResourceId || x.DeviceId;
         switch (x.EventType) {
           case 1:
@@ -156,6 +159,14 @@ export class SystemMainComponent implements OnInit, OnDestroy {
           default:
             switch (x.TriggerType) {
               case 3:
+                if (x.Resource?.ResourceId) {
+                  this.business.element.get(x.Resource?.ResourceId).then((x) => {
+                    if (x) {
+                      this.map.unalarm.emit(x);
+                    }
+                  });
+                }
+
                 this.map.load.emit();
                 this.record.load.emit();
                 this.window.table.element.reload.emit();

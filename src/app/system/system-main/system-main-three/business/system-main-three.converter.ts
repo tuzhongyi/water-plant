@@ -52,6 +52,14 @@ export class SystemMainThreeConverter {
             modelId = this.model.to.expansion(building.ElementId);
           }
         }
+        let offline = data.ElementState == 1;
+        if (data.ElementId) {
+          if (data.FromDB31) {
+            offline = (await this.business.device.db31.state(data.ElementId)) == 1;
+          } else {
+            offline = (await this.business.device.video.state(data.ElementId)) == 1;
+          }
+        }
 
         let entity: MarkerEntity = {
           id: data.Id,
@@ -63,7 +71,7 @@ export class SystemMainThreeConverter {
           },
           modelId: modelId,
           icon: marker.get(data.ElementType),
-          offline: data.ElementState == 1,
+          offline: offline,
           alarm: data.ElementState == 2 || this.business.element.alarm.has(data.Id),
           data: data,
           viewfield: {

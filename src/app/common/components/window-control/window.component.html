@@ -1,5 +1,5 @@
 @if (model.show()) {
-  <div class="window-mask">
+  <div class="window-mask" [ngStyle]="maskstyle">
     <div class="window-background" [ngStyle]="style">
       <div class="window-content">
         @if (headable) {

@@ -1,70 +1,92 @@
-<div class="system-video-device-region-config">
-  <hw-card-statistic [type]="4">
-    <div class="system-video-device-region-config-card">
-      <div class="card-head">
-        <div class="card-head-title">区域资源</div>
-      </div>
-      <div class="card-line"></div>
-      <div class="card-body system-video-device-region-config-body">
-        <div class="system-video-device-region-config-body-filter">
-          <input-icon [(value)]="region.args.name" (clear)="region.on.search()">
-            <button (click)="region.on.search()"><i class="howell-icon-search"></i></button>
-          </input-icon>
+<div class="system-video-device-region-config" #config>
+  <div class="system-video-device-region-config-container">
+    <hw-card-statistic [type]="4">
+      <div class="system-video-device-region-config-card">
+        <div class="card-head">
+          <div class="card-head-title">区域资源</div>
         </div>
-        <div class="system-video-device-region-config-body-content">
-          <hw-system-video-device-region-edit
-            [load]="region.load"
-            [reload]="region.reload"
-            [(selected)]="region.selected"
-            (selectedChange)="region.on.select($event)"
-            (loaded)="region.on.loaded($event)"
-            (create)="region.on.create($event)"
-            (update)="region.on.update($event)"
-            (delete)="region.on.delete($event)"
-          ></hw-system-video-device-region-edit>
+        <div class="card-line"></div>
+        <div class="card-body system-video-device-region-config-body">
+          <div class="system-video-device-region-config-body-filter">
+            <input-icon [(value)]="region.args.name" (clear)="region.on.search()">
+              <button (click)="region.on.search()"><i class="howell-icon-search"></i></button>
+            </input-icon>
+          </div>
+          <div class="system-video-device-region-config-body-content">
+            <hw-system-video-device-region-edit
+              [load]="region.load"
+              [reload]="region.reload"
+              [(selected)]="region.selected"
+              (selectedChange)="region.on.select($event)"
+              (loaded)="region.on.loaded($event)"
+              (create)="region.on.create($event)"
+              (update)="region.on.update($event)"
+              (delete)="region.on.delete.confirm($event)"
+              (syncname)="region.on.syncname.confirm()"
+            ></hw-system-video-device-region-edit>
+          </div>
         </div>
       </div>
+    </hw-card-statistic>
+    <div class="system-video-device-region-config-operation">
+      <button
+        class="button-border primary"
+        title="导入"
+        [disabled]="disabled.input()"
+        (click)="region.on.input()"
+      >
+        <i class="mdi mdi-arrow-left-bold"></i>
+      </button>
+      <button
+        class="button-border primary"
+        title="导出"
+        [disabled]="disabled.output()"
+        (click)="region.on.output()"
+      >
+        <i class="mdi mdi-arrow-right-bold"></i>
+      </button>
     </div>
-  </hw-card-statistic>
-  <div class="system-video-device-region-config-operation">
-    <button
-      class="button-border primary"
-      title="导入"
-      [disabled]="disabled.input()"
-      (click)="region.on.input()"
-    >
-      <i class="mdi mdi-arrow-left-bold"></i>
-    </button>
-    <button
-      class="button-border primary"
-      title="导出"
-      [disabled]="disabled.output()"
-      (click)="region.on.output()"
-    >
-      <i class="mdi mdi-arrow-right-bold"></i>
-    </button>
+    <hw-card-statistic [type]="4">
+      <div class="system-video-device-region-config-card">
+        <div class="card-head">
+          <div class="card-head-title">摄像机</div>
+        </div>
+        <div class="card-line"></div>
+        <div class="card-body system-video-device-region-config-body">
+          <div class="system-video-device-region-config-body-filter">
+            <input-icon [(value)]="device.args.name" (clear)="device.on.search()">
+              <button (click)="device.on.search()"><i class="howell-icon-search"></i></button>
+            </input-icon>
+          </div>
+          <div class="system-video-device-region-config-body-content">
+            <hw-system-video-device-list-multiple
+              [args]="device.args"
+              [load]="device.load"
+              [(selected)]="device.selected"
+              (selectedChange)="device.on.select($event)"
+            ></hw-system-video-device-list-multiple>
+          </div>
+        </div>
+      </div>
+    </hw-card-statistic>
   </div>
-  <hw-card-statistic [type]="4">
-    <div class="system-video-device-region-config-card">
-      <div class="card-head">
-        <div class="card-head-title">摄像机</div>
-      </div>
-      <div class="card-line"></div>
-      <div class="card-body system-video-device-region-config-body">
-        <div class="system-video-device-region-config-body-filter">
-          <input-icon [(value)]="device.args.name" (clear)="device.on.search()">
-            <button (click)="device.on.search()"><i class="howell-icon-search"></i></button>
-          </input-icon>
-        </div>
-        <div class="system-video-device-region-config-body-content">
-          <hw-system-video-device-list-multiple
-            [args]="device.args"
-            [load]="device.load"
-            [(selected)]="device.selected"
-            (selectedChange)="device.on.select($event)"
-          ></hw-system-video-device-list-multiple>
-        </div>
-      </div>
-    </div>
-  </hw-card-statistic>
+  @if (window.delete.show()) {
+    <confirm-window
+      [model]="window.delete"
+      [content]="window.delete.content"
+      [maskstyle]="window.delete.style"
+      (ok)="region.on.delete.ok()"
+      (cancel)="window.delete.show.set(false)"
+    ></confirm-window>
+  }
+
+  @if (window.syncname.show()) {
+    <confirm-window
+      [model]="window.syncname"
+      [content]="window.syncname.content"
+      [maskstyle]="window.delete.style"
+      (ok)="region.on.syncname.ok()"
+      (cancel)="window.syncname.show.set(false)"
+    ></confirm-window>
+  }
 </div>

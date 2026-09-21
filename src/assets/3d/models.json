@@ -94,6 +94,38 @@
     }
   },
   {
+    "name": "A_Filter_expansion.glb",
+    "size": 38440,
+    "ext": ".glb",
+    "type": "floors",
+    "config": {
+      "name": "A_Filter_expansion.glb",
+      "position": {
+        "x": 195.0941397783579,
+        "y": 0,
+        "z": 171.89502252207114
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "meshVisibility": {
+        "Floor2": true,
+        "Floor1": true
+      },
+      "label": "A_Filter_expansion.glb",
+      "labelMode": "always",
+      "selectable": true,
+      "gizmoVisible": true
+    }
+  },
+  {
     "name": "A_Filter.glb",
     "size": 122048,
     "ext": ".glb",
@@ -308,6 +340,38 @@
         "Floor1": true
       },
       "label": "资料室",
+      "labelMode": "always",
+      "selectable": true,
+      "gizmoVisible": true
+    }
+  },
+  {
+    "name": "B_Filter_expansion.glb",
+    "size": 38440,
+    "ext": ".glb",
+    "type": "floors",
+    "config": {
+      "name": "B_Filter_expansion.glb",
+      "position": {
+        "x": 382.23420471057136,
+        "y": 0,
+        "z": 187.87962649506642
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "meshVisibility": {
+        "Floor2": true,
+        "Floor1": true
+      },
+      "label": "B_Filter_expansion.glb",
       "labelMode": "always",
       "selectable": true,
       "gizmoVisible": true
@@ -977,6 +1041,37 @@
     }
   },
   {
+    "name": "Post_Ozone_Contact_Tank_expansion.glb",
+    "size": 34536,
+    "ext": ".glb",
+    "type": "floors",
+    "config": {
+      "name": "Post_Ozone_Contact_Tank_expansion.glb",
+      "position": {
+        "x": 530.0939904642436,
+        "y": 0,
+        "z": -409.64915751578644
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "Post_Ozone_Contact_Tank_expansion.glb",
+      "labelMode": "always",
+      "selectable": true,
+      "gizmoVisible": true
+    }
+  },
+  {
     "name": "Post_Ozone_Contact_Tank.glb",
     "size": 3456,
     "ext": ".glb",
@@ -1002,6 +1097,37 @@
         "Mesh1": true
       },
       "label": "后臭氧接触池",
+      "labelMode": "always",
+      "selectable": true,
+      "gizmoVisible": true
+    }
+  },
+  {
+    "name": "Pre_ozonation_Contact_Tank_expansion.glb",
+    "size": 34280,
+    "ext": ".glb",
+    "type": "floors",
+    "config": {
+      "name": "Pre_ozonation_Contact_Tank_expansion.glb",
+      "position": {
+        "x": 154.56553939576992,
+        "y": 0,
+        "z": 136.5589984582282
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "rotation": {
+        "h": 0,
+        "p": 0,
+        "b": 0
+      },
+      "meshVisibility": {
+        "Floor1": true
+      },
+      "label": "Pre_ozonation_Contact_Tank_expansion.glb",
       "labelMode": "always",
       "selectable": true,
       "gizmoVisible": true
@@ -1109,9 +1235,9 @@
     "config": {
       "name": "Pump_Station_1_expansion.glb",
       "position": {
-        "x": 26.106158237328202,
+        "x": 305.110532495042,
         "y": 0,
-        "z": 194.07004407312388
+        "z": 178.1143895410405
       },
       "scale": {
         "x": 1,
@@ -1237,9 +1363,9 @@
     "config": {
       "name": "Raw_Water_Pump_House_expansion.glb",
       "position": {
-        "x": -315.5237336028777,
+        "x": 296.4422838620286,
         "y": 0,
-        "z": -667.57762519847
+        "z": 139.55281949504536
       },
       "scale": {
         "x": 1,
@@ -1268,9 +1394,9 @@
     "config": {
       "name": "Raw_Water_Pump_House.glb",
       "position": {
-        "x": 259.81156656632277,
+        "x": 260.0502163111488,
         "y": 6.344872059203454,
-        "z": -46.56965033983191
+        "z": -43.35673517068942
       },
       "scale": {
         "x": 1,

@@ -72,6 +72,11 @@ export class SettingMapElementBuildingBusiness {
         return LocaleCompare.compare(a.Name, b.Name);
       });
     },
+
+    delete: (id: string) => {
+      return this.service.map.element.delete(id);
+    },
+
     create: async (args: {
       buildingId?: string;
       meshname: string;

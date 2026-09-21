@@ -137,11 +137,17 @@ export class SettingMapManagerComponent implements OnInit {
           });
         }
       },
+      element: {
+        dbclick: (data: GeoMapElement) => {
+          this.tree.find.emit(data);
+        },
+      },
     },
   };
 
   tree = {
     load: new EventEmitter<void>(),
+    find: new EventEmitter<GeoMapElement>(),
     standby: (data: IIdNameModel) => {
       this.three.standby.set(data);
     },

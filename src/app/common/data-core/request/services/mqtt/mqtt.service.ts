@@ -12,7 +12,8 @@ import { MqttConfig } from './mqtt.model';
   providedIn: 'root',
 })
 export class MqttRequestService {
-  event = new EventEmitter<DeviceEventRecord>();
+  /** 事件流：做成静态成员，非 DI 类（如设备 / 通道的缓存）也能直接订阅 */
+  static event = new EventEmitter<DeviceEventRecord>();
 
   constructor(private http: HttpClient) {}
 
@@ -71,7 +72,7 @@ export class MqttRequestService {
       client.subscribe(
         url,
         async (data: DeviceEventRecord) => {
-          this.event.emit(data);
+          MqttRequestService.event.emit(data);
         },
         DeviceEventRecord,
       );
@@ -95,7 +96,7 @@ export class MqttRequestService {
       client.subscribe(
         url,
         async (data: DeviceEventRecord) => {
-          this.event.emit(data);
+          MqttRequestService.event.emit(data);
         },
         DeviceEventRecord,
       );
@@ -107,7 +108,7 @@ export class MqttRequestService {
       client.subscribe(
         url,
         async (data: DeviceEventRecord) => {
-          this.event.emit(data);
+          MqttRequestService.event.emit(data);
         },
         DeviceEventRecord,
       );
@@ -115,3 +116,5 @@ export class MqttRequestService {
     },
   };
 }
+
+export const Mqtt = MqttRequestService;
