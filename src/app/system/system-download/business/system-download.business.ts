@@ -29,7 +29,14 @@ export class SystemDownloadBusiness {
 
   /**	按时长切割并创建下载任务加入队列，返回最新任务列表 */
   download(args: SystemDownloadArgs): DownloadTask[] {
-    const created = this.split(args.duration).map((duration) =>
+    /*	结束时间不能超出当前时间：还没录到的片段服务端取不到，直接截到现在
+        复制一份再改，避免改到调用方（界面上的时间选择器）持有的对象 */
+    const now = new Date();
+    let duration = args.duration;
+    if (duration.end.getTime() > now.getTime()) {
+      duration = { begin: duration.begin, end: now };
+    }
+    const created = this.split(duration).map((duration) =>
       this.task.create(args.channelId, args.name, duration),
     );
     this.tasks = [...created, ...this.tasks];
@@ -149,20 +156,24 @@ export class SystemDownloadBusiness {
       params.TimeRange = timeRange;
       params.VideoChannelId = task.videoChannelId;
       params.FileName = fileName;
-      const blob = await this.service.download(params, (loaded, total) => {
-        if (!this.active(task.id)) return;
-        const now = Date.now();
-        const elapsed = now - lastTime;
-        if (elapsed < 200) return;
-        const patch: Partial<DownloadTask> = {
-          loaded,
-          speed: (loaded - lastLoaded) / (elapsed / 1000),
-        };
-        if (total > 0) patch.total = total;
-        lastLoaded = loaded;
-        lastTime = now;
-        this.patch(task.id, patch);
-      }, controller.signal);
+      const blob = await this.service.download(
+        params,
+        (loaded, total) => {
+          if (!this.active(task.id)) return;
+          const now = Date.now();
+          const elapsed = now - lastTime;
+          if (elapsed < 200) return;
+          const patch: Partial<DownloadTask> = {
+            loaded,
+            speed: (loaded - lastLoaded) / (elapsed / 1000),
+          };
+          if (total > 0) patch.total = total;
+          lastLoaded = loaded;
+          lastTime = now;
+          this.patch(task.id, patch);
+        },
+        controller.signal,
+      );
       // 下载期间若被暂停/取消/删除，则不再保存或标记完成
       if (!this.active(task.id)) return;
       this.save(blob, fileName);

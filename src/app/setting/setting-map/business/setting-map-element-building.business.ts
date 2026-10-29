@@ -112,7 +112,7 @@ export class SettingMapElementBuildingBusiness {
     },
   };
 
-  private convert = {
+  convert = {
     /** Roof => FR, Floor{N} => F{N}, Basement{N} => B{N} */
     name: (value: string) => {
       if (value === 'Roof') return 'FR';

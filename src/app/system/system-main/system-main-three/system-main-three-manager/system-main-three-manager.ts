@@ -41,6 +41,7 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.regist();
+    this.state.load();
     this.business.config.load().then((x) => {
       this.config = x;
     });
@@ -52,28 +53,42 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   private regist() {
     if (this.load) {
       this.subs.add(
-        this.load.subscribe((x) => {
+        this.load.subscribe(() => {
           this.map.args.usecache = false;
           this.map.load.emit(this.map.args);
+          /* 统计面板展示全量数据，跟随定时器（每分钟）和报警事件一起刷新状态 */
+          this.state.load();
         }),
       );
     }
   }
 
-  map = {
-    building: {
-      selected: undefined as GeoMapElement | undefined,
+  /**	统计面板数据：全量元素，不受当前展开的楼层/建筑限制，
+      由 load（每分钟定时 + 报警事件）驱动刷新，保证状态最新 */
+  state = {
+    datas: [] as GeoMapElement[],
+    loading: false,
+    load: async () => {
+      /* 事件密集时避免并发发起多次全量请求，跳过本次即可，下一次事件会再刷新 */
+      if (this.state.loading) return;
+      this.state.loading = true;
+      try {
+        this.state.datas = await this.business.element.all(false);
+      } catch {
+        /* 刷新失败时保留上一次的统计，等下一次定时刷新 */
+      } finally {
+        this.state.loading = false;
+      }
     },
+  };
+
+  map = {
     data: undefined as GeoMap | undefined,
     args: new SystemMainThreeArgs(),
     load: new EventEmitter<SystemMainThreeArgs>(),
-    datas: [] as GeoMapElement[],
     on: {
       maploaded: (data: GeoMap) => {
         this.map.data = data;
-      },
-      loaded: (datas: GeoMapElement[]) => {
-        this.map.datas = datas;
       },
       preview: (data: GeoMapElement) => {
         this.preview.emit(data);
@@ -101,10 +116,8 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
       }
     },
     element: (type?: MapElementType) => {
-      this.element.emit({
-        type: type,
-        buildingId: this.map.building.selected?.Id,
-      });
+      /*	统计面板展示的是全量数据，查看全部也只按类型过滤，不再带建筑条件 */
+      this.element.emit({ type: type });
     },
   };
 }

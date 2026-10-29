@@ -175,7 +175,10 @@ export class SettingMapManagerComponent implements OnInit {
 
     position: (data: VideoChannel) => {
       let element = this.geo.element.datas().find((x) => x.ElementId == data.Id);
-      this.three.selected.set(element);
+      /*	signal 按引用判重：同一个点位的 element 对象始终是同一个实例，
+          重复 set 不会触发子组件的 ngOnChanges，二次定位就没有反应。
+          这里每次写入新的 IIdNameModel，保证每次定位都能触发 */
+      this.three.selected.set(element ? { Id: element.Id, Name: element.Name } : undefined);
     },
   };
 }

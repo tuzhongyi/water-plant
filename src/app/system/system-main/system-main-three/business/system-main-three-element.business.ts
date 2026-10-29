@@ -47,8 +47,15 @@ export class SystemMainThreeElementBusiness {
     },
   };
 
-  all() {
-    return this.service.map.element.cache.all();
+  /**	全部元素（不按楼层/建筑过滤），用于统计面板
+      @param usecache 是否使用缓存；false 时直接请求服务端，保证状态是最新的 */
+  all(usecache = true) {
+    if (usecache) {
+      return this.service.map.element.cache.all();
+    }
+    let params = new GetMapElementsParams();
+    params.ElementTypes = SystemMainThreeSource.elements;
+    return this.service.map.element.all(params);
   }
   async load(args: SystemMainThreeArgs, usecache: boolean): Promise<MapElementModel[]> {
     if (args.buildingId) {

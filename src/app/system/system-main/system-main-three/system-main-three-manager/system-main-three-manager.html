@@ -13,9 +13,7 @@
       [renderPaused]="renderPaused"
       (preview)="map.on.preview($event)"
       (video)="map.on.video($event)"
-      (elementloaded)="map.on.loaded($event)"
       (maploaded)="map.on.maploaded($event)"
-      (buildingselect)="map.building.selected = $event"
       (resetstate)="map.on.resetstate($event)"
       (expandscreen)="map.on.expandscreen($event)"
       (fullscreen)="map.on.fullscreen($event)"
@@ -25,7 +23,7 @@
   <div class="system-main-three-state">
     <hw-system-main-three-state
       [title]="map.data?.Name || ''"
-      [datas]="map.datas"
+      [datas]="state.datas"
       (details)="on.element($event)"
     ></hw-system-main-three-state>
   </div>

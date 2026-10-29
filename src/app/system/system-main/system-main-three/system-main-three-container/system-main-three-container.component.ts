@@ -133,7 +133,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
                 }
               }
             }
-            this.element.load(this.args, false);
+            this.element.load(this.loadArgs, false);
           });
         }),
       );
@@ -145,7 +145,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
             this.building.reload(element);
             break;
           default:
-            this.element.load(this.args, false);
+            this.element.load(this.loadArgs, false);
             break;
         }
       }),
@@ -157,6 +157,25 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**	当前视图的加载参数
+      展开建筑/楼层后 args 可能已被空点击重置，这里按当前展开状态重建（保留筛选条件）；
+      否则加载条件丢失（只剩无父级的点位），楼内 marker 会全部消失 */
+  private get loadArgs(): SystemMainThreeArgs {
+    let model = this.floor.model();
+    if (!model) return this.args;
+
+    let floor = this.floor.selected();
+    let building = this.building.get(this.converter.model.from.expansion(model.name));
+    if (!floor && !building) return this.args;
+
+    let args = new SystemMainThreeArgs();
+    args.name = this.args.name;
+    args.type = this.args.type;
+    args.floorId = floor?.Id;
+    args.buildingId = floor ? undefined : building?.Id;
+    return args;
+  }
+
   alarm = {
     to: (deviceId: string) => {
       this.business.element.alarm.push(deviceId).then((elements) => {
@@ -166,7 +185,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
             this.building.reload(building);
           }
         } else {
-          this.element.load(this.args, false);
+          this.element.load(this.loadArgs, false);
         }
       });
     },

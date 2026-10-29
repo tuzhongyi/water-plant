@@ -133,7 +133,9 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
           if (this.focusCameraId) {
             let elementId = this.focusCameraId.Id;
             let element = this.element.datas().find((x) => x.Id == elementId);
-            if (element) {
+            /* 已加载不等于已在场景中：展开建筑后，不属于该建筑的 marker 会被移出场景，
+               直接选中不会聚焦，要落到下面的展开 / 返回总览流程 */
+            if (element && this.element.visible(element)) {
               this.element.select.emit(elementId);
               return;
             }
@@ -222,23 +224,19 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
           expansion.config?.meshVisibility &&
           floors.length != Object.keys(expansion.config.meshVisibility).length
         ) {
-          for (let i = 0; i < floors.length; i++) {
-            try {
-              const floor = floors[i];
-              await this.business.element.building.floor.delete(floor.Id);
-            } catch (error) {}
-          }
-
           for (const key in expansion.config.meshVisibility) {
-            let args = {
-              meshname: key,
-              modelId: expansion.name,
-              buildingId: building.Id,
-              mapId: map.Id,
-              location: item.config?.position,
-            };
-            await this.business.element.building.floor.create(args);
-            changed = true;
+            let floorname = this.business.element.building.convert.name(key);
+            if (floors.findIndex((x) => x.Name == floorname) < 0) {
+              let args = {
+                meshname: key,
+                modelId: expansion.name,
+                buildingId: building.Id,
+                mapId: map.Id,
+                location: item.config?.position,
+              };
+              await this.business.element.building.floor.create(args);
+              changed = true;
+            }
           }
         }
       }
@@ -319,6 +317,18 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
     get: (modelId: string) => {
       let elements = this.element.datas();
       return elements.find((x) => x.ElementId == modelId);
+    },
+    /**
+     * 元素的 marker 当前是否在场景中（能否被 select 聚焦）
+     * 与 hw-3d 的可见性规则一致：marker 的 modelId 必须匹配已加载的模型。
+     * 展开建筑后，不属于该建筑的点位 marker 会被移出场景，虽然仍在 element.datas 里
+     * @param data 摄像机元素
+     * @returns marker 是否可见
+     */
+    visible: (data: GeoMapElement) => {
+      let marker = this.three.camera.datas().find((x) => x.id == data.Id);
+      if (!marker) return false;
+      return this.three.model.datas().some((x) => x.fileName == marker.modelId);
     },
     /**
      * 加载摄像机元素并转换为 3D 标记
