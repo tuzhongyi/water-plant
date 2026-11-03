@@ -23,7 +23,7 @@ const PROXY_CONFIG = [
 
   {
     context: ['/video/wsplayer/'],
-    target: 'http://192.168.21.122:8800',
+    target: 'http://192.168.21.241:8800',
     changeOrigin: true,
     secure: false,
   },

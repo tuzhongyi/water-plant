@@ -70,7 +70,7 @@ export class SystemMainThreeStateComponent implements OnChanges {
       icon: IconTool.MapElementType(type),
       name: await this.language.geo.ElementType(type),
       online: online,
-      warning: warning.length,
+      warning: warning.length + offline.length,
       type: type,
     };
     return item;

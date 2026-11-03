@@ -54,10 +54,13 @@ export class SystemMainThreeConverter {
         }
         let offline = data.ElementState == 1;
         if (data.ElementId) {
-          if (data.FromDB31) {
-            offline = (await this.business.device.db31.state(data.ElementId)) == 1;
-          } else {
-            offline = (await this.business.device.video.state(data.ElementId)) == 1;
+          let state = data.FromDB31
+            ? await this.business.device.db31.state(data.ElementId)
+            : await this.business.device.video.state(data.ElementId);
+          /* 查不到设备（通道）时沿用 ElementState 的判断：
+             不能把“查不到”当成离线，否则同一批点位会出现广场灰色、楼内绿色的不一致 */
+          if (state !== undefined) {
+            offline = state == 1;
           }
         }
 

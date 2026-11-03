@@ -73,13 +73,13 @@ export const SystemMainStateDeviceEChartOption: any = {
         offsetCenter: [0, 0],
         rich: {
           value: {
-            fontFamily: 'howell light',
+            fontFamily: 'Alibaba',
             color: '#fff',
             fontWeight: 'bold',
             fontSize: 30,
           },
           unit: {
-            fontFamily: 'howell light',
+            fontFamily: 'Alibaba',
             color: '#fff',
             fontSize: 16,
             fontWeight: 'normal',

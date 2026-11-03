@@ -106,7 +106,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.elementload.subscribe((x) => {
           this.args = x;
 
-          this.element.load(this.args, x.usecache);
+          /*	外部触发的重载（每分钟定时、报警事件）也要按当前展开状态取范围；
+              否则和展开状态下的加载来回切换，房间内的点位会反复消失又出现 */
+          this.element.load(this.loadArgs, x.usecache);
         }),
       );
     }
@@ -209,7 +211,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         }
       },
       doing: () => {
-        this.element.load(this.args, true);
+        /*	筛选条件之外还带着当前的展开范围，否则在楼层里筛选会跳到广场的点位 */
+        this.element.load(this.loadArgs, true);
       },
       close: () => {
         this.manager.filter.show = false;
