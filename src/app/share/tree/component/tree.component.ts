@@ -70,6 +70,7 @@ export class TreeComponent implements OnChanges {
     if (cls.includes('hw-tree-action-bind')) actionName = 'bind';
     else if (cls.includes('hw-tree-action-unbind')) actionName = 'unbind';
     else if (cls.includes('hw-tree-action-position')) actionName = 'position';
+    else if (cls.includes('hw-tree-action-visible')) actionName = 'visible';
     else if (cls.includes('hw-tree-action-download')) actionName = 'download';
     else if (cls.includes('hw-tree-action-play')) actionName = 'play';
 

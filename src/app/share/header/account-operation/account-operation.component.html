@@ -5,9 +5,11 @@
   <div class="operation-item" title="视频" [class.selected]="selected.video" (click)="on.video()">
     <i class="mdi mdi-video"></i>
   </div>
-  <div class="operation-item" title="下载" (click)="on.download()">
-    <i class="mdi mdi-cloud-download"></i>
-  </div>
+  @if (permission.download) {
+    <div class="operation-item" title="下载" (click)="on.download()">
+      <i class="mdi mdi-cloud-download"></i>
+    </div>
+  }
 
   <div
     class="operation-item"

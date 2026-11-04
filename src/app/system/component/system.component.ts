@@ -48,6 +48,10 @@ export class SystemComponent implements OnInit {
     },
   };
 
+  private init() {
+    this.global.load().catch(() => {});
+  }
+
   private regist() {
     setInterval(() => {
       this.keep.set(new Date());
@@ -59,6 +63,7 @@ export class SystemComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.init();
     // this.regist();
     // if (this.keep.check()) {
     //   this.clear();

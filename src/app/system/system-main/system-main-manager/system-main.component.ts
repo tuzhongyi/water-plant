@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  inject,
   OnDestroy,
   OnInit,
   signal,
@@ -27,6 +28,7 @@ import {
 } from '../../../common/data-core/request/services/mqtt/mqtt.service';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
 import { HtmlTool } from '../../../common/tools/html-tool/html.tool';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { wait } from '../../../common/tools/wait';
 import { VideoPlayerContainerComponent } from '../../../share/video/video-player-container/video-player-container.component';
 import { PreviewArgs } from '../../../share/video/video-player-content/video-player-content.model';
@@ -77,6 +79,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   ) {}
 
   @ViewChild('card') mapcontainer?: CardComponent;
+  private permission = inject(PermissionTool);
   window = new SystemMainWindow();
   private handle = {
     loop: undefined as any,
@@ -174,7 +177,10 @@ export class SystemMainComponent implements OnInit, OnDestroy {
 
               default:
                 this.map.alarm.emit(id);
-                this.window.alarm.open(x, true);
+                /*  没有视频预览权限时不弹报警预览窗口，地图报警和列表照常刷新 */
+                if (this.permission.preview) {
+                  this.window.alarm.open(x, true);
+                }
                 this.map.load.emit();
                 this.record.load.emit();
                 this.window.table.element.reload.emit();
@@ -260,11 +266,13 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   video = {
     multple: {
       preview: (datas: GeoMapElement[]) => {
+        if (!this.permission.preview) return;
         this.window.video.multiple.open(datas);
       },
     },
     single: {
       preview: (data: GeoMapElement | VideoChannel) => {
+        if (!this.permission.preview) return;
         if (data instanceof GeoMapElement) {
           this.window.video.single.title = data.Name;
           this.window.video.single.autoplay = true;
@@ -280,6 +288,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
         }
       },
       playback: (data: DeviceEventRecord) => {
+        if (!this.permission.playback) return;
         this.window.video.single.mode = PlayMode.vod;
 
         let title = '';
@@ -310,6 +319,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
 
   channel = {
     preview: (data: PreviewArgs) => {
+      if (!this.permission.preview) return;
       this.window.video.single.title = data.cameraName || '';
       this.window.video.single.autoplay = true;
       this.window.video.single.cameraId = data.cameraId;

@@ -95,6 +95,19 @@
   }
 }
 
+/* 节点内容由 innerHTML 渲染，不参与视图封装，样式需 ::ng-deep */
+::ng-deep .hw-tree-content .hw-tree-icon {
+  flex-shrink: 0;
+}
+
+/* 名称过长不换行，末尾显示省略号（min-width:0 允许在 flex 行里收缩） */
+::ng-deep .hw-tree-content .hw-tree-label {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* 操作按钮（innerHTML 渲染需 ::ng-deep） */
 ::ng-deep .hw-tree-action-btn {
   cursor: pointer;
@@ -103,5 +116,16 @@
 
   &:hover {
     color: @white  !important;
+  }
+
+  /* 不可用：置灰、不响应悬停高亮 */
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+
+    &:hover {
+      color: var(--color, inherit) !important;
+      background: transparent;
+    }
   }
 }

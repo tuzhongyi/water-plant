@@ -25,6 +25,16 @@ export class SettingMapThreeConverter {
 
   default = 'VIL.glb';
 
+  /**	元素绑定的设备状态：0-在线，1-离线；没绑定或查不到设备时 undefined */
+  private device = {
+    state: async (data: GeoMapElement): Promise<number | undefined> => {
+      if (!data.ElementId) return undefined;
+      return data.FromDB31
+        ? await this.business.element.db31.state(data.ElementId)
+        : await this.business.element.video.state(data.ElementId);
+    },
+  };
+
   private get = {
     building: async (parentId: string): Promise<GeoMapElement | undefined> => {
       let element = await this.business.element.get(parentId);
@@ -68,12 +78,21 @@ export class SettingMapThreeConverter {
             modelId = this.model.to.expansion(building.ElementId);
           }
         }
-        let offline = data.ElementState == 1;
-        if (data.ElementId) {
-          if (data.FromDB31) {
-            offline = (await this.business.element.db31.state(data.ElementId)) == 1;
+        let state = data.ElementState;
+        let offline = state == 1;
+        /*	这里的报警只决定 marker 的显示颜色（红），不触发报警业务 */
+        let error = state == 2;
+        let alarm = true;
+        if (state === undefined) {
+          /*	元素没有状态时按绑定的设备判断在线/离线；
+              设备不存在（没绑定或查不到）则标记为报警（红色），同样只影响显示 */
+          let devicestate = await this.device.state(data);
+          if (devicestate === undefined) {
+            error = true;
+            /* 设备不存在不是真实报警，只标红，不播放报警扩散动画 */
+            alarm = false;
           } else {
-            offline = (await this.business.element.video.state(data.ElementId)) == 1;
+            offline = devicestate == 1;
           }
         }
 
@@ -89,6 +108,8 @@ export class SettingMapThreeConverter {
           icon: marker.get(data.ElementType),
           data: data,
           offline: offline,
+          error: error,
+          alarm: alarm,
           viewfield: {
             ...config.viewfield,
             enabled: data.ElementType == MapElementType.Camera,

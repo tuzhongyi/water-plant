@@ -21,6 +21,16 @@ export class SystemMainThreeConverter {
 
   default = 'VIL.glb';
 
+  /**	元素绑定的设备状态：0-在线，1-离线；没绑定或查不到设备时 undefined */
+  private device = {
+    state: async (data: GeoMapElement): Promise<number | undefined> => {
+      if (!data.ElementId) return undefined;
+      return data.FromDB31
+        ? await this.business.device.db31.state(data.ElementId)
+        : await this.business.device.video.state(data.ElementId);
+    },
+  };
+
   private get = {
     building: async (parentId: string): Promise<GeoMapElement | undefined> => {
       let element = await this.business.element.get.by.id(parentId);
@@ -52,15 +62,23 @@ export class SystemMainThreeConverter {
             modelId = this.model.to.expansion(building.ElementId);
           }
         }
-        let offline = data.ElementState == 1;
-        if (data.ElementId) {
-          let state = data.FromDB31
-            ? await this.business.device.db31.state(data.ElementId)
-            : await this.business.device.video.state(data.ElementId);
-          /* 查不到设备（通道）时沿用 ElementState 的判断：
-             不能把“查不到”当成离线，否则同一批点位会出现广场灰色、楼内绿色的不一致 */
-          if (state !== undefined) {
-            offline = state == 1;
+        let state = data.ElementState;
+        let offline = state == 1;
+        /*	这里的报警只决定 marker 的显示颜色（红），不触发报警业务、不向建筑扩散 */
+        let alarm = state == 2 || this.business.element.alarm.has(data.Id);
+        let alarmdiffusion = true;
+        if (state === undefined) {
+          /*	元素没有状态时按绑定的设备判断在线/离线；
+              设备不存在（没绑定或查不到）则标记为报警（红色），同样只影响显示 */
+          let devicestate = await this.device.state(data);
+          if (devicestate === undefined) {
+            /* 设备不存在不是真实报警，只标红，不播放报警扩散动画 */
+            if (!alarm) {
+              alarm = true;
+              alarmdiffusion = false;
+            }
+          } else {
+            offline = devicestate == 1;
           }
         }
 
@@ -75,7 +93,8 @@ export class SystemMainThreeConverter {
           modelId: modelId,
           icon: marker.get(data.ElementType),
           offline: offline,
-          alarm: data.ElementState == 2 || this.business.element.alarm.has(data.Id),
+          error: alarm,
+          alarm: alarmdiffusion,
           data: data,
           viewfield: {
             ...config.viewfield,

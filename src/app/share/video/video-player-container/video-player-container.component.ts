@@ -2,6 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -26,6 +27,7 @@ import {
 } from '../../../common/directives/date-time-picker/date-time-picker.directive';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
 import { ObjectTool } from '../../../common/tools/object-tool/object.tool';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { VideoPlayerContainerBusiness } from './video-player-container.business';
 
 @Component({
@@ -62,6 +64,7 @@ export class VideoPlayerContainerComponent
     this.data = undefined;
   }
 
+  permission = inject(PermissionTool);
   PlayMode = PlayMode;
   date: Date = new Date();
   duration: TimeDurationModel;

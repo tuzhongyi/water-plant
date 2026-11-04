@@ -27,6 +27,8 @@ export class SettingDeviceTreeComponent implements OnDestroy {
   public load = input<EventEmitter<void>>();
   public elements = input<GeoMapElement[]>([]);
   public find = input<EventEmitter<GeoMapElement>>();
+  /**	定位结果：找不到对应设备（如设备已被删除）时 found=false */
+  public findresult = output<{ id: string; found: boolean }>();
   public details = output<Device | undefined>();
   public loaded = output<Record<number, ITreeDevice[]>>();
   public selected = input<Device>();
@@ -107,6 +109,9 @@ export class SettingDeviceTreeComponent implements OnDestroy {
       },
       position: (data: any) => {
         this.position.emit(data);
+      },
+      findresult: (result: { id: string; found: boolean }) => {
+        this.findresult.emit(result);
       },
     },
     to: {

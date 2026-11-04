@@ -2,45 +2,51 @@
   <input
     class="time-control time hour"
     matInput
-    #hour
+    #hourInput
     type="number"
-    max="23"
-    min="0"
+    wheel-input-number
+    [digits]="2"
+    [min]="limits.hour.min"
+    [max]="limits.hour.max"
     step="1"
     maxlength="2"
     minlength="1"
-    [(ngModel)]="model.hour.view"
-    (input)="oninput($event)"
+    [value]="model.hour.value"
+    (valueChange)="on.change('hour', $event, hourInput)"
     [disabled]="disabled ?? false"
   />
   <div><i class="howell-icon-colon"></i></div>
   <input
     class="time-control time minute"
     matInput
-    #minute
+    #minuteInput
     type="number"
-    max="59"
-    min="0"
+    wheel-input-number
+    [digits]="2"
+    [min]="limits.minute.min"
+    [max]="limits.minute.max"
     step="1"
     maxlength="2"
     minlength="2"
-    [(ngModel)]="model.minute.view"
-    (input)="oninput($event)"
+    [value]="model.minute.value"
+    (valueChange)="on.change('minute', $event, minuteInput)"
     [disabled]="disabled ?? false"
   />
   <div><i class="howell-icon-colon"></i></div>
   <input
     class="time-control time second"
     matInput
-    #second
+    #secondInput
     type="number"
-    max="59"
-    min="0"
+    wheel-input-number
+    [digits]="2"
+    [min]="limits.second.min"
+    [max]="limits.second.max"
     step="1"
     maxlength="2"
     minlength="2"
-    [(ngModel)]="model.second.view"
-    (input)="oninput($event)"
+    [value]="model.second.value"
+    (valueChange)="on.change('second', $event, secondInput)"
     [disabled]="disabled ?? false"
   />
 </div>

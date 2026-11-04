@@ -1,22 +1,28 @@
+import { AuthorizationStore } from '../authorization/authorization.store';
+import { UserStorage } from '../user.storage';
+import { ConfigDownloadStoreModel } from './config-download-storage.model';
+
 export class ConfigDownloadStore {
   key = 'config-download';
-  get() {
-    let item = localStorage.getItem(this.key) ?? undefined;
-    let value = 5;
-    if (item) {
-      value = parseInt(item);
-    }
 
-    if (isNaN(value)) {
-      value = 5;
-    }
+  private storage: UserStorage<ConfigDownloadStoreModel>;
 
-    return value;
+  constructor(auth: AuthorizationStore) {
+    this.storage = new UserStorage<ConfigDownloadStoreModel>(this.key, auth);
   }
-  set(value: number) {
-    localStorage.setItem(this.key, value.toString());
+
+  get(): ConfigDownloadStoreModel {
+    let model = this.storage.get();
+    let max = model?.max;
+    if (max === undefined || isNaN(max)) {
+      max = 5;
+    }
+    return { max };
+  }
+  set(value: ConfigDownloadStoreModel) {
+    this.storage.set(value);
   }
   clear() {
-    localStorage.removeItem(this.key);
+    this.storage.clear();
   }
 }

@@ -9,6 +9,7 @@ import { ThreeDConfig } from '../../../../common/storage/three-d-storage/three-d
 import { SystemMainThreeBusiness } from '../business/system-main-three.business';
 import { SystemMainThreeArgs } from '../business/system-main-three.model';
 import { SystemMainThreeContainerComponent } from '../system-main-three-container/system-main-three-container.component';
+import { SystemMainThreeElementGroupManagerComponent } from '../system-main-three-element-group/system-main-three-element-group-manager/system-main-three-element-group-manager.component';
 import { SystemMainThreeStateComponent } from '../system-main-three-state/system-main-three-state.component';
 
 @Component({
@@ -18,6 +19,7 @@ import { SystemMainThreeStateComponent } from '../system-main-three-state/system
     WheelCtrlDirective,
     SystemMainThreeContainerComponent,
     SystemMainThreeStateComponent,
+    SystemMainThreeElementGroupManagerComponent,
   ],
   templateUrl: './system-main-three-manager.html',
   styleUrl: './system-main-three-manager.less',
@@ -42,6 +44,7 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.regist();
     this.state.load();
+    this.elementgroup.load();
     this.business.config.load().then((x) => {
       this.config = x;
     });
@@ -58,6 +61,7 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
           this.map.load.emit(this.map.args);
           /* 统计面板展示全量数据，跟随定时器（每分钟）和报警事件一起刷新状态 */
           this.state.load();
+          this.elementgroup.load();
         }),
       );
     }
@@ -79,6 +83,53 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
       } finally {
         this.state.loading = false;
       }
+    },
+  };
+
+  /**	点位分组树：全部地图元素（含楼栋/楼层，树里不出这两类），摄像机按区域树分组；
+      show 与面板双向绑定，容器据此把右下角按钮让出来 */
+  elementgroup = {
+    datas: [] as GeoMapElement[],
+    show: true,
+    /**	被眼睛按钮隐藏的点位 Id：容器据此不渲染对应 marker */
+    hidden: new Set<string>(),
+    /**	双击摄像机：播放实时视频预览（无预览权限时上层直接忽略） */
+    preview: new EventEmitter<GeoMapElement>(),
+    load: async () => {
+      try {
+        this.elementgroup.datas = await this.business.element.all();
+      } catch {
+        /* 刷新失败时保留上一次的分组 */
+      }
+    },
+    on: {
+      visible: (element: GeoMapElement) => {
+        this.elementgroup.change.visible(element);
+      },
+      /**	分组节点：一次更新整组点位的显示/隐藏 */
+      visibleAll: (e: { ids: string[]; visible: boolean }) => {
+        let hidden = new Set(this.elementgroup.hidden);
+        for (const id of e.ids) {
+          if (e.visible) {
+            hidden.delete(id);
+          } else {
+            hidden.add(id);
+          }
+        }
+        this.elementgroup.hidden = hidden;
+      },
+    },
+    change: {
+      /**	显示/隐藏点位：换一个新的 Set，输入引用变化才能触发子组件刷新 */
+      visible: (element: GeoMapElement) => {
+        let hidden = new Set(this.elementgroup.hidden);
+        if (hidden.has(element.Id)) {
+          hidden.delete(element.Id);
+        } else {
+          hidden.add(element.Id);
+        }
+        this.elementgroup.hidden = hidden;
+      },
     },
   };
 

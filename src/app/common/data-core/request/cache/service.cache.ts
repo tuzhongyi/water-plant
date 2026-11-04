@@ -137,12 +137,15 @@ export class ServiceCache<T extends IData> implements IServiceCache {
   async all(params?: IParams): Promise<T[]> {
     this.loading = true;
     let datas = this.load();
-    if (this.loaded && datas && datas.length > 0) {
+    /*	已加载且缓存还在（空数组也是有效结果）就直接用缓存。
+        不能要求 length > 0：服务端本来就没有数据时会每次都不命中，
+        上一次请求的 pending.all 已清空，会变成无限重复请求 */
+    if (this.loaded && datas) {
       try {
         if (params) {
-          return this.filter(datas ?? [], params);
+          return this.filter(datas, params);
         }
-        return datas ?? [];
+        return datas;
       } finally {
         this.loading = false;
       }
@@ -160,7 +163,8 @@ export class ServiceCache<T extends IData> implements IServiceCache {
         this.loaded = true;
         this.loading = false;
         this.pending.all = undefined;
-        return this.all(params);
+        /* 直接返回本次结果，不再递归回 all()：空数组递归会再次发起请求 */
+        return params ? this.filter(x, params) : x;
       })
       .catch((err) => {
         this.loading = false;

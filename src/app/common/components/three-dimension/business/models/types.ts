@@ -192,6 +192,8 @@ export interface MarkerEntity<T = any> extends MarkerArgs<T> {
   modelId: string; // 所属模型 ID
   meshId?: string; // 模型 mesh 的 key（Group 名优先）
   offline?: boolean;
+  error?: boolean;
+  /**	报警扩散动画：缺省为 true；false 时只显示报警颜色、不播放扩散环（如设备已不存在的异常点） */
   alarm?: boolean;
   icon: AlarmEntityState;
 

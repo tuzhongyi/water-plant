@@ -35,9 +35,20 @@ export class LoginBusiness {
 
   login(username: string, password: string) {
     let code = HowellSM4.encrypt(password);
-    return this.service.login(username, code).then((x) => {
+    return this.service.login(username, code).then(async (x) => {
+      /*	皮肤按用户缓存，切换账号后要重新应用当前用户的皮肤 */
+      await this.applySkin();
       this.router.navigateByUrl(`${RoutePath.system}`);
     });
+  }
+
+  private async applySkin() {
+    try {
+      let skin = await this.global.skin;
+      document.documentElement.setAttribute('data-skin', skin);
+    } catch {
+      /*	获取失败时保持当前皮肤 */
+    }
   }
   remember(username: string, password: string) {
     let info = { username, password, save: true };

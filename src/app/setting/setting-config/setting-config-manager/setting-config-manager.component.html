@@ -1,4 +1,7 @@
 <div class="setting-config-manager">
   <hw-setting-config-skin></hw-setting-config-skin>
-  <hw-setting-config-download></hw-setting-config-download>
+  @if (permission.download) {
+    <hw-setting-config-download></hw-setting-config-download>
+  }
+  <hw-setting-config-map></hw-setting-config-map>
 </div>

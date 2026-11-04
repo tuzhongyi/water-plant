@@ -12,4 +12,7 @@ export interface ThreeDConfig {
       mode: string;
     };
   };
+  render?: {
+    mode: string;
+  };
 }

@@ -1,19 +1,23 @@
+import { AuthorizationStore } from '../authorization/authorization.store';
+import { UserStorage } from '../user.storage';
 import { ThreeDConfig } from './three-d-store.model';
 
 export class ThreeDStore {
   key = 'three-d';
+
+  private storage: UserStorage<ThreeDConfig>;
+
+  constructor(auth: AuthorizationStore) {
+    this.storage = new UserStorage<ThreeDConfig>(this.key, auth);
+  }
+
   get() {
-    let str = localStorage.getItem(this.key);
-    if (str) {
-      let model = JSON.parse(str) as ThreeDConfig;
-      return model;
-    }
-    return undefined;
+    return this.storage.get();
   }
   set(value: ThreeDConfig) {
-    localStorage.setItem(this.key, JSON.stringify(value));
+    this.storage.set(value);
   }
   clear() {
-    localStorage.removeItem(this.key);
+    this.storage.clear();
   }
 }

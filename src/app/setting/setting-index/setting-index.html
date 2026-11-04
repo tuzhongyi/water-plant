@@ -1,20 +1,22 @@
 <howell-card>
   <div class="setting-index">
     <div class="setting-index-title">
-      <div
-        class="button"
-        [class.selected]="path == SettingPath.map"
-        (click)="on.path(SettingPath.map)"
-      >
-        地图布控
-      </div>
-      <div
-        class="button"
-        [class.selected]="path == SettingPath.region"
-        (click)="on.path(SettingPath.region)"
-      >
-        区域资源设置
-      </div>
+      @if (permission.isRoot) {
+        <div
+          class="button"
+          [class.selected]="path == SettingPath.map"
+          (click)="on.path(SettingPath.map)"
+        >
+          地图布控
+        </div>
+        <div
+          class="button"
+          [class.selected]="path == SettingPath.region"
+          (click)="on.path(SettingPath.region)"
+        >
+          区域资源设置
+        </div>
+      }
       <div
         class="button"
         [class.selected]="path == SettingPath.config"

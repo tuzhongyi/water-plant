@@ -17,13 +17,15 @@ export class SettingMapElementDB31Business {
     db31: DB31RequestService;
   };
 
-  async state(id: string) {
+  /**	设备状态：0-在线，1-离线
+      查不到通道/设备时返回 undefined，由调用方判断设备是否存在，不能直接判为离线 */
+  async state(id: string): Promise<number | undefined> {
     try {
       let channel = await this.service.db31.channel.cache.get(id);
       let device = await this.service.db31.device.cache.get(channel.DeviceId);
       return device.DeviceState;
     } catch (error) {
-      return 1;
+      return undefined;
     }
   }
 

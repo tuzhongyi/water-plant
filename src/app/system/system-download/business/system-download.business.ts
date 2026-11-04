@@ -14,7 +14,7 @@ export class SystemDownloadBusiness {
     private service: DeviceRequestService,
     local: LocalStorage,
   ) {
-    this.count = local.config.download.get();
+    this.count = local.config.download.get().max;
   }
 
   private tasks: DownloadTask[] = [];

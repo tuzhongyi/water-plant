@@ -189,7 +189,7 @@ export class MarkerController {
           this._cache.set(cam.id, item);
         } else {
           /* 更新已有 item：检测 icon / offline / alarm 变化并重新加载纹理/刷新显示 */
-          const dataChanged = item.data.offline !== cam.offline || item.data.alarm !== cam.alarm;
+          const dataChanged = item.data.offline !== cam.offline || item.data.error !== cam.error;
           const iconChanged = this.iconChanged(item, cam.icon);
           if (iconChanged) {
             item.textures = this.loadTextureSet(cam.icon);
@@ -211,8 +211,8 @@ export class MarkerController {
         item.sprite.position.set(cam.position.x, cam.position.y, cam.position.z);
         item.label.position.copy(item.sprite.position);
         item.label.visible = false;
-        /* 报警扩散环：alarm=true 时创建，false 时清理 */
-        if (cam.alarm) {
+        /* 报警扩散环：alarm=true 且未关闭扩散时创建，否则清理 */
+        if (cam.error && cam.alarm !== false) {
           this.ensureAlarmRings(item);
         } else {
           this.removeAlarmRings(item);
@@ -500,7 +500,7 @@ export class MarkerController {
           meshId: item.data.meshId,
           inScene: item.inScene,
           offline: item.data.offline,
-          alarm: !!item.data.alarm,
+          alarm: !!item.data.error,
         });
       }
       return r;
@@ -724,7 +724,10 @@ export class MarkerController {
   /** 释放视野扇形的几何体与材质 */
   private disposeFan(fan: ViewfieldFan): void {
     /* 若正悬停的手柄随该扇形一起销毁，则清除悬停引用 */
-    if (this.viewfieldHoverHandle === fan.handle || this.viewfieldHoverHandle === fan.courseHandle) {
+    if (
+      this.viewfieldHoverHandle === fan.handle ||
+      this.viewfieldHoverHandle === fan.courseHandle
+    ) {
       this.viewfieldHoverHandle = null;
     }
     fan.group.traverse((child) => {
@@ -1162,7 +1165,7 @@ export class MarkerController {
   ): THREE.Texture {
     /* offline 时始终使用 offline 图标 */
     if (data.offline) {
-      if (data.alarm && alarmTextures?.offline) {
+      if (data.error && alarmTextures?.offline) {
         return alarmTextures.offline;
       }
       if (textures.offline) {
@@ -1172,7 +1175,7 @@ export class MarkerController {
       return textures.normal;
     }
     /* alarm 时使用 alarmTextures，并根据 hover/selected 选变体 */
-    if (data.alarm && alarmTextures) {
+    if (data.error && alarmTextures) {
       return alarmTextures[state];
     }
     return textures[state];

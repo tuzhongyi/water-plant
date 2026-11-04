@@ -1,12 +1,23 @@
+import { AuthorizationStore } from '../authorization/authorization.store';
+import { UserStorage } from '../user.storage';
+import { ConfigSkinStoreModel } from './config-skin-storage.model';
+
 export class ConfigSkinStore {
   key = 'config-skin';
-  get() {
-    return localStorage.getItem(this.key) ?? undefined;
+
+  private storage: UserStorage<ConfigSkinStoreModel>;
+
+  constructor(auth: AuthorizationStore) {
+    this.storage = new UserStorage<ConfigSkinStoreModel>(this.key, auth);
   }
-  set(value: string) {
-    localStorage.setItem(this.key, value);
+
+  get() {
+    return this.storage.get();
+  }
+  set(value: ConfigSkinStoreModel) {
+    this.storage.set(value);
   }
   clear() {
-    localStorage.removeItem(this.key);
+    this.storage.clear();
   }
 }

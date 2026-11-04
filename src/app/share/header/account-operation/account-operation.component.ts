@@ -1,10 +1,11 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
 import { RegionNode, RoutePath } from '../../../app.path';
 import { LocalStorage } from '../../../common/storage/local.storage';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { AccountOperationDisplay } from './account-operation.model';
 
 @Component({
@@ -18,6 +19,8 @@ export class AccountOperationComponent implements OnInit, OnDestroy {
     private local: LocalStorage,
     private router: Router,
   ) {}
+
+  permission = inject(PermissionTool);
 
   username: string = '';
   display = new AccountOperationDisplay();

@@ -24,7 +24,7 @@
       [findfanstop]="element.find.fan.stop"
       (findfanend)="element.find.fan.end($event)"
       [viewfield]="element.viewfield"
-      [trees]="three.model.tree()"
+      [trees]="three.trees"
     ></hw-3d>
   </div>
   <div class="system-main-three-button-area">
@@ -89,7 +89,7 @@
       ></hw-system-main-three-config-find-slider>
     }
   </div>
-  <div class="system-main-three-full">
+  <div class="system-main-three-full" [class.panel-expanded]="panelExpanded">
     <div class="button-group">
       <button
         class="button-border primary-dark"

@@ -30,18 +30,31 @@ export class ConfigRequestService {
     });
   }
 
+  /** 地图配置只请求一次：每个点位转换都会读 map，不缓存会重复请求 config-map.json */
+  private _map?: Promise<MapConfig>;
+
   get map(): Promise<MapConfig> {
-    let protocol = location.protocol;
-    if (!protocol.includes(':')) {
-      protocol += ':';
+    if (!this._map) {
+      let protocol = location.protocol;
+      if (!protocol.includes(':')) {
+        protocol += ':';
+      }
+      let port = '';
+      if (location.port) {
+        port = ':' + location.port;
+      }
+      let url = `${protocol}//${location.hostname}${port}${PathTool.config.map}`;
+      let promise = fetch(`${url}?t=${new Date().getTime()}`).then((res) => {
+        return res.json();
+      });
+      /* 请求失败不缓存，下次访问重新请求 */
+      promise.catch(() => {
+        if (this._map === promise) {
+          this._map = undefined;
+        }
+      });
+      this._map = promise;
     }
-    let port = '';
-    if (location.port) {
-      port = ':' + location.port;
-    }
-    let url = `${protocol}//${location.hostname}${port}${PathTool.config.map}`;
-    return fetch(`${url}?t=${new Date().getTime()}`).then((res) => {
-      return res.json();
-    });
+    return this._map;
   }
 }

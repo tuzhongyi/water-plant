@@ -2,6 +2,21 @@
 
 :host {
   display: block;
+  position: absolute;
+  top: 20px;
+  width: 280px;
+  height: auto;
+  max-height: calc(100% - 20px - 20px);
+  overflow-y: auto;
+
+  /* 停靠位置由 side 输入决定，left/right 共用同一套折叠逻辑 */
+  &.left {
+    left: 20px;
+  }
+
+  &.right {
+    right: 20px;
+  }
 }
 
 .system-main-three-state {
@@ -10,7 +25,7 @@
   position: relative;
   font-size: 18px;
 
-  /* 折叠切换按钮：常驻，显示态位于卡片左上角，隐藏态滑到右上角并切换图标 */
+  /* 折叠切换按钮：常驻左上角；左侧面板折叠时停在这里，右侧面板折叠时滑到右上角 */
   &-toggle {
     position: absolute;
     top: 16.5px;
@@ -33,20 +48,19 @@
     }
   }
 
-  /* 卡片容器：折叠时淡出 */
+  /* 卡片容器：折叠时淡出，向左上角收缩（右下角向左上收） */
   &-card {
-    transform-origin: calc(100% - 10px) 30px; // 缩向 toggle 中心（右上角）
+    transform-origin: 10px 30px; // 缩向 toggle 中心（左上角）
     transform: scale(1);
     opacity: 1;
     transition: transform 0.5s ease, opacity 0.3s ease;
   }
 
-  /* 折叠态：外框与内容隐藏，切换按钮滑到最右侧 */
+  /* 折叠态：外框与内容隐藏 */
   &.none {
     pointer-events: none;
 
     .system-main-three-state-toggle {
-      left: calc(100% - 20px);
       pointer-events: auto;
     }
 
@@ -174,6 +188,19 @@
         font-size: 14px;
         color: rgba(@rgb, 0.5);
       }
+    }
+  }
+}
+
+/* 右侧停靠：与左侧镜像，卡片向右上角收缩，折叠时按钮滑到右上角 */
+:host(.right) {
+  .system-main-three-state {
+    &-card {
+      transform-origin: calc(100% - 10px) 30px;
+    }
+
+    &.none .system-main-three-state-toggle {
+      left: calc(100% - 20px);
     }
   }
 }

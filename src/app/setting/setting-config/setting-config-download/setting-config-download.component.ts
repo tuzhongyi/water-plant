@@ -13,14 +13,14 @@ import { LocalStorage } from '../../../common/storage/local.storage';
 })
 export class SettingConfigDownloadComponent {
   constructor(private local: LocalStorage) {
-    this.value = local.config.download.get();
+    this.value = local.config.download.get().max;
   }
 
   value = 5;
 
   on = {
     change: () => {
-      this.local.config.download.set(this.value);
+      this.local.config.download.set({ max: this.value });
     },
   };
 }

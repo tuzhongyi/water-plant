@@ -1,0 +1,27 @@
+<div class="system-main-three-element-group" [class.none]="!show">
+  <div class="system-main-three-element-group-toggle" (click)="on.toggle()">
+    <i [class]="icon"></i>
+  </div>
+
+  <div class="system-main-three-element-group-card">
+    <hw-card-statistic>
+      <div class="system-main-three-element-group-inner">
+        <div class="system-main-three-element-group-head">
+          <div class="system-main-three-element-group-head-title">
+            <div class="system-main-three-element-group-head-title-content">{{ title }}</div>
+          </div>
+        </div>
+        <div class="card-line system-main-three-element-group-line"></div>
+        <div class="system-main-three-element-group-body">
+          <hw-system-main-three-element-group-tree
+            [datas]="datas"
+            [hiddenIds]="hiddenIds"
+            (preview)="preview.emit($event)"
+            (visible)="visible.emit($event)"
+            (visibleAll)="visibleAll.emit($event)"
+          ></hw-system-main-three-element-group-tree>
+        </div>
+      </div>
+    </hw-card-statistic>
+  </div>
+</div>

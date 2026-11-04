@@ -12,6 +12,7 @@
               [load]="tree.load"
               [elements]="geo.element.datas()"
               [find]="tree.find"
+              (findresult)="tree.findresult($event)"
               (bind)="tree.standby($event)"
               (unbind)="tree.bind.confirm($event)"
               (position)="tree.position($event)"

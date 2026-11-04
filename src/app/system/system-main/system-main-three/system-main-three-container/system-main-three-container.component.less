@@ -103,6 +103,12 @@
     display: flex;
 
     width: calc(40px);
+    transition: right 0.4s ease;
+
+    /* 右侧点位分组面板展开时，把这组按钮让到面板左侧 */
+    &.panel-expanded {
+      right: calc(@padding-left + 350px + @gap);
+    }
 
     .button-group {
       flex-direction: column;

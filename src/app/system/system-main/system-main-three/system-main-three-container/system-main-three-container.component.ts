@@ -50,6 +50,18 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   @Output() elementloaded = new EventEmitter<GeoMapElement[]>();
   @Input() load?: EventEmitter<void>;
   @Input() renderPaused = false;
+  /**	右侧点位分组面板是否展开：展开时右下角按钮让到面板左侧 */
+  @Input() panelExpanded = false;
+  /**	点位分组面板里被隐藏的点位 Id：不渲染对应 marker */
+  private _hiddenIds: ReadonlySet<string> = new Set<string>();
+  @Input()
+  get hiddenIds(): ReadonlySet<string> {
+    return this._hiddenIds;
+  }
+  set hiddenIds(value: ReadonlySet<string>) {
+    this._hiddenIds = value ?? new Set<string>();
+    this.element.sync();
+  }
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() found = new EventEmitter<GeoMapElement[]>();
@@ -65,6 +77,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
 
   ngOnInit(): void {
+    /*	渲染模式在创建模型前从本地缓存恢复，
+        否则会先按默认模式加载一遍、再整体重载 */
+    this.three.renderMode.set(this.business.config.renderMode);
+    /*	是否显示绿植也同步读取：配置关闭时不要在场景初始化时先把树加载一遍 */
+    this.three.model.treeconfig.set(this.business.config.tree);
     this.manager.fullscreen.value.set(HtmlTool.screen.get.fullscreen());
     document.addEventListener('fullscreenchange', this.manager.fullscreen.change);
     this.regist();
@@ -80,6 +97,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   private init() {
     this.business.config.load().then((x) => {
       this.three.config.set(x);
+      this.three.model.treeconfig.set(this.business.config.tree);
       this.element.find.circle.radius = x.find.radius;
     });
     this.business.element.get.alarms().then((elements) => {
@@ -154,6 +172,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     );
     this.subs.add(
       this.business.config.change.subscribe((x) => {
+        this.three.model.treeconfig.set(this.business.config.tree);
         this.element.find.circle.radius = x.find.radius;
       }),
     );
@@ -182,10 +201,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     to: (deviceId: string) => {
       this.business.element.alarm.push(deviceId).then((elements) => {
         let building = elements.find((x) => x.ElementType == MapElementType.Building);
-        if (building) {
-          if (building) {
-            this.building.reload(building);
-          }
+        /*	楼层视图里场景只有扩展模型：不重载建筑模型，只刷新当前楼层点位 */
+        if (building && !this.floor.model()) {
+          this.building.reload(building);
         } else {
           this.element.load(this.loadArgs, false);
         }
@@ -270,8 +288,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
             break;
 
           default:
+            this.three.renderMode.set(RenderMode.overlay);
             break;
         }
+        /* 记住用户的选择，刷新页面后沿用 */
+        this.business.config.saveRenderMode(this.three.renderMode());
       },
       filter: () => {
         this.manager.filter.show = true;
@@ -333,6 +354,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       return elements.find((x) => x.ElementId == modelId);
     },
     reload: (data: GeoMapElement) => {
+      /*	楼层视图里场景只有扩展模型：重载整栋建筑模型会把原始建筑塞回场景，
+          楼层可见性也会被重置成全部楼层；楼层视图下不重载建筑，点位由调用方刷新 */
+      if (this.floor.model()) return;
       let model = this.converter.element.to.building(data, this.three.renderMode());
       this.three.model.reload.emit(model);
     },
@@ -355,6 +379,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
   element = {
     datas: signal<GeoMapElement[]>([]),
+    /**	最近一次生成的全部 marker（未过滤隐藏），hiddenIds 变化时据此重新过滤 */
+    markers: [] as MarkerEntity[],
+    /**	加载版本：并发加载（展开建筑/选楼层/定时刷新）时只让最后发起的结果落地 */
+    version: 0,
+
     viewfield: ViewfieldMode.hide,
     ViewfieldMode: ViewfieldMode,
     find: {
@@ -386,8 +415,21 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       let elements = this.element.datas();
       return elements.find((x) => x.ElementId == modelId);
     },
+    /**	按 hiddenIds 过滤后写入 3D 组件的 marker 列表（被隐藏的点位不渲染） */
+    sync: () => {
+      let hidden = this.hiddenIds;
+      this.three.camera.datas.set(
+        hidden.size > 0
+          ? this.element.markers.filter((x) => !hidden.has(x.id))
+          : this.element.markers,
+      );
+    },
     load: async (args: SystemMainThreeArgs, usecache: boolean) => {
+      let version = ++this.element.version;
       let elements = await this.business.element.load(args, usecache);
+      /*	期间又发起了新的加载（展开建筑/选楼层/定时刷新），旧结果直接丢弃：
+          否则旧的整栋楼范围后到，会把已选楼层的点位覆盖回来 */
+      if (version != this.element.version) return;
 
       this.element.datas.set(elements);
 
@@ -398,8 +440,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       });
 
       let all = elements.map((x) => this.converter.element.to.marker(x));
-      let datas = await Promise.all(all);
-      this.three.camera.datas.set(datas);
+      let markers = await Promise.all(all);
+      if (version != this.element.version) return;
+
+      this.element.markers = markers;
+      this.element.sync();
     },
   };
 
@@ -498,13 +543,21 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     renderMode: signal<RenderMode>(RenderMode.solid),
     config: signal<ThreeDConfig | undefined>(undefined),
     model: {
+      /** 当前视图是否显示树：进入楼层内部时关闭，返回后恢复 */
       tree: signal(true),
+      /** 配置「显示绿植」：关闭后 solid 模式也不加载树 */
+      treeconfig: signal(true),
       datas: signal<ModelViewerModel[]>([]),
       reload: new EventEmitter<ModelViewerModel>(),
       clear: () => {
         this.three.model.datas.set([]);
         this.buildingselect.emit();
       },
+    },
+    /**	是否加载场景中的树：树只在 solid（实体）模式下有意义；
+        配置关闭绿植或进入楼层内部（model.tree=false）时都不加载 */
+    get trees(): boolean {
+      return this.renderMode() == RenderMode.solid && this.model.treeconfig() && this.model.tree();
     },
     camera: {
       datas: signal<MarkerEntity[]>([]),
@@ -521,7 +574,6 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       loaded: () => {
         this.three.focus.emit();
       },
-
       building: {
         select: (modelId: string) => {
           let building = this.building.get(modelId);

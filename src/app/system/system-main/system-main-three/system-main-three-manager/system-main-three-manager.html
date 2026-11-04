@@ -8,6 +8,8 @@
     <hw-system-main-three-container
       [(args)]="map.args"
       [elementload]="map.load"
+      [panelExpanded]="elementgroup.show"
+      [hiddenIds]="elementgroup.hidden"
       [alarm]="alarm"
       [unalarm]="unalarm"
       [renderPaused]="renderPaused"
@@ -20,11 +22,20 @@
     ></hw-system-main-three-container>
   </div>
 
-  <div class="system-main-three-state">
-    <hw-system-main-three-state
-      [title]="map.data?.Name || ''"
-      [datas]="state.datas"
-      (details)="on.element($event)"
-    ></hw-system-main-three-state>
-  </div>
+  <hw-system-main-three-state
+    side="left"
+    [title]="map.data?.Name || ''"
+    [datas]="state.datas"
+    (details)="on.element($event)"
+  ></hw-system-main-three-state>
+
+  <hw-system-main-three-element-group-manager
+    side="right"
+    [datas]="elementgroup.datas"
+    [hiddenIds]="elementgroup.hidden"
+    [(show)]="elementgroup.show"
+    (preview)="map.on.preview($event)"
+    (visible)="elementgroup.on.visible($event)"
+    (visibleAll)="elementgroup.on.visibleAll($event)"
+  ></hw-system-main-three-element-group-manager>
 </div>

@@ -139,6 +139,11 @@ export class SettingMapManagerComponent implements OnInit {
       },
       element: {
         dbclick: (data: GeoMapElement) => {
+          if (!data.ElementId) {
+            /* 没有绑定通道，树里本来就没有可定位的节点，按定位失败处理 */
+            this.tree.remove.confirm(data);
+            return;
+          }
           this.tree.find.emit(data);
         },
       },
@@ -148,6 +153,21 @@ export class SettingMapManagerComponent implements OnInit {
   tree = {
     load: new EventEmitter<void>(),
     find: new EventEmitter<GeoMapElement>(),
+    /**	双击点位后树里的定位结果：定位失败说明设备已不存在，询问后再删除这个点位 */
+    findresult: (result: { id: string; found: boolean }) => {
+      if (result.found) return;
+      let element = this.geo.element.datas().find((x) => x.ElementId == result.id);
+      if (element) {
+        this.tree.remove.confirm(element);
+      }
+    },
+    remove: {
+      confirm: (element: GeoMapElement) => {
+        this.window.confirm.mode = 'stale';
+        this.window.confirm.data = element;
+        this.window.confirm.show.set(true);
+      },
+    },
     standby: (data: IIdNameModel) => {
       this.three.standby.set(data);
     },
@@ -155,14 +175,20 @@ export class SettingMapManagerComponent implements OnInit {
       confirm: (data: IIdNameModel) => {
         let element = this.geo.element.datas().find((x) => x.ElementId == data.Id);
         if (element) {
+          this.window.confirm.mode = 'unbind';
           this.window.confirm.data = element;
           this.window.confirm.show.set(true);
         }
       },
       unbind: () => {
         if (this.window.confirm.data) {
+          let stale = this.window.confirm.mode == 'stale';
           this.business.element.unbind(this.window.confirm.data.Id).then((x) => {
-            this.toastr.success('解绑成功');
+            if (stale) {
+              this.toastr.warning('设备已不存在，已删除该点位');
+            } else {
+              this.toastr.success('解绑成功');
+            }
             this.window.confirm.show.set(false);
             this.three.load.emit();
             this.business.element.all().then((x) => {

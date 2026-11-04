@@ -36,6 +36,9 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   @Output() loaded = new EventEmitter<Record<string, ITreeDevice[]>>();
 
   @Input() find?: EventEmitter<string>;
+  /**	定位结果：树里找不到对应设备（如设备已被删除）时 found=false；
+      只是被搜索条件挡住、设备还在时不算失败 */
+  @Output() findresult = new EventEmitter<{ id: string; found: boolean }>();
 
   @Input() bound: GeoMapElement[] = [];
   @Output() bind = new EventEmitter<VideoChannel>();
@@ -58,6 +61,8 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
   private args: TreeDeviceArgs = {};
   /** find 传入但当时还没找到的 id：树加载完成后补做一次定位 */
   private pendingFindId?: string;
+  /** 树是否已经建好过，用于判断“找不到”是定位失败还是树还没加载 */
+  private built = false;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['bound']) {
@@ -106,9 +111,16 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
     if (this.find) {
       this.subs.add(
         this.find.subscribe((id) => {
+          if (this.findNode(id)) {
+            this.findresult.emit({ id, found: true });
+            return;
+          }
           /* 树还没建好（异步加载中）时先记下，buildTree 完成后补做 */
-          if (!this.findNode(id)) {
-            this.pendingFindId = id;
+          this.pendingFindId = id;
+          /* 树已经建好仍找不到：设备确实不在树里，回定位失败；被搜索条件挡住的由 exists 排除 */
+          if (this.built && !this.exists(id)) {
+            this.pendingFindId = undefined;
+            this.findresult.emit({ id, found: false });
           }
         }),
       );
@@ -142,16 +154,45 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
     return true;
   }
 
+  /**	树重建后补做之前挂起的定位；树里确实没有该设备则回定位失败 */
+  private retryPendingFind(): void {
+    if (!this.pendingFindId) return;
+    const id = this.pendingFindId;
+    this.pendingFindId = undefined;
+    if (!this.findNode(id) && !this.exists(id)) {
+      this.findresult.emit({ id, found: false });
+    }
+  }
+
+  /**	树里是否有这个设备 / 通道：按已加载的原始数据判断，不受搜索条件影响 */
+  private exists(id: string): boolean {
+    if (!this.lastDatas) return false;
+    for (const devices of Object.values(this.lastDatas)) {
+      for (const d of devices) {
+        if (d.Id === id) return true;
+        if (this.channelsOf(d).some((ch) => ch.Id === id)) return true;
+      }
+    }
+    return false;
+  }
+
   /* ---- 数据加载 ---- */
 
   private async loadTree(): Promise<void> {
+    /* 重载期间树上的节点还是旧数据，先按“未建好”处理，避免拿旧树判定定位失败 */
+    this.built = false;
     try {
       const types = await this.business.types()();
       const datas = await this.business.load();
       this.lastTypes = types;
       this.lastDatas = datas;
       this.loaded.emit(datas);
-      if (!datas || Object.keys(datas).length === 0) return;
+      if (!datas || Object.keys(datas).length === 0) {
+        /* 树里没有任何设备，之前挂起的定位同样判定失败 */
+        this.built = true;
+        this.retryPendingFind();
+        return;
+      }
       await this.buildTree(types, datas);
     } catch {
       this.loaded.emit({});
@@ -199,11 +240,8 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
     this.cdr.detectChanges();
 
     /* 树建好后补做一次之前没找到的定位 */
-    if (this.pendingFindId) {
-      const id = this.pendingFindId;
-      this.pendingFindId = undefined;
-      this.findNode(id);
-    }
+    this.built = true;
+    this.retryPendingFind();
   }
 
   /* ---- bound 增量刷新 ---- */
@@ -215,7 +253,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
         const isBound = this.elements.some((b) => b.ElementId === ch.Id);
         node.actionsHtml = isBound
           ? `<div class="button hw-tree-action-btn hw-tree-action-position primary" title="定位">
-               <i class="glyphicon glyphicon-map-marker"></i>
+               <i class="mdi mdi-map-marker"></i>
              </div>
              <div class="button hw-tree-action-btn hw-tree-action-unbind redlight" title="解绑">
                <i class="howell-icon-Unlink"></i>
@@ -277,7 +315,7 @@ export class TreeDeviceComponent implements AfterViewInit, OnInit, OnChanges, On
     const isBound = this.elements.some((b) => b.ElementId === chId);
     const btn = isBound
       ? `<div class="button hw-tree-action-btn hw-tree-action-position primary" title="定位">
-           <i class="glyphicon glyphicon-map-marker"></i>
+           <i class="mdi mdi-map-marker"></i>
          </div>
          <div class="button hw-tree-action-btn hw-tree-action-unbind redlight" title="解绑">
            <i class="howell-icon-Unlink"></i>

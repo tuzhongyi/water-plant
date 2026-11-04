@@ -20,12 +20,13 @@ export class WheelInputNumberDirective
   implements OnInit, OnChanges, AfterContentInit, OnDestroy
 {
   @Input() value?: number = 0;
+  /**	显示补零位数：大于 0 时按该位数补零，如时间输入显示 08 */
+  @Input() digits = 0;
   @Output() valueChange = new EventEmitter<number>();
 
   constructor(e: ElementRef) {
     this.ele = e.nativeElement;
   }
-  private isInnerUpdate = false;
   private ele: HTMLInputElement;
   private handle: {
     wheel?: any;
@@ -33,13 +34,13 @@ export class WheelInputNumberDirective
   } = {};
 
   ngOnInit(): void {
-    this.ele.value = `${this.value?.toFixed(0)}`;
+    this.display(this.value);
     this.handle.wheel = this.on.wheel.bind(this);
     this.handle.input = this.on.input.bind(this);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.ele.value = `${this.value?.toFixed(0)}`;
+    this.display(this.value);
   }
   ngAfterContentInit(): void {
     this.ele.addEventListener('wheel', this.handle.wheel);
@@ -49,6 +50,13 @@ export class WheelInputNumberDirective
     this.ele.removeEventListener('wheel', this.handle.wheel);
     this.ele.removeEventListener('input', this.handle.input);
   }
+
+  /**	按补零位数写入输入框显示值 */
+  private display(value?: number) {
+    let text = `${value?.toFixed(0) ?? ''}`;
+    this.ele.value = this.digits > 0 ? text.padStart(this.digits, '0') : text;
+  }
+
   on = {
     wheel: (e: WheelEvent) => {
       e.preventDefault();
@@ -69,19 +77,12 @@ export class WheelInputNumberDirective
         value = Math.max(value - step, min);
       }
 
-      this.isInnerUpdate = true;
-
       this.value = value;
-      this.ele.value = `${value}`;
+      this.display(value);
 
       this.valueChange.emit(this.value);
     },
     input: (e: Event) => {
-      if (this.isInnerUpdate) {
-        this.isInnerUpdate = false;
-        return;
-      }
-
       let input = e.currentTarget as HTMLInputElement;
       let value = parseFloat(input.value) || 0;
 

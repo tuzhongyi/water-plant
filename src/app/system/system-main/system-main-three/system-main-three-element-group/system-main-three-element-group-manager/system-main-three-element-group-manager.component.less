@@ -1,0 +1,138 @@
+@import url(../../../../../../assets/styles/colors/color-@.less);
+
+:host {
+  display: block;
+  position: absolute;
+  top: 20px;
+  width: 350px;
+  /* 高度撑满，上下各留 20px（top: 20px + height 扣掉 40px） */
+  height: calc(100% - 15px - 20px);
+  overflow: hidden;
+  /* 折叠后整条区域仍占满高度，需透传点击给地图；展开时由卡片自己接管 */
+  pointer-events: none;
+
+  /* 停靠位置由 side 输入决定，left/right 共用同一套折叠逻辑 */
+  &.left {
+    left: 20px;
+  }
+
+  &.right {
+    right: 20px;
+  }
+}
+
+.system-main-three-element-group {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  font-size: 18px;
+  pointer-events: auto; // 展开时面板正常接收点击（折叠态在 .none 里关掉）
+
+  /* 折叠切换按钮：常驻左上角；左侧面板折叠时停在这里，右侧面板折叠时滑到右上角 */
+  &-toggle {
+    position: absolute;
+    top: 16.5px;
+    left: 20px;
+    z-index: 2;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: left 0.4s ease, color 0.4s ease;
+
+    &:hover {
+      color: @white;
+      text-shadow: @white 0 0 10px;
+    }
+  }
+
+  /* 卡片容器：折叠时淡出，向左上角收缩（右下角向左上收） */
+  &-card {
+    height: 100%;
+    transform-origin: 10px 30px; // 缩向 toggle 中心（左上角）
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0.5s ease, opacity 0.3s ease;
+  }
+
+  /* 折叠态：外框与内容隐藏 */
+  &.none {
+    pointer-events: none;
+
+    .system-main-three-element-group-toggle {
+      pointer-events: auto;
+    }
+
+    .system-main-three-element-group-card {
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    .system-main-three-element-group-inner {
+      opacity: 0;
+    }
+  }
+
+  &-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    height: 100%;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+  }
+
+  &-head {
+    height: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &-title {
+      color: @white;
+      display: flex;
+      align-items: center;
+
+      &-content {
+        height: 100%;
+        max-height: 100%;
+        flex-shrink: 0;
+        margin-left: 30px;
+      }
+    }
+  }
+
+  &-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* 树可能很长：内容区吃掉剩余高度并自己滚动（min-height: 0 允许在 flex 列里收缩） */
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
+/* 撑满卡片高度：card-statistic 本身是 100% 宽高的块 */
+hw-card-statistic {
+  display: block;
+  height: 100%;
+}
+
+/* 右侧停靠：与左侧镜像，卡片向右上角收缩，折叠时按钮滑到右上角 */
+:host(.right) {
+  .system-main-three-element-group {
+    &-card {
+      transform-origin: calc(100% - 10px) 30px;
+    }
+
+    &.none .system-main-three-element-group-toggle {
+      left: calc(100% - 20px);
+    }
+  }
+}

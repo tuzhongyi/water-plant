@@ -20,10 +20,9 @@ const PROXY_CONFIG = [
       Connection: 'keep-alive',
     },
   },
-
   {
     context: ['/video/wsplayer/'],
-    target: 'http://192.168.21.241:8800',
+    target: 'http://192.168.21.151:80',
     changeOrigin: true,
     secure: false,
   },

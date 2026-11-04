@@ -1,0 +1,18 @@
+<hw-card-statistic [type]="4">
+  <div class="setting-config-map">
+    <div class="card-head">
+      <div class="card-head-title">地图设置</div>
+    </div>
+    <div class="card-line"></div>
+    <div class="card-body no-foot">
+      <div class="forms">
+        <div class="form-item">
+          <div class="form-item-text">显示绿植：</div>
+          <div class="form-item-value">
+            <hw-switch [checked]="value" (checkedChange)="on.change($event)"></hw-switch>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</hw-card-statistic>
