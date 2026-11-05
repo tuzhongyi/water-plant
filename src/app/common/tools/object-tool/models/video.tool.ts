@@ -17,7 +17,7 @@ export class ObjectModelVideoTool {
       model.host = location.hostname;
       model.port = location.port ? parseInt(location.port) : 80;
       if (location.port == '9001') {
-        model.host = '192.168.21.122';
+        model.host = '192.168.21.151';
         model.port = 10001;
       }
 

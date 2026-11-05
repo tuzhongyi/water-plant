@@ -20,6 +20,15 @@
     display: flex;
     flex-direction: column;
     gap: @gap;
+    /*	与 3D 场景的展开/收缩同步：展开时地图向左生长盖过来，
+        左侧面板同时淡出，不会出现"面板已经露出来、场景还在动"的错位 */
+    transition: opacity 0.2s ease-out;
+  }
+
+  /*	展开时左侧面板淡出（地图 z-index 在上，最终被完全盖住） */
+  &-container.full &-left {
+    opacity: 0;
+    pointer-events: none;
   }
 
   &-state {
@@ -31,15 +40,19 @@
   }
 
   &-three {
+    /*	绝对定位 + 宽度过渡：展开 / 还原时才有动画可做。
+        普通状态右对齐、宽度让出左侧栏和间距，展开时向左生长铺满 */
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
     width: calc((100% - @gap) * 0.75);
+    transition: width 0.25s ease-out;
 
     &.full {
-      position: absolute;
-      top: 0px;
-      left: 0px;
       width: 100%;
-      height: 100%;
       background-color: var(--surface-deepest);
+      z-index: 1;
     }
   }
 

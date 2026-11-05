@@ -57,9 +57,14 @@ export class SystemMainThreeElementBusiness {
     params.ElementTypes = SystemMainThreeSource.elements;
     return this.service.map.element.all(params);
   }
-  async load(args: SystemMainThreeArgs, usecache: boolean): Promise<MapElementModel[]> {
+  /**	@param floors 已取到的楼层列表：展开建筑时上层刚查过，传进来就不再重复请求 */
+  async load(
+    args: SystemMainThreeArgs,
+    usecache: boolean,
+    floors?: GeoMapElement[],
+  ): Promise<MapElementModel[]> {
     if (args.buildingId) {
-      return this.from.building(args.buildingId, args, usecache);
+      return this.from.building(args.buildingId, args, usecache, floors);
     }
     let params = new GetMapElementsParams();
     params.ElementTypes = SystemMainThreeSource.elements;
@@ -89,11 +94,16 @@ export class SystemMainThreeElementBusiness {
     device: (deviceId: string): GeoMapElement | undefined => {
       return this.cache.find((el) => el.ElementId === deviceId);
     },
-    building: async (buildingId: string, args?: SystemMainThreeArgs, usecache = true) => {
-      let floors = await this.building.floor.load(buildingId);
+    building: async (
+      buildingId: string,
+      args?: SystemMainThreeArgs,
+      usecache = true,
+      floors?: GeoMapElement[],
+    ) => {
+      let list = floors ?? (await this.building.floor.load(buildingId));
       let elements: GeoMapElement[] = [];
-      for (let i = 0; i < floors.length; i++) {
-        const floor = floors[i];
+      for (let i = 0; i < list.length; i++) {
+        const floor = list[i];
         let _args = new SystemMainThreeArgs();
         if (args) {
           _args = ObjectTool.assign(args, SystemMainThreeArgs);

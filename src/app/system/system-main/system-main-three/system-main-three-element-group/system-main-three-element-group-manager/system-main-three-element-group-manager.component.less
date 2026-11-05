@@ -107,6 +107,18 @@
     }
   }
 
+  /* 搜索框：放在树的上面，不随树一起滚动 */
+  &-search {
+    width: 100%;
+    height: 34px;
+    flex-shrink: 0;
+
+    input-icon {
+      display: block;
+      height: 100%;
+    }
+  }
+
   &-body {
     display: flex;
     flex-direction: column;
@@ -114,7 +126,7 @@
     /* 树可能很长：内容区吃掉剩余高度并自己滚动（min-height: 0 允许在 flex 列里收缩） */
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
+    overflow-y: scroll;
   }
 }
 

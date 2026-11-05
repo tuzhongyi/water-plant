@@ -28,7 +28,7 @@ export class VideoPlayerContainerBusiness {
     let _url = new URL(str);
     _url.hostname = location.hostname;
     if (location.port == '9001') {
-      _url.hostname = '192.168.21.122';
+      _url.hostname = '192.168.21.151';
     }
     str = _url.toString();
 

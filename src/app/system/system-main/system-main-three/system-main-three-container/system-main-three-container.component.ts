@@ -62,6 +62,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     this._hiddenIds = value ?? new Set<string>();
     this.element.sync();
   }
+  /**	点位分组面板的定位事件：聚焦到指定点位（可能要先展开所在建筑/楼层） */
+  @Input() locate?: EventEmitter<GeoMapElement>;
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() found = new EventEmitter<GeoMapElement[]>();
@@ -75,6 +77,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   ) {}
   FitView = FitView;
   private subs = new Subscription();
+  /**	展开版本：返回总览 / 再次展开时递增，用来丢弃过期的展开流程
+      （楼层列表、整栋楼点位都是异步的，期间用户可能已经返回或换了建筑） */
+  private expandVersion = 0;
 
   ngOnInit(): void {
     /*	渲染模式在创建模型前从本地缓存恢复，
@@ -158,6 +163,13 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         }),
       );
     }
+    if (this.locate) {
+      this.subs.add(
+        this.locate.subscribe((x) => {
+          this.element.locate.do(x);
+        }),
+      );
+    }
     this.subs.add(
       this.business.element.alarm.discard.subscribe((element) => {
         switch (element.ElementType) {
@@ -182,18 +194,28 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       展开建筑/楼层后 args 可能已被空点击重置，这里按当前展开状态重建（保留筛选条件）；
       否则加载条件丢失（只剩无父级的点位），楼内 marker 会全部消失 */
   private get loadArgs(): SystemMainThreeArgs {
+    /* 没展开建筑：沿用 args（广场/全场景） */
     let model = this.floor.model();
     if (!model) return this.args;
-
-    let floor = this.floor.selected();
-    let building = this.building.get(this.converter.model.from.expansion(model.name));
-    if (!floor && !building) return this.args;
 
     let args = new SystemMainThreeArgs();
     args.name = this.args.name;
     args.type = this.args.type;
-    args.floorId = floor?.Id;
-    args.buildingId = floor ? undefined : building?.Id;
+
+    /* 已选楼层：楼层范围 */
+    let floor = this.floor.selected();
+    if (floor) {
+      args.floorId = floor.Id;
+      return args;
+    }
+
+    /*	展开建筑、未选楼层：整栋楼范围。
+        building 直接用展开时记下的对象，不再从模型文件名反推：
+        反推失败会退回可能已被空点击重置的 args，定时刷新就会把楼内点位当成
+        广场点位加载，marker 全部消失、下一次请求又出现 */
+    let building = this.floor.building();
+    if (!building) return this.args;
+    args.buildingId = building.Id;
     return args;
   }
 
@@ -274,6 +296,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         if (this.floor.model()) {
           this.floor.on.back();
         } else {
+          /*	打开建筑列表时作废还在途中的展开（楼层列表可能还没回来），
+              否则列表打开后又被自动带进楼里 */
+          this.expandVersion++;
           this.manager.building.show = true;
         }
       },
@@ -349,6 +374,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   building = {
     datas: signal<GeoMapElement[]>([]),
     selected: signal<GeoMapElement | undefined>(undefined),
+    is: {
+      expand: () => {},
+    },
     get: (modelId: string) => {
       let elements = this.building.datas();
       return elements.find((x) => x.ElementId == modelId);
@@ -370,6 +398,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         return this.three.inited;
       });
 
+      /*	等待期间已经展开建筑：场景里只能有扩展模型，
+          不能把广场/建筑模型塞回去（否则建筑模型和扩展模型同时出现） */
+      if (this.floor.model()) return;
+
       let datas = this.three.model.datas();
       let models = buildings.map((x) => {
         return this.converter.element.to.building(x, this.three.renderMode());
@@ -379,11 +411,22 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   };
   element = {
     datas: signal<GeoMapElement[]>([]),
+    select: new EventEmitter<string>(),
     /**	最近一次生成的全部 marker（未过滤隐藏），hiddenIds 变化时据此重新过滤 */
     markers: [] as MarkerEntity[],
     /**	加载版本：并发加载（展开建筑/选楼层/定时刷新）时只让最后发起的结果落地 */
     version: 0,
-
+    /**	上一次落地结果的范围与数量：用来识别「同一个范围突然返回空」的瞬时异常
+        （定时/报警刷新时服务端偶发返回空，会让整片点位先消失、下一次刷新再出现） */
+    scope: {
+      key: '',
+      count: 0,
+      empties: 0,
+      /** 加载范围标识：范围没变时 key 相同（名称/类型筛选也算范围） */
+      keyOf: (args: SystemMainThreeArgs): string =>
+        [args.buildingId ?? '', args.floorId ?? '', args.name ?? '', args.type ?? ''].join('|'),
+    },
+    loading: false,
     viewfield: ViewfieldMode.hide,
     ViewfieldMode: ViewfieldMode,
     find: {
@@ -424,27 +467,119 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
           : this.element.markers,
       );
     },
-    load: async (args: SystemMainThreeArgs, usecache: boolean) => {
+    /**	@param floors 已取到的楼层列表（展开建筑时传，省掉一次重复请求） */
+    load: async (args: SystemMainThreeArgs, usecache: boolean, floors?: GeoMapElement[]) => {
+      this.element.loading = true;
       let version = ++this.element.version;
-      let elements = await this.business.element.load(args, usecache);
-      /*	期间又发起了新的加载（展开建筑/选楼层/定时刷新），旧结果直接丢弃：
-          否则旧的整栋楼范围后到，会把已选楼层的点位覆盖回来 */
-      if (version != this.element.version) return;
+      try {
+        let elements = await this.business.element.load(args, usecache, floors);
+        /*	期间又发起了新的加载（展开建筑/选楼层/定时刷新），旧结果直接丢弃：
+            否则旧的整栋楼范围后到，会把已选楼层的点位覆盖回来 */
+        if (version != this.element.version) return;
 
-      this.element.datas.set(elements);
+        /*	同一范围突然返回空：当成服务端瞬时异常，先沿用原有点位等下一次刷新；
+            连续两次都是空才认为是真的没有点位，避免整片点位短暂消失再出现 */
+        let key = this.element.scope.keyOf(args);
+        let scope = this.element.scope;
+        if (elements.length == 0 && scope.key == key && scope.count > 0) {
+          if (scope.empties == 0) {
+            scope.empties++;
+            this.element.loading = false;
+            console.warn('[system-main-three] 当前范围返回空点位，保留已有点位，等待下一次刷新', args);
+            return;
+          }
+        }
+        this.element.datas.set(elements);
 
-      this.elementloaded.emit(elements);
+        this.elementloaded.emit(elements);
 
-      await wait(() => {
-        return this.three.inited;
-      });
+        await wait(() => {
+          return this.three.inited;
+        });
 
-      let all = elements.map((x) => this.converter.element.to.marker(x));
-      let markers = await Promise.all(all);
-      if (version != this.element.version) return;
+        /*	单个点位的转换要查楼栋/设备状态，其中一个失败（并发请求、网络抖动、
+            设备重复绑定抛错）不能把整批标记都丢掉：失败的点位沿用上一次的 marker，
+            其余照常刷新，避免点位整片消失等下一次刷新再出现 */
+        let previous = new Map(this.element.markers.map((x) => [x.id, x]));
+        let all = elements.map((x) => this.converter.element.to.marker(x));
+        let results = await Promise.all(all.map((x) => x.catch(() => undefined)));
+        if (version != this.element.version) return;
 
-      this.element.markers = markers;
-      this.element.sync();
+        this.element.markers = results
+          .map((marker, index) => marker ?? previous.get(elements[index].Id))
+          .filter((x): x is MarkerEntity => !!x);
+        this.element.sync();
+
+        /* 记录这次「实际落地」的范围与数量，供下一次空结果判断 */
+        scope.key = key;
+        scope.count = elements.length;
+        scope.empties = 0;
+      } catch (error) {
+        /*	加载失败时保留上一次的点位，等下一次定时/报警刷新；
+            同时把 loading 复位，否则依靠它等待的定位流程会一直卡住 */
+        if (version == this.element.version) {
+          this.element.loading = false;
+        }
+        console.error('[system-main-three] 加载点位失败，保留已有点位', error);
+      }
+    },
+    visible: (data: GeoMapElement) => {
+      let marker = this.three.camera.datas().find((x) => x.id == data.Id);
+      if (!marker) return false;
+      return this.three.model.datas().some((x) => x.fileName == marker.modelId);
+    },
+    on: {
+      loaded: () => {
+        this.element.loading = false;
+      },
+    },
+    locate: {
+      data: undefined as GeoMapElement | undefined,
+      doing: false,
+      do: async (element: GeoMapElement) => {
+        this.element.locate.doing = true;
+        this.element.locate.data = element;
+        /* 已加载不等于已在场景中：展开建筑后，不属于该建筑的 marker 会被移出场景，
+               直接选中不会聚焦，要落到下面的展开 / 返回总览流程 */
+        if (this.element.visible(element)) {
+          this.element.select.emit(element.Id);
+          this.element.locate.doing = false;
+          this.element.locate.data = undefined;
+          return;
+        }
+        if (element.ParentId) {
+          let floor = await this.business.element.get.by.id(element.ParentId);
+          if (floor.ParentId) {
+            let building = await this.business.element.get.by.id(floor.ParentId);
+            if (building.ElementId) {
+              /*	已经在同一栋楼里：不必再展开一次（展开会先把整栋楼的点位刷一遍，
+                  别的楼层的点位会短暂出现再消失），直接选楼层 */
+              if (this.floor.building()?.Id !== building.Id) {
+                await this.three.on.building.expand(building.ElementId);
+              }
+              if (this.floor.model()) {
+                await this.floor.on.select(floor);
+              }
+
+              wait(() => {
+                return this.three.loading() == false && this.element.loading == false;
+              }).then((x) => {
+                this.element.select.emit(element.Id);
+              });
+            }
+          }
+        } else {
+          this.floor.on.back().then((x) => {
+            setTimeout(() => {
+              wait(() => {
+                return this.three.loading() == false && this.element.loading == false;
+              }).then((x) => {
+                this.element.select.emit(element.Id);
+              });
+            }, 10);
+          });
+        }
+      },
     },
   };
 
@@ -464,7 +599,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
 
       this.maploaded.emit(map);
 
-      if (map) {
+      /*	请求期间已经展开建筑：场景里只能有扩展模型，不要再把广场塞回去 */
+      if (map && !this.floor.model()) {
         let datas = this.three.model.datas();
         let village = this.converter.map.to.village(map, this.three.renderMode());
 
@@ -475,21 +611,41 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
 
   floor = {
     model: signal<ModelFile | undefined>(undefined),
+    /**	展开时记下所在建筑：loadArgs 用它确定范围，不再从模型文件名反推 */
+    building: signal<GeoMapElement | undefined>(undefined),
     datas: signal<GeoMapElement[]>([]),
     selected: signal<GeoMapElement | undefined>(undefined),
     target: new EventEmitter<{ id: string; visibility: Record<string, boolean> }>(),
-
-    load: async (building: GeoMapElement, file: ModelFile) => {
-      this.floor.model.set(file);
+    is: {
+      selected: (): boolean => {
+        return !!this.floor.selected();
+      },
+    },
+    load: async (building: GeoMapElement, file: ModelFile, version: number) => {
+      /*	先取楼层列表再改状态：请求失败时保持原状，不会出现「floor.model 已切到新建筑、
+          模型还停在原场景」的半进入状态（此时 loadArgs 会按新建筑加载点位，
+          而场景里没有对应模型，点位会全部被判为不可见） */
       let datas = await this.business.element.building.floor.load(building.Id);
-      this.floor.datas.set(datas);
-      if (datas.length == 1) {
-        this.floor.on.select(datas[0]);
+      /*	期间用户已返回总览 / 又展开了别的建筑：这次结果不能再改状态，
+          否则会把已经清掉的展开状态又设回来 */
+      if (version != this.expandVersion) return;
+
+      /* 换了建筑：上一次选中的楼层不再有效，否则并发刷新会按旧楼层范围加载 */
+      if (this.floor.building()?.Id !== building.Id) {
+        this.floor.selected.set(undefined);
       }
+
+      this.floor.model.set(file);
+      this.floor.building.set(building);
+      this.floor.datas.set(datas);
+      /*	唯一楼层的自动选中放到 expand 的模型加载之后（见 three.on.building.expand）：
+          在这里选中会再发起一次楼层范围的加载，和展开的整栋楼加载并发，
+          两份不同范围的结果互相覆盖，点位会消失后再出现 */
       this.three.model.tree.set(false);
     },
     clear: () => {
       this.floor.model.set(undefined);
+      this.floor.building.set(undefined);
       this.floor.datas.set([]);
       this.floor.selected.set(undefined);
       this.three.model.tree.set(true);
@@ -522,6 +678,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         // }, 10);
       },
       back: async () => {
+        /* 作废还在进行中的展开（楼层/点位还在请求时用户就点了返回） */
+        this.expandVersion++;
         this.manager.filter.clear(false);
         this.floor.clear();
         this.three.model.clear();
@@ -538,6 +696,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
   three = {
     inited: false,
     loading: signal(false),
+    lensmoving: false,
     focus: new EventEmitter<FitView | void>(),
     moveto: new EventEmitter<MoveToArgs>(),
     renderMode: signal<RenderMode>(RenderMode.solid),
@@ -572,7 +731,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.three.loading.set(value);
       },
       loaded: () => {
-        this.three.focus.emit();
+        setTimeout(() => {
+          this.three.focus.emit();
+        }, 0);
       },
       building: {
         select: (modelId: string) => {
@@ -583,13 +744,29 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         expand: async (modelId: string) => {
           let building = this.building.get(modelId);
           if (building) {
+            let version = ++this.expandVersion;
             let expansion = await this.business.model.expansion(this.three.renderMode(), modelId);
-            if (expansion) {
-              this.floor.load(building, expansion);
+            if (expansion && version == this.expandVersion) {
+              /*	先把楼层列表取好（不等它自己选层），避免楼层范围内的加载
+                  和下面整栋楼的加载并发、互相覆盖 */
+              try {
+                await this.floor.load(building, expansion, version);
+              } catch (error) {
+                /* 楼层都取不到，展开后也加载不到楼内点位：保持原状，等下次操作重试 */
+                console.error('[system-main-three] 加载楼层失败，取消展开', error);
+                return;
+              }
+              /*	期间用户点了返回、或又展开了别的建筑：这次展开作废 */
+              if (version != this.expandVersion) return;
+
+              this.args.floorId = undefined;
               this.args.buildingId = building.Id;
               this.argsChange.emit(this.args);
-              // 先加载元素（标记），确保标记就绪后再加载模型
-              await this.element.load(this.args, true);
+              /*	先加载元素（标记），确保标记就绪后再加载模型；
+                  楼层列表已经取过，直接传进去，不再让 business 重复请求一次 */
+              await this.element.load(this.args, true, this.floor.datas());
+              if (version != this.expandVersion) return;
+
               let model = this.converter.model.from.file(
                 expansion,
                 building,
@@ -597,6 +774,12 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
               );
               model.position = { x: 0, y: 0, z: 0 };
               this.three.model.datas.set([model]);
+              /*	只有一层时自动选中：此时模型和整栋楼点位都已就绪，
+                  楼层范围的加载不会再和展开的加载竞争 */
+              let datas = this.floor.datas();
+              if (datas.length == 1 && this.floor.selected()?.Id !== datas[0].Id) {
+                this.floor.on.select(datas[0]);
+              }
             }
           }
         },

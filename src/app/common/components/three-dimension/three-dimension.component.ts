@@ -8,6 +8,7 @@ import {
   HostListener,
   inject,
   input,
+  model,
   NgZone,
   OnDestroy,
   output,
@@ -147,6 +148,9 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   keyEvent = output<{ type: 'down' | 'up'; key: string }>();
   /** 场景就绪信号 */
   inited = output<void>();
+  /** 镜头是否在移动（双向绑定：[(lensmoving)]）：
+   *  旋转/平移/缩放、阻尼惯性、程序化镜头动画期间为 true，镜头停下后为 false */
+  lensmoving = model<boolean>(false);
 
   /* ---- Services ---- */
   private zone = inject(NgZone);
@@ -201,6 +205,11 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
   /** 左键拖拽检测：区分左键单击（触发搜索）与左键拖拽（旋转视角） */
   private leftButtonMoved = false;
   private leftButtonDownPos = { x: 0, y: 0 };
+  /** 镜头移动状态收尾：change 事件静默一段时间后才把 lensmoving 置回 false */
+  private lensMoveTimer?: ReturnType<typeof setTimeout>;
+  /** controls 的 change 监听器（销毁时移除） */
+  private lensMoveHandler = () => this.markLensMoving();
+
   /** 记录上一次 renderMode，用于检测模式是否真正变化 */
   private previousRenderMode?: RenderMode;
   /** 防止 renderMode effect 重复触发导致并发重载 */
@@ -318,6 +327,10 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     const container = canvas.parentElement!;
     this.sceneService.init(container, canvas);
 
+    /* 镜头移动状态：controls 的 change 覆盖用户旋转/平移/缩放、阻尼惯性，
+       animateCamera 这类程序化动画每帧也会 controls.update()，同样会触发 */
+    this.sceneService.controls.addEventListener('change', this.lensMoveHandler);
+
     this.scene = this.sceneService.scene;
     this.renderer = this.sceneService.renderer;
 
@@ -359,6 +372,13 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     this.subs.unsubscribe();
     this.disposeModelTC();
     this.sceneService.removeBeforeRender(this.fixSpriteScale);
+
+    /* 镜头移动监听与收尾定时器 */
+    this.sceneService.controls?.removeEventListener('change', this.lensMoveHandler);
+    if (this.lensMoveTimer !== undefined) {
+      clearTimeout(this.lensMoveTimer);
+      this.lensMoveTimer = undefined;
+    }
 
     /* 清理模型场景对象 */
     for (const s of this.modelCtrl.internalModels.values()) {
@@ -860,6 +880,16 @@ export class ThreeDimensionComponent implements AfterViewInit, OnDestroy {
     if (value === this.isLoading) return;
     this.isLoading = value;
     this.loading.emit(value);
+  }
+
+  /** 镜头发生移动：立即置 true，并重新计时；静默一段时间（阻尼惯性结束、动画停止）后置回 false */
+  private markLensMoving(): void {
+    if (!this.lensmoving()) this.lensmoving.set(true);
+    if (this.lensMoveTimer !== undefined) clearTimeout(this.lensMoveTimer);
+    this.lensMoveTimer = setTimeout(() => {
+      this.lensMoveTimer = undefined;
+      this.lensmoving.set(false);
+    }, 200);
   }
 
   /** 筛选与当前 models() 匹配的 ModelEntry，映射为 ModelTransformConfig 并 emit */

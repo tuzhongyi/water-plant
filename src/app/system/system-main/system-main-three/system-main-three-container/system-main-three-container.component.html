@@ -7,9 +7,12 @@
       [renderPaused]="renderPaused"
       (inited)="three.on.inited()"
       (loaded)="three.on.loaded()"
+      [(lensmoving)]="three.lensmoving"
       (loading)="three.on.loading($event)"
       [markers]="three.camera.datas()"
       [markersMovable]="false"
+      [markerSelect]="element.select"
+      (markerLoaded)="element.on.loaded()"
       (modelClick)="three.on.building.select($event)"
       (modelDoubleClick)="three.on.building.expand($event)"
       [fitView]="three.focus"
@@ -54,14 +57,14 @@
       >
         <i class="mdi mdi-looks"></i>
       </button> -->
-      <button
+      <!-- <button
         class="button-map"
         title="点位筛选"
         (click)="manager.button.filter()"
         [disabled]="three.loading()"
       >
         <i class="howell-icon-filter"></i>
-      </button>
+      </button> -->
       <button
         class="button-map"
         title="区域联动"

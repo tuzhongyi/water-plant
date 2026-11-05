@@ -1,11 +1,19 @@
 @import url(../../../../assets/styles/colors/color-@.less);
 @import url(../../../../assets/styles/colors/color-input.less);
 
+/*	固定宽度：时/分/秒是数字输入框，内容位数变化（如小时 9 → 09）
+    会改变自身的内在宽度，控件放在 flex 行里时整块宽度就跟着变 */
+:host {
+  display: inline-block;
+  width: 150px;
+}
+
 .time-control {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 100%;
+  width: 100%;
 
   border: 1px solid @border-color;
   font-size: 18px;
@@ -20,7 +28,10 @@
   }
 
   input {
-    width: 32%;
+    /* 三等分剩余宽度，内容位数不再影响控件总宽 */
+    flex: 1 1 0;
+    width: 0;
+    min-width: 0;
     border: none;
     background-color: transparent;
     font-size: 15px;

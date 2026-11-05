@@ -1,6 +1,7 @@
 <div class="video-player-container">
   <div class="video-player-container-operation">
     <div
+      class="button"
       *ngIf="mode === PlayMode.vod && permission.preview"
       (click)="changeMode(PlayMode.live)"
       title="预览"
@@ -8,6 +9,7 @@
       <i class="howell-icon-video"></i>
     </div>
     <div
+      class="button"
       *ngIf="mode === PlayMode.live && permission.playback"
       (click)="changeMode(PlayMode.vod)"
       title="回放"

@@ -12,7 +12,7 @@ export class MqttClient {
       host = window.location.hostname;
     }
     if (location.port === '9001') {
-      host = '192.168.21.122';
+      host = '192.168.21.151';
     }
     this.options = {
       hostname: host,

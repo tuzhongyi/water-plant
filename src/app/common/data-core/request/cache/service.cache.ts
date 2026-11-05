@@ -151,28 +151,36 @@ export class ServiceCache<T extends IData> implements IServiceCache {
       }
     }
 
-    /* 如果已有正在进行的全量加载请求，复用该 Promise，避免并发重复请求 */
-    if (this.pending.all) {
-      return this.pending.all;
+    /*	如果已有正在进行的全量加载请求，复用该 Promise，避免并发重复请求。
+        pending.all 必须保存「未过滤」的全量结果：以前它按第一个调用方的 params
+        过滤，并发时其他范围（楼层/楼栋/名称）会拿到别人的结果，
+        导致点位列表缺项或为空（地图上点位消失，下一次请求又恢复） */
+    if (!this.pending.all) {
+      this.pending.all = this.service
+        .all()
+        .then((x) => {
+          this.save(x);
+          this.loaded = true;
+          this.loading = false;
+          this.pending.all = undefined;
+          /*	这里返回全量结果，不再按首个调用方的 params 过滤；
+              各个调用方拿到后自己过滤（见下方），空数组也不会递归重发请求 */
+          return x;
+        })
+        .catch((err) => {
+          this.loading = false;
+          this.pending.all = undefined;
+          throw err;
+        });
     }
 
-    this.pending.all = this.service
-      .all()
-      .then((x) => {
-        this.save(x);
-        this.loaded = true;
-        this.loading = false;
-        this.pending.all = undefined;
-        /* 直接返回本次结果，不再递归回 all()：空数组递归会再次发起请求 */
-        return params ? this.filter(x, params) : x;
-      })
-      .catch((err) => {
-        this.loading = false;
-        this.pending.all = undefined;
-        throw err;
-      });
-
-    return this.pending.all;
+    const pending = this.pending.all;
+    try {
+      let datas = await pending;
+      return params ? this.filter(datas, params) : datas;
+    } finally {
+      this.loading = false;
+    }
   }
 
   async get(id: string): Promise<T> {

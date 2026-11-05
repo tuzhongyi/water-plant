@@ -93,16 +93,24 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
     show: true,
     /**	被眼睛按钮隐藏的点位 Id：容器据此不渲染对应 marker */
     hidden: new Set<string>(),
+    /**	定位事件：转发给容器（容器知道点位在不在当前场景、要不要进楼） */
+    position: new EventEmitter<GeoMapElement>(),
     /**	双击摄像机：播放实时视频预览（无预览权限时上层直接忽略） */
     preview: new EventEmitter<GeoMapElement>(),
     load: async () => {
       try {
-        this.elementgroup.datas = await this.business.element.all();
+        /*	换一个新数组：元素缓存返回的是同一个数组，引用不变时树组件不会收到变更，
+            区域分组（可能在视频页刚调整过）就一直停在打开页面时的那份数据 */
+        this.elementgroup.datas = [...(await this.business.element.all())];
       } catch {
         /* 刷新失败时保留上一次的分组 */
       }
     },
     on: {
+      position: (element: GeoMapElement) => {
+        /*	不可见的点位在树上定位按钮是禁用的，这里不会再收到隐藏点位的定位 */
+        this.elementgroup.position.emit(element);
+      },
       visible: (element: GeoMapElement) => {
         this.elementgroup.change.visible(element);
       },

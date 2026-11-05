@@ -106,6 +106,11 @@ export class ModelController {
       }
     }
 
+    /*	缓存里已加载过、这次只是重新加回场景的模型：同样要进入 loading。
+        重建边线/材质需要时间，完成前外部不能把场景当成已就绪；
+        收尾放到宏任务里，保证 loading=true 至少能被渲染出来一次 */
+    const cached: string[] = [];
+
     /* 加载/同步模型 */
     for (const model of targets) {
       const key = model.fileName;
@@ -134,7 +139,12 @@ export class ModelController {
           this.colorsService.reapplyCurrentState(entry);
         }
         if (!this.internalModels.has(key)) {
-          this.addToInternal(entry);
+          /*	缓存的模型加回场景：标记 loading，重建完成后再解除 */
+          this.loadingIds.add(key);
+          cached.push(key);
+          /* 模型已经完整加载过，不需要在 loading 期间隐藏（否则会闪一下），
+              只把状态同步给外部 */
+          this.addToInternal(entry, false);
         } else {
           this.internalModels.get(key)!.locked = entry.locked;
         }
@@ -149,6 +159,17 @@ export class ModelController {
       }
     }
 
+    /*	缓存模型的 loading 收尾：放到宏任务，让 loading=true 先渲染一帧；
+        等最后一个模型解除后再统一通知一次，由上层 emitLoaded */
+    if (cached.length > 0) {
+      setTimeout(() => {
+        for (const key of cached) {
+          this.loadingIds.delete(key);
+        }
+        this.asyncLoadDone.next();
+      });
+    }
+
     /* 清除已不存在的选中 */
     const selId = this.state.selectedModelId;
     if (selId && !targetKeys.has(selId)) {
@@ -160,7 +181,9 @@ export class ModelController {
 
   /* ---- 内部状态管理 ---- */
 
-  addToInternal(entry: ModelEntry): void {
+  /**	@param hideWhileLoading 加载期间是否隐藏模型：异步加载的模型要隐藏，
+      缓存的模型已经完整，重新加回场景时保留可见 */
+  addToInternal(entry: ModelEntry, hideWhileLoading = true): void {
     /* 重新加入场景时，全部 mesh 重置为可见 */
     entry.model.traverse((c) => {
       if ((c as THREE.Mesh).isMesh) (c as THREE.Mesh).visible = true;
@@ -195,7 +218,7 @@ export class ModelController {
     if (!entry.wrapper.parent) {
       this.sceneService.scene.add(entry.wrapper);
       // 加载期间隐藏模型，emitLoaded 时再显示，避免半成品渲染
-      if (this.loadingIds.size > 0) {
+      if (hideWhileLoading && this.loadingIds.size > 0) {
         entry.wrapper.visible = false;
       }
     }

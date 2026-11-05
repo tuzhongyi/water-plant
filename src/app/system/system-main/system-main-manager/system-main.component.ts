@@ -250,10 +250,10 @@ export class SystemMainComponent implements OnInit, OnDestroy {
  "DeviceName": "222.1",
  "TriggerType": 1,
  "Resource": {
- "ResourceId": "00310101030000000000002001000007",
+ "ResourceId": "00310101030000000000002001000006",
  "ResourceType": 1,
  "ResourceName": "222 3F电梯厅",
- "ChannelNo": 9
+ "ChannelNo": 6
  }
  }`;
       let x = JSON.parse(str);

@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { UserGroup } from '../data-core/models/security/user/user-group.model';
 import { User } from '../data-core/models/security/user/user.model';
 import { ConfigRequestService } from '../data-core/request/config/config-request.service';
-import { SkinType } from './config-skin-storage/config-skin-storage.model';
 import { SecurityRequestService } from '../data-core/request/services/security/security.service';
 import { LocationTool } from '../tools/location.tool';
 import { PromiseValue } from '../tools/value-tool/value.promise';
+import { SkinType } from './config-skin-storage/config-skin-storage.model';
 import { LocalStorage } from './local.storage';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GlobalStorage {
-  version = '1.0.3.0';
+  version = '1.0.3.1';
 
   user = {
     info: new PromiseValue<User>(),

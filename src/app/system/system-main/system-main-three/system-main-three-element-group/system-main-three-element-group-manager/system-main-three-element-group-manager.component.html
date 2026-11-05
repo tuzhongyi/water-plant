@@ -12,10 +12,21 @@
           </div>
         </div>
         <div class="card-line system-main-three-element-group-line"></div>
+        <div class="system-main-three-element-group-search">
+          <input-icon
+            [(value)]="search.value"
+            (clear)="on.search()"
+            (keyup.enter)="on.search()"
+          >
+            <button (click)="on.search()"><i class="howell-icon-search"></i></button>
+          </input-icon>
+        </div>
         <div class="system-main-three-element-group-body">
           <hw-system-main-three-element-group-tree
             [datas]="datas"
             [hiddenIds]="hiddenIds"
+            [query]="search.name"
+            (position)="position.emit($event)"
             (preview)="preview.emit($event)"
             (visible)="visible.emit($event)"
             (visibleAll)="visibleAll.emit($event)"
