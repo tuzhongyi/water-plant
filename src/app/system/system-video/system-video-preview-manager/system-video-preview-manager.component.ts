@@ -7,6 +7,7 @@ import { WindowComponent } from '../../../common/components/window-control/windo
 import { VideoChannelViewGroup } from '../../../common/data-core/models/devices/video-channel-view-group.model';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { RegionTreeNode } from '../../../common/data-core/models/regions/region-tree-node.model';
+import { GlobalStorage } from '../../../common/storage/global.storage';
 import { PreviewArgs } from '../../../share/video/video-player-content/video-player-content.model';
 import { ScreenMode } from '../../../share/video/video-player-list/video-player-list.model';
 import { SystemVideoDeviceManagerComponent } from '../system-video-device/system-video-device-manager/system-video-device-manager.component';
@@ -37,7 +38,12 @@ export class SystemVideoPreviewManagerComponent {
   constructor(
     public business: SystemVideoViewGroupBusiness,
     public toastr: ToastrService,
-  ) {}
+    global: GlobalStorage,
+  ) {
+    global.user.group.get().then((x) => {
+      this.region.configable = x.IsRoot;
+    });
+  }
   window = new SystemVideoPreviewManagerWindow(this);
 
   device = {
@@ -112,5 +118,8 @@ export class SystemVideoPreviewManagerComponent {
         this.window.viewgroup.delete.on.open(e);
       },
     },
+  };
+  region = {
+    configable: false,
   };
 }

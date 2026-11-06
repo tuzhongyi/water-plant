@@ -24,7 +24,11 @@ export class SystemMainThreeElementBusiness {
 
   get = {
     alarms: async () => {
-      let all = await this.service.map.element.cache.all();
+      /*	报警状态以服务端为准，不能读 30 分钟的接口缓存：
+          缓存里的旧 ElementState=2 会把已经消警的点位重新标成报警（红色），
+          切换账号后尤其明显（缓存跨账号复用），刷新页面才恢复。
+          这里和统计面板一样直接请求服务端 */
+      let all = await this.service.map.element.all();
       return all.filter((x) => x.ElementState == 2);
     },
     by: {

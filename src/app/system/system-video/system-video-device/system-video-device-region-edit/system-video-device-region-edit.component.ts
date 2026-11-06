@@ -18,8 +18,12 @@ export class SystemVideoDeviceRegionEditComponent {
   @Input() load?: EventEmitter<TreeRegionArgs>;
   /** 触发区域树重新加载 */
   @Input() reload?: EventEmitter<void>;
+  /** 是否多选：为 true 时资源结点图标前显示 checkbox */
+  @Input() multiple = false;
 
   @Output() loaded = new EventEmitter<RegionTreeNode[]>();
+  /** 多选勾选变化：输出被勾选的资源结点 */
+  @Output() checkedChange = new EventEmitter<RegionTreeNode[]>();
   @Output() create = new EventEmitter<TreeRegionEditOutputArgs>();
   @Output() update = new EventEmitter<TreeRegionEditOutputArgs>();
   @Output() delete = new EventEmitter<TreeRegionEditOutputArgs>();

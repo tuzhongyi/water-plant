@@ -11,12 +11,35 @@ export class TreeRegionBusiness {
 
   private converter = new TreeRegionConverter();
 
-  async load(args: TreeRegionArgs): Promise<FlatTreeNode[]> {
+  /**
+   * @param hideempty 隐藏没有子节点的区域（父节点）
+   */
+  async load(args: TreeRegionArgs, hideempty = false): Promise<FlatTreeNode[]> {
     let nodes = await this.tree();
+    if (hideempty) {
+      nodes = this.prune(nodes);
+    }
     if (args.name) {
       nodes = this.filter(nodes, args);
     }
     return this.converter.flat(nodes);
+  }
+
+  /** 剪掉没有子节点的区域结点：区域下既没有子区域也没有资源时整枝不显示 */
+  private prune(nodes: RegionTreeNode[]): RegionTreeNode[] {
+    const result: RegionTreeNode[] = [];
+    for (const node of nodes) {
+      /* 资源结点本身就是叶子，保留 */
+      if (node.RegionNodeType === 2) {
+        result.push(node);
+        continue;
+      }
+      const children = this.prune(node.Children ?? []);
+      if (children.length === 0) continue;
+      node.Children = children;
+      result.push(node);
+    }
+    return result;
   }
 
   /** 在完整区域树中按名称筛选：保留匹配结点（区域/资源）及其祖先链 */

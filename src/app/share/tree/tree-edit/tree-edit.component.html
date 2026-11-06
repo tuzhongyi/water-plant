@@ -15,6 +15,16 @@
           (click)="onToggle(node); $event.stopPropagation()"
         ></i>
 
+        @if (multiple && node.checkable) {
+          <input
+            type="checkbox"
+            class="hw-tree-checkbox"
+            [checked]="checkedIds.includes(node.id)"
+            (click)="$event.stopPropagation()"
+            (change)="onCheck(node, $event)"
+          />
+        }
+
         @if (editingId === node.id) {
           <div class="hw-tree-content" (click)="$event.stopPropagation()">
             @if (node.icon) {

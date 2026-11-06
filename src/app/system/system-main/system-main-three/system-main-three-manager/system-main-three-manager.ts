@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { MapElementType } from '../../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../../common/data-core/models/geographic/map-element.model';
@@ -30,6 +38,9 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   @Input() alarm?: EventEmitter<string>;
   @Input() unalarm?: EventEmitter<GeoMapElement>;
   @Input() renderPaused = false;
+  /**	是否隐藏「未分组」：权限过滤后区域树里查不到的点位落到「未分组」，
+      隐藏该分组的同时把这些点位在场景中一并隐藏 */
+  @Input() hideUnmatched = true;
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() element = new EventEmitter<{ type?: MapElementType; buildingId?: string }>();
@@ -67,6 +78,15 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
     }
   }
 
+  /**	两个 Id 集合内容是否相同 */
+  private same(a: ReadonlySet<string>, b: ReadonlySet<string>): boolean {
+    if (a.size != b.size) return false;
+    for (const id of a) {
+      if (!b.has(id)) return false;
+    }
+    return true;
+  }
+
   /**	统计面板数据：全量元素，不受当前展开的楼层/建筑限制，
       由 load（每分钟定时 + 报警事件）驱动刷新，保证状态最新 */
   state = {
@@ -93,6 +113,11 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
     show: true,
     /**	被眼睛按钮隐藏的点位 Id：容器据此不渲染对应 marker */
     hidden: new Set<string>(),
+    /**	因隐藏「未分组」而自动隐藏的点位 Id */
+    unmatched: new Set<string>(),
+    /**	场景实际隐藏的点位 Id：手动隐藏 + 未分组自动隐藏
+        （用 signal：未分组隐藏是由异步构建触发的，需要主动通知变更检测） */
+    allhidden: signal<ReadonlySet<string>>(new Set<string>()),
     /**	定位事件：转发给容器（容器知道点位在不在当前场景、要不要进楼） */
     position: new EventEmitter<GeoMapElement>(),
     /**	双击摄像机：播放实时视频预览（无预览权限时上层直接忽略） */
@@ -125,6 +150,14 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
           }
         }
         this.elementgroup.hidden = hidden;
+        this.elementgroup.update.hidden();
+      },
+      /**	「未分组」下的点位：隐藏未分组时一并隐藏，取消隐藏时恢复 */
+      unmatched: (ids: string[]) => {
+        let next = new Set(ids);
+        if (this.same(this.elementgroup.unmatched, next)) return;
+        this.elementgroup.unmatched = next;
+        this.elementgroup.update.hidden();
       },
     },
     change: {
@@ -137,6 +170,15 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
           hidden.add(element.Id);
         }
         this.elementgroup.hidden = hidden;
+        this.elementgroup.update.hidden();
+      },
+    },
+    update: {
+      /**	合并手动隐藏与未分组自动隐藏：换新引用，容器/树才会收到变更 */
+      hidden: () => {
+        this.elementgroup.allhidden.set(
+          new Set([...this.elementgroup.hidden, ...this.elementgroup.unmatched]),
+        );
       },
     },
   };

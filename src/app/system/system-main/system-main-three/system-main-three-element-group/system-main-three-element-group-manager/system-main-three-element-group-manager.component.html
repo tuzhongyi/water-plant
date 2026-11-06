@@ -26,10 +26,12 @@
             [datas]="datas"
             [hiddenIds]="hiddenIds"
             [query]="search.name"
+            [hideUnmatched]="hideUnmatched"
             (position)="position.emit($event)"
             (preview)="preview.emit($event)"
             (visible)="visible.emit($event)"
             (visibleAll)="visibleAll.emit($event)"
+            (unmatched)="unmatched.emit($event)"
           ></hw-system-main-three-element-group-tree>
         </div>
       </div>

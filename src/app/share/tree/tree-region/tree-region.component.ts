@@ -36,6 +36,8 @@ export class TreeRegionComponent implements OnChanges, AfterViewInit, OnDestroy 
 
   /** 节点后的操作按钮是否可见，默认不可见 */
   @Input() actionable = false;
+  /** 是否隐藏没有子节点的区域（父节点） */
+  @Input() hideempty = false;
 
   nodes = signal<FlatTreeNode[]>([]);
   selectedId?: string;
@@ -88,7 +90,7 @@ export class TreeRegionComponent implements OnChanges, AfterViewInit, OnDestroy 
 
   private async loadTree(): Promise<void> {
     try {
-      const nodes = await this.business.load(this.args);
+      const nodes = await this.business.load(this.args, this.hideempty);
       this.applyExpanded(nodes);
       this.nodes.set(nodes);
       this.syncSelectedId();

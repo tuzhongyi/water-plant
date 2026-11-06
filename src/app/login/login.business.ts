@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { RoutePath } from '../app.path';
 import { AuthorizationService } from '../common/data-core/request/auth/authorization.service';
+import { AppCache } from '../common/data-core/request/cache/cache.interface';
 import { HowellSM4 } from '../common/data-core/request/auth/howell-sm4';
 import { ConfigRequestService } from '../common/data-core/request/config/config-request.service';
 import { GlobalStorage } from '../common/storage/global.storage';
@@ -36,6 +37,10 @@ export class LoginBusiness {
   login(username: string, password: string) {
     let code = HowellSM4.encrypt(password);
     return this.service.login(username, code).then(async (x) => {
+      /*	登录成功即切换了账号：清空上一个账号留在内存里的接口缓存。
+          不刷新页面就换账号时，元素、通道等缓存会被新会话直接复用，
+          元素缓存里的旧 ElementState=2 会让点位在地图上显示成报警（红色） */
+      AppCache.clear();
       /*	皮肤按用户缓存，切换账号后要重新应用当前用户的皮肤 */
       await this.applySkin();
       this.router.navigateByUrl(`${RoutePath.system}`);

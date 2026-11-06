@@ -8,6 +8,7 @@ import {
   GetVodUrlParams,
 } from '../../../../common/data-core/request/services/device/device.params';
 import { DeviceRequestService } from '../../../../common/data-core/request/services/device/device.service';
+import { ProxyTool } from '../../../../common/tools/proxy.tool';
 import { PlaybackArgs, PreviewArgs } from '../video-player-content.model';
 
 @Injectable()
@@ -65,7 +66,8 @@ export class VideoPlayerContentBusiness {
     let _url = new URL(str);
     _url.hostname = location.hostname;
     if (location.port == '9001') {
-      _url.hostname = '192.168.21.151';
+      /* 开发服务器：直连视频服务（proxy.conf.ts 第二项） */
+      _url.hostname = ProxyTool.video;
     }
     str = _url.toString();
 

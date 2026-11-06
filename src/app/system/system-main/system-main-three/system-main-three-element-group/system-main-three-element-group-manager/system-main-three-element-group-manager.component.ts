@@ -28,6 +28,8 @@ export class SystemMainThreeElementGroupManagerComponent {
   @Input() datas: GeoMapElement[] = [];
   /**	被隐藏的点位 Id：透传给树，决定眼睛图标状态 */
   @Input() hiddenIds: ReadonlySet<string> = new Set<string>();
+  /**	是否隐藏「未分组」：透传给树，隐藏时其下摄像机在场景中一并隐藏 */
+  @Input() hideUnmatched = true;
   /**	面板是否展开：外部据此把被遮挡的按钮让出来 */
   @Input() show = true;
   @Output() showChange = new EventEmitter<boolean>();
@@ -39,6 +41,8 @@ export class SystemMainThreeElementGroupManagerComponent {
   @Output() visible = new EventEmitter<GeoMapElement>();
   /**	分组节点：批量显示/隐藏该分组下的全部点位 */
   @Output() visibleAll = new EventEmitter<{ ids: string[]; visible: boolean }>();
+  /**	「未分组」下的点位 Id 变化：上层据此在场景中隐藏这些点位 */
+  @Output() unmatched = new EventEmitter<string[]>();
 
   /**	折叠按钮图标：展开时指向折叠方向，折叠后指向展开方向	*/
   get icon(): string {

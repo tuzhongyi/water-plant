@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -18,6 +19,7 @@ import { RegionTreeNode } from '../../../common/data-core/models/regions/region-
 import { DateTimePickerView } from '../../../common/directives/date-time-picker/date-time-picker.directive';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
 import { Language } from '../../../common/tools/language-tool/language';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { SystemDownloadBusiness } from '../business/system-download.business';
 import { DownloadTask } from '../business/system-download.model';
 import { SystemDownloadTableComponent } from '../system-download-table/system-download-table.component';
@@ -41,13 +43,16 @@ export class SystemDownloadContainerComponent implements OnInit, OnChanges, OnDe
   private subs = new Subscription();
 
   constructor(public business: SystemDownloadBusiness) {}
-
+  permission = inject(PermissionTool);
   disabled = true;
   View = DateTimePickerView;
   Language = Language;
 
   ngOnInit(): void {
     this.regist();
+    /*	下载页可能是新窗口直接打开的（不经系统页），那里不会加载权限组，
+        不加载的话 permission.download 永远是 false；这里自己加载一次 */
+    this.permission.load().catch(() => {});
     this.manager.time.begin.setSeconds(0);
     this.manager.time.end.setSeconds(0);
   }
@@ -82,14 +87,21 @@ export class SystemDownloadContainerComponent implements OnInit, OnChanges, OnDe
     },
   };
 
+  /**	会真正发起下载的操作统一走这里：没有下载权限时一律不执行
+      （按钮已按权限禁用，这里是兜底，避免通过其它入口调用） */
+  private allow(action: () => void): void {
+    if (!this.permission.download) return;
+    action();
+  }
+
   table = {
     datas: signal<DownloadTask[]>([]),
     on: {
       pause: (task: DownloadTask) => this.business.pause(task.id),
-      resume: (task: DownloadTask) => this.business.resume(task.id),
+      resume: (task: DownloadTask) => this.allow(() => this.business.resume(task.id)),
       cancel: (task: DownloadTask) => this.business.cancel(task.id),
-      retry: (task: DownloadTask) => this.business.retry(task.id),
-      redownload: (task: DownloadTask) => this.business.redownload(task.id),
+      retry: (task: DownloadTask) => this.allow(() => this.business.retry(task.id)),
+      redownload: (task: DownloadTask) => this.allow(() => this.business.redownload(task.id)),
       remove: (task: DownloadTask) => this.business.remove(task.id),
     },
   };
@@ -99,6 +111,7 @@ export class SystemDownloadContainerComponent implements OnInit, OnChanges, OnDe
     on: {
       download: async () => {
         console.log('[download] 点击下载, data=', this.data, 'disabled=', this.disabled);
+        if (!this.permission.download) return;
         if (this.data) {
           let args = {
             duration: this.manager.time,

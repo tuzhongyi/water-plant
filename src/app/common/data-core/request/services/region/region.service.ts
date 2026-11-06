@@ -105,6 +105,8 @@ class RegionResourceRequestService {
   async delete(regionId: string, resourceId: string) {
     let url = RegionUrl.resource.item(regionId, resourceId);
     return this.http.delete<HowellResponse<RegionResource>>(url).then((x) => {
+      // 删除成功（HTTP 200）但响应体为空/无法解析时，视为成功，避免误判为失败
+      if (!x) return;
       return HowellResponseProcess.item(x, RegionResource);
     });
   }

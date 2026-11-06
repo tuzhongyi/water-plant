@@ -27,7 +27,7 @@
         <div class="form-item">
           <button
             class="button-border primary"
-            [disabled]="disabled"
+            [disabled]="disabled || !permission.download"
             (click)="manager.on.download()"
           >
             下载

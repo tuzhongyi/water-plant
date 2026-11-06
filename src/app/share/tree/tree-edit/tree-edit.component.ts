@@ -24,6 +24,12 @@ export class TreeEditComponent implements AfterViewInit, OnDestroy {
   @Output() toggle = new EventEmitter<TreeEditNode>();
   /** 外部通知：新增根节点 */
   @Input() addRoot?: EventEmitter<void>;
+  /** 是否多选：为 true 时在 checkable 结点图标前显示 checkbox */
+  @Input() multiple = false;
+  /** 已勾选的结点 id（由外部维护） */
+  @Input() checkedIds: string[] = [];
+  /** 勾选变化：输出勾选后的结点 id 列表 */
+  @Output() checkedChange = new EventEmitter<string[]>();
 
   /** 正在编辑的节点 id */
   editingId?: string;
@@ -75,9 +81,32 @@ export class TreeEditComponent implements AfterViewInit, OnDestroy {
   }
 
   onSelect(node: TreeEditNode): void {
+    /* 多选：点击可勾选结点整行等同于切换 checkbox，不再走单选 */
+    if (this.multiple && node.checkable) {
+      this.setChecked(node, !this.checkedIds.includes(node.id));
+      return;
+    }
     this.selectedId = node.id;
     this.selectedIdChange.emit(node.id);
     this.nodeClick.emit(node);
+  }
+
+  /** checkbox 点击：不触发行选中 */
+  onCheck(node: TreeEditNode, event: Event): void {
+    event.stopPropagation();
+    this.setChecked(node, (event.target as HTMLInputElement).checked);
+  }
+
+  /** 设置结点勾选状态 */
+  private setChecked(node: TreeEditNode, checked: boolean): void {
+    const ids = new Set(this.checkedIds);
+    if (checked) {
+      ids.add(node.id);
+    } else {
+      ids.delete(node.id);
+    }
+    this.checkedIds = [...ids];
+    this.checkedChange.emit(this.checkedIds);
   }
 
   /* ---- 修改 ---- */

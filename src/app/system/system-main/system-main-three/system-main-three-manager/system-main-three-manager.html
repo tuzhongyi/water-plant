@@ -10,7 +10,7 @@
       [elementload]="map.load"
       [panelExpanded]="elementgroup.show"
       [locate]="elementgroup.position"
-      [hiddenIds]="elementgroup.hidden"
+      [hiddenIds]="elementgroup.allhidden()"
       [alarm]="alarm"
       [unalarm]="unalarm"
       [renderPaused]="renderPaused"
@@ -33,11 +33,13 @@
   <hw-system-main-three-element-group-manager
     side="right"
     [datas]="elementgroup.datas"
-    [hiddenIds]="elementgroup.hidden"
+    [hiddenIds]="elementgroup.allhidden()"
+    [hideUnmatched]="hideUnmatched"
     [(show)]="elementgroup.show"
     (position)="elementgroup.on.position($event)"
     (preview)="map.on.preview($event)"
     (visible)="elementgroup.on.visible($event)"
     (visibleAll)="elementgroup.on.visibleAll($event)"
+    (unmatched)="elementgroup.on.unmatched($event)"
   ></hw-system-main-three-element-group-manager>
 </div>

@@ -7,6 +7,8 @@
       [reload]="reload"
       [addRoot]="addRoot"
       [collapse]="collapse"
+      [multiple]="multiple"
+      (checkedChange)="checkedChange.emit($event)"
       (loaded)="loaded.emit($event)"
       (create)="create.emit($event)"
       (update)="update.emit($event)"

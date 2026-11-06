@@ -34,7 +34,11 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
   @Input() collapse?: EventEmitter<void>;
   /** 外部通知：新增根节点（透传给树编辑组件） */
   @Input() addRoot?: EventEmitter<void>;
+  /** 是否多选：为 true 时资源结点图标前显示 checkbox */
+  @Input() multiple = false;
   @Output() loaded = new EventEmitter<RegionTreeNode[]>();
+  /** 多选勾选变化：输出被勾选的资源结点 */
+  @Output() checkedChange = new EventEmitter<RegionTreeNode[]>();
   /** 新增子节点的操作结果 */
   @Output() create = new EventEmitter<TreeRegionEditOutputArgs>();
   /** 修改节点的操作结果 */
@@ -55,6 +59,8 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
 
   nodes = signal<TreeEditNode[]>([]);
   selectedId?: string;
+  /** 已勾选的扁平结点 id（多选） */
+  checkedIds: string[] = [];
   args: TreeRegionArgs = {};
   /** 用户手动展开/闭合的节点（id → 展开状态），load 后据此恢复 */
   private overrides = new Map<string, boolean>();
@@ -97,9 +103,12 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
       this.applyExpanded(nodes);
       this.nodes.set(nodes);
       this.selectedId = this.findSelectedId();
+      /* 重新加载后结点 id 可能变化，清空旧的勾选 */
+      this.clearChecked();
       this.loaded.emit(this.roots(flat));
     } catch {
       this.nodes.set([]);
+      this.clearChecked();
       this.loaded.emit([]);
     }
   }
@@ -112,6 +121,8 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
       editable: !resource,
       addable: !resource,
       deletable: !resource,
+      /* 只有资源可以被多选（区域是导入目标，不参与勾选） */
+      checkable: resource,
     };
   }
 
@@ -161,6 +172,23 @@ export class TreeRegionEditComponent implements AfterViewInit, OnDestroy {
   onNodeClick(node: TreeEditNode<RegionTreeNode>): void {
     this.selected = node.data;
     this.selectedChange.emit(node.data);
+  }
+
+  /** 勾选变化：转成原始区域结点后对外输出 */
+  onCheck(ids: string[]): void {
+    this.checkedIds = ids;
+    const checked = new Set(ids);
+    const datas = this.nodes()
+      .filter((n) => checked.has(n.id))
+      .map((n) => n.data as RegionTreeNode);
+    this.checkedChange.emit(datas);
+  }
+
+  /** 清空勾选（重新加载后调用） */
+  private clearChecked(): void {
+    if (this.checkedIds.length === 0) return;
+    this.checkedIds = [];
+    this.checkedChange.emit([]);
   }
 
   /** 收缩所有节点 */

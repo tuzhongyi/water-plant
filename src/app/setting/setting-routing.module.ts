@@ -14,7 +14,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: SettingPathNode.map,
+        redirectTo: SettingPathNode.config,
         pathMatch: 'full',
       },
       {

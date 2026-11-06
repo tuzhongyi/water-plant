@@ -8,6 +8,8 @@ export interface TreeEditNode<T = any> extends FlatTreeNode<T> {
   addable?: boolean;
   /** 是否可删除（右侧显示删除按钮） */
   deletable?: boolean;
+  /** 是否可勾选（多选时图标前显示 checkbox） */
+  checkable?: boolean;
 }
 
 /** 新增节点的保存结果（省略/为空 parentId 表示新增根节点） */

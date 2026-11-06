@@ -42,6 +42,13 @@ export class AppCache {
   constructor(public timeout: number) {}
   private static data = new AppCacheData();
 
+  /**	清空全部内存缓存。
+      切换账号时调用：缓存只按接口地址存，不分用户，不清的话新会话会读到上一个会话
+      缓存里的数据（例如元素缓存中的 ElementState=2，会把点位当成报警标红） */
+  static clear(): void {
+    AppCache.data = new AppCacheData();
+  }
+
   private countdown(key: string, timeout: number) {
     setTimeout(() => {
       this.del(key);
@@ -70,7 +77,7 @@ export class AppCache {
     delete AppCache.data[key];
   }
   reset() {
-    AppCache.data = new AppCacheData();
+    AppCache.clear();
   }
 }
 

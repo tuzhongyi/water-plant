@@ -1,6 +1,7 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { IMqttMessage, IMqttServiceOptions, MqttService as Service } from 'ngx-mqtt';
 import { Subscription } from 'rxjs';
+import { ProxyTool } from '../../../../tools/proxy.tool';
 
 export class MqttClient {
   private subscription?: Subscription;
@@ -12,7 +13,8 @@ export class MqttClient {
       host = window.location.hostname;
     }
     if (location.port === '9001') {
-      host = '192.168.21.151';
+      /* 开发服务器：直连接口服务（proxy.conf.ts 第一项） */
+      host = ProxyTool.service;
     }
     this.options = {
       hostname: host,

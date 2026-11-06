@@ -41,13 +41,10 @@ export class SystemVideoDeviceRegionConfigComponent {
     input: signal<boolean>(true),
     output: signal<boolean>(true),
     change: () => {
-      let disabled = true;
-      if (!!this.region.selected && this.region.selected.RegionNodeType == 2) {
-        disabled = false;
-      }
-      this.disabled.output.set(disabled);
+      /* 导出目标：多选勾选的资源，未勾选时退回当前选中的资源 */
+      this.disabled.output.set(this.region.on.targets().length === 0);
 
-      disabled = true;
+      let disabled = true;
       if (
         this.device.selected.length > 0 &&
         !!this.region.selected &&
@@ -65,6 +62,8 @@ export class SystemVideoDeviceRegionConfigComponent {
     /** 触发区域树重新加载（增删改 / 移入移出成功后） */
     reload: new EventEmitter<void>(),
     resources: [] as RegionTreeNode[],
+    /** 多选勾选的资源 */
+    checked: [] as RegionTreeNode[],
     /** 资源 id → 所属区域 id（用于 output 移出资源） */
     parents: new Map<string, string>(),
     selected: undefined as RegionTreeNode | undefined,
@@ -74,6 +73,18 @@ export class SystemVideoDeviceRegionConfigComponent {
       },
       select: (data?: RegionTreeNode) => {
         this.disabled.change();
+      },
+      /** 多选勾选变化 */
+      check: (datas: RegionTreeNode[]) => {
+        this.region.checked = datas;
+        this.disabled.change();
+      },
+      /** 导出目标：优先多选勾选的资源，否则当前选中的资源 */
+      targets: (): RegionTreeNode[] => {
+        if (this.region.checked.length > 0) return this.region.checked;
+        const selected = this.region.selected;
+        if (selected && selected.RegionNodeType == 2) return [selected];
+        return [];
       },
       /** 点击同步按钮：先弹框确认 */
       syncname: {
@@ -184,22 +195,39 @@ export class SystemVideoDeviceRegionConfigComponent {
         },
       },
 
-      output: () => {
-        const resource = this.region.selected;
-        if (!resource) return;
-        const regionId = this.region.parents.get(resource.Id);
-        if (!regionId) return;
-        this.business.resource
-          .delete(regionId, resource.Id)
-          .then(() => {
-            this.region.selected = undefined;
-            this.region.reload.emit();
-            this.toastr.success('操作成功');
-            this.change.emit();
-          })
-          .finally(() => {
-            this.disabled.change();
-          });
+      output: async () => {
+        const resources = this.region.on.targets();
+        if (resources.length === 0) return;
+        let count = {
+          success: 0,
+          error: 0,
+        };
+        for (const resource of resources) {
+          const regionId = this.region.parents.get(resource.Id);
+          if (!regionId) {
+            count.error++;
+            continue;
+          }
+          try {
+            await this.business.resource.delete(regionId, resource.Id);
+            count.success++;
+          } catch (error) {
+            count.error++;
+          }
+        }
+
+        if (count.error > 0) {
+          this.toastr.error(`操作失败${count.error}个`);
+        }
+        if (count.success > 0) {
+          this.region.checked = [];
+          this.region.selected = undefined;
+          /* 移出成功后重新拉取区域树，左侧列表同步去掉已导出的资源 */
+          this.region.reload.emit();
+          this.toastr.success(`操作成功${count.success}个`);
+          this.change.emit();
+        }
+        this.disabled.change();
       },
       input: async () => {
         if (this.region.selected) {

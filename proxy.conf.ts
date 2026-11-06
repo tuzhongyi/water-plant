@@ -11,7 +11,7 @@ const PROXY_CONFIG = [
     // target: 'http://192.168.21.241:9001',
 
     // target: 'http://101.91.121.126',
-    target: 'http://192.168.21.122:10000',
+    target: 'http://192.168.21.151:10000',
     // target: 'http://garbage01.51hws.com',
     changeOrigin: true,
 

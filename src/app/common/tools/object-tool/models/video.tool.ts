@@ -5,6 +5,7 @@ import {
 } from '../../../components/video-player/video-player.model';
 import { VideoChannel } from '../../../data-core/models/devices/video-channel.model';
 import { Duration } from '../../date-time-tool/duration.model';
+import { ProxyTool } from '../../proxy.tool';
 
 export class ObjectModelVideoTool {
   from = {
@@ -17,7 +18,8 @@ export class ObjectModelVideoTool {
       model.host = location.hostname;
       model.port = location.port ? parseInt(location.port) : 80;
       if (location.port == '9001') {
-        model.host = '192.168.21.151';
+        /* 开发服务器：直连视频服务（proxy.conf.ts 第二项），端口沿用原来的 */
+        model.host = ProxyTool.video;
         model.port = 10001;
       }
 

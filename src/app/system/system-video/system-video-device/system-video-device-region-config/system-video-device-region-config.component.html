@@ -16,8 +16,10 @@
             <hw-system-video-device-region-edit
               [load]="region.load"
               [reload]="region.reload"
+              [multiple]="true"
               [(selected)]="region.selected"
               (selectedChange)="region.on.select($event)"
+              (checkedChange)="region.on.check($event)"
               (loaded)="region.on.loaded($event)"
               (create)="region.on.create($event)"
               (update)="region.on.update($event)"
