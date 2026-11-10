@@ -1,11 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PaginatorComponent } from '../../../common/components/paginator/paginator.component';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { Page } from '../../../common/data-core/models/interface/page-list.model';
 import { Language } from '../../../common/tools/language-tool/language';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { SystemElementTableBusiness } from './system-element-table.business';
 import {
   SystemElementTableArgs,
@@ -27,6 +37,9 @@ export class SystemElementTableComponent implements OnInit, OnDestroy {
   @Output() resetstate = new EventEmitter<GeoMapElement>();
 
   constructor(private business: SystemElementTableBusiness) {}
+
+  /**	操作按钮按权限显示：无预览权限不显示视频预览，无报警设置/控制权限不显示重置状态 */
+  permission = inject(PermissionTool);
 
   widths = ['10%', 'auto', '15%', 'auto', '15%', '10%'];
   minwidth = [];

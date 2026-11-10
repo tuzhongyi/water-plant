@@ -1,19 +1,19 @@
 @import url(../../../../assets/styles/colors/color-@.less);
 @import url(../../../../assets/styles/colors/color-input.less);
 
-/*	固定宽度：时/分/秒是数字输入框，内容位数变化（如小时 9 → 09）
-    会改变自身的内在宽度，控件放在 flex 行里时整块宽度就跟着变 */
+/*	宽度由内容决定（两位数字 + 冒号 + 小间距），不再写死 150px：
+    输入框固定两位数字宽，位数变化不会撑开/收缩整块控件	*/
 :host {
   display: inline-block;
-  width: 150px;
 }
 
 .time-control {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 4px;
   height: 100%;
-  width: 100%;
+  padding: 0 8px;
 
   border: 1px solid @border-color;
   font-size: 18px;
@@ -27,14 +27,26 @@
     border-color: @disabled-border-color;
   }
 
+  /*	冒号固定宽度并居中，左右两侧到数字的距离一致	*/
+  > div {
+    flex: 0 0 auto;
+    width: 0.6em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   input {
-    /* 三等分剩余宽度，内容位数不再影响控件总宽 */
-    flex: 1 1 0;
-    width: 0;
+    /*	两位数字固定宽（不随 9 / 09 变化），数字居中：
+        冒号才会落在两个数字正中间	*/
+    flex: 0 0 auto;
+    width: 2.4ch;
     min-width: 0;
+    padding: 0;
     border: none;
     background-color: transparent;
     font-size: 15px;
+    text-align: center;
     min-height: 34px;
   }
 }

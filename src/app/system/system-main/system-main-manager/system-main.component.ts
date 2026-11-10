@@ -177,9 +177,11 @@ export class SystemMainComponent implements OnInit, OnDestroy {
 
               default:
                 this.map.alarm.emit(id);
-                /*  没有视频预览权限时不弹报警预览窗口，地图报警和列表照常刷新 */
-                if (this.permission.preview) {
-                  this.window.alarm.open(x, true);
+                /*  没有视频预览权限、或记录里没有当前用户可查看的通道时不弹报警预览窗口，
+                    地图报警和列表照常刷新；弹窗里也不会出现无权限的通道 */
+                let record = this.permission.preview ? this.alarm.channel(x) : undefined;
+                if (record) {
+                  this.window.alarm.open(record, true);
                 }
                 this.map.load.emit();
                 this.record.load.emit();
@@ -195,6 +197,25 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**	报警弹窗只播放当前用户有权限查看的通道：
+      过滤 Actions / Resource 后返回记录副本，没有可播放通道时返回 undefined（不弹窗） */
+  private alarm = {
+    channel: (data: DeviceEventRecord): DeviceEventRecord | undefined => {
+      let actions = (data.Actions ?? []).filter((x) =>
+        this.permission.canChannel(x.ResourceId),
+      );
+      let resource =
+        data.Resource && this.permission.canChannel(data.Resource.ResourceId)
+          ? data.Resource
+          : undefined;
+      if (actions.length == 0 && !resource) return undefined;
+      let record = Object.assign(new DeviceEventRecord(), data);
+      record.Actions = actions;
+      record.Resource = resource;
+      return record;
+    },
+  };
+
   map = {
     load: new EventEmitter<void>(),
     alarm: new EventEmitter<string>(),
@@ -207,9 +228,10 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       video: (datas: GeoMapElement[]) => {
         this.video.multple.preview(datas);
       },
-      element: (args: { type?: MapElementType; buildingId?: string }) => {
+      element: (args: { type?: MapElementType; buildingId?: string; ids?: string[] }) => {
         this.window.table.element.type = args.type;
         this.window.table.element.buildingId = args.buildingId;
+        this.window.table.element.ids = args.ids;
         this.window.table.element.show.set(true);
       },
       resetstate: (data: GeoMapElement) => {
@@ -267,19 +289,24 @@ export class SystemMainComponent implements OnInit, OnDestroy {
     multple: {
       preview: (datas: GeoMapElement[]) => {
         if (!this.permission.preview) return;
-        this.window.video.multiple.open(datas);
+        /* 只播放当前用户有权限查看的通道 */
+        let allowed = datas.filter((x) => this.permission.canChannel(x.ElementId));
+        if (allowed.length == 0) return;
+        this.window.video.multiple.open(allowed);
       },
     },
     single: {
       preview: (data: GeoMapElement | VideoChannel) => {
         if (!this.permission.preview) return;
         if (data instanceof GeoMapElement) {
+          if (!this.permission.canChannel(data.ElementId)) return;
           this.window.video.single.title = data.Name;
           this.window.video.single.autoplay = true;
           this.window.video.single.cameraId = data.ElementId;
           this.window.video.single.mode = PlayMode.live;
           this.window.video.single.show.set(true);
         } else if (data instanceof VideoChannel) {
+          if (!this.permission.canChannel(data.Id)) return;
           this.window.video.single.title = data.Name;
           this.window.video.single.autoplay = true;
           this.window.video.single.cameraId = data.Id;
@@ -291,21 +318,31 @@ export class SystemMainComponent implements OnInit, OnDestroy {
         if (!this.permission.playback) return;
         this.window.video.single.mode = PlayMode.vod;
 
+        /*	只回放当前用户有权限查看的通道：联动动作、报警资源都先按通道权限过滤，
+            否则会播出记录里无权限的那一路视频 */
+        let actions = (data.Actions ?? []).filter((x) =>
+          this.permission.canChannel(x.ResourceId),
+        );
+        let resource =
+          data.Resource && this.permission.canChannel(data.Resource.ResourceId)
+            ? data.Resource
+            : undefined;
+
         let title = '';
         let cameraId = '';
-        if (data.Actions && data.Actions.length > 0) {
-          let names = data.Actions.map((x) => x.ResourceName ?? x.DeviceName ?? '').filter(
-            (x) => !!x,
-          );
+        if (actions.length > 0) {
+          let names = actions.map((x) => x.ResourceName ?? x.DeviceName ?? '').filter((x) => !!x);
           title = names.join(' | ');
-          cameraId = data.Actions[0].ResourceId ?? data.Actions[0].DeviceId ?? '';
+          cameraId = actions[0].ResourceId ?? '';
         }
         if (!title) {
-          title = data.Resource?.ResourceName || data.DeviceName || '';
+          title = resource?.ResourceName || data.DeviceName || '';
         }
         if (!cameraId) {
-          data.Resource?.ResourceId || data.DeviceId;
+          cameraId = resource?.ResourceId || '';
         }
+        /* 没有可回放的通道（例如设备在线/离线记录）时不打开播放器 */
+        if (!cameraId) return;
         this.window.video.single.title = title;
         let duration = DateTimeTool.before(data.EventTime);
         this.window.video.single.begin = duration.begin;
@@ -320,6 +357,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
   channel = {
     preview: (data: PreviewArgs) => {
       if (!this.permission.preview) return;
+      if (!this.permission.canChannel(data.cameraId)) return;
       this.window.video.single.title = data.cameraName || '';
       this.window.video.single.autoplay = true;
       this.window.video.single.cameraId = data.cameraId;

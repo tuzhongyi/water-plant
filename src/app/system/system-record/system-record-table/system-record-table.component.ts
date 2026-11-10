@@ -8,6 +8,7 @@ import { TableSorterDirective } from '../../../common/directives/table-sorter/ta
 import { Sort } from '../../../common/directives/table-sorter/table-sorter.model';
 import { IconTool } from '../../../common/tools/icon-tool/icon.tool';
 import { Language } from '../../../common/tools/language-tool/language';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { SystemRecordSource } from '../system-record.source';
 import { SystemRecordTableBusiness } from './system-record-table.business';
 import {
@@ -30,9 +31,17 @@ export class SystemRecordTableComponent implements OnInit, OnDestroy {
   @Output() playback = new EventEmitter<DeviceEventRecord>();
   @Output() loaded = new EventEmitter<DeviceEventRecord[]>();
 
-  constructor(private business: SystemRecordTableBusiness) {}
+  constructor(
+    private business: SystemRecordTableBusiness,
+    public permission: PermissionTool,
+  ) {}
 
-  widths = ['5%', 'auto', '10%', '10%', '20%', 'auto', '8%'];
+  /**	没有回放权限时操作栏宽度为 0，回放按钮整列不占位（宽度读权限信号，权限加载后自动更新）	*/
+  get widths(): string[] {
+    return this.permission.playback
+      ? ['5%', 'auto', '10%', '10%', '20%', 'auto', '8%']
+      : ['5%', 'auto', '10%', '10%', '20%', 'auto', '0'];
+  }
   minwidth = ['50px', '150px', '120px', '100px', '120px', '70px'];
   datas = signal<(SystemRecordTableItem | undefined)[]>([]);
   page = Page.create(1, 10);

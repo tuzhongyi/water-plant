@@ -39,6 +39,8 @@ export class SystemVideoDeviceListMultipleComponent implements OnInit, OnChanges
 
   datas = signal<VideoChannel[]>([]);
   page = signal<Page>(Page.create(1, 12));
+  /**	通道 DeviceId → 父设备名称：悬停提示要显示「父设备 / 当前名称」 */
+  deviceNames = signal<Record<string, string>>({});
   private subs = new Subscription();
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -78,11 +80,32 @@ export class SystemVideoDeviceListMultipleComponent implements OnInit, OnChanges
         this.loaded.emit(datas);
         this.source = datas;
         this.datas.set(this.source);
+        this.device.load(this.source);
       })
       .catch((e) => {
         this.error.emit(e);
       });
   }
+
+  /** 悬停提示：第一行父设备名称，第二行当前（通道）名称；设备名查不到时只显示通道名称 */
+  title(item: VideoChannel): string {
+    let device = this.deviceNames()[item.DeviceId];
+    return device ? `${device}\n${item.Name}` : item.Name;
+  }
+
+  private device = {
+    /** 把当前列表涉及到的设备名称查出来（设备接口有缓存，同一个设备只请求一次） */
+    load: async (datas: VideoChannel[]) => {
+      let ids = Array.from(new Set(datas.map((x) => x.DeviceId).filter((x) => !!x)));
+      if (ids.length == 0) return;
+      let names = await Promise.all(ids.map((id) => this.business.deviceName(id)));
+      let result: Record<string, string> = {};
+      ids.forEach((id, index) => {
+        if (names[index]) result[id] = names[index];
+      });
+      this.deviceNames.set(result);
+    },
+  };
 
   private filter(inverse: string[]) {
     return this.source.filter((x) => {

@@ -4,6 +4,7 @@
       <div
         class="system-video-device-list-multiple-table-tr"
         [class.selected]="isSelected(item)"
+        [title]="title(item)"
         (click)="on.select(item)"
       >
         <div class="system-video-device-list-multiple-table-td checkbox">

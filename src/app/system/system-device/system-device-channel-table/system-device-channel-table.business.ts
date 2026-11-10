@@ -8,6 +8,7 @@ import { DB31RequestService } from '../../../common/data-core/request/services/d
 import { GetVideoChannelsParams } from '../../../common/data-core/request/services/device/device.params';
 import { DeviceRequestService } from '../../../common/data-core/request/services/device/device.service';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import {
   SystemDeviceChannelTableArgs,
   SystemDeviceChannelTableItem,
@@ -19,9 +20,12 @@ export class SystemDeviceChannelTableBusiness {
     private device: DeviceRequestService,
     private db31: DB31RequestService,
     private language: LanguageTool,
+    private permission: PermissionTool,
   ) {}
 
-  load(args: SystemDeviceChannelTableArgs) {
+  async load(args: SystemDeviceChannelTableArgs) {
+    /* 预览按钮要按通道权限判断，先把用户权限（含可查看通道）准备好 */
+    await this.permission.load().catch(() => {});
     if (args.db31) {
       return this.from.db31(args);
     }
@@ -60,7 +64,10 @@ export class SystemDeviceChannelTableBusiness {
           value: data.ChannelState,
           name: this.language.device.DeviceState(data.ChannelState),
         },
-        canplay: data.Enabled && data.ChannelState == 0,
+        canplay:
+          data.Enabled &&
+          data.ChannelState == 0 &&
+          this.permission.canChannel(data.Id),
         db31: false,
         data,
       };

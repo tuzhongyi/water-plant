@@ -59,16 +59,20 @@
             <td class="center">
               @if (item) {
                 <div class="operation">
-                  <button
-                    title="视频预览"
-                    [disabled]="!item.canplay"
-                    (click)="on.preview($event, item)"
-                  >
-                    <i class="howell-icon-video-play"></i>
-                  </button>
-                  <button title="重置状态" (click)="on.resetstate($event, item)">
-                    <i class="mdi mdi-replay"></i>
-                  </button>
+                  @if (permission.signals.preview()) {
+                    <button
+                      title="视频预览"
+                      [disabled]="!item.canplay"
+                      (click)="on.preview($event, item)"
+                    >
+                      <i class="howell-icon-video-play"></i>
+                    </button>
+                  }
+                  @if (permission.signals.alarm()) {
+                    <button title="重置状态" (click)="on.resetstate($event, item)">
+                      <i class="mdi mdi-replay"></i>
+                    </button>
+                  }
                 </div>
               }
             </td>

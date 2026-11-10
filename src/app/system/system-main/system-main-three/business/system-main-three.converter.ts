@@ -8,6 +8,7 @@ import { MapElementType } from '../../../../common/data-core/enums/geo/map-eleme
 import { GeoMapElement } from '../../../../common/data-core/models/geographic/map-element.model';
 import { GeoMap } from '../../../../common/data-core/models/geographic/map.model';
 import { ConfigRequestService } from '../../../../common/data-core/request/config/config-request.service';
+import { ElementStateTool } from '../../../../common/tools/element-state-tool/element-state.tool';
 import { PathTool } from '../../../../common/tools/path-tool/path.tool';
 import { SystemMainThreeBusiness } from './system-main-three.business';
 
@@ -17,19 +18,10 @@ export class SystemMainThreeConverter {
     private business: SystemMainThreeBusiness,
     private config: ConfigRequestService,
     private path: PathTool,
+    private elementstate: ElementStateTool,
   ) {}
 
   default = 'VIL.glb';
-
-  /**	元素绑定的设备状态：0-在线，1-离线；没绑定或查不到设备时 undefined */
-  private device = {
-    state: async (data: GeoMapElement): Promise<number | undefined> => {
-      if (!data.ElementId) return undefined;
-      return data.FromDB31
-        ? await this.business.device.db31.state(data.ElementId)
-        : await this.business.device.video.state(data.ElementId);
-    },
-  };
 
   private get = {
     building: async (parentId: string): Promise<GeoMapElement | undefined> => {
@@ -62,25 +54,13 @@ export class SystemMainThreeConverter {
             modelId = this.model.to.expansion(building.ElementId);
           }
         }
-        let state = data.ElementState;
-        let offline = state == 1;
+        /*	状态口径与统计面板 / 元素列表一致（统一走 ElementStateTool）：
+            0-正常，1-离线，2-报警；DB31 元素取不到 ElementState 时按父设备状态，
+            其他查不到状态的按离线（灰）显示 */
+        let state = await this.elementstate.state(data);
+        let offline = this.elementstate.offline(state);
         /*	这里的报警只决定 marker 的显示颜色（红），不触发报警业务、不向建筑扩散 */
-        let alarm = state == 2 || this.business.element.alarm.has(data.Id);
-        let alarmdiffusion = true;
-        if (state === undefined) {
-          /*	元素没有状态时按绑定的设备判断在线/离线；
-              设备不存在（没绑定或查不到）则标记为报警（红色），同样只影响显示 */
-          let devicestate = await this.device.state(data);
-          if (devicestate === undefined) {
-            /* 设备不存在不是真实报警，只标红，不播放报警扩散动画 */
-            if (!alarm) {
-              alarm = true;
-              alarmdiffusion = false;
-            }
-          } else {
-            offline = devicestate == 1;
-          }
-        }
+        let alarm = this.elementstate.alarm(state) || this.business.element.alarm.has(data.Id);
 
         let entity: MarkerEntity = {
           id: data.Id,
@@ -94,7 +74,8 @@ export class SystemMainThreeConverter {
           icon: marker.get(data.ElementType),
           offline: offline,
           error: alarm,
-          alarm: alarmdiffusion,
+          /* 报警扩散动画：error 为 true 时才可能创建，保持默认的播放 */
+          alarm: alarm,
           data: data,
           viewfield: {
             ...config.viewfield,

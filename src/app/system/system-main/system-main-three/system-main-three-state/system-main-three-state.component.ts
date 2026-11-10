@@ -13,6 +13,7 @@ import { CardStatisticComponent } from '../../../../common/components/card-stati
 import { MapElementType } from '../../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../../common/data-core/models/geographic/map-element.model';
 import { ArrayTool } from '../../../../common/tools/array-tool/array.tool';
+import { ElementStateTool } from '../../../../common/tools/element-state-tool/element-state.tool';
 import { IconTool } from '../../../../common/tools/icon-tool/icon.tool';
 import { LanguageTool } from '../../../../common/tools/language-tool/language.tool';
 import { SystemMainThreeState } from './system-main-three-state.model';
@@ -37,6 +38,7 @@ export class SystemMainThreeStateComponent implements OnChanges {
   constructor(
     private language: LanguageTool,
     private cdr: ChangeDetectorRef,
+    private elementstate: ElementStateTool,
   ) {}
 
   datas: SystemMainThreeState[] = [];
@@ -74,13 +76,18 @@ export class SystemMainThreeStateComponent implements OnChanges {
     this.cdr.detectChanges();
   }
   private async convert(type: number, elements: GeoMapElement[]) {
-    let offline = elements.filter((x) => x.ElementState == 1);
-    let warning = elements.filter((x) => x.ElementState == 2);
-    let online = elements.length - offline.length - warning.length;
+    /*	状态口径与场景 marker / 元素列表一致（统一走 ElementStateTool）：0-正常，1-离线，2-报警；
+        DB31 元素取不到 ElementState 时按父设备状态；没有状态（undefined）的同样按离线算，
+        不能算成在线（以前用「总数 - 离线 - 报警」倒推在线，会把 undefined 算进在线里） */
+    let states = await Promise.all(elements.map((x) => this.elementstate.state(x)));
+    let online = states.filter((x) => x == 0);
+    let warning = states.filter((x) => x == 2);
+    let offline = states.filter((x) => this.elementstate.offline(x));
     let item: SystemMainThreeState = {
       icon: IconTool.MapElementType(type),
       name: await this.language.geo.ElementType(type),
-      online: online,
+      online: online.length,
+      /* 异常 = 报警 + 离线 */
       warning: warning.length + offline.length,
       type: type,
     };

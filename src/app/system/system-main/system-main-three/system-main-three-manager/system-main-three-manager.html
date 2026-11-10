@@ -26,7 +26,7 @@
   <hw-system-main-three-state
     side="left"
     [title]="map.data?.Name || ''"
-    [datas]="state.datas"
+    [datas]="state.datas()"
     (details)="on.element($event)"
   ></hw-system-main-three-state>
 
@@ -34,12 +34,10 @@
     side="right"
     [datas]="elementgroup.datas"
     [hiddenIds]="elementgroup.allhidden()"
-    [hideUnmatched]="hideUnmatched"
     [(show)]="elementgroup.show"
     (position)="elementgroup.on.position($event)"
     (preview)="map.on.preview($event)"
     (visible)="elementgroup.on.visible($event)"
     (visibleAll)="elementgroup.on.visibleAll($event)"
-    (unmatched)="elementgroup.on.unmatched($event)"
   ></hw-system-main-three-element-group-manager>
 </div>

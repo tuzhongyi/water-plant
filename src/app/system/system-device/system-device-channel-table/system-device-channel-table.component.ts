@@ -1,11 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { VideoChannel } from '../../../common/data-core/models/devices/video-channel.model';
 import { Page } from '../../../common/data-core/models/interface/page-list.model';
 import { TableSorterDirective } from '../../../common/directives/table-sorter/table-soater.directive';
 import { Sort } from '../../../common/directives/table-sorter/table-sorter.model';
 import { LocaleCompare } from '../../../common/tools/compare-tool/compare.tool';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { SystemDeviceChannelTableBusiness } from './system-device-channel-table.business';
 import {
   SystemDeviceChannelTableArgs,
@@ -27,7 +37,14 @@ export class SystemDeviceChannelTableComponent implements OnInit, OnDestroy {
 
   constructor(private business: SystemDeviceChannelTableBusiness) {}
 
-  widths = ['18%', 'auto', '20%', '20%'];
+  permission = inject(PermissionTool);
+
+  /**	没有视频预览权限时操作栏宽度为 0，整列不占位（宽度读权限信号，权限加载后自动更新）	*/
+  get widths(): string[] {
+    return this.permission.preview
+      ? ['18%', 'auto', '20%', '20%']
+      : ['18%', 'auto', '20%', '0'];
+  }
   minwidth = [];
   datas = signal<SystemDeviceChannelTableItem[]>([]);
   page = Page.create(1, 10);

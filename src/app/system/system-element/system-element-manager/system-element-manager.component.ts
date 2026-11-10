@@ -28,6 +28,8 @@ import { SystemElementTableArgs } from '../system-element-table/system-element-t
 export class SystemElementManagerComponent implements OnChanges, OnInit {
   @Input() type?: MapElementType;
   @Input() buildingId?: string;
+  /**	地图传来的全量元素 ElementId（已按视频通道权限过滤，含非摄像机元素）	*/
+  @Input() ids?: string[];
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() resetstate = new EventEmitter<GeoMapElement>();
   @Input() reload?: EventEmitter<void>;
@@ -38,6 +40,7 @@ export class SystemElementManagerComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     this.change.type(changes['type']);
     this.change.building(changes['buildingId']);
+    this.change.ids(changes['ids']);
   }
   ngOnInit(): void {
     if (this.reload) {
@@ -59,6 +62,11 @@ export class SystemElementManagerComponent implements OnChanges, OnInit {
     building: (change: SimpleChange) => {
       if (change) {
         this.table.args.buildingId = this.buildingId;
+      }
+    },
+    ids: (change: SimpleChange) => {
+      if (change) {
+        this.table.args.ids = this.ids;
       }
     },
   };

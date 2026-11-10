@@ -292,6 +292,11 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         },
       },
       building: () => {
+        /*	乒乓：列表已经打开时再点一次只关闭，不重复打开 */
+        if (this.manager.building.show) {
+          this.manager.building.show = false;
+          return;
+        }
         this.manager.button.clear();
         if (this.floor.model()) {
           this.floor.on.back();

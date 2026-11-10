@@ -6,6 +6,7 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  isDevMode,
 } from '@angular/core';
 import { MapElementType } from '../../../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../../../common/data-core/models/geographic/map-element.model';
@@ -32,11 +33,6 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
   @Input() hiddenIds: ReadonlySet<string> = new Set<string>();
   /**	搜索关键字：按节点名称过滤（空串显示全部） */
   @Input() query = '';
-  /**
-   *	是否隐藏「未分组」：权限过滤后区域树里查不到的资源会落到「未分组」，
-   *	为 true 时不显示该分组节点，并把其下摄像机 Id 上抛，供场景一并隐藏
-   */
-  @Input() hideUnmatched = true;
 
   /**	定位到点位所在位置（可能在建筑内） */
   @Output() position = new EventEmitter<GeoMapElement>();
@@ -46,8 +42,6 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
   @Output() visible = new EventEmitter<GeoMapElement>();
   /**	分组节点的眼睛：一次性显示/隐藏该分组下的全部点位 */
   @Output() visibleAll = new EventEmitter<{ ids: string[]; visible: boolean }>();
-  /**	「未分组」下的点位 Id 变化：隐藏未分组时上抛，上层据此在场景中隐藏 */
-  @Output() unmatched = new EventEmitter<string[]>();
 
   nodes: FlatTreeNode[] = [];
 
@@ -63,6 +57,8 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
   private elementIds = new Set<string>();
   /**	分组节点 id → 该分组下全部点位的元素 Id */
   private groupElements = new Map<string, Set<string>>();
+  /**	上次提示过的「区域资源没有地图点位」清单，清单不变时不重复提示 */
+  private unmatchedLogged = '';
 
   constructor(
     private business: SystemMainThreeElementGroupTreeBusiness,
@@ -71,8 +67,8 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    /* 数据变化 / 未分组显隐变化时整树重建（顺带覆盖搜索条件和眼睛状态） */
-    if (changes['datas'] || changes['hideUnmatched']) {
+    /* 数据变化时整树重建（顺带覆盖搜索条件和眼睛状态） */
+    if (changes['datas']) {
       this.build();
       return;
     }
@@ -153,8 +149,6 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
       .sort((a, b) => a - b);
 
     let nodes: FlatTreeNode[] = [];
-    /* 隐藏未分组时，其下摄像机的 Id（交给上层在场景中一并隐藏） */
-    let unmatched: string[] = [];
     for (const type of types) {
       let name = await this.language.geo.ElementType(type);
       if (!name) name = Language.MapElementType(type as MapElementType, `类型${type}`);
@@ -165,7 +159,7 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
 
       let items = this.sort(groups[type]);
       if (type == MapElementType.Camera) {
-        unmatched = await this.cameras(nodes, rootId, items);
+        await this.cameras(nodes, rootId, items);
       } else {
         for (const item of items) {
           nodes.push(this.elementNode(item, rootId, 1, icon));
@@ -187,7 +181,6 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
     }
 
     this.apply();
-    this.unmatched.emit(unmatched);
   }
 
   /**	展示列表：有关键字时按名称过滤，清空后还原完整树（展开状态一并还原） */
@@ -356,8 +349,7 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
     nodes: FlatTreeNode[],
     rootId: string,
     items: GeoMapElement[],
-  ): Promise<string[]> {
-    /* @returns 隐藏未分组时要一并隐藏的摄像机 Id（未隐藏时为空） */
+  ): Promise<void> {
     let regions: RegionTreeNode[] = [];
     try {
       regions = await this.business.region();
@@ -373,18 +365,20 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
 
     /* 已经挂到区域结点下的点位 Id（同一区域树里可能配对多次） */
     let placed = new Set<string>();
-    /* 区域树里的资源 Id，配对不上时打到控制台，方便核对两边的 Id 口径 */
-    let resources: string[] = [];
+    /* 区域树里有、但找不到对应地图点位的资源：没有点位可控制，本来就不显示；
+       收集起来在开发环境打到控制台，方便核对两边的 Id 口径 */
+    let unmatchedResources: RegionTreeNode[] = [];
     let icon = IconTool.MapElementType(MapElementType.Camera);
     const add = (node: RegionTreeNode, parentId: string, level: number): void => {
       let children = this.regionSort(node.Children ?? []);
       /* 资源结点：与地图点位配对，配不上的不显示 */
       if (this.resource(node)) {
-        resources.push(node.Id);
         let element = elements.get(this.key(node.Id));
         if (element) {
           placed.add(element.Id);
           nodes.push(this.elementNode(element, parentId, level, icon));
+        } else {
+          unmatchedResources.push(node);
         }
         return;
       }
@@ -413,19 +407,27 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
       add(region, rootId, 1);
     }
 
+    /* 区域资源配对不上地图点位时不会出现在树里（树管的是地图点位，不是资源），
+       开发环境提示一下，避免误以为是树把节点漏掉了；
+       树每次刷新都会重建，同样的清单只提示一次，变了再提示 */
+    if (isDevMode()) {
+      let logs = unmatchedResources.map((x) => `${x.Name}(${x.Id})`);
+      let signature = logs.join('|');
+      if (logs.length > 0 && signature != this.unmatchedLogged) {
+        console.warn('[element-group] 区域资源没有对应的地图点位，树里不显示：', logs);
+      }
+      this.unmatchedLogged = signature;
+    }
+
     /* 没有绑定通道（ElementId 为空）、通道不在区域树里、区域树取不到的摄像机 */
     let rest = items.filter((x) => !placed.has(x.Id));
-    if (rest.length == 0) return [];
+    if (rest.length == 0) return;
     if (regions.length == 0) {
-      /* 区域树为空：直接列在摄像机根节点下（此时没有「未分组」节点，不做隐藏） */
+      /* 区域树为空：直接列在摄像机根节点下 */
       for (const item of rest) {
         nodes.push(this.elementNode(item, rootId, 1, icon));
       }
-      return [];
-    }
-    if (this.hideUnmatched) {
-      /* 隐藏未分组：分组节点不显示，其下摄像机 Id 交给上层在场景中隐藏 */
-      return rest.map((x) => x.Id);
+      return;
     }
     let id = 'camera_group_unmatched';
     nodes.push(
@@ -434,7 +436,6 @@ export class SystemMainThreeElementGroupTreeComponent implements OnChanges {
     for (const item of rest) {
       nodes.push(this.elementNode(item, id, 2, icon));
     }
-    return [];
   }
 
   /**	资源结点（摄像机等设备资源）；其余为区域结点 */

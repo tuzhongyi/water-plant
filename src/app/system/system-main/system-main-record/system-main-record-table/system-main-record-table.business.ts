@@ -12,6 +12,7 @@ import { DateTimeTool } from '../../../../common/tools/date-time-tool/datetime.t
 import { IconTool } from '../../../../common/tools/icon-tool/icon.tool';
 import { Language } from '../../../../common/tools/language-tool/language';
 import { LanguageTool } from '../../../../common/tools/language-tool/language.tool';
+import { PermissionTool } from '../../../../common/tools/permission-tool/permission.tool';
 import {
   SystemMainRecordTableArgs,
   SystemMainRecordTableEventType,
@@ -27,6 +28,7 @@ export class SystemMainRecordTableBusiness {
     private config: ConfigRequestService,
     private capability: CapabilityTool,
     private language: LanguageTool,
+    private permission: PermissionTool,
   ) {
     this.service = { event, device, db31 };
   }
@@ -38,6 +40,8 @@ export class SystemMainRecordTableBusiness {
   };
 
   async load(args: SystemMainRecordTableArgs) {
+    /* 回放按钮要按通道权限判断，先把用户权限（含可查看通道）准备好 */
+    await this.permission.load().catch(() => {});
     let duration = DateTimeTool.last.month(new Date());
     let params = new GetDeviceEventRecordsParams();
     params.BeginTime = duration.begin;
@@ -53,7 +57,9 @@ export class SystemMainRecordTableBusiness {
 
     let paged = await this.service.event.record.list(params);
     let all = paged.Data.map((x) => this.convert(x));
-    return Promise.all(all);
+    let items = await Promise.all(all);
+    /* 只显示与当前用户可查看通道相关的报警记录（根用户全部显示） */
+    return items.filter((x) => this.get.permitted(x.data));
   }
 
   private async convert(data: DeviceEventRecord) {
@@ -78,15 +84,27 @@ export class SystemMainRecordTableBusiness {
   }
 
   get = {
+    /**	记录是否与当前用户可查看的通道相关：只显示这些记录，根用户全部显示 */
+    permitted: (data: DeviceEventRecord) => {
+      if (this.permission.isRoot) return true;
+      let ids = this.get.channelIds(data);
+      return ids.some((id) => this.permission.canChannel(id));
+    },
+    /**	能否回放：需要「回放」权限，并且记录关联的通道在当前用户可查看的通道内 */
     playback: (data: DeviceEventRecord) => {
-      switch (data.EventType) {
-        case 1:
-        case 2:
-          return true;
-
-        default:
-          return !!data.Actions && data.Actions.length > 0;
+      if (!this.permission.playback) return false;
+      let ids = this.get.channelIds(data);
+      return ids.some((id) => this.permission.canChannel(id));
+    },
+    /**	记录关联的视频通道 Id：联动动作的 ResourceId 和报警资源的 ResourceId
+        （DeviceId 是设备 Id，不是通道 Id，不能用来判断通道权限） */
+    channelIds: (data: DeviceEventRecord) => {
+      let ids: string[] = [];
+      for (const action of data.Actions ?? []) {
+        if (action.ResourceId) ids.push(action.ResourceId);
       }
+      if (data.Resource?.ResourceId) ids.push(data.Resource.ResourceId);
+      return ids;
     },
     name: (data: DeviceEventRecord) => {
       let name = data.DeviceName || '';

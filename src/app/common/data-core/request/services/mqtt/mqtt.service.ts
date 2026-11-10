@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, isDevMode } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom } from 'rxjs';
 import { UrlTool } from '../../../../tools/url-tool/url.tool';
 import { wait } from '../../../../tools/wait';
@@ -15,7 +16,10 @@ export class MqttRequestService {
   /** 事件流：做成静态成员，非 DI 类（如设备 / 通道的缓存）也能直接订阅 */
   static event = new EventEmitter<DeviceEventRecord>();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private toastr: ToastrService,
+  ) {}
 
   private loading = {
     config: false,
@@ -50,6 +54,13 @@ export class MqttRequestService {
   async load(devices: Device[] = []) {
     let config = await this.config;
     let client = new MqttClient(config.host, config.port, config.username, config.password);
+    /*	连不上时只提示一次（重连成功后再次断开才会再提示）：
+        开发环境（ng serve）MQTT 常常没起，连不上是常态，不打扰；
+        上线（生产构建）后才提示用户，否则报警/状态不刷新时没人知道 */
+    client.onfail.subscribe(() => {
+      if (isDevMode()) return;
+      this.toastr.warning('实时消息服务连接失败，报警与设备状态可能无法实时刷新');
+    });
     console.log(`mqtt connect to ${config.host}:${config.port}`);
 
     if (devices.length == 0) {

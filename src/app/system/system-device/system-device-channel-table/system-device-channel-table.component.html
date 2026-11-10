@@ -12,7 +12,11 @@
             <th sort="no">通道号</th>
             <th sort="name">名称</th>
             <th sort="state">状态</th>
-            <th class="center">操作</th>
+            <th class="center">
+              @if (permission.preview) {
+                操作
+              }
+            </th>
           </tr>
         </thead>
       </table>
@@ -54,7 +58,7 @@
               </td>
 
               <td class="center">
-                @if (item) {
+                @if (item && permission.preview) {
                   <div class="operation">
                     <button
                       title="视频预览"

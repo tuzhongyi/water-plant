@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { MapElementType } from '../../../common/data-core/enums/geo/map-element-type.enum';
 import { GeoMapElement } from '../../../common/data-core/models/geographic/map-element.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
-import { PagedList } from '../../../common/data-core/models/interface/page-list.model';
+import { Page, PagedList } from '../../../common/data-core/models/interface/page-list.model';
 import { DB31RequestService } from '../../../common/data-core/request/services/db31/db31.service';
 import { DeviceRequestService } from '../../../common/data-core/request/services/device/device.service';
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
+import { GlobalStorage } from '../../../common/storage/global.storage';
 import { ColorTool } from '../../../common/tools/color-tool/color.tool';
+import { ElementStateTool } from '../../../common/tools/element-state-tool/element-state.tool';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { wait } from '../../../common/tools/wait';
 import { SystemMainThreeSource } from '../../system-main/system-main-three/system-main-three.source';
 import { SystemElementTableFilter, SystemElementTableItem } from './system-element-table.model';
@@ -21,6 +24,9 @@ export class SystemElementTableBusiness {
     geo: GeographicRequestService,
     private source: SystemMainThreeSource,
     private language: LanguageTool,
+    private permission: PermissionTool,
+    private elementstate: ElementStateTool,
+    private global: GlobalStorage,
   ) {
     this.service = { device, db31, geo };
   }
@@ -32,6 +38,8 @@ export class SystemElementTableBusiness {
   };
 
   async load(index: number, size: number, filter: SystemElementTableFilter) {
+    /* 摄像机行的预览按钮要按通道权限判断，先把用户权限准备好 */
+    await this.permission.load().catch(() => {});
     let datas = filter.buildingId
       ? await this.get.from.building(index, size, filter.buildingId, filter)
       : await this.get.datas(index, size, filter);
@@ -51,19 +59,94 @@ export class SystemElementTableBusiness {
   }
 
   private async convert(data: GeoMapElement) {
+    /*	状态口径与场景 marker / 统计面板一致（统一走 ElementStateTool）：
+        DB31 元素取不到 ElementState 时按父设备状态，其他没有状态的按离线显示 */
+    let state = await this.elementstate.state(data);
+    let display = this.elementstate.offline(state) ? 1 : state;
     let item: SystemElementTableItem<GeoMapElement> = {
       id: data.Id,
       name: data.Name,
       type: this.language.geo.ElementType(data.ElementType),
       // binding: this.get.name(data),
       parent: this.get.parent(data.ParentId),
-      statename: this.language.geo.ElementStates(data.ElementState),
-      statecolor: ColorTool.from.MapElementState(data.ElementState).name,
-      canplay: data.ElementType == MapElementType.Camera,
+      statename: this.language.geo.ElementStates(display),
+      statecolor: ColorTool.from.MapElementState(display).name,
+      canplay:
+        data.ElementType == MapElementType.Camera &&
+        this.permission.canChannel(data.ElementId) &&
+        data.ElementState == 0,
+
       alarm: true,
       data: data,
     };
     return item;
+  }
+
+  /**	当前用户可查看的视频通道 Id；undefined 表示不受通道限制（根用户）。
+      非根用户通道没加载成功时按没有可查看通道处理，与 PermissionTool 口径一致 */
+  private async allowedChannels(): Promise<string[] | undefined> {
+    await this.permission.load().catch(() => {});
+    if (this.permission.isRoot) {
+      return undefined;
+    }
+    if (!this.global.user.channels.existed) {
+      return [];
+    }
+    let channels = await this.global.user.channels.get();
+    return (channels ?? []).map((x) => x.Id);
+  }
+
+  /**	权限过滤参数：
+      优先用地图传来的全量 ElementId（含报警器/传感器/出入口，已按通道权限过滤过），
+      直接交给服务端，分页总数准确，也不会误伤非摄像机元素；
+      地图还没拿到数据时退回按通道过滤（见 applyChannels）。
+      返回 false 表示没有任何可查看元素，调用方直接返回空数据 */
+  private async applyPermission(
+    params: GetMapElementsParams,
+    filter: SystemElementTableFilter,
+  ): Promise<boolean> {
+    await this.permission.load().catch(() => {});
+    if (!this.permission.isRoot && filter.ids && filter.ids.length > 0) {
+      params.ElementIds = filter.ids;
+      return true;
+    }
+    return this.applyChannels(params);
+  }
+
+  /**	查询类型只有摄像机时，让服务端按 ElementIds 过滤通道：
+      这样分页总数才是权限过滤后的数量。
+      返回 false 表示没有任何可查看通道，调用方直接返回空数据——
+      不能传空数组，部分后端会把空 ElementIds 当成“不过滤” */
+  private async applyChannels(params: GetMapElementsParams): Promise<boolean> {
+    let types = params.ElementTypes ?? [];
+    if (types.length != 1 || types[0] != MapElementType.Camera) {
+      return true;
+    }
+    let channels = await this.allowedChannels();
+    if (channels === undefined) {
+      return true;
+    }
+    if (channels.length == 0) {
+      return false;
+    }
+    params.ElementIds = channels;
+    return true;
+  }
+
+  /**	取回后只过滤摄像机：类型里混有报警器/传感器/出入口时不能整体传 ElementIds
+      （它们的 ElementId 不是视频通道，会被一起过滤掉），这里只判断摄像机的通道权限，
+      其他元素原样保留 */
+  private async filterCameras(datas: GeoMapElement[]): Promise<GeoMapElement[]> {
+    await this.permission.load().catch(() => {});
+    if (this.permission.isRoot) {
+      return datas;
+    }
+    if (!datas.some((x) => x.ElementType == MapElementType.Camera)) {
+      return datas;
+    }
+    return datas.filter((x) => {
+      return x.ElementType != MapElementType.Camera || this.permission.canChannel(x.ElementId);
+    });
   }
 
   private get = {
@@ -138,8 +221,16 @@ export class SystemElementTableBusiness {
         });
         params.ElementTypes = this.source.type.elements.map((x) => x.Value);
       }
+      if (!(await this.applyPermission(params, filter))) {
+        let paged = new PagedList<GeoMapElement>();
+        paged.Page = Page.create(index, size, 0);
+        paged.Data = [];
+        return paged;
+      }
 
-      return this.service.geo.map.element.list(params);
+      let datas = await this.service.geo.map.element.list(params);
+      datas.Data = await this.filterCameras(datas.Data);
+      return datas;
     },
 
     floors: (buildingId: string) => {
@@ -168,8 +259,14 @@ export class SystemElementTableBusiness {
           params.ElementTypes = this.source.type.elements.map((x) => x.Value);
         }
 
+        if (!(await this.applyPermission(params, filter))) {
+          return [];
+        }
+
         // 3. 获取所有符合条件的元素，过滤出父级为楼层的数据
-        const allElements = await this.service.geo.map.element.all(params);
+        const allElements = await this.filterCameras(
+          await this.service.geo.map.element.all(params),
+        );
         return allElements.filter((x) => x.ParentId && floorIds.has(x.ParentId));
       },
       building: async (

@@ -5,6 +5,7 @@ import { GetMapElementsParams } from '../../../../common/data-core/request/servi
 import { GeographicRequestService } from '../../../../common/data-core/request/services/geographic/geographic.service';
 import { LocaleCompare } from '../../../../common/tools/compare-tool/compare.tool';
 import { ObjectTool } from '../../../../common/tools/object-tool/object.tool';
+import { PermissionTool } from '../../../../common/tools/permission-tool/permission.tool';
 import { MapElementModel } from '../../../../setting/setting-map/business/setting-map.model';
 import { SystemMainThreeSource } from '../system-main-three.source';
 import { SystemMainThreeAlarmBusiness } from './system-main-three-alarm.business';
@@ -15,8 +16,25 @@ export class SystemMainThreeElementBusiness {
   constructor(
     private service: GeographicRequestService,
     config: ConfigRequestService,
+    private permission: PermissionTool,
   ) {
     this.alarm = new SystemMainThreeAlarmBusiness(this, config);
+  }
+
+  /**	按视频通道权限过滤元素：摄像机只保留当前用户有权限查看的通道，
+      其他类型（报警器/传感器/门禁）不受视频权限影响。
+      场景、点位分组树、统计面板共用这一份过滤结果，不再靠分组树反向过滤 */
+  async filter(elements: GeoMapElement[]): Promise<GeoMapElement[]> {
+    if (!elements.some((x) => x.ElementType == MapElementType.Camera)) {
+      return elements;
+    }
+    await this.permission.load().catch(() => {});
+    if (this.permission.isRoot) {
+      return elements;
+    }
+    return elements.filter((x) => {
+      return x.ElementType != MapElementType.Camera || this.permission.canChannel(x.ElementId);
+    });
   }
 
   /** 元素缓存，load 后自动填充 */
@@ -29,7 +47,7 @@ export class SystemMainThreeElementBusiness {
           切换账号后尤其明显（缓存跨账号复用），刷新页面才恢复。
           这里和统计面板一样直接请求服务端 */
       let all = await this.service.map.element.all();
-      return all.filter((x) => x.ElementState == 2);
+      return this.filter(all.filter((x) => x.ElementState == 2));
     },
     by: {
       id: (id: string) => {
@@ -51,15 +69,18 @@ export class SystemMainThreeElementBusiness {
     },
   };
 
-  /**	全部元素（不按楼层/建筑过滤），用于统计面板
+  /**	全部元素（不按楼层/建筑过滤），用于统计面板；已按视频通道权限过滤
       @param usecache 是否使用缓存；false 时直接请求服务端，保证状态是最新的 */
-  all(usecache = true) {
+  async all(usecache = true): Promise<GeoMapElement[]> {
+    let all: GeoMapElement[];
     if (usecache) {
-      return this.service.map.element.cache.all();
+      all = await this.service.map.element.cache.all();
+    } else {
+      let params = new GetMapElementsParams();
+      params.ElementTypes = SystemMainThreeSource.elements;
+      all = await this.service.map.element.all(params);
     }
-    let params = new GetMapElementsParams();
-    params.ElementTypes = SystemMainThreeSource.elements;
-    return this.service.map.element.all(params);
+    return this.filter(all);
   }
   /**	@param floors 已取到的楼层列表：展开建筑时上层刚查过，传进来就不再重复请求 */
   async load(
@@ -86,6 +107,7 @@ export class SystemMainThreeElementBusiness {
     if (!args.floorId) {
       all = all.filter((x) => !x.ParentId);
     }
+    all = await this.filter(all);
 
     /* 更新缓存 */
     this.cache = all;

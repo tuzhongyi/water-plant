@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -12,6 +13,7 @@ import { MapElementType } from '../../../../../common/data-core/enums/geo/map-el
 import { GeoMapElement } from '../../../../../common/data-core/models/geographic/map-element.model';
 import { ColorTool } from '../../../../../common/tools/color-tool/color.tool';
 import { LocaleCompare } from '../../../../../common/tools/compare-tool/compare.tool';
+import { ElementStateTool } from '../../../../../common/tools/element-state-tool/element-state.tool';
 import { IconTool } from '../../../../../common/tools/icon-tool/icon.tool';
 import { LanguageTool } from '../../../../../common/tools/language-tool/language.tool';
 import { SystemMainThreeElementTableItem } from './system-main-three-element-table.model';
@@ -27,7 +29,11 @@ export class SystemMainThreeElementTableComponent implements OnChanges {
   @Output() preview = new EventEmitter<GeoMapElement>();
   @Output() video = new EventEmitter<GeoMapElement[]>();
 
-  constructor(private language: LanguageTool) {}
+  constructor(
+    private language: LanguageTool,
+    private cdr: ChangeDetectorRef,
+    private elementstate: ElementStateTool,
+  ) {}
 
   items: SystemMainThreeElementTableItem[] = [];
   width: string[] = ['30px', 'calc(100% - 30px * 2)', '30px'];
@@ -46,23 +52,25 @@ export class SystemMainThreeElementTableComponent implements OnChanges {
   };
 
   private async load(datas: GeoMapElement[]) {
-    const items: SystemMainThreeElementTableItem[] = [];
-    for (let i = 0; i < datas.length; i++) {
-      items.push(this.convert(datas[i]));
-    }
+    const items = await Promise.all(datas.map((x) => this.convert(x)));
     this.items = items.sort((a, b) => {
       return LocaleCompare.compare(a.type, b.type);
     });
+    /*	状态要先异步解析（DB31 回退父设备状态）再赋值，需要主动触发变更检测 */
+    this.cdr.detectChanges();
   }
 
-  private convert(data: GeoMapElement): SystemMainThreeElementTableItem<GeoMapElement> {
+  private async convert(data: GeoMapElement): Promise<SystemMainThreeElementTableItem<GeoMapElement>> {
+    /*	状态口径与场景 marker / 统计面板 / 元素列表一致（统一走 ElementStateTool）；
+        没有状态（undefined）的点位同样按离线显示（灰） */
+    let state = await this.elementstate.state(data);
     return {
       data: data,
       id: data.Id,
       name: data.Name,
       type: data.ElementType,
       icon: IconTool.MapElementType(data.ElementType),
-      color: ColorTool.from.MapElementState(data.ElementState).name,
+      color: ColorTool.from.MapElementState(this.elementstate.offline(state) ? 1 : state).name,
       playable: data.ElementType == MapElementType.Camera,
     };
   }

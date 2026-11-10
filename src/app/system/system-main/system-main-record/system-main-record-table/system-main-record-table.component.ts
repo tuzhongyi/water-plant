@@ -1,10 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DeviceEventRecord } from '../../../../common/data-core/models/events/device-event-record.model';
 import { IconTool } from '../../../../common/tools/icon-tool/icon.tool';
 import { Language } from '../../../../common/tools/language-tool/language';
 import { LanguageTool } from '../../../../common/tools/language-tool/language.tool';
+import { PermissionTool } from '../../../../common/tools/permission-tool/permission.tool';
 import { SystemMainRecordTableBusiness } from './system-main-record-table.business';
 import {
   SystemMainRecordTableArgs,
@@ -28,12 +37,19 @@ export class SystemMainRecordTableComponent implements OnInit, OnDestroy {
   constructor(
     private business: SystemMainRecordTableBusiness,
     public language: LanguageTool,
+    public permission: PermissionTool,
   ) {}
 
   Icon = IconTool;
   Language = Language;
   datas: SystemMainRecordTableItem[] = [];
-  width = ['7%', '25%', '15%', '160px', '7%'];
+  /**	没有回放权限时操作栏宽度为 0，回放按钮整列不占位（宽度读权限信号，权限加载后自动更新）	*/
+  width = ['7%', '25%', '15%', '145px', '7%'];
+
+  /**	是否显示操作栏：读的是响应式权限信号，权限异步加载完成后自动出现/消失，
+      不能在构造时读成普通布尔值缓存（加载完成前读到 false 就再也变不回来）	*/
+  operatable = computed(() => this.permission.signals.playback());
+
   private subs = new Subscription();
 
   ngOnInit(): void {

@@ -5,6 +5,7 @@ import { DB31RequestService } from '../../../../common/data-core/request/service
 import { DeviceRequestService } from '../../../../common/data-core/request/services/device/device.service';
 import { GeographicRequestService } from '../../../../common/data-core/request/services/geographic/geographic.service';
 import { LocalStorage } from '../../../../common/storage/local.storage';
+import { PermissionTool } from '../../../../common/tools/permission-tool/permission.tool';
 import { SystemMainThreeDeviceBusiness } from './device/system-main-three-device.business';
 import { SystemMainThreeConfigBusiness } from './system-main-three-config.business';
 import { SystemMainThreeElementBusiness } from './system-main-three-element.business';
@@ -20,9 +21,10 @@ export class SystemMainThreeBusiness {
     local: LocalStorage,
     device: DeviceRequestService,
     db31: DB31RequestService,
+    permission: PermissionTool,
   ) {
     this.map = new SystemMainThreeMapBusiness(geo);
-    this.element = new SystemMainThreeElementBusiness(geo, config);
+    this.element = new SystemMainThreeElementBusiness(geo, config, permission);
     this.model = new SystemMainThreeModelBusiness(api);
     this.config = new SystemMainThreeConfigBusiness(config, local);
     this.device = new SystemMainThreeDeviceBusiness(device, db31);

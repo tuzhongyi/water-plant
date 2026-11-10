@@ -88,6 +88,8 @@ export class MapElementTableWindow extends WindowViewModel {
   title: string = '地图点位信息列表';
   type?: MapElementType;
   buildingId?: string;
+  /**	地图传来的全量元素 ElementId（已按视频通道权限过滤，含非摄像机元素）	*/
+  ids?: string[];
   reload = new EventEmitter<void>();
   style = {
     ...SizeTool.window.large,
