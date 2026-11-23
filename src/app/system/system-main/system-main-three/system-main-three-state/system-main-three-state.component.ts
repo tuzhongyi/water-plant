@@ -33,7 +33,7 @@ export class SystemMainThreeStateComponent implements OnChanges {
   @Input() side: 'left' | 'right' = 'left';
   @Input() title = '';
   @Input('datas') source: GeoMapElement[] = [];
-  @Output() details = new EventEmitter<MapElementType | undefined>();
+  @Output() details = new EventEmitter<{ type?: MapElementType; state?: number }>();
 
   constructor(
     private language: LanguageTool,
@@ -100,10 +100,16 @@ export class SystemMainThreeStateComponent implements OnChanges {
     },
     details: (item?: SystemMainThreeState) => {
       if (item) {
-        this.details.emit(item.type);
+        this.details.emit({ type: item.type });
       } else {
-        this.details.emit();
+        this.details.emit({});
       }
+    },
+    /**	点击在线/异常数字：带上类型和状态，父组件弹窗里只显示该状态的元素；
+        0-在线，1-离线（异常里还包含报警，报警元素按离线口径筛选）	*/
+    metric: (e: Event, item: SystemMainThreeState, state: number) => {
+      e.stopPropagation();
+      this.details.emit({ type: item.type, state });
     },
   };
 }

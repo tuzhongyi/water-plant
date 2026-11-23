@@ -27,6 +27,8 @@ import { SystemElementTableArgs } from '../system-element-table/system-element-t
 })
 export class SystemElementManagerComponent implements OnChanges, OnInit {
   @Input() type?: MapElementType;
+  /**	状态筛选：0-在线，1-离线；不设置表示全部	*/
+  @Input() state?: number;
   @Input() buildingId?: string;
   /**	地图传来的全量元素 ElementId（已按视频通道权限过滤，含非摄像机元素）	*/
   @Input() ids?: string[];
@@ -36,9 +38,16 @@ export class SystemElementManagerComponent implements OnChanges, OnInit {
   constructor(public source: SystemMainThreeSource) {}
 
   Language = Language;
+  /**	状态筛选选项：0-在线，1-离线，2-报警	*/
+  states = [
+    { Value: 0, Name: '在线' },
+    { Value: 1, Name: '离线' },
+    { Value: 2, Name: '报警' },
+  ];
   private subs = new Subscription();
   ngOnChanges(changes: SimpleChanges): void {
     this.change.type(changes['type']);
+    this.change.state(changes['state']);
     this.change.building(changes['buildingId']);
     this.change.ids(changes['ids']);
   }
@@ -57,6 +66,11 @@ export class SystemElementManagerComponent implements OnChanges, OnInit {
     type: (change: SimpleChange) => {
       if (change) {
         this.table.args.type = this.type;
+      }
+    },
+    state: (change: SimpleChange) => {
+      if (change) {
+        this.table.args.state = this.state;
       }
     },
     building: (change: SimpleChange) => {

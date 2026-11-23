@@ -14,7 +14,7 @@ export class HeaderComponent implements OnInit {
   @Output() visibilityChange = new EventEmitter<boolean>();
   @Input() collapsible: boolean = false;
 
-  @Input() title: string = '惠南水厂智能平台';
+  @Input() title: string = '惠南水厂智能安防平台';
   @Input() date: Date = new Date();
 
   constructor() {}

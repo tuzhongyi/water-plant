@@ -17,6 +17,7 @@ import { GeoMap } from '../../../../common/data-core/models/geographic/map.model
 import { ThreeDConfig } from '../../../../common/storage/three-d-storage/three-d-store.model';
 import { HtmlTool } from '../../../../common/tools/html-tool/html.tool';
 import { wait } from '../../../../common/tools/wait';
+import { WebGLTool } from '../../../../common/tools/webgl-tool/webgl.tool';
 import { MapModel } from '../../../../setting/setting-map/business/setting-map.model';
 import { SystemMainThreeBusiness } from '../business/system-main-three.business';
 import { SystemMainThreeConverter } from '../business/system-main-three.converter';
@@ -81,7 +82,17 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
       （楼层列表、整栋楼点位都是异步的，期间用户可能已经返回或换了建筑） */
   private expandVersion = 0;
 
+  /**	当前浏览器是否支持 WebGL：不支持时不渲染三维组件，避免 WebGLRenderer 创建失败导致页面报错 */
+  webgl = {
+    supported: signal(WebGLTool.available()),
+  };
+
   ngOnInit(): void {
+    /*	WebGL 不可用时不创建三维组件；把 inited 置为 true，
+        否则等待 inited 的地图/点位加载会一直挂起 */
+    if (!this.webgl.supported()) {
+      this.three.inited = true;
+    }
     /*	渲染模式在创建模型前从本地缓存恢复，
         否则会先按默认模式加载一遍、再整体重载 */
     this.three.renderMode.set(this.business.config.renderMode);
@@ -490,7 +501,10 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
           if (scope.empties == 0) {
             scope.empties++;
             this.element.loading = false;
-            console.warn('[system-main-three] 当前范围返回空点位，保留已有点位，等待下一次刷新', args);
+            console.warn(
+              '[system-main-three] 当前范围返回空点位，保留已有点位，等待下一次刷新',
+              args,
+            );
             return;
           }
         }
@@ -562,9 +576,9 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
               if (this.floor.building()?.Id !== building.Id) {
                 await this.three.on.building.expand(building.ElementId);
               }
-              if (this.floor.model()) {
-                await this.floor.on.select(floor);
-              }
+              // if (this.floor.model()) {
+              //   await this.floor.on.select(floor);
+              // }
 
               wait(() => {
                 return this.three.loading() == false && this.element.loading == false;
@@ -681,6 +695,28 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         //   // this.three.focus.emit();
 
         // }, 10);
+      },
+      /**	点击楼栋名称：回到展开楼栋的全局视角。
+          没有选中楼层、或只有一层时不做任何事：此时没有“从楼层退回整栋楼”的意义，
+          强行 focus 会重新定位视角，反而奇怪 */
+      building: async () => {
+        if (!this.floor.selected()) return;
+        if (this.floor.datas().length <= 1) return;
+        let model = this.floor.model();
+        let building = this.floor.building();
+        if (!model || !building) return;
+
+        this.floor.selected.set(undefined);
+        let visibility = Object.fromEntries(
+          this.floor.datas().map((item) => [item.ElementId, true]),
+        ) as Record<string, boolean>;
+        this.floor.target.emit({ id: model.name, visibility });
+
+        this.args.floorId = undefined;
+        this.args.buildingId = building.Id;
+        this.argsChange.emit(this.args);
+        await this.element.load(this.args, true);
+        this.three.focus.emit();
       },
       back: async () => {
         /* 作废还在进行中的展开（楼层/点位还在请求时用户就点了返回） */

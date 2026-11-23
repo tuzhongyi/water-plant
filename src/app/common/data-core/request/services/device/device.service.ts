@@ -123,17 +123,15 @@ export class DeviceRequestService extends AbstractService<Device> {
 
   download(
     params: DeviceVideoDownloadParams,
-    onProgress?: (loaded: number, total: number) => void,
+    event?: {
+      headers?: Record<string, string>;
+      start?: (response: { status: number; length: number; total: number }) => void;
+      data?: (chunk: Uint8Array<ArrayBuffer>) => void;
+      process?: (progress: { loaded: number; total: number }) => void;
+    },
     signal?: AbortSignal,
   ) {
     let url = DeviceUrl.download(params.VideoChannelId, params.TimeRange, params.FileName);
-    return this.http.download(
-      url,
-      'video/mp4',
-      {
-        process: (progress) => onProgress?.(progress.loaded, progress.total),
-      },
-      signal,
-    );
+    return this.http.download(url, event, signal);
   }
 }

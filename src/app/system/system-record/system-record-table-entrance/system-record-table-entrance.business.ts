@@ -7,6 +7,7 @@ import { GetDeviceEventRecordsParams } from '../../../common/data-core/request/s
 import { EventRequestService } from '../../../common/data-core/request/services/event/event.service';
 import { Language } from '../../../common/tools/language-tool/language';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
+import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import {
   SystemRecordEntranceTableFilter,
   SystemRecordEntranceTableItem,
@@ -18,12 +19,21 @@ export class SystemRecordEntranceTableBusiness {
     private event: EventRequestService,
     private language: LanguageTool,
     private config: ConfigRequestService,
+    private permission: PermissionTool,
   ) {}
 
   async load(index: number, size: number, filter: SystemRecordEntranceTableFilter) {
+    /*	通道权限要等权限组加载完成后再判断 */
+    await this.permission.load().catch(() => {});
     let datas = await this.data.load(index, size, filter);
     if (datas.Page.RecordCount == 0 && datas.Page.PageIndex > 1) {
       datas = await this.data.load(index - 1, size, filter);
+    }
+    /*	只显示当前用户有权限查看的通道相关记录；没有关联通道的记录不受通道权限限制 */
+    datas.Data = datas.Data.filter((x) => this.get.permitted(x));
+    if (datas.Data.length == 0 && datas.Page.PageIndex > 1) {
+      datas = await this.data.load(datas.Page.PageIndex - 1, size, filter);
+      datas.Data = datas.Data.filter((x) => this.get.permitted(x));
     }
     let paged = new PagedList<SystemRecordEntranceTableItem<DeviceEventRecord>>();
 
@@ -63,15 +73,27 @@ export class SystemRecordEntranceTableBusiness {
       }
       return color;
     },
+    /**	记录是否与当前用户可查看的通道相关：有关联通道时按通道权限过滤，
+        没有关联通道（纯门禁进出记录）不受通道权限限制；根用户全部显示 */
+    permitted: (data: DeviceEventRecord) => {
+      if (this.permission.isRoot) return true;
+      let ids = this.get.channelIds(data);
+      if (ids.length == 0) return true;
+      return ids.some((id) => this.permission.canChannel(id));
+    },
+    /**	能否回放：需要回放权限，并且有关联通道在当前用户可查看的通道内 */
     playback: (data: DeviceEventRecord) => {
-      switch (data.EventType) {
-        case 1:
-        case 2:
-          return true;
-
-        default:
-          return !!data.Actions && data.Actions.length > 0;
+      if (!this.permission.playback) return false;
+      let ids = this.get.channelIds(data);
+      return ids.some((id) => this.permission.canChannel(id));
+    },
+    /**	记录关联的视频通道 Id：门禁记录通过联动动作关联摄像机 */
+    channelIds: (data: DeviceEventRecord) => {
+      let ids: string[] = [];
+      for (const action of data.Actions ?? []) {
+        if (action.ResourceId) ids.push(action.ResourceId);
       }
+      return ids;
     },
   };
 

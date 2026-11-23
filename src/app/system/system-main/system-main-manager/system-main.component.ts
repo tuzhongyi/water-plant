@@ -228,13 +228,21 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       video: (datas: GeoMapElement[]) => {
         this.video.multple.preview(datas);
       },
-      element: (args: { type?: MapElementType; buildingId?: string; ids?: string[] }) => {
+      element: (args: {
+        type?: MapElementType;
+        state?: number;
+        buildingId?: string;
+        ids?: string[];
+      }) => {
         this.window.table.element.type = args.type;
+        this.window.table.element.state = args.state;
         this.window.table.element.buildingId = args.buildingId;
         this.window.table.element.ids = args.ids;
         this.window.table.element.show.set(true);
       },
       resetstate: (data: GeoMapElement) => {
+        /* 与元素列表里的「重置状态」按钮一致：没有报警设置/控制权限不能复位 */
+        if (!this.permission.alarm) return;
         this.business.element.reset(data.Id).then((x) => {
           this.map.unalarm.emit(data);
           this.window.table.element.reload.emit();

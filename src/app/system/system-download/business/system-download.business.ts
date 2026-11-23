@@ -26,6 +26,10 @@ export class SystemDownloadBusiness {
   private count = 5;
   /**	每个下载中任务对应的 AbortController，用于删除/暂停时中止底层请求 */
   private controllers = new Map<string, AbortController>();
+  /**	已下载的数据块：暂停后继续下载时接着追加；删除/重试/重新下载时清空 */
+  private buffers = new Map<string, Uint8Array<ArrayBuffer>[]>();
+  /**	各任务已写入数据块的字节数：暂停时按它记进度，保证续传起点与已收数据一致 */
+  private downloaded = new Map<string, number>();
 
   /**	按时长切割并创建下载任务加入队列，返回最新任务列表 */
   download(args: SystemDownloadArgs): DownloadTask[] {
@@ -50,6 +54,8 @@ export class SystemDownloadBusiness {
   /**	删除任务 */
   remove(id: string): void {
     this.abort(id);
+    this.buffers.delete(id);
+    this.downloaded.delete(id);
     this.tasks = this.tasks.filter((t) => t.id !== id);
     this.emit();
     this.schedule();
@@ -60,29 +66,40 @@ export class SystemDownloadBusiness {
     this.remove(id);
   }
 
-  /**	暂停下载 */
+  /**	暂停下载：保留已下载的数据块，进度按实际收到的字节记录 */
   pause(id: string): void {
     this.abort(id);
-    this.patch(id, { state: 'paused' });
+    let task = this.tasks.find((x) => x.id === id);
+    if (!task) return;
+    let loaded = this.downloaded.get(id);
+    this.patch(id, { state: 'paused', loaded: loaded ?? task.loaded, speed: 0 });
   }
 
-  /**	恢复下载 */
+  /**	恢复下载：保留已下载的进度和数据块，从断点继续 */
   resume(id: string): void {
-    this.requeue(id);
+    this.requeue(id, false);
   }
 
-  /**	重试失败任务 */
+  /**	重试失败任务：从头下载 */
   retry(id: string): void {
-    this.requeue(id);
+    this.requeue(id, true);
   }
 
-  /**	重新下载已完成任务 */
+  /**	重新下载已完成任务：从头下载 */
   redownload(id: string): void {
-    this.requeue(id);
+    this.requeue(id, true);
   }
 
-  private requeue(id: string): void {
-    this.patch(id, { state: 'queued', loaded: 0, total: 0, speed: 0 });
+  /**	@param reset true 表示丢弃已下载数据从头开始（重试/重新下载） */
+  private requeue(id: string, reset: boolean): void {
+    if (reset) {
+      this.buffers.delete(id);
+      this.downloaded.delete(id);
+      this.patch(id, { state: 'queued', loaded: 0, total: 0, speed: 0, message: undefined });
+    } else {
+      /*	暂停后继续：进度和已下载的数据块都保留，等响应返回后再按状态码决定是否续传 */
+      this.patch(id, { state: 'queued', speed: 0, message: undefined });
+    }
     this.schedule();
   }
 
@@ -140,15 +157,26 @@ export class SystemDownloadBusiness {
     }
   }
 
-  /**	真实下载单个任务：请求二进制视频流 → 保存到本地 → 更新状态，完成后继续调度 */
+  /**	真实下载单个任务：请求二进制视频流 → 保存到本地 → 更新状态，完成后继续调度。
+      暂停后继续时保留已下载的数据块，用 Range 从断点续传；服务端不支持时退回整段重下 */
   private async start(task: DownloadTask): Promise<void> {
     const controller = new AbortController();
     this.controllers.set(task.id, controller);
-    this.patch(task.id, { state: 'downloading' });
-    // 实时进度：已下载字节与速度（节流更新，避免频繁触发界面刷新）
+    /*	有已下载数据块时才续传，否则从 0 开始；续传起点取已收字节数，
+        进度显示因 200ms 节流可能略小于它，不能直接用 task.loaded */
+    let parts = this.buffers.get(task.id);
+    let resumeFrom = parts ? (this.downloaded.get(task.id) ?? task.loaded) : 0;
+    if (!parts) {
+      parts = [];
+      this.buffers.set(task.id, parts);
+    }
+    this.downloaded.set(task.id, resumeFrom);
+    this.patch(task.id, { state: 'downloading', loaded: resumeFrom, speed: 0, message: undefined });
+    // 实时进度：本次请求已下载字节（续传时加上断点前的进度）与速度，节流更新
     const startTime = Date.now();
     let lastLoaded = 0;
     let lastTime = startTime;
+    let fullTotal = task.total;
     try {
       const timeRange = this.timeRange(task.duration);
       const fileName = `${task.name}_${timeRange}.mp4`;
@@ -156,37 +184,70 @@ export class SystemDownloadBusiness {
       params.TimeRange = timeRange;
       params.VideoChannelId = task.videoChannelId;
       params.FileName = fileName;
-      const blob = await this.service.download(
+      await this.service.download(
         params,
-        (loaded, total) => {
-          if (!this.active(task.id)) return;
-          const now = Date.now();
-          const elapsed = now - lastTime;
-          if (elapsed < 200) return;
-          const patch: Partial<DownloadTask> = {
-            loaded,
-            speed: (loaded - lastLoaded) / (elapsed / 1000),
-          };
-          if (total > 0) patch.total = total;
-          lastLoaded = loaded;
-          lastTime = now;
-          this.patch(task.id, patch);
+        {
+          headers: resumeFrom > 0 ? { Range: `bytes=${resumeFrom}-` } : undefined,
+          start: ({ status, length, total }) => {
+            if (resumeFrom > 0 && status != 206) {
+              /*	服务端不支持断点续传：丢掉旧数据，从头下载，进度归零重算 */
+              parts.length = 0;
+              resumeFrom = 0;
+              lastLoaded = 0;
+              this.downloaded.set(task.id, 0);
+              fullTotal = total || length;
+            } else if (status == 206) {
+              /*	Content-Range 带整段总长；没有时用断点 + 本次剩余长度 */
+              fullTotal = total > length ? total : resumeFrom + length;
+            } else {
+              fullTotal = total || length;
+            }
+            this.patch(task.id, { loaded: resumeFrom, total: fullTotal });
+          },
+          data: (chunk) => {
+            parts.push(chunk);
+            this.downloaded.set(task.id, (this.downloaded.get(task.id) ?? resumeFrom) + chunk.byteLength);
+          },
+          process: ({ loaded }) => {
+            if (!this.active(task.id)) return;
+            const now = Date.now();
+            const elapsed = now - lastTime;
+            if (elapsed < 200) return;
+            const patch: Partial<DownloadTask> = {
+              loaded: resumeFrom + loaded,
+              speed: (loaded - lastLoaded) / (elapsed / 1000),
+            };
+            if (fullTotal > 0) patch.total = fullTotal;
+            lastLoaded = loaded;
+            lastTime = now;
+            this.patch(task.id, patch);
+          },
         },
         controller.signal,
       );
-      // 下载期间若被暂停/取消/删除，则不再保存或标记完成
-      if (!this.active(task.id)) return;
+      /*	下载期间若被暂停/取消/删除，或已经被下一次续传取代，则不再保存 */
+      if (this.controllers.get(task.id) !== controller || !this.active(task.id)) return;
+      const blob = new Blob(parts, { type: 'video/mp4' });
+      this.buffers.delete(task.id);
+      this.downloaded.delete(task.id);
       this.save(blob, fileName);
-      // 完成后的平均下载速度 = 总字节 / 总耗时
+      // 完成后的平均下载速度 = 本次实际下载字节 / 总耗时
       const elapsed = (Date.now() - startTime) / 1000;
-      const speed = elapsed > 0 ? blob.size / elapsed : 0;
+      const speed = elapsed > 0 ? Math.max(0, blob.size - resumeFrom) / elapsed : 0;
       this.patch(task.id, { state: 'completed', total: blob.size, loaded: blob.size, speed });
     } catch {
-      if (this.active(task.id)) {
+      /*	暂停/取消会先删掉 controller，这里才不会把暂停误标成失败；
+          已经被下一次续传取代的旧请求也不能改状态 */
+      if (this.controllers.get(task.id) === controller && this.active(task.id)) {
+        /*	失败后只能重试（从头下载），顺手释放已下的数据块 */
+        this.buffers.delete(task.id);
+        this.downloaded.delete(task.id);
         this.patch(task.id, { state: 'failed', message: '下载失败' });
       }
     } finally {
-      this.controllers.delete(task.id);
+      if (this.controllers.get(task.id) === controller) {
+        this.controllers.delete(task.id);
+      }
       this.schedule();
     }
   }

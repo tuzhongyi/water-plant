@@ -43,7 +43,10 @@ export class SystemDeviceChannelTableBusiness {
       }
 
       let datas = await this.device.video.channel.all(params);
-      return datas.map((x) => this.convert.device(x));
+      /*	没有该通道权限时整行不显示（根用户不受通道列表限制）	*/
+      return datas
+        .filter((x) => this.permission.canChannel(x.Id))
+        .map((x) => this.convert.device(x));
     },
     db31: async (args: SystemDeviceChannelTableArgs) => {
       let params = new GetDB31DeviceChannelsParams();

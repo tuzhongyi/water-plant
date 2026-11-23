@@ -22,8 +22,13 @@
             <i class="mdi mdi-arrow-down"></i>
           </button>
         }
-        <button title="顺序播放视频组" [class.active]="loop.ing" (click)="on.loop()">
-          <i class="howell-icon-restore"></i>
+        @if (list.datas.length > 0) {
+          <button title="顺序播放视频组" [class.active]="loop.ing" (click)="on.loop()">
+            <i class="howell-icon-restore"></i>
+          </button>
+        }
+        <button title="保存到视频组" [disabled]="saveDisabled" (click)="on.save()">
+          <i class="mdi mdi-content-save"></i>
         </button>
       </div>
     </div>

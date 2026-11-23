@@ -78,11 +78,11 @@ export class SettingMapElementDetailsComponent implements OnChanges {
 
   private get check() {
     if (!this.data.Name) {
-      this.toastr.warning('请输入元素名称');
+      this.toastr.warning('请输入点位名称');
       return false;
     }
     if (!this.data.ElementType) {
-      this.toastr.warning('请选择元素类型');
+      this.toastr.warning('请选择点位类型');
       return false;
     }
     return true;

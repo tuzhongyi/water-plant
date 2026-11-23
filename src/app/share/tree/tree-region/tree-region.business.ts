@@ -46,8 +46,10 @@ export class TreeRegionBusiness {
   private filter(tree: RegionTreeNode[], args: TreeRegionArgs): RegionTreeNode[] {
     const query = (args.name ?? '').trim().toLowerCase();
 
+    /*	只按显示的名称匹配：以前把 Description 也拼进去，
+        描述里恰好含有关键字的摄像机会被搜出来（界面上只看得到名称，看起来就是“没有关键字的信息”）	*/
     const matches = (node: RegionTreeNode): boolean =>
-      `${node.Name ?? ''} ${node.Description ?? ''}`.toLowerCase().includes(query);
+      (node.Name ?? '').toLowerCase().includes(query);
 
     /** 子树内是否存在命中结点（不含自身） */
     const hasHitBelow = (node: RegionTreeNode): boolean =>

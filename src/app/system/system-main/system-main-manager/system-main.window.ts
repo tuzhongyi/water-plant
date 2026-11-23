@@ -87,6 +87,8 @@ export class PictureWindow extends WindowViewModel {
 export class MapElementTableWindow extends WindowViewModel {
   title: string = '地图点位信息列表';
   type?: MapElementType;
+  /**	状态筛选：0-在线，1-离线；不设置表示全部	*/
+  state?: number;
   buildingId?: string;
   /**	地图传来的全量元素 ElementId（已按视频通道权限过滤，含非摄像机元素）	*/
   ids?: string[];

@@ -1,13 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  computed,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, computed, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DeviceEventRecord } from '../../../../common/data-core/models/events/device-event-record.model';
 import { IconTool } from '../../../../common/tools/icon-tool/icon.tool';
@@ -44,7 +36,7 @@ export class SystemMainRecordTableComponent implements OnInit, OnDestroy {
   Language = Language;
   datas: SystemMainRecordTableItem[] = [];
   /**	没有回放权限时操作栏宽度为 0，回放按钮整列不占位（宽度读权限信号，权限加载后自动更新）	*/
-  width = ['7%', '25%', '15%', '145px', '7%'];
+  width = ['15px', 'auto', '58px', '140px', '16px'];
 
   /**	是否显示操作栏：读的是响应式权限信号，权限异步加载完成后自动出现/消失，
       不能在构造时读成普通布尔值缓存（加载完成前读到 false 就再也变不回来）	*/

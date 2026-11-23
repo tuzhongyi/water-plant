@@ -13,6 +13,7 @@ import {
 
 import { CommonModule, formatDate } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { StreamType } from '../../../common/components/video-player/video-player.model';
 import { VideoChannelViewGroup } from '../../../common/data-core/models/devices/video-channel-view-group.model';
 import { VideoChannelView } from '../../../common/data-core/models/devices/video-channel-view.model';
 import { Language } from '../../../common/tools/language-tool/language';
@@ -55,6 +56,8 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
 
     if (changes['mode']) {
       this.initScreens();
+      /* 切换画面数后实际在播放的数量可能变化，重新分配主/子码流 */
+      this.applyStreamByCount();
       // if (this.mode > ScreenMode.one && this.index != 0) {
       //   this.datas[0].stop();
       // }
@@ -133,10 +136,24 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (this.play) {
       let sub = this.play.subscribe((datas) => {
-        datas.map((args, index) => {
-          this.mode = this.get.screen(datas.length);
-          this.initScreens();
+        /*	先按本次播放后的画面数初始化，再根据“已有播放 + 本次要播”的总路数决定码流：
+            只有一路用主码流，多路用子码流；已在播放但码流不同的画面随后统一重启 */
+        this.mode = this.get.screen(datas.length);
+        this.initScreens();
 
+        let playing = new Set<number>();
+        this.datas.forEach((item, index) => {
+          if (item.playing) playing.add(index);
+        });
+        datas.forEach((args, index) => {
+          if (args && index < this.datas.length) playing.add(index);
+        });
+        let stream = playing.size > 1 ? StreamType.sub : StreamType.main;
+        datas.forEach((args) => {
+          if (args) args.stream = stream;
+        });
+
+        datas.map((args, index) => {
           if (this.datas.length > index) {
             if (args instanceof PreviewArgs) {
               this.datas[index].preview(args);
@@ -147,12 +164,15 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         });
+
+        this.applyStream(stream);
       });
       this.subs.add(sub);
     }
     if (this.stop) {
       let sub = this.stop.subscribe((index) => {
         this.datas[index].stop();
+        this.applyStreamByCount();
       });
       this.subs.add(sub);
     }
@@ -194,6 +214,24 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
     },
   };
 
+  /**	按当前正在播放的路数决定码流：只有一路用主码流，多路用子码流 */
+  private applyStreamByCount(): void {
+    let playing = this.datas.filter((x) => x.playing && x.args);
+    if (playing.length == 0) return;
+    let stream = playing.length > 1 ? StreamType.sub : StreamType.main;
+    this.applyStream(stream);
+  }
+
+  /**	把正在播放的画面统一切到指定码流；码流不同的重新起播 */
+  private applyStream(stream: StreamType): void {
+    for (const item of this.datas) {
+      if (!item.playing || !item.args) continue;
+      if (item.args.stream === stream) continue;
+      item.args.stream = stream;
+      item.resume();
+    }
+  }
+
   onscreenclicked(index: number) {
     this.index = this.datas.findIndex((x) => x.index == index);
     this.datas.forEach((x) => {
@@ -204,6 +242,8 @@ export class VideoPlayerListComponent implements OnInit, OnChanges, OnDestroy {
   onstop(index: number) {
     this.datas[index].stop();
     this.stoping.emit(index);
+    /* 停掉一路后如果只剩一路，切回主码流 */
+    this.applyStreamByCount();
   }
 
   onplaying(index: number) {

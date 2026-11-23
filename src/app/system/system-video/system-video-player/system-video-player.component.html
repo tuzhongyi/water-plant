@@ -47,16 +47,6 @@
         >
           <i class="howell-icon-screen-16"></i>
         </button>
-        @if (viewgroupable) {
-          <button
-            class="button-border primary"
-            title="保存到视频组"
-            [disabled]="viewgroup.disabled()"
-            (click)="viewgroup.on()"
-          >
-            <i class="mdi mdi-content-save"></i>
-          </button>
-        }
       </div>
       <div class="button-group">
         @if (!fullscreen.value()) {

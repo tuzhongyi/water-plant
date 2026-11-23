@@ -15,7 +15,7 @@ import { LocalStorage } from './local.storage';
   providedIn: 'root',
 })
 export class GlobalStorage {
-  version = '1.0.4.0';
+  version = '1.0.4.2';
 
   user = {
     info: new PromiseValue<User>(),

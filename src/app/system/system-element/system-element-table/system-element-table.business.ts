@@ -71,10 +71,12 @@ export class SystemElementTableBusiness {
       parent: this.get.parent(data.ParentId),
       statename: this.language.geo.ElementStates(display),
       statecolor: ColorTool.from.MapElementState(display).name,
+      /*	按解析后的状态判断：摄像机没有 ElementState 时 ElementStateTool 会查视频通道，
+          通道在线同样可以预览 */
       canplay:
         data.ElementType == MapElementType.Camera &&
         this.permission.canChannel(data.ElementId) &&
-        data.ElementState == 0,
+        state == 0,
 
       alarm: true,
       data: data,
@@ -228,6 +230,10 @@ export class SystemElementTableBusiness {
         return paged;
       }
 
+      if (filter.state !== undefined) {
+        params.ElementState = filter.state;
+      }
+
       let datas = await this.service.geo.map.element.list(params);
       datas.Data = await this.filterCameras(datas.Data);
       return datas;
@@ -261,6 +267,10 @@ export class SystemElementTableBusiness {
 
         if (!(await this.applyPermission(params, filter))) {
           return [];
+        }
+
+        if (filter.state !== undefined) {
+          params.ElementState = filter.state;
         }
 
         // 3. 获取所有符合条件的元素，过滤出父级为楼层的数据

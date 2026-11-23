@@ -63,7 +63,7 @@ export class SettingMapElementManagerComponent {
       return false;
     }
     if (!this.tree.selected) {
-      this.toastr.warning('请选择父元素');
+      this.toastr.warning('请选择父点位');
       return false;
     }
     return true;

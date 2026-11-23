@@ -60,8 +60,8 @@ export class SystemMainThreeElementBusiness {
         if (array.length == 1) {
           return array[0];
         } else if (array.length > 1) {
-          console.error(`设备ID绑定多个地图元素${id}`, array);
-          throw new Error(`设备ID绑定多个地图元素${id}`);
+          console.error(`设备ID绑定多个地图点位${id}`, array);
+          throw new Error(`设备ID绑定多个地图点位${id}`);
         } else {
           return undefined;
         }

@@ -32,6 +32,7 @@ import { GeoMapElement } from '../../../common/data-core/models/geographic/map-e
 import { GeoMap } from '../../../common/data-core/models/geographic/map.model';
 import { IIdNameModel } from '../../../common/data-core/models/interface/model.interface';
 import { wait } from '../../../common/tools/wait';
+import { WebGLTool } from '../../../common/tools/webgl-tool/webgl.tool';
 import { SettingMapBusiness } from '../business/setting-map.business';
 import { BindingArgs, MapModel } from '../business/setting-map.model';
 import { SettingMapThreeConverter } from './setting-map-three.converter';
@@ -94,7 +95,17 @@ export class SettingMapThreeComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   /** 组件初始化：加载地图、建筑、元素并注册外部 load 事件 */
+  /**	当前浏览器是否支持 WebGL：不支持时不渲染三维组件，避免 WebGLRenderer 创建失败导致页面报错 */
+  webgl = {
+    supported: signal(WebGLTool.available()),
+  };
+
   ngOnInit(): void {
+    /*	WebGL 不可用时不创建三维组件；把 inited 置为 true，
+        否则等待 inited 的地图/点位加载会一直挂起 */
+    if (!this.webgl.supported()) {
+      this.three.inited = true;
+    }
     this.map.load();
     this.building.load();
     this.element.load();

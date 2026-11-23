@@ -151,18 +151,22 @@
     padding: 10px;
     background-color: rgba(var(--surface-dark-r), var(--surface-dark-g), var(--surface-dark-b), 0.3);
     border-radius: 5%;
-    cursor: pointer;
-    opacity: 0.9;
+    cursor: default;
 
-    &:hover {
-      opacity: 1;
-    }
-
+    /*	标题、在线、异常三块沿用原来的“变亮”效果，只是分开生效：
+        悬停哪一块哪一块从 0.9 变到 1，不再整张卡片一起变	*/
     &-head {
       display: flex;
       align-items: center;
       gap: 15px;
       color: var(--primary);
+      cursor: pointer;
+      opacity: 0.9;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     &-body {
@@ -178,6 +182,13 @@
       display: flex;
       align-items: baseline;
       gap: 10px;
+      cursor: pointer;
+      opacity: 0.9;
+      transition: opacity 0.2s ease;
+
+      &:hover {
+        opacity: 1;
+      }
 
       &-value {
         font-weight: bold;

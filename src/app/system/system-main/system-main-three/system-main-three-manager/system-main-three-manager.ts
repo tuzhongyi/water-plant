@@ -42,6 +42,7 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   @Output() video = new EventEmitter<GeoMapElement[]>();
   @Output() element = new EventEmitter<{
     type?: MapElementType;
+    state?: number;
     buildingId?: string;
     ids?: string[];
   }>();
@@ -195,21 +196,32 @@ export class SystemMainThreeManager implements OnInit, OnDestroy {
   };
 
   on = {
+    /**	点位名称同步完成：重新加载场景点位、统计面板和分组树，显示新名称 */
+    synced: () => {
+      this.map.args.usecache = false;
+      this.map.load.emit(this.map.args);
+      this.state.load();
+    },
     change: (value: number) => {
       if (this.config) {
         this.config.find.radius = value;
         this.business.config.save(this.config);
       }
     },
-    element: (type?: MapElementType) => {
+    element: (details: { type?: MapElementType; state?: number }) => {
       /*	统计面板展示的是全量数据，查看全部也只按类型过滤，不再带建筑条件；
           把这份全量数据的 ElementId 一起传给元素列表窗口：
           它已经按视频通道权限过滤过（只过滤摄像机），列表用它做服务端 ElementIds 过滤，
-          非摄像机元素（报警器/传感器/出入口）就不会被通道 Id 误过滤掉 */
+          非摄像机元素（报警器/传感器/出入口）就不会被通道 Id 误过滤掉。
+          点击在线/异常数字时还要带上状态，列表只显示对应状态的元素 */
       let ids = this.state.source
         .map((x) => x.ElementId)
         .filter((x): x is string => !!x);
-      this.element.emit({ type: type, ids: Array.from(new Set(ids)) });
+      this.element.emit({
+        type: details.type,
+        state: details.state,
+        ids: Array.from(new Set(ids)),
+      });
     },
   };
 }

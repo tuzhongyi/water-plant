@@ -14,7 +14,7 @@ class DetailsWindow extends WindowViewModel {
   constructor(private that: SettingMapElementManagerComponent) {
     super();
   }
-  title = '地图元素信息';
+  title = '地图点位信息';
 
   style = {
     ...SizeTool.window.simple,

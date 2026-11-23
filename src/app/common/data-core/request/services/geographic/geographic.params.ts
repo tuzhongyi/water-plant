@@ -13,4 +13,6 @@ export class GetMapElementsParams extends PagedParams {
   ParentId?: string;
   /**	String[]	地图元素ID列表	O*/
   ElementIds?: string[];
+
+  ElementState?: number;
 }

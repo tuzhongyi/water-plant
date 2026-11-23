@@ -5,6 +5,7 @@ export interface ISystemElementTableArgs {
   type?: number;
   buildingId?: string;
   ids?: string[];
+  state?: number;
 }
 
 export class SystemElementTableArgs implements ISystemElementTableArgs {
@@ -13,6 +14,7 @@ export class SystemElementTableArgs implements ISystemElementTableArgs {
   buildingId?: string;
   /**	地图传来的全量元素 ElementId（已按视频通道权限过滤，含非摄像机元素）	*/
   ids?: string[];
+  state?: number;
   first = false;
 }
 
@@ -21,6 +23,7 @@ export class SystemElementTableFilter implements ISystemElementTableArgs {
   type?: number;
   buildingId?: string;
   ids?: string[];
+  state?: number;
 
   static from(args: SystemElementTableArgs): SystemElementTableFilter {
     let filter = ObjectTool.assign(args, SystemElementTableFilter);

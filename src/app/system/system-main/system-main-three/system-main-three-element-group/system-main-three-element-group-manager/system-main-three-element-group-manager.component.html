@@ -10,6 +10,13 @@
           <div class="system-main-three-element-group-head-title">
             <div class="system-main-three-element-group-head-title-content">{{ title }}</div>
           </div>
+          <div class="system-main-three-element-group-head-action">
+            @if (permission.signals.isRoot()) {
+              <button title="同步点位名称" (click)="on.sync.open()">
+                <i class="mdi mdi-sync"></i>
+              </button>
+            }
+          </div>
         </div>
         <div class="card-line system-main-three-element-group-line"></div>
         <div class="system-main-three-element-group-search">
@@ -35,4 +42,14 @@
       </div>
     </hw-card-statistic>
   </div>
+
+  @if (window.sync.show()) {
+    <confirm-window
+      [model]="window.sync"
+      [content]="window.content"
+      [style]="window.style"
+      (ok)="on.sync.ok()"
+      (cancel)="on.sync.cancel()"
+    ></confirm-window>
+  }
 </div>

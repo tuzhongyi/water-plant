@@ -13,11 +13,53 @@
     height: 100%;
     position: relative;
     padding: 0;
+
+    /* WebGL 不可用时只显示提示，隐藏依赖三维场景的地图按钮/面板 */
+    &.unsupported {
+      .system-main-three-button-area,
+      .system-main-three-full,
+      .system-main-three-building,
+      .system-main-three-floor,
+      .system-main-three-filter,
+      .system-main-three-found {
+        display: none;
+      }
+    }
   }
 
   &-content {
     width: 100%;
     height: 100%;
+  }
+
+  &-webgl {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    text-align: center;
+    color: var(--white);
+
+    i {
+      font-size: 44px;
+      color: var(--sub);
+    }
+
+    &-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    &-desc {
+      max-width: 560px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--normal);
+    }
   }
 
   &-floor {
@@ -30,10 +72,43 @@
       display: flex;
       flex-direction: column-reverse;
       justify-content: flex-start;
+      /* 和楼层列表左对齐：覆盖全局 button-group 的 align-items: center */
+      align-items: flex-start;
 
       button {
         min-width: 76px;
         backdrop-filter: blur(8px);
+      }
+    }
+
+    /*	返回按钮和楼栋名称一组：列反转布局下作为第一项停在最下方，
+        名称显示在返回按钮下面；间距与楼层列表一致（10px）	*/
+    .floor-back {
+      display: flex;
+      flex-direction: column;
+      /* 返回按钮按自身内容宽（和楼层按钮一样），不跟着楼栋名称拉宽 */
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    /*	和楼栋列表单项一致：描边按钮样式（不可点击），过长时省略号 */
+    .floor-building-name {
+      min-width: 76px;
+      max-width: 140px;
+      height: 34px;
+      line-height: 32px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      user-select: none;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+
+      &.clickable {
+        cursor: pointer;
       }
     }
   }

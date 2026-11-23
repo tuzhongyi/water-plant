@@ -33,46 +33,54 @@ export class HowellHttpClient {
     return new Blob([response], { type: mime });
   }
 
-  /**	带进度的二进制下载：process 实时回调已下载/总字节（总字节未知时为 0），完成后返回 Blob；传入 signal 可中止请求 */
-  download(
+  /**	流式二进制下载：边下边回调数据块和进度，暂停后可用 Range 从头续传。
+      headers 可传 Range；start 在收到响应头时回调状态码和长度（续传时服务端返回 206）；
+      signal 中断请求；调用方负责把 data 回调的数据块拼成文件 */
+  async download(
     path: string,
-    mime: string,
-    event?: { process?: (progress: { loaded: number; total: number }) => void },
+    event?: {
+      headers?: Record<string, string>;
+      start?: (response: { status: number; length: number; total: number }) => void;
+      data?: (chunk: Uint8Array<ArrayBuffer>) => void;
+      process?: (progress: { loaded: number; total: number }) => void;
+    },
     signal?: AbortSignal,
-  ) {
-    let options = this.getAuth();
-    return new Promise<Blob>((resolve, reject) => {
-      const subscription = this.http
-        .get(path, {
-          ...options,
-          responseType: 'blob',
-          reportProgress: true,
-          observe: 'events',
-        })
-        .subscribe({
-          next: (e) => {
-            if (e.type === HttpEventType.DownloadProgress) {
-              event?.process?.({ loaded: e.loaded, total: e.total ?? 0 });
-            } else if (e.type === HttpEventType.Response && e.body) {
-              resolve(new Blob([e.body], { type: mime }));
-            }
-          },
-          error: (err) => reject(err),
-        });
-
-      // 外部中止：取消订阅以中断底层 XHR 请求，并拒绝 Promise
-      const onAbort = () => {
-        subscription.unsubscribe();
-        reject(new Error('下载已取消'));
-      };
-      if (signal) {
-        if (signal.aborted) {
-          onAbort();
-        } else {
-          signal.addEventListener('abort', onAbort, { once: true });
-        }
-      }
+  ): Promise<{ status: number }> {
+    const response = await fetch(path, {
+      headers: { ...this.authorization, ...(event?.headers ?? {}) },
+      signal,
     });
+    if (!response.ok) {
+      throw new Error(`下载失败：${response.status}`);
+    }
+    const length = Number(response.headers.get('Content-Length') ?? 0) || 0;
+    let total = length;
+    /*	断点续传时 Content-Range 形如 bytes 100-999/1000，末段是整段总长 */
+    const contentRange = response.headers.get('Content-Range');
+    if (contentRange) {
+      const matched = /\/(\d+)$/.exec(contentRange);
+      if (matched) {
+        total = Number(matched[1]);
+      }
+    }
+    event?.start?.({ status: response.status, length, total });
+    if (!response.body) {
+      const buffer = await response.arrayBuffer();
+      const chunk = new Uint8Array(buffer);
+      event?.data?.(chunk);
+      event?.process?.({ loaded: chunk.byteLength, total: total || chunk.byteLength });
+      return { status: response.status };
+    }
+    const reader = response.body.getReader();
+    let loaded = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      loaded += value.byteLength;
+      event?.data?.(value);
+      event?.process?.({ loaded, total });
+    }
+    return { status: response.status };
   }
 
   buffer(path: string) {

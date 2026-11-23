@@ -2,17 +2,17 @@
   <div class="setting-map-details-body">
     <div class="forms">
       <div class="form-item" *ngIf="args">
-        <div class="form-item-text" text-space-between>父元素</div>
+        <div class="form-item-text" text-space-between>父点位</div>
         <div class="form-item-value">
           <input type="text" readonly [value]="args.parent.Name || ''" />
         </div>
       </div>
       <div class="form-item">
-        <div class="form-item-text" text-space-between>元素名称</div>
+        <div class="form-item-text" text-space-between>点位名称</div>
         <div class="form-item-value"><input type="text" [(ngModel)]="data.Name" /></div>
       </div>
       <div class="form-item">
-        <div class="form-item-text" text-space-between>元素类型</div>
+        <div class="form-item-text" text-space-between>点位类型</div>
         <div class="form-item-value fill">
           <hw-select [nullable]="false" [(selected)]="data.ElementType">
             <select [(ngModel)]="data.ElementType">

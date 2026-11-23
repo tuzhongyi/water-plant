@@ -33,6 +33,8 @@ export class SystemVideoViewGroupManagerComponent implements OnInit, OnDestroy {
   @Input() minimizeable = false;
   @Input() minimize = false;
   @Output() minimizeChange = new EventEmitter<boolean>();
+  @Input() saveDisabled = false;
+  @Output() save = new EventEmitter<void>();
 
   constructor(
     private business: SystemVideoViewGroupBusiness,
@@ -181,6 +183,9 @@ export class SystemVideoViewGroupManagerComponent implements OnInit, OnDestroy {
       } else {
         this.loop.start();
       }
+    },
+    save: () => {
+      this.save.emit();
     },
   };
 }

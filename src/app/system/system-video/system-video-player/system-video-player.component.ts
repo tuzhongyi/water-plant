@@ -38,7 +38,6 @@ export class SystemVideoPlayerComponent implements OnInit, OnDestroy {
   @Output() expandChange = new EventEmitter<boolean>();
 
   @Output('viewgroup') _viewgroup = new EventEmitter<VideoChannelViewGroup>();
-  @Input() viewgroupable = false;
   @Input() grouppreview?: EventEmitter<PreviewArgs[]>;
 
   constructor(private layout: SystemLayoutService) {}

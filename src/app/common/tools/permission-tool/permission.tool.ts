@@ -52,9 +52,14 @@ export class PermissionTool {
   };
 
   /**	用户有权限查看的视频通道 Id（通道未加载时为空集合）；
+      根用户拥有全部通道权限，返回 undefined，表示不受通道列表限制；
       按引用缓存集合，模板/列表里反复判断时不必每次重建	*/
   private channelCache?: { source?: IdAndName[]; ids: ReadonlySet<string> };
-  get channels(): ReadonlySet<string> {
+  get channels(): ReadonlySet<string> | undefined {
+    /* 根用户不读通道列表：接口没返回或只返回部分通道时也不能限制根用户 */
+    if (this.isRoot) {
+      return undefined;
+    }
     let source = this.global.user.channels.value();
     let cache = this.channelCache;
     if (!cache || cache.source !== source) {
@@ -73,7 +78,7 @@ export class PermissionTool {
     let id = this.channelKey(channelId);
     if (!id) return false;
     if (this.isRoot) return true;
-    return this.channels.has(id);
+    return this.channels?.has(id) ?? false;
   }
 
   private channelKey(id?: string): string {

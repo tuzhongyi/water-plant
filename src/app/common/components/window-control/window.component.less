@@ -19,12 +19,20 @@
 @slice-bottom: 88;
 @slice-left: 189;
 
+// 9 宫格在左右 189px 的拼接处会出现 1px 透明缝
+// 用与图片内部填充相同的颜色盖住，上下让出光晕区域
+@window-seam-overlap: 1px;
+@window-seam-offset: -1px;
+@window-seam-glow: 30px;
+
 
 .window-background {
 
   --line-height: 21px;
 
   position: relative;
+  // 建立层叠上下文，使下面的遮缝层位于边框图之上、window-content 之下
+  z-index: 0;
   box-sizing: border-box;
 
   border-style: solid;
@@ -36,6 +44,27 @@
   border-image-slice: @slice-top @slice-right @slice-bottom @slice-left fill;
   border-image-repeat: stretch;
   box-sizing: border-box;
+
+  // 盖住 9 宫格左右拼接缝；定位基准是 padding box（已让出 88/189px 边框）
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: (@window-seam-glow - @slice-top);
+    bottom: (@window-seam-glow - @slice-bottom);
+    width: (2 * @window-seam-overlap);
+    background-color: var(--surface-window);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  &::before {
+    left: @window-seam-offset;
+  }
+
+  &::after {
+    right: @window-seam-offset;
+  }
 
   .window-content {
     margin:~"-@{slice-top}px -@{slice-right}px -@{slice-bottom}px -@{slice-left}px";

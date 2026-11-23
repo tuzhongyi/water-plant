@@ -30,17 +30,19 @@
         (play)="viewgroup.on.play($event)"
         (update)="viewgroup.on.update($event)"
         (delete)="viewgroup.on.delete($event)"
+        [saveDisabled]="playerEl.viewgroup.disabled()"
+        (save)="playerEl.viewgroup.on()"
       ></hw-system-video-view-group-manager>
     </div>
   </div>
   <div class="system-video-preview-player" [class.full]="player.expand">
     <hw-system-video-player
+      #playerEl
       [preview]="player.preview"
       [grouppreview]="player.viewgroup"
       [(expand)]="player.expand"
       [(screen)]="player.screen"
       (viewgroup)="viewgroup.on.save($event)"
-      [viewgroupable]="true"
     ></hw-system-video-player>
   </div>
 </div>

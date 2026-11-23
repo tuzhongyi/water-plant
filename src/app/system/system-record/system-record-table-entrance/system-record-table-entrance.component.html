@@ -14,7 +14,11 @@
           <th sort="EventType">事件类型</th>
           <th sort="EventTime">事件时间</th>
           <th sort="Description">描述</th>
-          <th class="center">操作</th>
+          <th class="center">
+            @if (permission.signals.playback()) {
+              操作
+            }
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -62,15 +66,13 @@
             </td>
 
             <td class="center">
-              @if (item) {
+              @if (item && permission.signals.playback()) {
                 <div class="operation">
-                  <button
-                    title="视频回放"
-                    (click)="on.playback($event, item)"
-                    [disabled]="!item.playback"
-                  >
-                    <i class="howell-icon-video-play"></i>
-                  </button>
+                  @if (item.playback) {
+                    <button title="视频回放" (click)="on.playback($event, item)">
+                      <i class="howell-icon-video-play"></i>
+                    </button>
+                  }
                 </div>
               }
             </td>

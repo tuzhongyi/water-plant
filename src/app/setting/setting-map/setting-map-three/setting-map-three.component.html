@@ -1,5 +1,6 @@
-<div class="setting-map-three">
+<div class="setting-map-three" [class.unsupported]="!webgl.supported()">
   <div class="setting-map-three-container">
+    @if (webgl.supported()) {
     <hw-3d
       [models]="three.model.datas()"
       (inited)="three.on.inited()"
@@ -22,6 +23,19 @@
       [viewfieldEdit]="{ course: true }"
       (viewfieldChange)="element.on.camera.viewfield($event)"
     ></hw-3d>
+    } @else {
+      <div class="setting-map-three-webgl">
+        <i class="mdi mdi-alert-circle-outline"></i>
+        <div class="setting-map-three-webgl-title">三维地图无法显示</div>
+        <div class="setting-map-three-webgl-desc">
+          当前浏览器无法创建 WebGL 上下文，三维地图需要 WebGL 才能运行。
+        </div>
+        <div class="setting-map-three-webgl-desc">
+          请在浏览器设置中开启「使用硬件加速」并重启浏览器；如果电脑由公司统一管理，请联系管理员开启
+          WebGL。
+        </div>
+      </div>
+    }
   </div>
 
   @if (manager.building.show) {
