@@ -239,6 +239,14 @@
       table.btn-table.with-icon td:nth-child(3) {
         width: 25%;
       }
+      /* 3.1.1 设备列表：图标列与其他表格一致，设备/下面内容两列等宽 */
+      table.btn-table.with-icon.device-list {
+        table-layout: fixed;
+      }
+      table.btn-table.with-icon.device-list td:nth-child(2),
+      table.btn-table.with-icon.device-list td:nth-child(3) {
+        width: auto;
+      }
       /* ---------- 截图占位 ---------- */
       figure.shot {
         margin: 18px 0 24px;
@@ -295,6 +303,10 @@
       }
       /* ---------- 打印 ---------- */
       @media print {
+        @page {
+          size: A4;
+          margin: 16mm 14mm;
+        }
         body {
           background: #fff;
         }
@@ -303,8 +315,102 @@
           max-width: none;
           padding: 0;
         }
+        /* 封面单独一页，目录从新的一页开始并尽量保持在一页内 */
         .toc {
+          page-break-before: always;
           page-break-after: always;
+          break-before: page;
+          break-after: page;
+          page-break-inside: avoid;
+          break-inside: avoid;
+          margin: 0;
+          padding: 16px 22px;
+        }
+        .toc > ol {
+          column-gap: 24px;
+        }
+        .toc > ol > li {
+          margin-bottom: 6px;
+        }
+        .toc ol ol li {
+          margin: 1px 0;
+        }
+        /* 封面整页撑满 A4，标题在版心内尽量大 */
+        .cover {
+          min-height: 250mm;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 0 0 20mm;
+          border-radius: 0;
+          page-break-after: avoid;
+        }
+        .cover-title {
+          font-size: 66px;
+          letter-spacing: 1px;
+          white-space: nowrap;
+        }
+        /* 每个大章节从新的一页开始 */
+        h2 {
+          break-before: page;
+          page-break-before: always;
+        }
+        /* 打印时略微收紧表格，减少页尾只剩一两行的情况 */
+        th,
+        td {
+          padding: 7px 10px;
+        }
+        /* 表格行不跨页；标题后面必须跟一段内容，避免标题落在页底最后一行 */
+        tr {
+          page-break-inside: avoid;
+        }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+          break-after: avoid-page;
+          page-break-after: avoid;
+          break-inside: avoid;
+        }
+        h1 + *,
+        h2 + *,
+        h3 + *,
+        h4 + *,
+        h5 + * {
+          break-before: avoid-page;
+        }
+        /* 表格前的“快捷操作/操作步骤”等加粗小标题，不能单独落在页底 */
+        p:has(> strong:only-child) {
+          break-after: avoid-page;
+          page-break-after: avoid;
+        }
+        p:has(> strong:only-child) + * {
+          break-before: avoid-page;
+        }
+        /* 表格前的说明文字（如“单击左侧设备……”）要和表格留在同一页 */
+        p:has(+ table) {
+          break-after: avoid-page;
+          page-break-after: avoid;
+        }
+        p:has(+ table) + * {
+          break-before: avoid-page;
+        }
+        /* 提示框尽量跟着前面的内容，不要单独落到下一页 */
+        .tip,
+        .note {
+          break-before: avoid-page;
+          page-break-before: avoid;
+        }
+        /* 常见问题条目收紧，避免最后一条单独占一页 */
+        #faq {
+          margin-top: 24px;
+        }
+        #faq ~ h3 {
+          margin: 14px 0 4px;
+        }
+        #faq ~ p {
+          margin: 4px 0;
         }
       }
 
@@ -398,7 +504,7 @@
         background: var(--primary-light);
         font-size: 12px;
       }
-      /* 视频页面板折叠：项目里的圆形小按钮 */
+      /* 视频窗口板折叠：项目里的圆形小按钮 */
       .btn-icon.frame-circle {
         width: 20px;
         height: 20px;
@@ -443,8 +549,7 @@
             <a href="#prepare">一、使用前的准备</a>
             <ol>
               <li><a href="#sec-1-1">1.1 浏览器与显示</a></li>
-              <li><a href="#sec-1-2">1.2 系统地址与账号</a></li>
-              <li><a href="#sec-1-3">1.3 账号权限说明</a></li>
+              <li><a href="#sec-1-2">1.2 账号权限说明</a></li>
             </ol>
           </li>
           <li>
@@ -498,7 +603,12 @@
                       <li><a href="#sec-3-3-4-1">3.3.4.1 点位信息列表窗口</a></li>
                     </ol>
                   </li>
-                  <li><a href="#sec-3-3-5">3.3.5 点位分组面板</a></li>
+                  <li>
+                    <a href="#sec-3-3-5">3.3.5 点位分组面板</a>
+                    <ol>
+                      <li><a href="#sec-3-3-5-1">3.3.5.1 点位名称同步（仅管理员）</a></li>
+                    </ol>
+                  </li>
                 </ol>
               </li>
               <li><a href="#sec-3-4">3.4 报警弹窗</a></li>
@@ -509,21 +619,21 @@
             <a href="#video">四、视频</a>
             <ol>
               <li>
-                <a href="#sec-4-1">4.1 视频预览</a>
+                <a href="#sec-4-1">4.1 视频预览（需要视频预览权限）</a>
                 <ol>
                   <li><a href="#sec-4-1-1">4.1.1「摄像机」列表面板</a></li>
                   <li><a href="#sec-4-1-2">4.1.2 播放器</a></li>
                 </ol>
               </li>
               <li><a href="#sec-4-2">4.2 视频组</a></li>
-              <li><a href="#sec-4-3">4.3 视频回放</a></li>
+              <li><a href="#sec-4-3">4.3 视频回放（需要视频回放权限）</a></li>
             </ol>
           </li>
           <li>
-            <a href="#download">五、视频下载</a>
+            <a href="#download">五、视频下载（需要视频下载权限）</a>
             <ol>
               <li><a href="#sec-5-1">5.1 下载控件</a></li>
-              <li><a href="#sec-5-2">5.2 下载任务列表</a></li>
+              <li><a href="#sec-5-2">5.2 下载任务状态说明</a></li>
               <li><a href="#sec-5-3">5.3 下载文件名称</a></li>
             </ol>
           </li>
@@ -531,37 +641,31 @@
             <a href="#setting">六、设置</a>
             <ol>
               <li><a href="#sec-6-1">6.1 系统设置</a></li>
-            </ol>
-          </li>
-          <li>
-            <a href="#admin">七、管理员权限</a>
-            <ol>
               <li>
-                <a href="#sec-7-1">7.1 地图布控</a>
+                <a href="#sec-6-2">6.2 地图布控（仅管理员）</a>
                 <ol>
-                  <li><a href="#sec-7-1-1">7.1.1 左侧「设备信息」树</a></li>
-                  <li><a href="#sec-7-1-2">7.1.2 中间三维地图</a></li>
-                  <li><a href="#sec-7-1-3">7.1.3 绑定设备操作步骤</a></li>
+                  <li><a href="#sec-6-2-1">6.2.1 操作步骤</a></li>
+                  <li><a href="#sec-6-2-2">6.2.2 设备信息</a></li>
+                  <li><a href="#sec-6-2-3">6.2.3 三维地图</a></li>
                 </ol>
               </li>
               <li>
-                <a href="#sec-7-2">7.2 区域资源设置</a>
+                <a href="#sec-6-3">6.3 区域资源设置（仅管理员）</a>
                 <ol>
-                  <li><a href="#sec-7-2-1">7.2.1 左侧「区域资源」树</a></li>
-                  <li><a href="#sec-7-2-2">7.2.2 右侧「摄像机」列表</a></li>
+                  <li><a href="#sec-6-3-1">6.3.1 区域资源</a></li>
+                  <li><a href="#sec-6-3-2">6.3.2 摄像机列表</a></li>
                 </ol>
               </li>
-              <li><a href="#sec-7-3">7.3 点位名称同步</a></li>
             </ol>
           </li>
           <li>
-            <a href="#faq">八、常见问题</a>
+            <a href="#faq">七、常见问题</a>
             <ol>
               <li><a href="#faq-1">登录提示「用户名或密码错误」？</a></li>
-              <li><a href="#faq-2">看不到「下载」「视频回放」入口或按钮置灰？</a></li>
+              <li><a href="#faq-2">看不到「下载」「视频回放」入口或按钮不可操作？</a></li>
               <li><a href="#faq-3">有摄像机名称，但无法播放视频？</a></li>
               <li><a href="#faq-4">地图上看不到某个设备点位？</a></li>
-              <li><a href="#faq-5">三维地图加载慢或显示异常？</a></li>
+              <li><a href="#faq-5">三维地图加载慢、无法显示或显示异常？</a></li>
               <li><a href="#faq-6">页面提示「实时消息服务连接失败」？</a></li>
               <li><a href="#faq-7">下载任务一直「排队中」？</a></li>
             </ol>
@@ -579,16 +683,11 @@
         <li>三维地图首次加载需要下载模型，等待时间与网络有关，请耐心等待加载完成。</li>
       </ul>
 
-      <h3 id="sec-1-2">1.2 系统地址与账号</h3>
-      <p>
-        系统地址由系统管理员提供。每个使用人员使用自己的账号登录，不同账号看到的功能和摄像机不同。
-      </p>
-
-      <h3 id="sec-1-3">1.3 账号权限说明</h3>
+      <h3 id="sec-1-2">1.2 账号权限说明</h3>
       <p>账号能使用哪些功能、能看到哪些摄像机，由管理员在权限组中配置。权限分为两类：</p>
       <ul>
-        <li><strong>功能权限：</strong>视频预览、视频回放、视频下载、报警设置/控制。</li>
-        <li><strong>通道权限：</strong>账号只能看到有权限的摄像机通道。</li>
+        <li><strong>功能权限：</strong>视频预览、视频回放、视频下载、报警设置。</li>
+        <li><strong>视频权限：</strong>账号只能看到有权限的摄像机。</li>
       </ul>
 
       <p><strong>各功能需要的权限：</strong></p>
@@ -602,19 +701,19 @@
         <tbody>
           <tr>
             <td>视频预览</td>
-            <td>视频预览权限，并且拥有该摄像机的通道权限</td>
+            <td>视频预览权限</td>
           </tr>
           <tr>
             <td>视频回放</td>
-            <td>视频回放权限，并且拥有该摄像机的通道权限</td>
+            <td>视频回放权限</td>
           </tr>
           <tr>
             <td>视频下载</td>
-            <td>视频下载权限，并且拥有该摄像机的通道权限</td>
+            <td>视频下载权限</td>
           </tr>
           <tr>
             <td>报警复位</td>
-            <td>报警设置/控制权限</td>
+            <td>报警设置权限</td>
           </tr>
           <tr>
             <td>地图布控、区域资源设置</td>
@@ -623,45 +722,40 @@
         </tbody>
       </table>
 
+
+
       <p><strong>不同权限下界面的具体变化：</strong></p>
-      <table class="btn-table">
+      <table>
         <thead>
           <tr>
-            <th style="width: 16%">权限</th>
-            <th style="width: 44%">不可见（入口/按钮隐藏）</th>
-            <th>不可操作</th>
+            <th style="width: 30%">权限</th>
+            <th>拥有该权限时</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>视频预览</td>
-            <td>
-              视频页「视频预览」页签；点位信息列表的「视频预览」按钮；设备通道列表的「操作」列；没有预览权限时报警弹窗不会弹出
-            </td>
-            <td>地图、点位分组、查找结果里双击摄像机不播放；<br />视频窗口不显示预览切换入口</td>
+            <td>可查看摄像机的实时画面；发生报警时弹出报警弹窗</td>
           </tr>
           <tr>
             <td>视频回放</td>
-            <td>视频页「视频回放」页签；主页报警列表和报警记录窗口中的回放按钮</td>
-            <td>不能查看录像回放</td>
+            <td>可查看摄像机的历史录像</td>
           </tr>
           <tr>
             <td>视频下载</td>
-            <td>顶部「下载」按钮；系统设置中的「下载设置」</td>
-            <td>不能下载录像</td>
+            <td>可下载摄像机录像，并可设置同时下载数量</td>
           </tr>
           <tr>
-            <td>报警设置/控制</td>
-            <td>点位信息列表的「重置状态」按钮</td>
-            <td>地图上双击报警器、传感器、门禁等点位不复位报警状态</td>
+            <td>报警设置</td>
+            <td>可复位报警器、传感器、门禁等点位的报警状态</td>
           </tr>
         </tbody>
       </table>
 
-      <p>如果既没有视频预览权限也没有视频回放权限，进入视频页会自动回到地图主页。</p>
+      <p></p>
 
       <div class="note">
-        没有权限时入口和按钮优先隐藏；按钮存在但置灰时，通常是设备离线或未选择目标。如果找不到某个功能入口，请先确认账号权限，需要开通时联系系统管理员。
+        按钮可用但没有反应时，通常是设备离线或未选择目标。找不到功能入口时，请先确认账号权限，需要开通时联系系统管理员。
       </div>
 
       <!-- ============ 二、登录与退出 ============ -->
@@ -728,12 +822,17 @@
         <div class="item">
           <span class="name">下载</span
           ><span class="btn-icon frame-round"><i class="mdi mdi-cloud-download"></i></span
-          >：打开视频下载页面（仅拥有视频下载权限时显示）。
+          >：打开视频下载页面（需要视频下载权限）。
         </div>
         <div class="item">
           <span class="name">设置</span
           ><span class="btn-icon frame-round"><i class="mdi mdi-settings"></i></span
           >：进入系统设置页面。
+        </div>
+        <div class="item">
+          <span class="name">帮助</span
+          ><span class="btn-icon frame-round"><i class="mdi mdi-help-circle"></i></span
+          >：在新页面打开本使用说明。
         </div>
         <div class="item">
           <span class="name">账号</span
@@ -805,7 +904,7 @@
           <tr>
             <td>环形图</td>
             <td>直观显示在线/离线设备占比</td>
-            <td>鼠标悬停可查看具体数值</td>
+            <td>中间显示在线设备占比</td>
           </tr>
           <tr>
             <td>在线</td>
@@ -825,6 +924,53 @@
         <img src="images/04-device-list.png" alt="设备列表窗口" />
         <figcaption>图 4　设备列表窗口</figcaption>
       </figure>
+      <p>单击左侧设备，右侧显示该设备关联的内容：</p>
+      <table class="btn-table with-icon device-list">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>设备</th>
+            <th>下面显示的内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="btn-icon"><i class="howell-icon-camera_line"></i></span>
+            </td>
+            <td>IPC</td>
+            <td>这台摄像机的画面</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="btn-icon"><i class="howell-icon-device_line"></i></span>
+            </td>
+            <td>NVR</td>
+            <td>录像机管理的摄像机画面</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="btn-icon"><i class="howell-icon-alarm_line"></i></span>
+            </td>
+            <td>报警主机</td>
+            <td>报警器</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="btn-icon"><i class="howell-icon-access_door"></i></span>
+            </td>
+            <td>门禁主机</td>
+            <td>门禁</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="btn-icon"><i class="howell-icon-sensor_line"></i></span>
+            </td>
+            <td>传感器设备</td>
+            <td>传感器</td>
+          </tr>
+        </tbody>
+      </table>
       <p><strong>筛选条件</strong></p>
       <table class="btn-table">
         <thead>
@@ -849,7 +995,7 @@
             <td>选项为「在线」「离线」；<br />不选择表示全部状态</td>
           </tr>
           <tr>
-            <td>主机地址输入框</td>
+            <td>设备地址输入框</td>
             <td>按设备地址查询</td>
             <td>输入完整或部分地址</td>
           </tr>
@@ -885,8 +1031,8 @@
               <span class="btn-icon"><i class="howell-icon-video-play"></i></span>
             </td>
             <td>视频预览</td>
-            <td>播放该通道的实时视频</td>
-            <td>通道离线时按钮置灰</td>
+            <td>播放该摄像机的实时视频</td>
+            <td>摄像机离线时不可播放</td>
           </tr>
         </tbody>
       </table>
@@ -949,9 +1095,9 @@
         <tbody>
           <tr>
             <td></td>
-            <td>报警记录行</td>
-            <td>显示图标、设备名称、类型、时间</td>
-            <td>鼠标悬停显示描述信息</td>
+            <td>报警记录详情</td>
+            <td>设备类型、设备名称、报警类型、报警时间</td>
+            <td>鼠标悬停显示详细信息</td>
           </tr>
           <tr>
             <td>
@@ -959,20 +1105,39 @@
             </td>
             <td>视频回放</td>
             <td>回放该报警关联的视频</td>
-            <td>需要回放权限，否则不显示该按钮</td>
+            <td>需回放权限</td>
           </tr>
         </tbody>
       </table>
 
       <h4 id="sec-3-2-1">3.2.1 报警记录窗口</h4>
-      <figure class="shot" data-file="images/06-record-window.png">
-        <img src="images/06-record-window.png" alt="报警记录窗口" />
-        <figcaption>图 6　报警记录窗口</figcaption>
-      </figure>
-      <p>窗口顶部有「报警记录」「出入口记录」两个页签，分别用于查看报警/故障记录和门禁进出记录。</p>
-
       <p id="sec-3-2-1-1"><strong>3.2.1.1 报警记录</strong></p>
       <p>显示设备的报警、故障记录。</p>
+      <figure class="shot" data-file="images/06-record-window.png">
+        <img src="images/06-record-window.png" alt="报警记录窗口" />
+        <figcaption>图 6　报警记录</figcaption>
+      </figure>
+      <p><strong>操作</strong></p>
+      <table class="btn-table with-icon">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="btn-icon"><i class="howell-icon-video-play"></i></span>
+            </td>
+            <td>视频回放</td>
+            <td>回放该记录关联的视频</td>
+            <td>只有同时具备回放权限并有关联视频时才显示按钮</td>
+          </tr>
+        </tbody>
+      </table>
       <p><strong>筛选条件</strong></p>
       <table class="btn-table">
         <thead>
@@ -1000,14 +1165,34 @@
           </tr>
         </tbody>
       </table>
-      <p><strong>记录详情</strong></p>
-      <ul>
-        <li>列表列：序号、设备名称、事件类型、触发类型、事件时间、描述、操作。</li>
-        <li>「操作」列的播放按钮用于回放该记录的视频；没有回放权限或没有关联通道时不显示按钮。</li>
-      </ul>
 
       <p id="sec-3-2-1-2"><strong>3.2.1.2 出入口记录</strong></p>
       <p>显示出入口/门禁的进出记录。</p>
+      <figure class="shot" data-file="images/06-record-window-2.png">
+        <img src="images/06-record-window-2.png" alt="出入口记录窗口" />
+        <figcaption>图 6-1　出入口记录</figcaption>
+      </figure>
+      <p><strong>操作</strong></p>
+      <table class="btn-table with-icon">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="btn-icon"><i class="howell-icon-video-play"></i></span>
+            </td>
+            <td>视频回放</td>
+            <td>回放该记录关联的视频</td>
+            <td>需要回放权限</td>
+          </tr>
+        </tbody>
+      </table>
       <p><strong>筛选条件</strong></p>
       <table class="btn-table">
         <thead>
@@ -1040,16 +1225,11 @@
           </tr>
         </tbody>
       </table>
-      <p><strong>记录详情</strong></p>
-      <ul>
-        <li>列表列：序号、门禁、进出人员、事件类型、事件时间、描述、操作。</li>
-        <li>「操作」列的播放按钮用于回放该记录关联的视频（需回放权限）。</li>
-      </ul>
 
       <h3 id="sec-3-3">3.3 三维地图</h3>
       <figure class="shot" data-file="images/07-map-buttons.png">
-        <img src="images/07-map-buttons.png" alt="地图按钮" />
-        <figcaption>图 7　地图左下角按钮与建筑列表</figcaption>
+        <img src="images/07-map-buttons.png" alt="三维地图总览" />
+        <figcaption>图 7　三维地图总览</figcaption>
       </figure>
 
 
@@ -1137,7 +1317,7 @@
             </td>
             <td>还原（全屏后）</td>
             <td>退出全屏</td>
-            <td>按 Esc 也可以退出</td>
+            <td>按 Esc 或 F11 也可以退出</td>
           </tr>
         </tbody>
       </table>
@@ -1167,17 +1347,17 @@
           <tr>
             <td><img class="marker-icon" src="images/markers/announciator.png" alt="报警器" /></td>
             <td>报警器</td>
-            <td>显示报警状态；双击复位报警（需要报警设置/控制权限）</td>
+            <td>显示报警状态；双击复位报警（需要报警设置权限）</td>
           </tr>
           <tr>
             <td><img class="marker-icon" src="images/markers/sensor.png" alt="传感器" /></td>
             <td>传感器</td>
-            <td>显示设备状态；双击复位报警（需要报警设置/控制权限）</td>
+            <td>显示设备状态；双击复位报警（需要报警设置权限）</td>
           </tr>
           <tr>
             <td><img class="marker-icon" src="images/markers/door.png" alt="出入口" /></td>
             <td>出入口</td>
-            <td>显示门禁设备状态；双击复位报警（需要报警设置/控制权限）</td>
+            <td>显示门禁设备状态；双击复位报警（需要报警设置权限）</td>
           </tr>
         </tbody>
       </table>
@@ -1192,7 +1372,7 @@
         <li>地图上的图标代表摄像机、报警器、传感器、出入口等设备点位。</li>
         <li>异常点位显示为 <span class="state-abnormal">●</span> 异常。</li>
         <li>双击摄像机：播放实时视频（需要视频预览权限）。</li>
-        <li>双击报警器、传感器、门禁、出入口：复位报警状态（需要报警设置/控制权限）。</li>
+        <li>双击报警器、传感器、门禁、出入口：复位报警状态（需要报警设置权限）。</li>
       </ul>
       <h5 id="sec-3-3-3-2">3.3.3.2 建筑列表</h5>
       <p>
@@ -1217,7 +1397,7 @@
       <h5 id="sec-3-3-3-3">3.3.3.3 渲染模式</h5>
       <p>
         点击「渲染模式」按钮<span class="btn-icon frame-map"><i class="howell-icon-shade"></i></span
-        >，在「实体」和「叠加」两种显示模式之间切换。
+        >，在「实体」和「透视」两种显示模式之间切换。
       </p>
       <p>进入楼层后不能切换渲染模式。</p>
 
@@ -1230,8 +1410,10 @@
         </li>
         <li>在地图上单击关注的位置，系统列出能看到该位置的摄像机。</li>
         <li>
-          在查找结果中可预览单个摄像机，或点击「全部播放」<span class="btn-icon"
+          在查找结果中，点单个摄像机的播放按钮<span class="btn-icon"
             ><i class="howell-icon-video-play"></i></span
+          >预览该摄像机，或点「全部播放」<span class="btn-icon frame-border"
+            ><i class="howell-icon-camera_line"></i></span
           >同时播放。
         </li>
         <li>单击鼠标右键（不拖动）退出；再点一次「区域联动」按钮也可以退出。</li>
@@ -1248,8 +1430,10 @@
         <li>拖动下方滑块调整搜索半径（1～100 米）。</li>
         <li>在地图上单击需要查找的位置，系统搜索该位置附近的点位。</li>
         <li>
-          在查找结果中可预览单个摄像机，或点击「全部播放」<span class="btn-icon"
+          在查找结果中，点单个摄像机的播放按钮<span class="btn-icon"
             ><i class="howell-icon-video-play"></i></span
+          >预览该摄像机，或点「全部播放」<span class="btn-icon frame-border"
+            ><i class="howell-icon-camera_line"></i></span
           >同时播放。
         </li>
         <li>单击鼠标右键（不拖动）退出；再点一次「区域查找」按钮也可以退出。</li>
@@ -1277,7 +1461,7 @@
             </td>
             <td>播放视频</td>
             <td>播放该点位的视频</td>
-            <td>只对摄像机有效，其他类型按钮置灰</td>
+            <td>仅摄像机可播放</td>
           </tr>
           <tr>
             <td>
@@ -1285,7 +1469,7 @@
             </td>
             <td>全部播放</td>
             <td>同时播放列表内所有摄像机</td>
-            <td>没有可播放的摄像机时按钮置灰</td>
+            <td>列表中有摄像机时才可播放</td>
           </tr>
         </tbody>
       </table>
@@ -1336,19 +1520,19 @@
         </thead>
         <tbody>
           <tr>
-            <td>类型条目（摄像机/报警器/传感器/出入口）</td>
+            <td>类型名称</td>
             <td>打开该类型的点位信息列表</td>
-            <td>条目上显示该类型的在线和异常数量</td>
+            <td>包括摄像机、报警器、传感器、出入口；<br />点击后，列表显示该类型全部点位</td>
           </tr>
           <tr>
             <td>在线</td>
-            <td>该类型中状态正常的数量；点击打开该类型的在线点位信息列表</td>
-            <td>只统计当前账号有权限的摄像机</td>
+            <td>打开该类型的在线点位列表</td>
+            <td>点击后，列表只显示在线点位</td>
           </tr>
           <tr>
             <td>异常</td>
-            <td>该类型中离线 + 报警的数量；点击打开该类型的离线点位信息列表</td>
-            <td>列表按离线状态筛选</td>
+            <td>打开该类型的异常点位列表</td>
+            <td>点击后，列表只显示离线点位；<br />数量为离线 + 报警的点位数</td>
           </tr>
         </tbody>
       </table>
@@ -1359,7 +1543,7 @@
         <figcaption>图 11　点位信息列表窗口</figcaption>
       </figure>
       <p>
-        列表列：序号、名称、点位类型、所在位置、状态、操作。状态：<span class="state-online"
+        <strong>点位状态：</strong><span class="state-online"
           >●</span
         >
         在线，<span class="state-offline">●</span> 离线，<span class="state-alarm">●</span> 报警。
@@ -1414,7 +1598,7 @@
             </td>
             <td>视频预览</td>
             <td>播放该点位视频</td>
-            <td>非摄像机点位或摄像机离线时置灰</td>
+            <td>只有在线摄像机可播放</td>
           </tr>
           <tr>
             <td>
@@ -1422,7 +1606,7 @@
             </td>
             <td>重置状态</td>
             <td>复位该点位的报警状态</td>
-            <td>仅拥有报警设置/控制权限时显示</td>
+            <td>（需要报警设置权限）</td>
           </tr>
         </tbody>
       </table>
@@ -1457,13 +1641,12 @@
             </td>
             <td>同步点位名称</td>
             <td>仅管理员可见</td>
-            <td>把地图点位名称同步为绑定设备/通道的名称，详见「七、管理员权限 → 7.3 点位名称同步」</td>
+            <td>把地图点位名称同步为绑定设备的名称，详见 3.3.5.1</td>
           </tr>
         </tbody>
       </table>
 
       <p><strong>点位分组</strong></p>
-      <p>隐藏的点位不在地图上显示。</p>
       <table class="btn-table with-icon">
         <thead>
           <tr>
@@ -1496,7 +1679,7 @@
             </td>
             <td>定位</td>
             <td>在地图上定位到该点位</td>
-            <td>点位被隐藏时按钮置灰；<br />定位会自动进入所在楼层</td>
+            <td>点位被隐藏时不可操作；<br />定位会自动进入所在楼层</td>
           </tr>
           <tr>
             <td>
@@ -1521,6 +1704,11 @@
         </tbody>
       </table>
 
+      <div class="note">
+        <strong class="danger-text">注1：</strong>隐藏的点位不在地图上显示。<br />
+        <strong class="danger-text">注2：</strong>地图上有摄像机、但没有分组，会显示在「未分组」下。
+      </div>
+
       <p><strong>操作</strong></p>
       <table class="btn-table">
         <thead>
@@ -1539,7 +1727,40 @@
         </tbody>
       </table>
 
-      <h3 id="sec-3-4">3.4 报警弹窗</h3>
+      <h5 id="sec-3-3-5-1">3.3.5.1 点位名称同步（仅管理员）</h5>
+      <p>
+        三维地图「点位分组」面板右上角的同步按钮用于把地图点位名称同步为点位绑定设备的名称。
+      </p>
+      <p><strong>操作步骤</strong></p>
+      <ol>
+        <li>在三维地图的「点位分组」面板右上角点击「同步点位名称」按钮。</li>
+        <li>在确认框点击「确定」。</li>
+        <li>等待完成，系统会提示成功/失败数量；地图点位的名称更新为绑定设备的名称。</li>
+      </ol>
+      <table class="btn-table with-icon">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="btn-icon"><i class="mdi mdi-sync"></i></span>
+            </td>
+            <td>同步点位名称</td>
+            <td>把地图点位名称同步为绑定设备的名称</td>
+            <td>点击后先弹框确认，确认后执行；<br />完成后提示成功/失败数量</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ============ 七、常见问题 ============ -->
+
+<h3 id="sec-3-4">3.4 报警弹窗</h3>
       <p>有新报警时，地图上对应点位会变为异常状态并闪烁，同时弹出报警联动视频窗口：</p>
       <table class="btn-table">
         <thead>
@@ -1563,7 +1784,7 @@
           <tr>
             <td>视频画面</td>
             <td>显示报警联动的摄像机实时画面</td>
-            <td>只显示当前账号有权限的通道</td>
+            <td>只显示当前账号有权限的摄像机</td>
           </tr>
         </tbody>
       </table>
@@ -1586,7 +1807,7 @@
             </td>
             <td>预览</td>
             <td>切换到实时预览</td>
-            <td>仅回放模式且账号有预览权限时显示</td>
+            <td>仅回放模式显示（需要预览权限）</td>
           </tr>
           <tr>
             <td>
@@ -1594,7 +1815,7 @@
             </td>
             <td>回放</td>
             <td>切换到录像回放</td>
-            <td>仅预览模式且账号有回放权限时显示</td>
+            <td>仅预览模式显示（需要回放权限）</td>
           </tr>
           <tr>
             <td></td>
@@ -1616,19 +1837,23 @@
       <h2 id="video">四、视频</h2>
       <p>
         点击顶部「视频」图标<span class="btn-icon frame-round"><i class="mdi mdi-video"></i></span
-        >进入视频页面，页面上方有「视频预览」「视频回放」两个页签。
+        >，可进入视频播放。
       </p>
       <ul>
-        <li>没有视频预览权限时不显示「视频预览」页签。</li>
-        <li>没有视频回放权限时不显示「视频回放」页签。</li>
-        <li>两种权限都没有时，进入视频页会自动回到地图主页。</li>
       </ul>
 
-      <h3 id="sec-4-1">4.1 视频预览</h3>
+      <h3 id="sec-4-1">4.1 视频预览（需要视频预览权限）</h3>
       <figure class="shot" data-file="images/12-video-preview.png">
         <img src="images/12-video-preview.png" alt="视频预览" />
         <figcaption>图 12　视频预览</figcaption>
       </figure>
+
+      <p><strong>操作步骤</strong></p>
+      <ol>
+        <li>在左侧「摄像机」列表中找到摄像机。</li>
+        <li>先单击一个画面窗口，选中要显示的位置。</li>
+        <li>双击左侧摄像机，画面播放到选中的窗口。</li>
+      </ol>
 
       <h4 id="sec-4-1-1">4.1.1「摄像机」列表面板</h4>
       <p><strong>快捷操作</strong></p>
@@ -1654,7 +1879,7 @@
             <td>
               <span class="btn-icon"><i class="mdi mdi-file-tree"></i></span>
             </td>
-            <td>树形图标（多层）</td>
+            <td>多层</td>
             <td>切换到按区域分组的树形列表</td>
             <td>只显示有摄像机的区域</td>
           </tr>
@@ -1662,7 +1887,7 @@
             <td>
               <span class="btn-icon"><i class="mdi mdi-format-list-bulleted"></i></span>
             </td>
-            <td>列表图标（列表）</td>
+            <td>列表</td>
             <td>切换到平铺的摄像机列表</td>
             <td>—</td>
           </tr>
@@ -1690,11 +1915,11 @@
           </tr>
           <tr>
             <td>
-              <span class="btn-icon"><i class="mdi mdi-chevron-right"></i></span>
+              <span class="btn-icon"><i class="mdi mdi-menu-right"></i></span>
             </td>
             <td>区域节点前的箭头</td>
             <td>展开/收起区域</td>
-            <td>树形模式下使用</td>
+            <td>多层模式下使用</td>
           </tr>
           <tr>
             <td>
@@ -1702,7 +1927,7 @@
             </td>
             <td>全部折叠</td>
             <td>收起所有区域</td>
-            <td>树形模式下使用</td>
+            <td>多层模式下使用</td>
           </tr>
           <tr>
             <td>
@@ -1710,7 +1935,7 @@
             </td>
             <td>配置区域资源</td>
             <td>打开区域资源配置窗口</td>
-            <td>仅有配置权限的账号显示（同「区域资源设置」功能）</td>
+            <td>仅管理员（同「区域资源设置」功能）</td>
           </tr>
         </tbody>
       </table>
@@ -1806,7 +2031,7 @@
             </td>
             <td>还原（全屏后）</td>
             <td>退出全屏</td>
-            <td>按 Esc 也可退出</td>
+            <td>按 Esc 或 F11 也可以退出</td>
           </tr>
           <tr>
             <td></td>
@@ -1852,9 +2077,9 @@
       <p><strong>操作步骤</strong></p>
       <ol>
         <li>在右侧播放器播放需要的画面（1/4/9/16 画面），并排列好窗口。</li>
-        <li>点击视频组面板右上角的「保存到视频组」按钮；没有画面在播放时按钮置灰，不能保存。</li>
+        <li>点击视频组面板右上角的「保存到视频组」按钮；有画面在播放时才可操作。</li>
         <li>保存成功后，视频组列表新增一条以当前时间命名的记录；点击铅笔图标可以改名。</li>
-        <li>双击视频组行或点击播放按钮即可整组播放；点击循环按钮可按列表顺序轮播所有视频组。</li>
+        <li>双击视频组详情或点击播放按钮即可整组播放；点击循环按钮可按列表顺序轮播所有视频组。</li>
       </ol>
       <p><strong>快捷操作</strong></p>
       <table class="btn-table with-icon">
@@ -1879,7 +2104,7 @@
             <td>
               <span class="btn-icon"><i class="mdi mdi-arrow-up"></i></span>
             </td>
-            <td>排序前移（上箭头）</td>
+            <td>排序前移</td>
             <td>把选中的视频组向前移动一位</td>
             <td>选中视频组且列表有多项时可用</td>
           </tr>
@@ -1887,7 +2112,7 @@
             <td>
               <span class="btn-icon"><i class="mdi mdi-arrow-down"></i></span>
             </td>
-            <td>排序后移（下箭头）</td>
+            <td>排序后移</td>
             <td>把选中的视频组向后移动一位</td>
             <td>—</td>
           </tr>
@@ -1905,13 +2130,13 @@
             </td>
             <td>保存到视频组</td>
             <td>把当前正在播放的画面组合保存为一个视频组</td>
-            <td>位于视频组面板右上角按钮组最右侧；<br />默认以当前时间命名，没有画面在播放时按钮置灰</td>
+            <td>位于视频组面板右上角按钮组最右侧；<br />默认以当前时间命名，有画面在播放时才可操作</td>
           </tr>
         </tbody>
       </table>
 
       <p><strong>视频组列表</strong></p>
-      <p>鼠标移到视频组行上，行右侧会显示播放、改名、删除按钮：</p>
+      <p>鼠标移到视频组详情上，右侧会显示播放、改名、删除按钮：</p>
       <figure class="shot" data-file="images/13-1-video-group-item.png">
         <img src="images/13-1-video-group-item.png" alt="视频组列表项" />
         <figcaption>图 13-1　视频组列表项（鼠标悬停时显示操作按钮）</figcaption>
@@ -1984,13 +2209,13 @@
         </tbody>
       </table>
 
-      <h3 id="sec-4-3">4.3 视频回放</h3>
+      <h3 id="sec-4-3">4.3 视频回放（需要视频回放权限）</h3>
       <figure class="shot" data-file="images/14-video-playback.png">
         <img src="images/14-video-playback.png" alt="视频回放" />
         <figcaption>图 14　视频回放</figcaption>
       </figure>
       <ol>
-        <li>切换到「视频回放」页签。</li>
+        <li>切换到「视频回放」。</li>
         <li>在左侧「摄像机」列表中选择要回放的摄像机（单击选中）。</li>
         <li>在「回放时间」卡片中选择日期。</li>
         <li>设置「选择时间」的开始时间和结束时间。</li>
@@ -2011,7 +2236,7 @@
             <td>点击输入框弹出日历，选择某一天后自动填入</td>
           </tr>
           <tr>
-            <td>选择时间（两个时间框）</td>
+            <td>选择时间</td>
             <td>设置回放开始和结束时间</td>
             <td>
               分别输入时、分、秒；<br />可直接输入数字，也可在数字上滚动鼠标滚轮增减；<br />开始时间不能晚于结束时间，超出会自动收敛
@@ -2020,7 +2245,7 @@
           <tr>
             <td>开始回放</td>
             <td>播放所选时段录像</td>
-            <td>需要回放权限和该通道权限</td>
+            <td>需要回放权限</td>
           </tr>
           <tr>
             <td>播放器控制条</td>
@@ -2029,14 +2254,12 @@
           </tr>
         </tbody>
       </table>
-      <div class="note">只能回放有权限的摄像机；该时段没有录像时，播放器会提示无录像。</div>
-
-      <!-- ============ 五、视频下载 ============ -->
-      <h2 id="download">五、视频下载</h2>
+      <!-- ============ 五、视频下载（需要视频下载权限） ============ -->
+      <h2 id="download">五、视频下载（需要视频下载权限）</h2>
       <p>
-        拥有视频下载权限时，点击顶部「下载」图标<span class="btn-icon frame-round"
+        点击顶部「下载」图标<span class="btn-icon frame-round"
           ><i class="mdi mdi-cloud-download"></i></span
-        >，会在新标签页打开视频下载页面。
+        >，会打开一个新的视频下载页面。
       </p>
       <figure class="shot" data-file="images/15-download.png">
         <img src="images/15-download.png" alt="视频下载" />
@@ -2044,7 +2267,15 @@
       </figure>
 
       <h3 id="sec-5-1">5.1 下载控件</h3>
-      <p>左侧摄像机列表的树形/列表切换、搜索框与视频页「摄像机」列表面板相同，见 4.1.1。</p>
+      <p>左侧摄像机列表的多层/列表切换、搜索框与视频播放页中的「摄像机」列表面板相同，见 4.1.1。</p>
+
+      <p><strong>操作步骤</strong></p>
+      <ol>
+        <li>在左侧选择要下载的摄像机。</li>
+        <li>设置开始时间和结束时间。</li>
+        <li>点击「下载」。</li>
+        <li>在下方下载任务列表查看进度；下载完成前不要关闭或刷新页面。</li>
+      </ol>
 
       <table class="btn-table">
         <thead>
@@ -2068,12 +2299,12 @@
           <tr>
             <td>下载</td>
             <td>创建下载任务</td>
-            <td>未选择摄像机或时间不合法时置灰</td>
+            <td>选择摄像机并设置合法时间后才可操作</td>
           </tr>
         </tbody>
       </table>
 
-      <h3 id="sec-5-2">5.2 下载任务列表</h3>
+      <h3 id="sec-5-2">5.2 下载任务状态说明</h3>
       <p></p>
       <table class="btn-table">
         <thead>
@@ -2157,12 +2388,8 @@
       <p>
         点击顶部「设置」图标<span class="btn-icon frame-round"
           ><i class="mdi mdi-settings"></i></span
-        >进入设置页面：
+        >，进入设置页，可以在「系统设置」「地图布控」「区域资源设置」之间切换。
       </p>
-      <ul>
-        <li>「系统设置」：所有登录用户可见，见 6.1。</li>
-        <li>「地图布控」「区域资源设置」：仅系统管理员可见，见第七章「管理员权限」。</li>
-      </ul>
 
       <h3 id="sec-6-1">6.1 系统设置</h3>
       <figure class="shot" data-file="images/16-setting-config.png">
@@ -2182,12 +2409,12 @@
           <tr>
             <td>系统皮肤</td>
             <td>切换系统配色</td>
-            <td>可选绿色、蓝色，推荐使用蓝色；<br />切换后立即生效</td>
+            <td>可选绿色、蓝色。</td>
           </tr>
         </tbody>
       </table>
 
-      <p><strong>下载设置</strong></p>
+      <p><strong>下载设置（需要下载权限）</strong></p>
       <table class="btn-table">
         <thead>
           <tr>
@@ -2200,7 +2427,7 @@
           <tr>
             <td>下载最大数量</td>
             <td>设置同时下载的最大任务数</td>
-            <td>范围 1～5；<br />可直接输入或在数字上滚动滚轮调整；<br />仅拥有下载权限时显示</td>
+            <td>范围 1～5；<br />可直接输入或在数字上滚动滚轮调整</td>
           </tr>
         </tbody>
       </table>
@@ -2223,20 +2450,44 @@
         </tbody>
       </table>
 
-      <!-- ============ 七、管理员权限 ============ -->
-      <h2 id="admin">七、管理员权限</h2>
-      <p>
-        仅系统管理员可用的功能。非管理员账号看不到设置页的「地图布控」「区域资源设置」页签，直接输入这两个页面的地址也会自动回到「系统设置」；管理员拥有全部功能权限和全部通道权限。
-      </p>
-
-      <h3 id="sec-7-1">7.1 地图布控</h3>
+      <h3 id="sec-6-2">6.2 地图布控（仅管理员）</h3>
       <figure class="shot" data-file="images/17-setting-map.png">
         <img src="images/17-setting-map.png" alt="地图布控" />
         <figcaption>图 17　地图布控</figcaption>
       </figure>
       <p>用于把设备绑定到三维地图上、解除绑定或调整位置。</p>
+      <p>
+        如果服务器还没有地图数据，进入地图布控时会自动创建：按厂区模型创建一张地图，并把模型里的建筑、楼层同步生成为地图点位。创建完成后会提示「初始化完成，请刷新界面」，5
+        秒后自动刷新，等页面刷新完成后再操作。
+      </p>
 
-      <h4 id="sec-7-1-1">7.1.1 左侧「设备信息」树</h4>
+      <h4 id="sec-6-2-1">6.2.1 操作步骤</h4>
+      <ol>
+        <li>在左侧「设备信息」中找到要绑定的设备。</li>
+        <li>
+          点击设备后面的「绑定」按钮<span class="btn-icon"><i class="howell-icon-Link"></i></span>。
+        </li>
+        <li>在地图上把鼠标移动到目标位置，单击左键放置点位；不想绑定时单击右键取消。</li>
+        <li>绑定成功后，主页地图上即可看到该设备点位。</li>
+      </ol>
+      <p><strong>解除绑定</strong></p>
+      <ol>
+        <li>在左侧「设备信息」中找到已绑定的设备。</li>
+        <li>
+          点击设备后面的「解绑」按钮<span class="btn-icon"><i class="howell-icon-Unlink"></i></span>。
+        </li>
+        <li>在确认框点击「确定」；地图上对应点位随即消失。</li>
+      </ol>
+      <p><strong>调整摄像机视野</strong></p>
+      <ol>
+        <li>点击「摄像机视野」按钮，地图上显示摄像机的视野扇形。</li>
+        <li>
+          单击要调整的摄像机点位，拖动扇形边缘的角点调整半径和角度，拖动弧中点旋转朝向。
+        </li>
+        <li>调整后自动保存；再次点击「摄像机视野」按钮可隐藏视野。</li>
+      </ol>
+
+      <h4 id="sec-6-2-2">6.2.2 设备信息</h4>
       <table class="btn-table with-icon">
         <thead>
           <tr>
@@ -2257,10 +2508,10 @@
           </tr>
           <tr>
             <td>
-              <span class="btn-icon"><i class="mdi mdi-chevron-right"></i></span>
+              <span class="btn-icon"><i class="mdi mdi-menu-right"></i></span>
             </td>
             <td>节点前箭头</td>
-            <td>展开/收起设备和通道</td>
+            <td>展开/收起设备和下级</td>
             <td>—</td>
           </tr>
           <tr>
@@ -2290,116 +2541,43 @@
         </tbody>
       </table>
 
-      <h4 id="sec-7-1-2">7.1.2 中间三维地图</h4>
-      <table class="btn-table with-icon">
-        <thead>
-          <tr>
-            <th>图标</th>
-            <th>按钮 / 控件</th>
-            <th>作用</th>
-            <th>说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <span class="btn-icon frame-map"><i class="howell-icon-MapVillage"></i></span>
-            </td>
-            <td>建筑列表</td>
-            <td>显示/收起建筑列表</td>
-            <td>与主页地图一致</td>
-          </tr>
-          <tr>
-            <td>
-              <span class="btn-icon"><i class="mdi mdi-eye"></i></span>
-            </td>
-            <td>摄像机视野（显示）</td>
-            <td>显示摄像机的监控视野</td>
-            <td>用于核对点位朝向</td>
-          </tr>
-          <tr>
-            <td>
-              <span class="btn-icon"><i class="mdi mdi-eye-off"></i></span>
-            </td>
-            <td>摄像机视野（隐藏）</td>
-            <td>隐藏摄像机的监控视野</td>
-            <td>用于核对点位朝向</td>
-          </tr>
-          <tr>
-            <td>
-              <span class="btn-icon frame-border"><i class="mdi mdi-domain"></i></span>
-            </td>
-            <td>建筑名称按钮</td>
-            <td>单击定位，双击展开建筑</td>
-            <td>—</td>
-          </tr>
-          <tr>
-            <td>
-              <span class="btn-icon frame-border"><i class="mdi mdi-arrow-left"></i></span>
-            </td>
-            <td>楼层按钮 / 返回</td>
-            <td>切换楼层 / 回到厂区</td>
-            <td>—</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p><strong>操作</strong></p>
-      <table class="btn-table">
-        <thead>
-          <tr>
-            <th>操作</th>
-            <th>作用</th>
-            <th>说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>拖动摄像机点位的扇形手柄</td>
-            <td>调整监控范围和朝向</td>
-            <td>拖动扇形边缘的角点调整半径和角度，拖动弧中点旋转朝向；<br />调整后自动保存</td>
-          </tr>
-          <tr>
-            <td>双击点位</td>
-            <td>在左侧设备树中定位对应设备</td>
-            <td>没有绑定通道的点位会提示是否删除</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h4 id="sec-7-1-3">7.1.3 绑定设备操作步骤</h4>
-      <ol>
-        <li>在左侧设备树中找到要绑定的设备。</li>
+      <h4 id="sec-6-2-3">6.2.3 三维地图</h4>
+      <p><strong>地图操作</strong></p>
+      <ul>
         <li>
-          点击设备后面的「绑定」按钮<span class="btn-icon"><i class="howell-icon-Link"></i></span>。
+          建筑列表：点击左下角的「建筑列表」按钮<span class="btn-icon frame-map"
+            ><i class="howell-icon-MapVillage"></i></span
+          >，显示厂区内所有建筑名称；再点一次同一个按钮收起列表，与主页地图一致。
         </li>
-        <li>在地图上把鼠标移动到目标位置，单击左键放置点位；不想绑定时单击右键取消。</li>
-        <li>绑定成功后，主页地图上即可看到该设备点位。</li>
-      </ol>
-      <p><strong>解除绑定</strong></p>
-      <ol>
-        <li>在左侧设备树中找到已绑定的设备。</li>
-        <li>
-          点击设备后面的「解绑」按钮<span class="btn-icon"><i class="howell-icon-Unlink"></i></span>。
-        </li>
-        <li>在确认框点击「确定」；地图上对应点位随即消失。</li>
-      </ol>
-      <p><strong>调整摄像机视野</strong></p>
-      <ol>
-        <li>点击「摄像机视野」按钮，地图上显示摄像机的视野扇形。</li>
-        <li>
-          单击要调整的摄像机点位，拖动扇形边缘的角点调整半径和角度，拖动弧中点旋转朝向。
-        </li>
-        <li>调整后自动保存；再次点击「摄像机视野」按钮可隐藏视野。</li>
-      </ol>
+        <li>单击建筑名称按钮：定位并聚焦该建筑。</li>
+        <li>双击建筑名称按钮：展开建筑，显示楼层按钮。</li>
+        <li>双击点位：在左侧「设备信息」中定位对应设备；没有绑定设备的点位会提示是否删除。</li>
+      </ul>
+      <p>展开建筑后，左下角显示楼层按钮和「返回」：</p>
+      <ul>
+        <li>楼层按钮：切换楼层，当前楼层高亮。</li>
+        <li>返回：从楼层回到厂区视角。</li>
+      </ul>
 
-      <h3 id="sec-7-2">7.2 区域资源设置</h3>
+      <p><strong>摄像机视野</strong></p>
+      <ul>
+        <li>
+          摄像机视野：点击左下角的「摄像机视野」按钮<span class="btn-icon frame-map"
+            ><i class="mdi mdi-looks"></i></span
+          >显示摄像机的监控视野，再点一次隐藏；按钮高亮表示正在显示，用于核对点位朝向。
+        </li>
+        <li>
+          调整视野：拖动摄像机点位的扇形手柄，拖动扇形边缘的角点调整半径和角度，拖动弧中点旋转朝向；调整后自动保存。
+        </li>
+      </ul>
+
+      <h3 id="sec-6-3">6.3 区域资源设置（仅管理员）</h3>
       <figure class="shot" data-file="images/18-setting-region.png">
         <img src="images/18-setting-region.png" alt="区域资源设置" />
         <figcaption>图 18　区域资源设置</figcaption>
       </figure>
       <p>
-        用于维护「区域资源」树，并把摄像机分配到各区域。视频页的摄像机分组、地图右侧的点位分组都按这里配置的区域显示。
+        用于维护「区域资源」树，并把摄像机分配到各区域。视频播放页中的摄像机分组、地图右侧的点位分组都按这里配置的区域显示。
       </p>
       <p><strong>常用操作步骤</strong></p>
       <ol>
@@ -2416,12 +2594,13 @@
           移出摄像机：在左侧勾选要移出的资源（或选中区域）→ 点右箭头「导出」，资源回到右侧摄像机列表。
         </li>
         <li>
-          批量选择：右侧可用「全选」「反选」「取消」；鼠标悬停在摄像机行上可查看所属设备和通道名称。
+          批量选择：右侧可用「全选」「反选」「取消」；鼠标悬停在摄像机详情上可查看所属设备名称和视频名称。
         </li>
         <li>名称同步、全部折叠等操作见下面的按钮说明。</li>
       </ol>
 
-      <h4 id="sec-7-2-1">7.2.1 左侧「区域资源」树</h4>
+      <h4 id="sec-6-3-1">6.3.1 区域资源</h4>
+      <p><strong>搜索区域资源</strong></p>
       <table class="btn-table with-icon">
         <thead>
           <tr>
@@ -2440,9 +2619,23 @@
             <td>按名称查找区域或资源</td>
             <td>点击放大镜查询，点击「×」清空并还原</td>
           </tr>
+        </tbody>
+      </table>
+
+      <p><strong>节点操作</strong></p>
+      <table class="btn-table with-icon">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
           <tr>
             <td>
-              <span class="btn-icon"><i class="mdi mdi-chevron-right"></i></span>
+              <span class="btn-icon"><i class="mdi mdi-menu-right"></i></span>
             </td>
             <td>节点前箭头</td>
             <td>展开/收起子节点</td>
@@ -2480,6 +2673,20 @@
             <td>多选资源</td>
             <td>用于一次移出多个摄像机（导出）</td>
           </tr>
+        </tbody>
+      </table>
+
+      <p><strong>树操作</strong></p>
+      <table class="btn-table with-icon">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
           <tr>
             <td>
               <span class="btn-icon"><i class="mdi mdi-minus-box-outline"></i></span>
@@ -2493,17 +2700,31 @@
               <span class="btn-icon"><i class="mdi mdi-sync"></i></span>
             </td>
             <td>同步摄像机名称</td>
-            <td>用摄像机通道名称统一更新区域资源名称</td>
+            <td>用摄像机名称统一更新区域资源名称</td>
             <td>弹出确认框；<br />完成后提示成功/失败数量</td>
           </tr>
           <tr>
             <td>
               <span class="btn-icon"><i class="mdi mdi-plus"></i></span>
             </td>
-            <td>新增根节点（加号 + 文字）</td>
+            <td>新增根节点</td>
             <td>在树的最下方新增顶层区域</td>
             <td>输入名称后保存</td>
           </tr>
+        </tbody>
+      </table>
+
+      <p><strong>摄像机分配</strong></p>
+      <table class="btn-table with-icon">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
           <tr>
             <td>
               <span class="btn-icon frame-border"><i class="mdi mdi-arrow-left-bold"></i></span>
@@ -2523,7 +2744,7 @@
         </tbody>
       </table>
 
-      <h4 id="sec-7-2-2">7.2.2 右侧「摄像机」列表</h4>
+      <h4 id="sec-6-3-2">6.3.2 摄像机列表</h4>
       <table class="btn-table with-icon">
         <thead>
           <tr>
@@ -2588,78 +2809,49 @@
         </thead>
         <tbody>
           <tr>
-            <td>鼠标悬停摄像机行</td>
-            <td>显示所属设备名称和通道名称</td>
-            <td>方便区分同名通道</td>
+            <td>鼠标悬停摄像机详情</td>
+            <td>显示所属设备名称和视频名称</td>
+            <td>方便区分同名视频</td>
           </tr>
         </tbody>
       </table>
       <div class="tip">
-        区域资源的增删改、摄像机导入/导出都是保存后立即生效，没有单独的「保存」按钮。
+        区域资源的增删改、摄像机导入/导出都是保存后立即生效。
       </div>
 
-      <h3 id="sec-7-3">7.3 点位名称同步</h3>
-      <p>
-        三维地图「点位分组」面板右上角的同步按钮仅管理员可见，用于把地图点位名称同步为点位绑定设备/通道的名称。
-      </p>
-      <p><strong>操作步骤</strong></p>
-      <ol>
-        <li>在三维地图的「点位分组」面板右上角点击「同步点位名称」按钮。</li>
-        <li>在确认框点击「确定」。</li>
-        <li>等待完成，系统会提示成功/失败数量；地图点位的名称更新为绑定设备/通道的名称。</li>
-      </ol>
-      <table class="btn-table with-icon">
-        <thead>
-          <tr>
-            <th>图标</th>
-            <th>按钮 / 控件</th>
-            <th>作用</th>
-            <th>说明</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <span class="btn-icon"><i class="mdi mdi-sync"></i></span>
-            </td>
-            <td>同步点位名称</td>
-            <td>把地图点位名称同步为绑定设备/通道的名称</td>
-            <td>点击后先弹框确认，确认后执行；<br />完成后提示成功/失败数量</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- ============ 八、常见问题 ============ -->
-      <h2 id="faq">八、常见问题</h2>
+      <h2 id="faq">七、常见问题</h2>
 
       <h3 id="faq-1">1. 登录提示「用户名或密码错误」？</h3>
       <p>确认账号、密码大小写及输入法状态；仍无法登录请联系系统管理员重置密码。</p>
 
-      <h3 id="faq-2">2. 看不到「下载」「视频回放」入口或按钮置灰？</h3>
-      <p>说明当前账号没有对应权限，或者没有该摄像机的通道权限，请联系系统管理员开通。</p>
+      <h3 id="faq-2">2. 看不到「下载」「视频回放」入口或按钮不可操作？</h3>
+      <p>说明当前账号没有对应权限，请联系系统管理员开通。</p>
 
       <h3 id="faq-3">3. 有摄像机名称，但无法播放视频？</h3>
       <p>
-        先确认摄像机是否在线（地图上显示为异常）。摄像机在线仍无法播放时，通常是没有该通道的权限；
-        另外，播放窗口已满或未选中画面窗口时，双击摄像机也可能不生效，可先单击一个画面再双击摄像机。
+        先确认摄像机是否在线（地图上显示为异常），以及账号是否拥有视频预览权限。视频预览页双击摄像机时，画面会播放到当前选中的画面窗口；想换窗口显示，先单击目标画面，再双击摄像机。
       </p>
 
       <h3 id="faq-4">4. 地图上看不到某个设备点位？</h3>
       <p>
-        可能是设备未绑定点位、没有通道权限，或所在楼层未展开。可先在右侧「点位分组」中搜索该设备；
+        可能是设备未绑定点位、没有视频权限，或所在楼层未展开。可先在右侧「点位分组」中搜索该设备；
         仍找不到请联系管理员在「地图布控」中检查绑定关系。
       </p>
 
-      <h3 id="faq-5">5. 三维地图加载慢或显示异常？</h3>
+      <h3 id="faq-5">5. 三维地图加载慢、无法显示或显示异常？</h3>
       <p>
         三维地图首次加载需要下载模型，请耐心等待；建议使用 Chrome 或 Edge 浏览器，并确保网络畅通。
         页面长时间无响应时可刷新页面重试。
       </p>
+      <p>
+        如果页面提示「三维地图无法显示」，说明当前浏览器无法使用 WebGL（三维地图需要它才能显示）：请在浏览器设置中开启「使用硬件加速」并重启浏览器；如果电脑由公司统一管理，请联系管理员开启
+        WebGL。
+      </p>
 
       <h3 id="faq-6">6. 页面提示「实时消息服务连接失败」？</h3>
       <p>
-        该提示表示报警和设备状态可能无法实时刷新。请检查本机网络是否正常，系统会自动重连；
-        长时间未恢复请联系管理员检查服务端。
+        该提示表示报警和设备状态可能无法实时刷新。请检查这台电脑的网络是否正常，系统会自动重连；
+        长时间未恢复请联系管理员检查服务器。
       </p>
 
       <h3 id="faq-7">7. 下载任务一直「排队中」？</h3>

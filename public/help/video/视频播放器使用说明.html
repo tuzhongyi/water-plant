@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>视频播放器使用说明</title>
+    <style>
+      :root {
+        --primary: #2d6bde;
+        --primary-light: #e9f2ff;
+        --text: #1f2d3d;
+        --text-sub: #5a6b7d;
+        --line: #cfdff2;
+        --bg: #f3f7fc;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', sans-serif;
+        font-size: 15px;
+        line-height: 1.85;
+      }
+      .page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 48px 56px 64px;
+        background: #fff;
+        box-shadow: 0 2px 24px rgba(0, 0, 0, 0.06);
+      }
+      .head {
+        border-bottom: 3px solid var(--primary);
+        padding-bottom: 18px;
+        margin-bottom: 8px;
+      }
+      .head h1 {
+        margin: 0;
+        font-size: 30px;
+        color: var(--primary);
+        letter-spacing: 1px;
+      }
+      .head .sub {
+        margin: 8px 0 0;
+        color: var(--text-sub);
+      }
+      .head .meta {
+        margin: 4px 0 0;
+        color: var(--text-sub);
+        font-size: 13px;
+      }
+      h2 {
+        margin: 40px 0 12px;
+        padding-bottom: 6px;
+        font-size: 20px;
+        color: var(--primary);
+        border-bottom: 1px solid var(--line);
+        page-break-after: avoid;
+      }
+      p {
+        margin: 8px 0;
+      }
+      ul,
+      ol {
+        margin: 8px 0;
+        padding-left: 24px;
+      }
+      li {
+        margin: 4px 0;
+      }
+      strong {
+        color: var(--text);
+      }
+      figure {
+        margin: 18px 0 20px;
+        text-align: center;
+        page-break-inside: avoid;
+      }
+      figure img {
+        max-width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+      figcaption {
+        margin-top: 8px;
+        color: var(--text-sub);
+        font-size: 13px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 18px;
+        font-size: 14px;
+        table-layout: fixed;
+      }
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 8px 10px;
+        vertical-align: middle;
+        text-align: left;
+      }
+      th {
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: bold;
+      }
+      .btn-table th:first-child,
+      .btn-table td:first-child {
+        width: 64px;
+        min-width: 64px;
+        text-align: center;
+        padding-left: 4px;
+        padding-right: 4px;
+      }
+      .btn-table td:nth-child(2) {
+        width: 22%;
+        font-weight: bold;
+      }
+      .btn-table td:nth-child(3) {
+        width: 32%;
+      }
+      .icon {
+        width: 32px;
+        height: 32px;
+        vertical-align: middle;
+      }
+      .ico-text {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        color: var(--text);
+      }
+      .tip {
+        margin: 14px 0;
+        padding: 12px 16px;
+        border-left: 4px solid var(--primary);
+        background: var(--primary-light);
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .note {
+        margin: 14px 0;
+        padding: 12px 16px;
+        border-left: 4px solid #9db7d8;
+        background: #f3f7fc;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .footer {
+        margin-top: 40px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+        color: var(--text-sub);
+        font-size: 13px;
+      }
+      @media print {
+        @page {
+          size: A4;
+          margin: 16mm 14mm;
+        }
+        body {
+          background: #fff;
+        }
+        .page {
+          box-shadow: none;
+          max-width: none;
+          padding: 0;
+        }
+        tr {
+          page-break-inside: avoid;
+        }
+        h2 {
+          break-after: avoid-page;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="head">
+        <h1>视频播放器使用说明</h1>
+        <p class="meta">文档版本 V1.0　更新日期 2026 年 11 月</p>
+      </header>
+
+      <h2>1. 实时预览</h2>
+      <figure>
+        <img src="preview.png" alt="实时预览画面与控制按钮" />
+        <figcaption>图 1　实时预览</figcaption>
+      </figure>
+      <p><strong>视频进度控制</strong></p>
+      <table class="btn-table">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><img class="icon" src="icons/stop.png" alt="停止播放" /></td>
+            <td>停止播放</td>
+            <td>停止实时画面</td>
+            <td>停止后画面关闭</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>播放器控制</strong></p>
+      <table class="btn-table">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><img class="icon" src="icons/volume-off.png" alt="音量" /></td>
+            <td>音量 / 静音</td>
+            <td>调整声音大小或静音</td>
+            <td>点击图标切换静音，展开后可拖动滑块调整音量</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/target-on.png" alt="目标开启" /></td>
+            <td>目标（开启）</td>
+            <td>画面显示智能分析目标框</td>
+            <td>与「关闭」切换</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/target-off.png" alt="目标关闭" /></td>
+            <td>目标（关闭）</td>
+            <td>画面不显示目标框</td>
+            <td>与「开启」切换</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/subtitle-on.png" alt="字幕开启" /></td>
+            <td>字幕（开启）</td>
+            <td>画面显示字幕</td>
+            <td>与「关闭」切换；该画面有字幕时才可用</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/subtitle-off.png" alt="字幕关闭" /></td>
+            <td>字幕（关闭）</td>
+            <td>画面不显示字幕</td>
+            <td>与「开启」切换；该画面有字幕时才可用</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/capture.png" alt="截图" /></td>
+            <td>截图</td>
+            <td>截取当前画面并保存为图片</td>
+            <td>图片保存到浏览器默认下载位置</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/fullscreen.png" alt="全屏" /></td>
+            <td>全屏</td>
+            <td>全屏显示当前画面</td>
+            <td>按 Esc 或 F11 退出全屏</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. 录像回放</h2>
+      <figure>
+        <img src="playback.png" alt="录像回放画面与控制按钮" />
+        <figcaption>图 2　录像回放</figcaption>
+      </figure>
+      <p><strong>视频进度控制</strong></p>
+      <table class="btn-table">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><img class="icon" src="icons/play.png" alt="播放" /></td>
+            <td>播放</td>
+            <td>开始或继续播放录像</td>
+            <td>与「暂停」切换</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/pause.png" alt="暂停" /></td>
+            <td>暂停</td>
+            <td>暂停录像</td>
+            <td>与「播放」切换</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/slow.png" alt="慢放" /></td>
+            <td>慢放</td>
+            <td>降低播放速度</td>
+            <td>每点一次降低一档；最低 1/16x，再点一次恢复 1x</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/fast.png" alt="快进" /></td>
+            <td>快进</td>
+            <td>提高播放速度</td>
+            <td>每点一次提高一档；最高 8x，再点一次恢复 1x</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/frame.png" alt="单帧进" /></td>
+            <td>单帧进</td>
+            <td>向前播放一帧</td>
+            <td>暂停后使用，便于逐帧查看</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/back30.png" alt="退 30 秒" /></td>
+            <td>退 30 秒</td>
+            <td>把播放位置向前倒回 30 秒</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/forward30.png" alt="进 30 秒" /></td>
+            <td>进 30 秒</td>
+            <td>把播放位置向后跳过 30 秒</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>进度条</td>
+            <td>直接定位到录像的任意时间</td>
+            <td>拖动进度条上的圆点调整位置</td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>当前时间 / 总时长</td>
+            <td>显示已播放时间和录像总长度</td>
+            <td>格式为 时:分:秒</td>
+          </tr>
+          <tr>
+            <td><span class="ico-text">1x</span></td>
+            <td>倍速</td>
+            <td>显示并选择当前播放速度</td>
+            <td>鼠标移到倍速数字上弹出列表，可选择 8x～1/16x；与慢放、快进同步变化</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">
+        慢放、快进和倍速是联动的：点一次慢放或快进切换一档，倍速数字同步变化；到达 8x 或 1/16x 后再点一次，恢复 1x。
+        也可以把鼠标移到倍速数字上，在弹出的列表中选择 8x、4x、2x、1x、1/2x、1/4x、1/8x、1/16x。
+      </div>
+
+      <p><strong>播放器控制</strong></p>
+      <table class="btn-table">
+        <thead>
+          <tr>
+            <th>图标</th>
+            <th>按钮 / 控件</th>
+            <th>作用</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><img class="icon" src="icons/volume-off.png" alt="音量" /></td>
+            <td>音量 / 静音</td>
+            <td>调整声音大小或静音</td>
+            <td>点击图标切换静音，展开后可拖动滑块调整音量</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/target-on.png" alt="目标开启" /></td>
+            <td>目标（开启）</td>
+            <td>画面显示智能分析目标框</td>
+            <td>与「关闭」切换</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/target-off.png" alt="目标关闭" /></td>
+            <td>目标（关闭）</td>
+            <td>画面不显示目标框</td>
+            <td>与「开启」切换</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/subtitle-on.png" alt="字幕开启" /></td>
+            <td>字幕（开启）</td>
+            <td>画面显示字幕</td>
+            <td>与「关闭」切换；该录像有字幕时才可用</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/subtitle-off.png" alt="字幕关闭" /></td>
+            <td>字幕（关闭）</td>
+            <td>画面不显示字幕</td>
+            <td>与「开启」切换；该录像有字幕时才可用</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/capture.png" alt="截图" /></td>
+            <td>截图</td>
+            <td>截取当前画面并保存为图片</td>
+            <td>图片保存到浏览器默认下载位置</td>
+          </tr>
+          <tr>
+            <td><img class="icon" src="icons/fullscreen.png" alt="全屏" /></td>
+            <td>全屏</td>
+            <td>全屏显示当前画面</td>
+            <td>按 Esc 或 F11 退出全屏</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>3. 通用操作与提示</h2>
+      <ul>
+        <li>控制条默认隐藏，鼠标移到画面底部的控制条区域时显示，移出后隐藏。</li>
+        <li>多画面播放时，每个画面各自独立控制；要操作某一路，先单击该画面选中，再使用画面下方的控制条。</li>
+        <li>全屏后按 <strong>Esc</strong> 或 <strong>F11</strong> 退出。</li>
+        <li>截图保存的是点击瞬间的画面，按浏览器默认下载位置保存。</li>
+        <li>浏览器可能限制自动播放声音；没有声音时，先点击一下画面，再调整音量。</li>
+      </ul>
+
+      <div class="note">
+        不同项目、不同页面的播放器外观可能略有差异，但播放、暂停、音量、截图、全屏等常用按钮的作用一致。
+      </div>
+
+      <div class="footer">视频播放器使用说明 V1.0</div>
+    </div>
+  </body>
+</html>

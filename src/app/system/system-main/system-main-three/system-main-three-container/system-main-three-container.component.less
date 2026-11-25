@@ -14,6 +14,33 @@
     position: relative;
     padding: 0;
 
+    /* 首次加载：模型和镜头定位完成前不显示场景和相关按钮，避免先看到 (0,0) 再跳过去。
+       场景用透明度隐藏而不是 visibility：画布一直参与合成，显示时直接出现最终帧，不会闪白 */
+    &.preparing {
+      .system-main-three-content {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .system-main-three-button-area,
+      .system-main-three-building,
+      .system-main-three-floor,
+      .system-main-three-filter,
+      .system-main-three-found {
+        visibility: hidden;
+      }
+    }
+
+    &-preparing {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--normal);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
     /* WebGL 不可用时只显示提示，隐藏依赖三维场景的地图按钮/面板 */
     &.unsupported {
       .system-main-three-button-area,
@@ -30,6 +57,7 @@
   &-content {
     width: 100%;
     height: 100%;
+    transition: opacity 0.2s ease;
   }
 
   &-webgl {

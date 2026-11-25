@@ -83,7 +83,8 @@ export class AccountOperationComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl(RegionNode.login);
     },
     help: () => {
-      window.open(`http://${location.hostname}:${location.port ?? 80}/help/help.html`);
+      /* 使用说明放在 public/help，随构建输出到站点根目录；用 baseURI 兼容子路径部署 */
+      window.open(`${document.baseURI}help/help.html`, '_blank');
     },
     setting: () => {
       this.router.navigateByUrl(RegionNode.setting);

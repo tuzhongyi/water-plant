@@ -79,6 +79,9 @@ export class SceneService {
     const w = container.clientWidth;
     const h = container.clientHeight;
 
+    /*	SceneService 是 root 单例：如果上一次的三维页面还没释放，
+        先释放旧 renderer，避免两个页面切换时占用/误用同一个上下文 */
+    this.releaseRenderer();
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(w, h, false);
@@ -431,6 +434,24 @@ export class SceneService {
   dispose(): void {
     cancelAnimationFrame(this.animationId);
     this.resizeObserver?.disconnect();
-    this.renderer.dispose();
+    this.releaseRenderer();
+  }
+
+  /**	释放渲染器和 WebGL 上下文：renderer.dispose() 只释放 GPU 资源，
+      不会归还浏览器上下文，必须 forceContextLoss，否则反复进出三维页会耗尽上下文 */
+  private releaseRenderer(): void {
+    const renderer = this.renderer;
+    if (!renderer) return;
+    try {
+      this.composer?.dispose();
+    } catch {}
+    try {
+      renderer.dispose();
+    } catch {}
+    /* dispose 会先移除 Three 的上下文监听，再归还上下文，避免控制台打印 Context Lost */
+    try {
+      renderer.forceContextLoss();
+    } catch {}
+    this.renderer = undefined as unknown as THREE.WebGLRenderer;
   }
 }

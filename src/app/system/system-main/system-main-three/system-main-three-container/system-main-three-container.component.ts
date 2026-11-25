@@ -92,6 +92,7 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         否则等待 inited 的地图/点位加载会一直挂起 */
     if (!this.webgl.supported()) {
       this.three.inited = true;
+      this.three.ready.set(true);
     }
     /*	渲染模式在创建模型前从本地缓存恢复，
         否则会先按默认模式加载一遍、再整体重载 */
@@ -105,8 +106,19 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     this.map.load();
     this.building.load();
     this.element.load(this.args, false);
+
+    /*	兜底：模型接口异常时不能一直停在“地图加载中”，超时后直接显示 */
+    setTimeout(() => {
+      if (!this.three.ready()) {
+        this.three.ready.set(true);
+      }
+    }, 8000);
   }
   ngOnDestroy(): void {
+    if (this.focusTimer !== undefined) {
+      clearTimeout(this.focusTimer);
+      this.focusTimer = undefined;
+    }
     document.removeEventListener('fullscreenchange', this.manager.fullscreen.change);
     this.subs.unsubscribe();
   }
@@ -485,6 +497,8 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     },
     /**	@param floors 已取到的楼层列表（展开建筑时传，省掉一次重复请求） */
     load: async (args: SystemMainThreeArgs, usecache: boolean, floors?: GeoMapElement[]) => {
+      /*	首次等待镜头定位完成后再加载点位，点位不会先出现在跳转前的视角 */
+      await wait(() => this.three.ready());
       this.element.loading = true;
       let version = ++this.element.version;
       try {
@@ -734,9 +748,62 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
     },
   };
 
+  /** 首次定位是否已经在进行：loaded 可能连续触发，避免重复启动镜头动画 */
+  private initialFocusing = false;
+  /** loaded 可能按模型分批触发，合并成一个批次后再定位，避免只按第一批模型居中 */
+  private focusTimer?: ReturnType<typeof setTimeout>;
+
+  /**	模型加载完成：合并连续 loaded 后重新适配视图。
+      首次加载时先不显示，镜头居中并稳定后再显示、再允许加载点位 */
+  private async focusLoaded(): Promise<void> {
+    this.three.focus.emit();
+    if (this.three.ready() || this.initialFocusing) return;
+    this.initialFocusing = true;
+    const startTime = Date.now();
+    const moved = await this.settleCamera();
+    if (moved) {
+      /*	镜头动画固定 1000ms，lensmoving 可能因中间帧没触发 change 提前结束，
+          这里补足动画时长，避免动画没走完就显示 */
+      const remain = 1000 - (Date.now() - startTime);
+      if (remain > 0) {
+        await new Promise((resolve) => setTimeout(resolve, remain));
+      }
+    }
+    await this.nextFrame();
+    this.three.ready.set(true);
+  }
+
+  /** 等待相机动画和阻尼结束：先等它开始移动（没有动画则最多等 300ms），再等它停下
+      @returns 是否真的发生过镜头移动 */
+  private async settleCamera(): Promise<boolean> {
+    let moved = await wait(() => this.three.lensmoving, {
+      interval: 20,
+      timeoutable: true,
+      timeout: 300,
+    })
+      .then(() => true)
+      .catch(() => false);
+    if (!moved) return false;
+    await wait(() => !this.three.lensmoving, {
+      interval: 50,
+      timeoutable: true,
+      timeout: 3000,
+    }).catch(() => {});
+    return true;
+  }
+
+  /** 等到浏览器真正把最后一帧画到画布上 */
+  private nextFrame(): Promise<void> {
+    return new Promise((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    });
+  }
+
   three = {
     inited: false,
     loading: signal(false),
+    /** 首次模型加载并完成镜头定位后才显示场景、加载点位 */
+    ready: signal(false),
     lensmoving: false,
     focus: new EventEmitter<FitView | void>(),
     moveto: new EventEmitter<MoveToArgs>(),
@@ -772,9 +839,12 @@ export class SystemMainThreeContainerComponent implements OnInit, OnDestroy {
         this.three.loading.set(value);
       },
       loaded: () => {
-        setTimeout(() => {
-          this.three.focus.emit();
-        }, 0);
+        /*	loaded 可能按模型分批触发：合并 50ms 内的多次触发，等模型齐了再定位 */
+        if (this.focusTimer !== undefined) clearTimeout(this.focusTimer);
+        this.focusTimer = setTimeout(() => {
+          this.focusTimer = undefined;
+          this.focusLoaded();
+        }, 50);
       },
       building: {
         select: (modelId: string) => {

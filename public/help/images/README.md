@@ -12,7 +12,8 @@
 | `04-device-list.png` | 图 4 | 点击「查看全部」后的设备列表窗口（含设备表格、通道表格、预览按钮） |
 | `05-alarm-list.png` | 图 5 | 左下角「报警列表」（筛选按钮 + 一条带播放按钮的记录） |
 | `06-record-window.png` | 图 6 | 点击「查看全部报警」后的报警记录窗口（含表头、回放按钮、分页） |
-| `07-map-buttons.png` | 图 7 | 地图左下角按钮区 + 建筑列表展开状态 |
+| `06-record-window-2.png` | 图 6-1 | 报警记录窗口的「出入口记录」标签（门禁、进出人员、事件时间、操作） |
+| `07-map-buttons.png` | 图 7 | 三维地图总览 |
 | `08-stats-panel.png` | 图 8 | 地图左上角点位统计面板（各类型在线/异常、查看全部） |
 | `09-group-tree.png` | 图 9 | 右侧「点位分组」树（区域分组、定位/显示隐藏按钮） |
 | `10-region-find.png` | 图 10 | 区域查找或区域联动后的「点位列表」（全部播放按钮） |
@@ -32,3 +33,13 @@
 - 图片直接用中文界面即可，不需要额外标注；编号和图号已在文档中对应。
 - 如果某张图暂时没有，可先不提供，文档会显示占位框，不影响其他内容阅读。
 - 截图内容尽量包含文档里提到的按钮，客户对照文档更容易理解。
+
+---
+
+## PDF 版本
+
+`public/help/使用说明.pdf` 由 `help.html` 打印生成（A4，无页眉页脚），内容与网页版一致。内容更新后重新生成：
+
+```bat
+"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf="Q:\Angular\water-plant\public\help\使用说明.pdf" "file:///Q:/Angular/water-plant/public/help/help.html"
+```

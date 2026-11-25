@@ -1,4 +1,8 @@
-<div class="system-main-three-container" [class.unsupported]="!webgl.supported()">
+<div
+  class="system-main-three-container"
+  [class.unsupported]="!webgl.supported()"
+  [class.preparing]="!three.ready()"
+>
   <div class="system-main-three-content" (click)="manager.on.click()">
     @if (webgl.supported()) {
     <hw-3d
@@ -44,6 +48,10 @@
       </div>
     }
   </div>
+  @if (!three.ready() && webgl.supported()) {
+    <div class="system-main-three-preparing">地图加载中…</div>
+  }
+
   <div class="system-main-three-button-area">
     <div class="button-group">
       <button

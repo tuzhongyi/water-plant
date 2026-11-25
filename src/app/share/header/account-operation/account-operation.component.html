@@ -20,6 +20,9 @@
     <i class="mdi mdi-settings"></i>
   </div>
 
+  <div class="operation-item" title="使用说明" (click)="on.help()">
+    <i class="mdi mdi-help-circle"></i>
+  </div>
   <div class="operation-item" title="账号" (click)="menu.target($event)">
     <div class="log-out">
       <i class="howell-icon-account"></i>
@@ -42,8 +45,5 @@
         </div>
       }
     </div>
-  </div>
-  <div class="operation-item" *ngIf="false" (click)="on.help()">
-    <i class="mdi mdi-help-circle"></i>
   </div>
 </div>
