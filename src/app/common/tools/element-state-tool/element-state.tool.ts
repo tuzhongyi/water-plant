@@ -12,29 +12,36 @@ export class ElementStateTool {
   private device = inject(DeviceRequestService);
 
   /**	元素实际状态：0-正常，1-离线，2-报警。
-      ElementState 是 0（正常）或 2（报警）时直接使用；
-      ElementState 为 1（离线）或 undefined 时，不能只信元素自身的状态：
-      按 ElementId 查绑定设备的实际状态，设备在线就按在线显示，设备确实离线才显示离线：
+      报警（2）优先；其他状态（0/1/undefined）以绑定设备的实际状态为准：
+      状态复位只清除报警，设备仍然离线时点位必须继续显示离线，不能因为元素接口返回 0 就变成在线：
       - DB31 元素：通道 → 设备的 DeviceState；
       - 其他元素：按 ElementId 查视频通道，用 ChannelState；
       查不到设备时沿用元素自身的 ElementState（undefined 由调用方按离线显示）	*/
   async state(data: GeoMapElement): Promise<number | undefined> {
-    if (data.ElementState === 0 || data.ElementState === 2) {
+    if (data.ElementState === 2) {
       return data.ElementState;
     }
     if (!data.ElementId) {
       return data.ElementState;
     }
-    let devicestate: number | undefined;
-    if (data.FromDB31) {
-      devicestate = await this.from.db31(data.ElementId);
-    } else {
-      devicestate = await this.from.video(data.ElementId);
-    }
+    /* 下面统一走 deviceState；保留 ElementId 判断，避免无绑定设备的元素查设备 */
+    let devicestate = await this.deviceState(data);
     if (devicestate !== undefined) {
       return devicestate;
     }
     return data.ElementState;
+  }
+
+  /**	绑定设备/通道的实际状态（0-正常，1-离线）；查不到时返回 undefined。
+      复位后需要用它把服务端的 ElementState 同步回真实状态	*/
+  async deviceState(data: GeoMapElement): Promise<number | undefined> {
+    if (!data.ElementId) {
+      return undefined;
+    }
+    if (data.FromDB31) {
+      return this.from.db31(data.ElementId);
+    }
+    return this.from.video(data.ElementId);
   }
 
   private from = {

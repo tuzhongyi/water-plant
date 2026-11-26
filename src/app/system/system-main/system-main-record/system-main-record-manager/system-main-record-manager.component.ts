@@ -46,9 +46,12 @@ export class SystemMainRecordManagerComponent implements OnInit, OnDestroy {
     args: new SystemMainRecordTableArgs(),
     load: new EventEmitter<SystemMainRecordTableArgs>(),
     datas: [] as DeviceEventRecord[],
+    /** 服务端总数：超过 100 条时头部显示「最近 X 条」，否则显示「共 X 条」 */
+    total: 0,
     on: {
-      loaded: (datas: DeviceEventRecord[]) => {
-        this.table.datas = datas;
+      loaded: (result: { datas: DeviceEventRecord[]; total: number }) => {
+        this.table.datas = result.datas;
+        this.table.total = result.total;
       },
       filter: (type?: SystemMainRecordTableEventType) => {
         this.table.args.type = type;

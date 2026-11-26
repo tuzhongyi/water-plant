@@ -27,7 +27,7 @@ import { SystemElementTableArgs } from '../system-element-table/system-element-t
 })
 export class SystemElementManagerComponent implements OnChanges, OnInit {
   @Input() type?: MapElementType;
-  /**	状态筛选：0-在线，1-离线；不设置表示全部	*/
+  /**	状态筛选：0-在线，1-异常（离线 + 报警）；不设置表示全部	*/
   @Input() state?: number;
   @Input() buildingId?: string;
   /**	地图传来的全量元素 ElementId（已按视频通道权限过滤，含非摄像机元素）	*/
@@ -38,11 +38,10 @@ export class SystemElementManagerComponent implements OnChanges, OnInit {
   constructor(public source: SystemMainThreeSource) {}
 
   Language = Language;
-  /**	状态筛选选项：0-在线，1-离线，2-报警	*/
+  /**	状态筛选选项：0-在线，1-异常（离线 + 报警）	*/
   states = [
     { Value: 0, Name: '在线' },
-    { Value: 1, Name: '离线' },
-    { Value: 2, Name: '报警' },
+    { Value: 1, Name: '异常' },
   ];
   private subs = new Subscription();
   ngOnChanges(changes: SimpleChanges): void {

@@ -8,13 +8,18 @@ import { DeviceRequestService } from '../../../common/data-core/request/services
 import { GetMapElementsParams } from '../../../common/data-core/request/services/geographic/geographic.params';
 import { GeographicRequestService } from '../../../common/data-core/request/services/geographic/geographic.service';
 import { GlobalStorage } from '../../../common/storage/global.storage';
-import { ColorTool } from '../../../common/tools/color-tool/color.tool';
 import { ElementStateTool } from '../../../common/tools/element-state-tool/element-state.tool';
 import { LanguageTool } from '../../../common/tools/language-tool/language.tool';
 import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { wait } from '../../../common/tools/wait';
 import { SystemMainThreeSource } from '../../system-main/system-main-three/system-main-three.source';
-import { SystemElementTableFilter, SystemElementTableItem } from './system-element-table.model';
+import { SystemElementTableAbnormalBusiness } from './system-element-table-abnormal.business';
+import {
+  SystemElementTableFilter,
+  SystemElementTableItem,
+  SystemElementTableStateQuery,
+} from './system-element-table.model';
+import { SystemElementTableOnlineBusiness } from './system-element-table-online.business';
 
 @Injectable()
 export class SystemElementTableBusiness {
@@ -29,7 +34,21 @@ export class SystemElementTableBusiness {
     private global: GlobalStorage,
   ) {
     this.service = { device, db31, geo };
+    this.online = new SystemElementTableOnlineBusiness(geo);
+    this.abnormal = new SystemElementTableAbnormalBusiness(geo);
   }
+
+  /** 在线 / 异常两种状态的具体查询逻辑 */
+  private online: SystemElementTableOnlineBusiness;
+  private abnormal: SystemElementTableAbnormalBusiness;
+
+  /** 两种状态查询共用的参数、权限过滤能力 */
+  private query: SystemElementTableStateQuery = {
+    params: (filter, state) => this.createParams(filter, state),
+    permission: (params, filter) => this.applyPermission(params, filter),
+    filterCameras: (datas) => this.filterCameras(datas),
+    floors: (buildingId) => this.get.floors(buildingId),
+  };
 
   private service: {
     device: DeviceRequestService;
@@ -40,14 +59,30 @@ export class SystemElementTableBusiness {
   async load(index: number, size: number, filter: SystemElementTableFilter) {
     /* 摄像机行的预览按钮要按通道权限判断，先把用户权限准备好 */
     await this.permission.load().catch(() => {});
-    let datas = filter.buildingId
-      ? await this.get.from.building(index, size, filter.buildingId, filter)
-      : await this.get.datas(index, size, filter);
-
+    /*	状态只分在线（0）和异常（非 0）：异常由 abnormal 业务分别取离线和报警后合并分页 */
+    let abnormal = filter.state !== undefined && filter.state !== 0;
+    let online = filter.state === 0;
+    const load = async (page: number) => {
+      if (filter.buildingId) {
+        if (abnormal) {
+          return this.abnormal.building(page, size, filter.buildingId, filter, this.query);
+        }
+        if (online) {
+          return this.online.building(page, size, filter.buildingId, filter, this.query);
+        }
+        return this.get.from.building(page, size, filter.buildingId, filter);
+      }
+      if (abnormal) {
+        return this.abnormal.load(page, size, filter, this.query);
+      }
+      if (online) {
+        return this.online.load(page, size, filter, this.query);
+      }
+      return this.get.datas(page, size, filter);
+    };
+    let datas = await load(index);
     if (datas.Page.RecordCount == 0 && datas.Page.PageIndex > 1) {
-      datas = filter.buildingId
-        ? await this.get.from.building(index - 1, size, filter.buildingId, filter)
-        : await this.get.datas(index - 1, size, filter);
+      datas = await load(datas.Page.PageIndex - 1);
     }
     let paged = new PagedList<SystemElementTableItem<GeoMapElement>>();
     paged.Page = datas.Page;
@@ -62,21 +97,24 @@ export class SystemElementTableBusiness {
     /*	状态口径与场景 marker / 统计面板一致（统一走 ElementStateTool）：
         DB31 元素取不到 ElementState 时按父设备状态，其他没有状态的按离线显示 */
     let state = await this.elementstate.state(data);
-    let display = this.elementstate.offline(state) ? 1 : state;
+    /*	表格状态只分在线和异常：报警和离线统一显示为异常 */
+    let online = state === 0;
     let item: SystemElementTableItem<GeoMapElement> = {
       id: data.Id,
       name: data.Name,
       type: this.language.geo.ElementType(data.ElementType),
       // binding: this.get.name(data),
       parent: this.get.parent(data.ParentId),
-      statename: this.language.geo.ElementStates(display),
-      statecolor: ColorTool.from.MapElementState(display).name,
+      statename: Promise.resolve(online ? '在线' : '异常'),
+      statecolor: online ? 'green' : 'redlight',
       /*	按解析后的状态判断：摄像机没有 ElementState 时 ElementStateTool 会查视频通道，
           通道在线同样可以预览 */
       canplay:
         data.ElementType == MapElementType.Camera &&
         this.permission.canChannel(data.ElementId) &&
         state == 0,
+      /*	离线点位不能复位：复位只会清报警，处理不了设备离线，容易出现状态不一致 */
+      canreset: state !== 1,
 
       alarm: true,
       data: data,
@@ -151,6 +189,29 @@ export class SystemElementTableBusiness {
     });
   }
 
+  /**	构建名称/类型等公共查询参数；state 由在线/异常业务指定 */
+  private async createParams(
+    filter: SystemElementTableFilter,
+    state?: number,
+  ): Promise<GetMapElementsParams> {
+    let params = new GetMapElementsParams();
+    if (filter.name) {
+      params.Name = filter.name;
+    }
+    if (filter.type !== undefined) {
+      params.ElementTypes = [filter.type];
+    } else {
+      await wait(() => {
+        return this.source.loaded;
+      });
+      params.ElementTypes = this.source.type.elements.map((x) => x.Value);
+    }
+    if (state !== undefined) {
+      params.ElementState = state;
+    }
+    return params;
+  }
+
   private get = {
     state: () => {},
     parent: async (parentId?: string): Promise<string> => {
@@ -208,30 +269,15 @@ export class SystemElementTableBusiness {
       return this.service.db31.channel.get(id);
     },
     datas: async (index: number, size: number, filter: SystemElementTableFilter) => {
-      let params = new GetMapElementsParams();
+      let params = await this.createParams(filter, filter.state);
       params.PageIndex = index;
       params.PageSize = size;
 
-      if (filter.name) {
-        params.Name = filter.name;
-      }
-      if (filter.type !== undefined) {
-        params.ElementTypes = [filter.type];
-      } else {
-        await wait(() => {
-          return this.source.loaded;
-        });
-        params.ElementTypes = this.source.type.elements.map((x) => x.Value);
-      }
       if (!(await this.applyPermission(params, filter))) {
         let paged = new PagedList<GeoMapElement>();
         paged.Page = Page.create(index, size, 0);
         paged.Data = [];
         return paged;
-      }
-
-      if (filter.state !== undefined) {
-        params.ElementState = filter.state;
       }
 
       let datas = await this.service.geo.map.element.list(params);
@@ -252,25 +298,10 @@ export class SystemElementTableBusiness {
         const floorIds = new Set(floors.map((f) => f.Id));
 
         // 2. 构建除 buildingId 外的筛选参数
-        let params = new GetMapElementsParams();
-        if (filter.name) {
-          params.Name = filter.name;
-        }
-        if (filter.type !== undefined) {
-          params.ElementTypes = [filter.type];
-        } else {
-          await wait(() => {
-            return this.source.loaded;
-          });
-          params.ElementTypes = this.source.type.elements.map((x) => x.Value);
-        }
+        let params = await this.createParams(filter, filter.state);
 
         if (!(await this.applyPermission(params, filter))) {
           return [];
-        }
-
-        if (filter.state !== undefined) {
-          params.ElementState = filter.state;
         }
 
         // 3. 获取所有符合条件的元素，过滤出父级为楼层的数据

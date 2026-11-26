@@ -48,7 +48,7 @@ export class SettingMapElementBusiness {
     parentId?: string,
   ) {
     if (data instanceof VideoChannel) {
-      return this.video.bind(data, location, mapId, parentId);
+      return this.video.bind(data, location, mapId, data.ChannelState ?? 1, parentId);
     } else if (data instanceof TreeDB31DeviceChannel) {
       return this.db31.bind(data, location, mapId, parentId);
     }

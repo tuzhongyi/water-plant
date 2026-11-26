@@ -27,6 +27,7 @@ import {
   MqttRequestService,
 } from '../../../common/data-core/request/services/mqtt/mqtt.service';
 import { DateTimeTool } from '../../../common/tools/date-time-tool/datetime.tool';
+import { ElementStateTool } from '../../../common/tools/element-state-tool/element-state.tool';
 import { HtmlTool } from '../../../common/tools/html-tool/html.tool';
 import { PermissionTool } from '../../../common/tools/permission-tool/permission.tool';
 import { wait } from '../../../common/tools/wait';
@@ -80,6 +81,7 @@ export class SystemMainComponent implements OnInit, OnDestroy {
 
   @ViewChild('card') mapcontainer?: CardComponent;
   private permission = inject(PermissionTool);
+  private elementstate = inject(ElementStateTool);
   window = new SystemMainWindow();
   private handle = {
     loop: undefined as any,
@@ -243,9 +245,17 @@ export class SystemMainComponent implements OnInit, OnDestroy {
       resetstate: (data: GeoMapElement) => {
         /* 与元素列表里的「重置状态」按钮一致：没有报警设置/控制权限不能复位 */
         if (!this.permission.alarm) return;
-        this.business.element.reset(data.Id).then((x) => {
-          this.map.unalarm.emit(data);
-          this.window.table.element.reload.emit();
+        /*	离线点位不能复位：复位只清报警，无法改变设备离线，容易导致点位状态和真实设备不一致 */
+        this.elementstate.state(data).then((state) => {
+          if (state === 1) return;
+          this.business.element.reset(data.Id).then((x) => {
+            this.map.unalarm.emit(data);
+            this.window.table.element.reload.emit();
+            /*	复位后主页数据也要立即刷新：报警列表、地图点位/统计、左侧设备状态 */
+            this.record.load.emit();
+            this.map.load.emit();
+            this.load();
+          });
         });
       },
       expandscreen: (value: boolean) => {

@@ -59,7 +59,12 @@ export class SystemMainRecordTableBusiness {
     let all = paged.Data.map((x) => this.convert(x));
     let items = await Promise.all(all);
     /* 只显示与当前用户可查看通道相关的报警记录（根用户全部显示） */
-    return items.filter((x) => this.get.permitted(x.data));
+    let datas = items.filter((x) => this.get.permitted(x.data));
+    return {
+      datas,
+      /* 服务端总数：用来区分“正好 100 条”和“超过 100 条被截断” */
+      total: paged.Page.TotalRecordCount ?? paged.Page.RecordCount,
+    };
   }
 
   private async convert(data: DeviceEventRecord) {

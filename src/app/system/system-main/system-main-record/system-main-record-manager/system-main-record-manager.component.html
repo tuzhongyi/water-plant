@@ -4,7 +4,11 @@
       <div class="card-head-title system-main-record-head-title">报警列表</div>
       <div class="system-main-record-head-action">
         <div class="system-main-record-head-action-content">
-          共 <span class="count">{{ table.datas.length }}</span> 条
+          @if (table.total > 100) {
+            最近 <span class="count">{{ table.datas.length }}</span> 条
+          } @else {
+            共 <span class="count">{{ table.datas.length }}</span> 条
+          }
         </div>
         <div class="system-main-record-head-action-_">
           <i class="mdi mdi-dots-vertical"></i>

@@ -34,9 +34,10 @@ export class SettingMapElementVideoBusiness {
     data: VideoChannel,
     location: { x: number; y: number; z: number },
     mapId: string,
+    state: number,
     parentId?: string,
   ) {
-    let element = this.convert.channel(data, location, mapId, parentId);
+    let element = this.convert.channel(data, location, mapId, state, parentId);
     return this.service.geo.map.element.create(element);
   }
 
@@ -45,6 +46,7 @@ export class SettingMapElementVideoBusiness {
       data: VideoChannel,
       location: { x: number; y: number; z: number },
       mapId: string,
+      state: number,
       parentId?: string,
     ): GeoMapElement => {
       let element = new GeoMapElement();
@@ -57,6 +59,7 @@ export class SettingMapElementVideoBusiness {
       element.Id = '';
       element.CreateTime = new Date();
       element.UpdateTime = new Date();
+      element.ElementState = state;
 
       element.ElementId = data.Id;
       element.ElementType = MapElementType.Camera;

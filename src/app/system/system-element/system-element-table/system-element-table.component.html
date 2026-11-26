@@ -69,7 +69,11 @@
                     </button>
                   }
                   @if (permission.signals.alarm()) {
-                    <button title="重置状态" (click)="on.resetstate($event, item)">
+                    <button
+                      [title]="item.canreset ? '重置状态' : '点位离线，不能重置'"
+                      [disabled]="!item.canreset"
+                      (click)="on.resetstate($event, item)"
+                    >
                       <i class="mdi mdi-replay"></i>
                     </button>
                   }

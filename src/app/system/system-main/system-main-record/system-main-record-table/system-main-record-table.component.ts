@@ -22,7 +22,7 @@ import {
 export class SystemMainRecordTableComponent implements OnInit, OnDestroy {
   @Input() args = new SystemMainRecordTableArgs();
   @Input('load') _load?: EventEmitter<SystemMainRecordTableArgs>;
-  @Output() loaded = new EventEmitter<DeviceEventRecord[]>();
+  @Output() loaded = new EventEmitter<{ datas: DeviceEventRecord[]; total: number }>();
   @Output() playback = new EventEmitter<DeviceEventRecord>();
   @Output() details = new EventEmitter<DeviceEventRecord>();
 
@@ -65,9 +65,13 @@ export class SystemMainRecordTableComponent implements OnInit, OnDestroy {
 
   private async load(args: SystemMainRecordTableArgs) {
     // this.datas = await this.business.test();
-    this.datas = await this.business.load(args);
+    let result = await this.business.load(args);
+    this.datas = result.datas;
 
-    this.loaded.emit(this.datas.map((x) => x.data));
+    this.loaded.emit({
+      datas: this.datas.map((x) => x.data),
+      total: result.total,
+    });
   }
 
   on = {
